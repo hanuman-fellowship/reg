@@ -500,7 +500,9 @@ EOS
     #                                figure out how to do the above
     #                                in Abstract::SQL???
     if (-f '/tmp/sql') {    # an easy way to turn the tracing on and off...
-        $c->log->info($sql);
+        open my $out, '>', '/tmp/sql.out';
+        print {$out} "$sql\n";
+        close $out;
     }
     my @people = @{ Person->search($sql) };
     for my $p (@people) {
