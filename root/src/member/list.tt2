@@ -5,6 +5,8 @@
 <p class=p2>
 [% END %]
 <a href="/member/membership_list">Members w/\$</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/member/voter_list">Voter List</a>
 <p class=p2>
 <a href="/member/membership_list/1">Members</a>
 &nbsp;&nbsp;&nbsp;

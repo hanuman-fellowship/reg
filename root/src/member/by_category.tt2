@@ -1,12 +1,22 @@
+<style>
+body {
+    margin-top: .3in;
+    margin-left: .3in;
+}
+h2 {
+    margin-bottom: 0px;
+}
+</style>
+<h1>Hanuman Fellowship Membership</h1>
 <h2>Counts</h2>
 
 <table>
 <tr><td>General</td><td align=right>$ngene</td></tr>
-<tr><td>Contributing Sponsor</td><td align=right>$ncont</td></tr>
 <tr><td>Sponsor</td><td align=right>$nspon</td></tr>
 <tr><td>Life</td><td align=right>$nlife</td></tr>
 <tr><td>Founding Life</td><td align=right>$nfound</td></tr>
-<tr><td>Total</td><td align=right>[% ngene+ncont+nspon+nlife+nfound %]</td></tr>
+<tr><td>Resident</td><td align=right>$nresident</td></tr>
+<tr><td>Total</td><td align=right>[% ngene+nspon+nlife+nfound+nresident %]</td></tr>
 </table>
 
 <h2>General</h2>
@@ -26,33 +36,6 @@
 <td>[% IF p.sanskrit %]$p.sanskrit[% ELSE %]$p.first[% END %]</td>
 <td align=center>$m.voter
 <td align=center>${m.date_general_obj.format("%D")}</td>
-</tr>
-[% END %]
-</table>
-
-<h2>Contributing Sponsor</h2>
-<table cellpadding=3>
-<tr>
-<th></th>
-<th valign=bottom align=left>Name</th>
-<th valign=bottom align=left>Email</th>
-<th valign=bottom align=left>Sanskrit</th>
-[% IF ! no_money %]
-<th valign=bottom align=center>Last<br>Paid</th>
-<th valign=bottom align=right>Total</th>
-[% END %]
-</tr>
-[% FOR m IN cont %]
-[% p = m.person %]
-<tr>
-<td>[% IF m.lapsed %]*[% END %]</td>
-<td>$p.last, $p.first</td>
-<td>$p.email</td>
-<td>[% IF p.sanskrit %]$p.sanskrit[% ELSE %]$p.first[% END %]</td>
-[% IF ! no_money %]
-<td align=center>${m.payments.0.date_payment_obj.format("%D")}</td>
-<td align=right>$m.total_paid</td>
-[% END %]
 </tr>
 [% END %]
 </table>
@@ -141,3 +124,23 @@
 </tr>
 [% END %]
 </table>
+
+<h2>Resident</h2>
+<table cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th align=left>Email</th>
+<th align=left>Sanskrit</th>
+<th align=left>Voter</th>
+</tr>
+[% FOR m IN resident %]
+[% p = m.person %]
+<tr>
+<td>$p.last, $p.first</td>
+<td>$p.email</td>
+<td>[% IF p.sanskrit %]$p.sanskrit[% ELSE %]$p.first[% END %]</td>
+<td align=center>$m.voter
+</tr>
+[% END %]
+</table>
+

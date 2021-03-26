@@ -58,10 +58,10 @@ sub lapsed {
 }
 my %index = (
     General                => 1,
-    'Contributing Sponsor' => 2,
-    Sponsor                => 3,
-    Life                   => 4,
-    'Founding Life'        => 5,
+    Sponsor                => 2,
+    Life                   => 3,
+    'Founding Life'        => 4,
+    Resident               => 5,
     Inactive               => 6,
 );
 sub category_id {

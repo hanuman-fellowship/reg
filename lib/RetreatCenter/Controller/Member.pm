@@ -48,7 +48,7 @@ sub membership_list : Local {
     my ($self, $c, $no_money) = @_;
     
     my %stash;
-    for my $cat (qw/ gene cont spon life found /) {
+    for my $cat (qw/ gene spon life found resident /) {
         $stash{lc $cat} = [
             map {
                 $_->[1]
@@ -79,6 +79,44 @@ sub membership_list : Local {
         \$html,           # output
     ) or die $tt->error;
     $c->res->output($html);
+}
+
+# to root/static file and then load that file in the browser.
+sub voter_list : Local {
+    my ($self, $c) = @_;
+    
+    open my $list, ">", "/var/Reg/report/voter_list.csv"
+        or die "cannot create voter_list.csv: $!\n";
+    print {$list} "Last, First, Email, Telephone, Address, Category, Voter\n";
+    for my $m (
+        map {
+            $_->[1]
+        }
+        sort {
+            $a->[0] cmp $b->[0]
+        }
+        map {
+            [ $_->person->last . ' ' . $_->person->first, $_ ]
+        }
+        grep { ! $_->lapsed }
+        model($c, 'Member')->search({
+            category => { -not_like => 'Inactive' },
+        })
+    ) {
+        my $p = $m->person;
+        print {$list} join ', ',
+                      $p->last,
+                      $p->first,
+                      $p->email,
+                      $p->fone,
+                      $p->snail,
+                      $m->category,
+                      $m->voter
+                      ;
+        print {$list} "\n";
+    }
+    close $list;
+    $c->response->redirect($c->uri_for("/report/show_report_file/voter_list.csv"));
 }
 
 sub list : Local {
@@ -179,10 +217,10 @@ sub update : Local {
     my $m = model($c, 'Member')->find($id);
     for my $w (qw/
         general
-        contributing_sponsor
         sponsor
         life
         founding_life
+        resident
         inactive
     /) {
         my $cat = lc $m->category();
@@ -234,7 +272,7 @@ sub _get_data {
     $P{voter} = "" unless exists $P{voter};
     @mess = ();
     if (! $P{category}) {
-        push @mess, "You must select General, Contributing Sponsor, Sponsor, Life, Founding Life or Inactive";
+        push @mess, "You must select General, Sponsor, Life, Founding Life, Resident, or Inactive";
     }
     # dates are either blank or converted to d8 format
     for my $f (keys %P) {
@@ -251,7 +289,7 @@ sub _get_data {
     }
     if ($P{mkpay_amount} && $P{mkpay_date}) {
         if ($P{mkpay_amount} !~ m{^\s*-?\d+\s*$}) {
-            push @mess, "No payment amount";
+            push @mess, "Invalid payment amount";
         }
         if (! $P{mkpay_date}) {
             push @mess, "No payment date";
@@ -275,7 +313,7 @@ sub _get_data {
     ) {
         push @mess, "Missing Sponsor date";
     }
-    if ($P{category} && $P{category} eq 'General') {
+    if ($P{category} && $P{category} =~ m{\A(General|Resident)\z}xms ) {
         $P{sponsor_nights} = 0;
         $P{free_prog_taken} = '';
     }
@@ -663,7 +701,7 @@ sub create_do : Local {
         $P{date_sponsor} = $valid_to;
     }
 
-    $P{total_paid} = $amount;
+    $P{total_paid} = $amount || 0;
 
     my $member = model($c, 'Member')->create({
         person_id    => $person_id,
@@ -803,7 +841,6 @@ sub bulk_do : Local {
     }
     if ($c->request->params->{sponsor}) {
         push @memtypes, 'Sponsor';
-        push @memtypes, 'Contributing Sponsor';
         $sponsor = 1;
     }
     if ($c->request->params->{life}) {

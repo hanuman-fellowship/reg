@@ -212,6 +212,24 @@ sub numbers {
           ;
 }
 
+sub fone {
+    my ($self) = @_;
+    return $self->tel_cell || $self->tel_home || $self->tel_work;
+}
+
+sub snail {
+    my ($self) = @_;
+    my $snail = $self->addr1
+              . ($self->addr2? ' ' . $self->addr2: '')
+              . ' ' . $self->city
+              . ' ' . $self->st_prov
+              . ' ' . $self->zip_post
+              . ($self->country? ' '. $self->country: '')
+              ;
+    $snail =~ s{,m}{~}xms;
+    return $snail;
+}
+
 1;
 __END__
 overview - The person record contains all the personal information
