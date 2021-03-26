@@ -18,9 +18,11 @@ h3 {
 </span>
 [% IF Catalyst.check_user_roles('member_admin') %]
 <a href="/member/update/$member.id" accesskey='e'><span class=keyed>E</span>dit/Pay</a>
+[% IF ! member.voter %]
 &nbsp;&nbsp;&nbsp;
+<a href="/member/voter_ok/$member.id">Voter OK</a>
 [% END %]
-<a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
+[% END %]
 <p class=p2>
 <div class=red style="font-size: 14pt">
 [% cat = member.category %]

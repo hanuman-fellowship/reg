@@ -87,7 +87,7 @@ sub voter_list : Local {
     
     open my $list, ">", "/var/Reg/report/voter_list.csv"
         or die "cannot create voter_list.csv: $!\n";
-    print {$list} "Last, First, Email, Telephone, Address, Category, Voter\n";
+    print {$list} "Last, First, Voter, Email, Telephone, Address, Category\n";
     for my $m (
         map {
             $_->[1]
@@ -107,16 +107,25 @@ sub voter_list : Local {
         print {$list} join ', ',
                       $p->last,
                       $p->first,
+                      $m->voter,
                       $p->email,
                       $p->fone,
                       $p->snail,
                       $m->category,
-                      $m->voter
                       ;
         print {$list} "\n";
     }
     close $list;
     $c->response->redirect($c->uri_for("/report/show_report_file/voter_list.csv"));
+}
+
+sub voter_ok : Local {
+    my ($self, $c, $id) = @_;
+    my $m = model($c, 'Member')->find($id);
+    $m->update({
+        voter => 'yes',
+    });
+    $c->response->redirect($c->uri_for("/member/view/$id"));
 }
 
 sub list : Local {
