@@ -87,7 +87,7 @@ sub voter_list : Local {
     
     open my $list, ">", "/var/Reg/report/voter_list.csv"
         or die "cannot create voter_list.csv: $!\n";
-    print {$list} "Last, First, Voter, Email, Telephone, Address, Category\n";
+    print {$list} "Last, First, Sanskrit, Voter, Email, Telephone, Address, Category\n";
     for my $m (
         map {
             $_->[1]
@@ -107,6 +107,7 @@ sub voter_list : Local {
         print {$list} join ', ',
                       $p->last,
                       $p->first,
+                      $p->sanskrit,
                       $m->voter,
                       $p->email,
                       $p->fone,
@@ -129,9 +130,8 @@ sub voter_ok : Local {
 }
 
 sub list : Local {
-    my ($self, $c, $msg) = @_;
+    my ($self, $c, $no_lapsed) = @_;
 
-    $msg ||= "";
     my $pat = trim($c->request->params->{pat});
     my @members = ();
     if ($pat) {
@@ -167,11 +167,14 @@ sub list : Local {
                 order_by => ['person.last', 'person.first' ],
             }
         );
+        if ($no_lapsed) {
+            @members = grep { ! $_->lapsed() } @members;
+        }
     }
     my @files = <$omp_dir/*>;
     stash($c,
         pat      => $pat,
-        msg      => $msg,
+        no_lapsed => $no_lapsed,
         online   => scalar(@files),
         members  => \@members,
         template => "member/list.tt2",

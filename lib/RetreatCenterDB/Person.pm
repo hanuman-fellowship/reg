@@ -226,7 +226,7 @@ sub snail {
               . ' ' . $self->zip_post
               . ($self->country? ' '. $self->country: '')
               ;
-    $snail =~ s{,m}{~}xms;
+    $snail =~ s{,}{}xmsg;
     return $snail;
 }
 

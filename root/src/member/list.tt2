@@ -1,9 +1,7 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
-[% IF msg %]
-<span style="color: red; font-size: 20pt"> $msg</span>
-<p class=p2>
-[% END %]
+<a href="/member/list/1">No Lapsed</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/member/membership_list">Members w/\$</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/voter_list">Voter List</a>
@@ -27,6 +25,8 @@ Search <input type=text name=pat id=pat size=12 value='$pat'>
     [% ELSE %]
         Showing all members matching '$pat'.
     [% END %]
+[% ELSIF no_lapsed %]
+Showing current active members.
 [% ELSE %]
 Showing active members - including lapsed.
 [% END %]
@@ -44,7 +44,9 @@ Click on First to see person attributes.<br>
 <th align=left valign=bottom>First</th>
 <th align=left valign=bottom>Category</th>
 <th align=center valign=bottom>Expiration<br>Date</th>
+[% IF ! no_lapsed %]
 <th align=left valign=bottom>Status</th>
+[% END %]
 <th align=right valign=bottom>Total<br>Paid</th>
 <th align=right>Free<br>Nights</th>
 <th align=center>Free<br>Program</th>
@@ -66,9 +68,11 @@ Click on First to see person attributes.<br>
 [% ELSIF m.category == 'Sponsor' %]${m.date_sponsor_obj.format("%D")}
 [% END %]
 </td>
+[% IF ! no_lapsed %]
 <td>
 $m.lapsed
 </td>
+[% END %]
 <td align=right>
 [% IF m.total_paid != 0 %]
 $m.total_paid
