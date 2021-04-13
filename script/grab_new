@@ -560,6 +560,7 @@ sub process_new_hfs {
         valid_from   => $pay_date,      # ???
         valid_to     => $exp_date,
         amount       => $amount,
+        type         => 'D',        # credit
         general      => $general? 'yes': '',
         the_date     => $pay_date,      # so many dates :(
         time         => $pay_time,

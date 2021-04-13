@@ -404,6 +404,7 @@ sub update_do : Local {
             valid_from   => $valid_from,
             valid_to     => $valid_to,
             amount       => $amount,
+            type         => $pay_type,
             general      => $P{category} eq 'General' 
                             && $amount <= $string{mem_gen_amt}? 'yes': '',
             transaction_id => $transaction_id,
@@ -752,6 +753,7 @@ sub create_do : Local {
             valid_from   => $valid_from,
             valid_to     => $valid_to,
             amount       => $amount,
+            type         => $pay_type,
             general      => $P{category} eq 'General'? 'yes': '',
             transaction_id => '',
             @who_now,
