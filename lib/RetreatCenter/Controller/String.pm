@@ -220,7 +220,7 @@ sub _update_pr_max {
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
     $ftp->cwd($string{ftp_pr_dir}) or return;
     $ftp->ascii() or return;
-    $ftp->put($fn, "max_nights.txt") or return;
+    $ftp->put($fn, "max_pr.txt") or return;
     $ftp->quit();
     unlink $fn;
 }
