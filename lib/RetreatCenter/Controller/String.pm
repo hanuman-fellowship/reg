@@ -107,6 +107,9 @@ sub update_do : Local {
     elsif ($the_key eq 'pr_max_nights') {
         _update_max_nights();
     }
+    elsif ($the_key eq 'pr_max') {
+        _update_pr_max();
+    }
     elsif ($the_key eq 'online_notify') {
         # need to send this string up to mountmadonna.org
         BLOCK: {
@@ -186,6 +189,28 @@ sub _update_max_nights {
     open my $mn, ">", $fn or return;
     print {$mn} "$string{pr_max_nights}\n";
     close $mn;
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive}) or return;
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
+    $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
+    $ftp->cwd($string{ftp_pr_dir}) or return;
+    $ftp->ascii() or return;
+    $ftp->put($fn, "max_nights.txt") or return;
+    $ftp->quit();
+    unlink $fn;
+}
+
+# TODO: consolidate these subs that use ftp_pr_dir
+# we need to update the www.mountmadonna.org/pr/pr_max.txt file
+#
+sub _update_pr_max {
+    my $fn = '/tmp/pr_max.txt';
+    open my $prm, ">", $fn or return;
+    print {$prm} "$string{pr_max}\n";
+    close $prm;
     my $ftp = Net::FTP->new($string{ftp_site},
                             Passive => $string{ftp_passive}) or return;
     # thanks to jnap and haarg
