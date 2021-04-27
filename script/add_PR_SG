@@ -97,7 +97,6 @@ sub add_program {
         # and override these:
         id => undef,
         gate_code => '',
-        reg_count => 0,
     });
     if (! $sdate) {
         my $last_sdate = date($last_one->sdate());
@@ -126,6 +125,7 @@ sub add_program {
         summary_id => $new_sum->id(),
         program_created => $today_d8,
         created_by => $sahadev->id(),
+        reg_count => 0,
     });
     model($c, 'AffilProgram')->create({
         a_id => $PR_affil_id,
