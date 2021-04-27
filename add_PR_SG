@@ -1,5 +1,6 @@
 #!/bin/bash
 export DBI_DSN="dbi:mysql:reg2"
 export PERL5LIB=/var/www/cpan-lib/lib/perl5
+export PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 cd /var/www/src
 /var/www/src/script/add_PR_SG $* >>/var/Reg/output/add_PR_SG.out 2>&1 &
