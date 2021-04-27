@@ -64,8 +64,9 @@ Click on First to see person attributes.<br>
 <td><a tabindex=1 href="/person/view/$per.id">$per.first</a></td>
 <td>$m.category</td>
 <td>
-[% IF    m.category == 'General' %]${m.date_general_obj.format("%D")}
-[% ELSIF m.category == 'Sponsor' %]${m.date_sponsor_obj.format("%D")}
+[% IF    m.category == 'General'    %]${m.date_general_obj.format("%D")}
+[% ELSIF m.category == 'General_ky' %]${m.date_general_obj.format("%D")}
+[% ELSIF m.category == 'Sponsor'    %]${m.date_sponsor_obj.format("%D")}
 [% END %]
 </td>
 [% IF ! no_lapsed %]
