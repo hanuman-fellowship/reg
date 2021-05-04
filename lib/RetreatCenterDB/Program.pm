@@ -781,6 +781,11 @@ sub PR {
     $self->name() =~ m{personal\s+retreat}i; 
 }
 
+sub SG {
+    my ($self) = @_;
+    $self->name() =~ m{special\s+guest}i; 
+}
+
 #
 # not good to put this HTML and styling in the code
 # need to move the <!-- T xxx --> mechanism into the template toolkit

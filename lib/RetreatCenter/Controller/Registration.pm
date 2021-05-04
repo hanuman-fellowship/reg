@@ -1945,6 +1945,7 @@ sub send_conf : Local {
     $htdesc =~ s{\s*\(.*\)}{};           # don't need this
     $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
     my $PR = $pr->PR();
+    my $SG = $pr->SG();
     my $start = ($reg->date_start)? $reg->date_start_obj: $pr->sdate_obj;
     my $carpoolers = undef;
     if ($reg->carpool() && ! $PR) {
@@ -2028,7 +2029,7 @@ sub send_conf : Local {
         reg      => $reg,
         program  => $pr,
         prog_end => $prog_end,
-        personal_retreat => $PR,
+        personal_retreat => $PR || $SG,
         sunday   => $PR
                     && ($reg->date_start_obj->day_of_week() == 0),
         friday   => $start->day_of_week() == 5,
