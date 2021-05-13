@@ -875,7 +875,7 @@ sub _get_data {
         #
         my $edate1 = (date($dates{date_end})-1)->as_d8();
         my @prog = model($c, 'Event')->search({
-            name  => { 'regexp' => '[[:<]]No[[:>]].*[[:<]]PRs?[[:>]]' },
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>:]]' },
             sdate => { '<=', $edate1 },
             edate => { '>', $dates{date_start} },
         });
