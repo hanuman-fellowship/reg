@@ -530,6 +530,9 @@ sub image_url {
 }
 
 # make sure the local grid is current???
+# if the rental is cancelled do not include any lodging costs at all.
+# all that would be left is the deposit, yes?
+# if $invoice is set we present the invoice, otherwise no.
 sub compute_balance {
     my ($rental, $invoice) = @_;
 
@@ -621,6 +624,9 @@ sub compute_balance {
                      + $start_charge
                      + $end_charge
                      ;
+    if ($rental->cancelled()) {
+        $tot2_charges = 0;
+    }
 
     my $tot_payments = 0;
     for my $p ($rental->payments()) {

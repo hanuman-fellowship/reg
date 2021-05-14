@@ -683,6 +683,7 @@ sub list : Local {
             # past due ones first
             model($c, 'Rental')->search(
                 {   
+                    #cancelled => '',
                     edate => { '<', $today },
                     status => 'due',
                 },
