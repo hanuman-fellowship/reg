@@ -756,8 +756,13 @@ my $tot_prog_days;
 my $prog_days;
 my $extra_days;
 
+#
+# if this is a form to *update* an existing Personal Retreat registration
+# we don't check for No PR events.  That was checked (or not, if overridden)
+# during the creation of the registration.
+#
 sub _get_data {
-    my ($c) = @_;
+    my ($c, $existing_reg) = @_;
 
     %P = %{ $c->request->params() };
     my $prog = model($c, 'Program')->find($P{program_id});
@@ -868,7 +873,7 @@ sub _get_data {
 #
     return if @mess;
 
-    if ($PR) {
+    if ($PR && ! $existing_reg && ! $P{override_no_pr}) {
         #
         # is there an event named "No PR" with some overlap with
         # this registration?
@@ -3275,7 +3280,7 @@ sub conf_history : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    _get_data($c);
+    _get_data($c, 1);
     if (@mess) {
         error($c,
             join("<br>", @mess),
