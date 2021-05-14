@@ -393,7 +393,12 @@ sub seminar_house {
 
 sub balance_disp {
     my ($self) = @_;
-    commify($self->balance());
+    my $bal = $self->balance();
+    my $cbal = commify($bal);
+    if ($bal < 0) {
+        return "<span style='color: red'>$cbal</span>";
+    }
+    return $cbal;
 }
 
 sub send_grid_data {
