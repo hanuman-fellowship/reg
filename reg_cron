@@ -58,7 +58,7 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 0 1 * * 2 $REG/gate
 
 # at 1:05 am every morning send guest packets to people arriving in 48 hours.
-5 1 * * * $REG/packet48
+#5 1 * * * $REG/packet48
 
 # at 2:00 am every morning send json files to reservations machine
 0 2 * * * $REG/reserve_today
