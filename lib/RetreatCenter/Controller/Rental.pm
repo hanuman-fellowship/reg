@@ -1719,7 +1719,7 @@ sub contract : Local {
         \$preface,           # output
     ) or die "error in processing template: "
              . $tt->error();
-    my $rental_name = $rental->name_trimmed;
+    my $rental_name = $rental->name_trimmed(1);
     my $contract = "/tmp/$rental_name MMC Rental Contract.html";
     open my $out, '>', $contract or return;   # what to do??
     print {$out} $html;

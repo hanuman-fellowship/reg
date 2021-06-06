@@ -695,9 +695,14 @@ sub compute_balance {
 }
 
 sub name_trimmed {
-    my ($self) = @_;
+    my ($self, $for_filename) = @_;
     my $name = $self->name;
     $name =~ s{\s* \d+/\d+ \s* \z}{}xms;
+    if ($for_filename) {
+        # if a name has a slash it makes for trouble
+        # when using name_trimmed for a filename.
+        $name =~ s{\W}{-}xmsg;
+    }
     $name;
 }
 
