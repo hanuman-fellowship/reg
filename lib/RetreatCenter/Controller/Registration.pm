@@ -1938,7 +1938,7 @@ sub send_conf : Local {
         return;
     }
     # no need for a gate code if program is ONLINE...
-    if (! $pr->housing_not_needed() && empty($pr->summary->gate_code())) {
+    if (! $pr->housing_not_needed() && empty($pr->gate_code())) {
         error($c,
               "Sorry, cannot send confirmation letter because<br>"
               . $pr->name() . " needs a gate code!",

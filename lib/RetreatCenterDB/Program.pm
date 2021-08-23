@@ -786,6 +786,12 @@ sub SG {
     $self->name() =~ m{special\s+guest}i; 
 }
 
+sub gate_code {
+    my ($self) = @_;
+    return $self->rental_id? $self->rental->summary->gate_code()
+          :                  $self->summary->gate_code();
+}
+
 #
 # not good to put this HTML and styling in the code
 # need to move the <!-- T xxx --> mechanism into the template toolkit

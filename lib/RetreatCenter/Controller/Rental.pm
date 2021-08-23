@@ -2001,9 +2001,11 @@ sub duplicate : Local {
         summary_id => 0,
 
         contract_sent     => "",
-        contract_received => "",
         sent_by           => "",
+        contract_received => "",
         received_by       => "",
+        arrangement_sent  => "",
+        arrangement_by    => "",
         grid_code         => "",
     });
     stash($c,
