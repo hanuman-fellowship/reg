@@ -236,7 +236,7 @@
          [% END %]
       <h2>Gate Code</h2>
       <p>
-         [% gc = program.summary.gate_code %]
+         [% gc = program.gate_code %]
          If you arrive in the evening and the gate is closed, you can open it
          by entering this code in the keypad: #${gc}. That's POUND ${gc}.
          Press the five keys firmly and without any pauses or it will not work.
