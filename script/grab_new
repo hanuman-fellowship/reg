@@ -56,6 +56,8 @@ them into actual payments.
 
 10) Get new HFS memberships
 
+11) Get any new COVID vaccinations and affix them to the person
+
 =end
 
 =cut
@@ -117,8 +119,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 my ($online, $grid, $temple, $mlist_done, $meal_requests_done,
     $gift_cards_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
-    $new_hfs_dir,
-    $temple_donation);
+    $new_hfs_dir, $temple_donation, $covid_vax_dir);
 my $time_printed = 0;
 
 sub msg {
@@ -225,7 +226,8 @@ sub initialize {
     $omp_dir         = make_dir("$dir/omp");
     $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
     $temple_donation = make_dir("$dir/temple_donation");
-    $new_hfs_dir     = make_dir ("$dir/new_hfs/$year_mon_dir");
+    $new_hfs_dir     = make_dir("$dir/new_hfs/$year_mon_dir");
+    $covid_vax_dir   = make_dir("$dir/documents");
 }
 
 sub finalities {
@@ -936,6 +938,29 @@ sub process_gift_cards {
       ;
 }
 
+# the filename is "$person_id.suffix"
+# in the /var/Reg/documents directory.
+# we prepend 'covid_vax' to differentiate these files
+# from other documents.
+sub process_covid_vax {
+    my ($get_dir, $f) = @_;
+    my ($person_id) = $f =~ m{\A (\d+)}xms;
+    my $cf = "covid_vax_$f";
+    rename "$get_dir/$f", "$get_dir/$cf";
+    my $person = model($c, 'Person')->find($person_id);
+    $person->update(
+        covid_vax => $cf,
+    );
+    my $person_name = $person->name;
+    email_letter(
+        to      => 'jon.bjornstad@gmail.com',    # to registrar instead???
+        subject => 'COVID-19 Vaccination Card',
+        html    => 'Got card for $person_name',
+        activity_msg => "Received COVID-19 Vaccination card for"
+                      . " <a href='/person/view/$person_id'>$person_name</a>",
+    );
+}
+
 #
 # obsolete - stopped doing this at some point...
 #
@@ -1082,6 +1107,10 @@ sub main {
     # Gift Cards
     get_files($ftp, $string{ftp_gift_cards_dir},
               $gift_cards_done, \&process_gift_cards);
+
+    # COVID-19 Vaccinations
+    get_files($ftp, $string{ftp_covid_vax_dir},
+              $covid_vax_dir, \&process_covid_vax);
 
     $ftp->quit();   # all done with MMC
 

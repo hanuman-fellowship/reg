@@ -49,6 +49,7 @@ use LWP::Simple;
 use Template;
 use Data::Dumper;
 use Net::FTP;
+use File::Basename 'fileparse';
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -607,6 +608,21 @@ sub update_do : Local {
         if (defined $type && $type eq 'temple') {
             @temple = (temple_id => $fname);
         }
+    }
+    delete $hash{covid_file};
+    my $covid_vax_card = $c->request->upload('covid_file');
+    if ($covid_vax_card) {
+        my $fname = $covid_vax_card->filename();
+        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
+
+        $fname = "covid_vax_$id$suffix";
+        $hash{covid_vax} = $fname;
+        my $full_fname = "/var/Reg/documents/$fname";
+        $covid_vax_card->copy_to($full_fname);
+        # resize the large picture to a width of 1000 pixels
+        # and compress it a bit
+        system "convert -resize 1000 $full_fname /tmp/$fname";
+        system "convert -strip -interlace Plane -quality 65% /tmp/$fname $full_fname";
     }
     $p->update({
         %hash,
@@ -1805,5 +1821,16 @@ sub get_gender : Local {
     $c->res->output($rc);
     return;
 }
+
+sub del_covid_vax : Local {
+    my ($self, $c, $per_id) = @_;
+    my $per = model($c, 'Person')->find($per_id);
+    unlink '/var/Reg/documents/' . $per->covid_vax;
+    $per->update({
+        covid_vax => '',
+    });
+    $c->response->redirect($c->uri_for("/person/view/$per_id"));
+}
+
 
 1;

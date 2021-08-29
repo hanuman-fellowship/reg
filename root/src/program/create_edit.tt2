@@ -191,6 +191,7 @@ $level_opts
 <tr><th align=right>Children Welcome</th><td><input type=checkbox value=yes name=children_welcome $check_children_welcome></td></tr>
 <tr><th align=right>Retreat</th><td><input type=checkbox value=yes name=retreat $check_retreat></td></tr>
 <tr><th align=right>Waiver Needed</th><td><input type=checkbox value=yes name=waiver_needed $check_waiver_needed></td></tr>
+<tr><th align=right>COVID Vaccination Required</th><td><input type=checkbox value=yes name=covid_vax $check_covid_vax></td></tr>
 <tr><th align=right>Not on Calendar</th><td><input type=checkbox value=yes name=not_on_calendar $check_not_on_calendar></td></tr>
 <tr><th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th><td><input type=checkbox value=yes name=tub_swim $check_tub_swim></td></tr>
 <th align=right>Notify on Reg</th>

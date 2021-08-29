@@ -44,6 +44,7 @@ __PACKAGE__->add_columns(qw/
     temple_id
     waiver_signed
     only_temple
+    covid_vax
 /);
 # didn't work??? - check_doc complains as well...
 #__PACKAGE__->add_columns(
@@ -245,6 +246,13 @@ addr2 - optional second line of address
 akey - a computed key used for address unduplication
 city - city
 comment - arbitrary length comment about the person
+covid_vax - Is there a COVID vaccination card uploaded?
+    If so, it is located at:
+        /var/Reg/documents/covid_vax_$id.suffix
+    where $id is the id column of the person
+    and with some image suffix like .jpg or .gif or .png
+    The value of the column is the filename in that directory.
+    This is like a boolean - false if empty
 country - country
 date_entrd - date this person's record was first entered
 date_updat - last date the record was updated

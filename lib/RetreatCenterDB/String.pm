@@ -194,6 +194,8 @@ extra_hours_charge - how many $'s to charge per person per hour of extra time fo
 from - email address that emails are sent From.
 from_title - name of the person that emails are From.
 ftp_calendar_dir - the directory on mmc.org for the public calendar images, index.html
+ftp_covid_vax_dir - the directory on mmc.org where the 
+    COVID-19 vaccinations will be placed for download by grab_new.
 ftp_dir - FTP info for mountmadonna.org
 ftp_dir2 - FTP info for mountmadonna.org - staging directory
 ftp_export_site - text describing where things were exported

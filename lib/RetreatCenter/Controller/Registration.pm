@@ -2047,6 +2047,7 @@ sub send_conf : Local {
         registrar_email => $string{registrar_email},
         pre_payment_link => $pre_pay_link,
         cancel_policy => $cancel_policy,
+        covid_vax => $pr->covid_vax && ! $reg->person->covid_vax,
     };
     my $html = "";
     my $tt = Template->new({
@@ -2915,7 +2916,7 @@ EOH
     my $class = "fl_row0";
     my $prev_name = "";
     for my $reg (@$reg_aref) {
-        # look up the program record and remember it
+        # here we look up the program record and remember it
         # in a cache for the next time.
         #
         my $pr;
@@ -3012,7 +3013,12 @@ EOH
         }
         my $comment = $reg->comment;
         if ($comment && $comment =~ m{outstanding\s+balance}xmsi) {
+            # in front
             $mark = "<span class=outbal>O</span> $mark";
+        }
+        if ($pr->covid_vax && ! $per->covid_vax) {
+            # in front
+            $mark = "<span class=covid>V</span> $mark";
         }
         if ($show_arrived
             && $reg->arrived() eq 'yes'

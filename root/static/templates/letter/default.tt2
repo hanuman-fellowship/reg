@@ -189,6 +189,18 @@
          The attached file contains a housing map, yoga class and meal schedules, and other important details about our facilities. You may want to download and/or print this file prior to your arrival.
          Please read on to prepare for your stay on our beautiful mountain! 
       </div>
+      [% IF covid_vax %]
+        <h2>COVID-19 Vaccination</h2>
+        To stay at Mount Madonna Center it is 
+        required that you be fully vaccinated against COVID-19.  We need you 
+        to upload an image of your vaccination card.
+        You can do this in two ways:
+        <ol>
+        <li>Send us <a href="mailto:registrar@mountmadonna.org?subject=COVID Vaccination Card for $person.name in $program.title">an email</a>
+        and attach the image.
+        <li>Follow <a href='https://mountmadonna.org/cgi-bin/covid_vax?reg_id=$reg.id&name=$person.name&program=$program.title'>this link</a> and upload the image.
+        </ol>
+      [% END %]
       <p>
          [% IF    reg.confnote_not_empty
          || program.confnote_not_empty

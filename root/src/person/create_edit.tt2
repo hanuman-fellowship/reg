@@ -31,7 +31,10 @@ function get_gender() {
 </script>
 <h2>People</h2>
 <!-- this form doubles as an update and as a create form. -->
-<form action=[% "/person/" _ form_action %] name=form method=post>
+<form action=[% "/person/" _ form_action %] 
+      name=form method=post
+      enctype="multipart/form-data"
+>
 <input type=hidden name=fname value=$fname>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
 
@@ -122,6 +125,13 @@ function get_gender() {
 <td><input tabindex=12 type=checkbox name=waiver_signed
            value="yes" $waiver_signed></td>
 </tr>
+
+[% IF ! person.covid_vax %]
+<tr>
+<th align=right>COVID<br>Vaccination Card</th>
+<td><input type=file name=covid_file></td>
+</tr>
+[% END %]
 
 <tr>
 <th align=right valign=top>Mailings</th>

@@ -233,6 +233,7 @@ sub _get_data {
         not_on_calendar
         tub_swim
         waiver_needed
+        covid_vax
         manual_reg_finance
         housing_not_needed 
     /) {
@@ -910,7 +911,7 @@ sub update : Local {
         children_welcome
         retreat
         economy commuting webready linked do_not_compute_costs
-        not_on_calendar tub_swim waiver_needed housing_not_needed
+        not_on_calendar tub_swim waiver_needed covid_vax housing_not_needed
         manual_reg_finance
     /) {
         stash($c,
@@ -1322,6 +1323,7 @@ sub gen_progtable {
                 prog_start
                 prog_end
                 waiver_needed
+                covid_vax
                 manual_reg_finance
                 housing_not_needed
                 kayakalpa

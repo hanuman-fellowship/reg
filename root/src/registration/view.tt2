@@ -167,6 +167,8 @@ onmouseover="return overlib('<a href=/registration/receipt/$id/email>Email</a><p
 ([% IF reg.status %]<span class=red>$reg.status</span> member - [% END %]$person.sex_disp)
 [% IF reg.cancelled %]
 <span class=cancel>Canceled</span>
+[% ELSIF program.covid_vax && ! person.covid_vax %]
+<span class=covid>Needs COVID Vaccination Card</span>&nbsp;
 [% END %]
 [% IF PR || reg.date_start != program.sdate %] <span class=arr_lv>Arrive $reg.date_start_obj <span class=dow>${reg.date_start_obj.format("%a")}</span></span>
 [% END %]

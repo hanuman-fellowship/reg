@@ -2493,8 +2493,18 @@ sub add_activity {
     });
 }
 
+#
+# Alternate guest packet files can't be the
+# same name as a standard fixed file.  And we need
+# to protect against collisions with program Files as well.
+#
 sub fixed_document {
     my ($fname) = @_;
+    if ($fname =~ m{\A \d+[.]}xms || $fname =~ m{\A covid_vax}xms) {
+        # this might conflict with a program File.
+        # or a covid vaccination
+        return 0;
+    }
     for my $f (values %RetreatCenter::Controller::Configuration::file_named) {
         if ($fname eq $f) {
             return 1;

@@ -429,7 +429,9 @@ none
 
 <tr>
 <th align=right>Alternate Guest Packet</th>
-<td colspan=2 valign=top><a href='/rental/del_alt_packet/$id' onclick="return confirm('Okay to Delete \'$rental.alt_packet\'?');">$rental.alt_packet</a></td>
+[% IF rental.alt_packet %]
+<td colspan=2 valign=top><a target=_blank href='/rental/show_file/$rental.alt_packet'>$rental.alt_packet</a>&nbsp;&nbsp;<a href='/rental/del_alt_packet/$id' onclick="return confirm('Okay to Delete \'$rental.alt_packet\'?');"><img src='/static/images/redX.gif' height=20></a></td>
+[% END %]
 </tr>
 
 <!--

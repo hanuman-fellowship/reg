@@ -20,6 +20,8 @@ Table: people
 <dd>city</dd>
 <dt>comment</dt>
 <dd>arbitrary length comment about the person</dd>
+<dt>covid_vax</dt>
+<dd>Is there a COVID vaccination card uploaded? If so, it is located at: /var/Reg/documents/covid_vax_$id.suffix where $id is the id column of the person and with some image suffix like .jpg or .gif or .png The value of the column is the filename in that directory. This is like a boolean - false if empty</dd>
 <dt>country</dt>
 <dd>country</dd>
 <dt>date_entrd</dt>

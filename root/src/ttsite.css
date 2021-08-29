@@ -73,6 +73,11 @@ body {
     color: white;
     background-color: red;
 }
+.covid {
+    color: white;
+    background-color: black;
+    font-size: 18pt;
+}
 .greyed {
     color: #bbbbbb;
     margin-left: 5mm;

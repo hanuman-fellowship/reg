@@ -147,6 +147,18 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <th align=right valign=top>Waiver Signed</th>
 <td valign=top>$person.waiver_signed</td>
 </tr>
+<tr>
+<th align=right>COVID<br>Vaccination Card</th>
+<td>
+[% IF person.covid_vax %]
+<a target=_blank href='/rental/show_file/$person.covid_vax'>View</a>
+&nbsp; &nbsp;&nbsp;
+<a href='/person/del_covid_vax/$id' onclick="return confirm('Okay to Delete COVID Vaccination Card?');">Delete</a>
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
+</tr>
 
 [% IF person.deceased || person.inactive %]
 <tr>

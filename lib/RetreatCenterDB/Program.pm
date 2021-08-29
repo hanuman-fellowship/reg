@@ -99,6 +99,7 @@ __PACKAGE__->add_columns(qw/
     donation_minimum
     donation_zero_msg
     donation_tiers
+    covid_vax
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -842,6 +843,7 @@ collect_total - Should we collect the total amount due when registering online?
 color - RGB values for the color of the program in the DailyPic.
 commuting - Are people allowed to commute for this program?
 confnote - A note that is included in ALL confirmation notes.
+covid_vax - Is proof of a COVID vaccination required?
 created_by - the user who created the program - foreign key to user
 deposit - the amount required to deposit when registering.
 dncc_why - an obsolete field
