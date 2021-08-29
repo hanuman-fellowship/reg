@@ -1,5 +1,5 @@
 alter table program add column covid_vax varchar(3) not null default '';
 alter table people add column covid_vax varchar(256) not null default '';
 insert into string (the_key, value) values
-    ('ftp_covid_vax_dir', '/home/reg/for_reg/covid_vax')
+    ('ftp_covid_vax_dir', '/for_reg/covid_vax')
     ;
