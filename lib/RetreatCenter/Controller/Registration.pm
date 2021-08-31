@@ -470,7 +470,7 @@ EOH
         my ($suffix) = $href->{covid_vax} =~ m{[.]([a-z]+)\z}xms;
         my $new_name = "covid_vax_" . $person->id . ".$suffix";
         rename "$docs/covid_vax_$href->{covid_vax}",
-               $new_name;
+               "$docs/$new_name";
         $person->update({
             covid_vax => $new_name,
         });
