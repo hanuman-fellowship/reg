@@ -2313,6 +2313,7 @@ sub PR_progtable {
         leader_names  => '',
         name          => 'Personal Retreat',
         canpol        => $currPR->cancellation_policy(),
+        covid_vax     => $currPR->covid_vax(),
         plink         => 'http://www.mountmadonna.org/personal',
         image1        => '',
         image2        => '',
