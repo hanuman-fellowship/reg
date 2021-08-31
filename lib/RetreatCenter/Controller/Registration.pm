@@ -443,8 +443,14 @@ EOH
     #
     # if there is a COVID vaccination file attach it to the Person record
     #
-    if ($href->{covid_vax}) {
-        my $docs = '/var/Reg/documents';
+    my $docs = '/var/Reg/documents';
+    #
+    # Note: we may have started to bring this online registration in
+    # but aborted it before completion.  in this case we have
+    # already gotten the person and attached the covid card.
+    # and the file would have been renamed...
+    #
+    if ($href->{covid_vax} && -e "$docs/$href->{covid_vax}") {
         #
         # $href->{covid_vax} is the name of a file
         # in $docs which we got via a previous grab_new.
