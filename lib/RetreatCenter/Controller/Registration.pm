@@ -441,6 +441,42 @@ EOH
     my ($person_id, $person, $status) = add_or_update_deduping($c, $href);
 
     #
+    # if there is a COVID vaccination file attach it to the Person record
+    #
+    if ($href->{covid_vax}) {
+        my $docs = '/var/Reg/documents';
+        #
+        # $href->{covid_vax} is the name of a file
+        # in $docs which we got via a previous grab_new.
+        # it came in with the same grab_new invocation as this online
+        # registration did.
+        #
+        # first ... there may already be a vaccination card image
+        # in the Person record from a previous registration.
+        # delete it.
+        #
+        if ($person->covid_vax()) {
+            unlink "$docs/" . $person->covid_vax();
+        }
+        #
+        # this is messy.  redesign?
+        # note that we have (in grab_new) prepended 'covid_vax_'
+        # to the filename in /var/Reg/documents.  Also note that
+        # the filename is covid_vax_FIRST_LAST_TIME.suffix.
+        # Now that we have a person and their $id, let's change that
+        # name to covid_vax_${person_id}.suffix to be consistent with
+        # the other ways we get a covid vax card.
+        #
+        my ($suffix) = $href->{covid_vax} =~ m{[.]([a-z]+)\z}xms;
+        my $new_name = "covid_vax_" . $person->id . ".$suffix";
+        rename "$docs/covid_vax_$href->{covid_vax}",
+               $new_name;
+        $person->update({
+            covid_vax => $new_name,
+        });
+    }
+
+    #
     # various fields from the online file make their way
     # into the stash...
     if ($href->{progchoice} eq 'full') {

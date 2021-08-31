@@ -57,6 +57,8 @@ them into actual payments.
 10) Get new HFS memberships
 
 11) Get any new COVID vaccinations and affix them to the person
+    or just get them for later use when an online registration
+    is "brought in".
 
 =end
 
@@ -944,9 +946,16 @@ sub process_gift_cards {
 # from other documents.
 sub process_covid_vax {
     my ($get_dir, $f) = @_;
-    my ($person_id) = $f =~ m{\A (\d+)}xms;
     my $cf = "covid_vax_$f";
     rename "$get_dir/$f", "$get_dir/$cf";
+    my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
+    if (! $person_id) {
+        # the file is named "FIRST_LAST_TIME.suffix"
+        # because it was uploaded during an online registration.
+        # just get the file (in $get_dir) for later use
+        # when the registration is "brought in".
+        return;
+    }
     my $person = model($c, 'Person')->find($person_id);
     $person->update({
         covid_vax => $cf,
