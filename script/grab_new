@@ -948,19 +948,26 @@ sub process_covid_vax {
     my ($get_dir, $f) = @_;
     my $cf = "covid_vax_$f";
     rename "$get_dir/$f", "$get_dir/$cf";
+    my $person_name;
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
     if (! $person_id) {
+        #
         # the file is named "FIRST_LAST_TIME.suffix"
         # because it was uploaded during an online registration.
         # just get the file (in $get_dir) for later use
         # when the registration is "brought in".
-        return;
+        # extract the person name from the filename
+        #
+        ($person_name) = $f =~ m{\A (.*)_\d+[.]}xms;
+        $person_name =~ s{_}{ }xmsg;
     }
-    my $person = model($c, 'Person')->find($person_id);
-    $person->update({
-        covid_vax => $cf,
-    });
-    my $person_name = $person->name;
+    else {
+        my $person = model($c, 'Person')->find($person_id);
+        $person->update({
+            covid_vax => $cf,
+        });
+        $person_name = $person->name;
+    }
     email_letter($c,
         to      => 'jon.bjornstad@gmail.com',    # to registrar instead???
         from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
