@@ -206,7 +206,7 @@ $level_opts
 <tr>
 <th align=right>End Reg Date Time</th>
 <td><input type=text value='$program.end_reg_date_time' name=end_reg_date_time size=20>
-&nbsp;&nbsp;<span style="color: green">mm/dd/yyyy hh:mm</span>
+&nbsp;&nbsp;mm/dd/yyyy hh:mm<span style="color: green">&nbsp;&nbsp;(24 hour time)</span>
 </td>
 </tr>
 
