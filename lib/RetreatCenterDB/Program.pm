@@ -100,6 +100,7 @@ __PACKAGE__->add_columns(qw/
     donation_zero_msg
     donation_tiers
     covid_vax
+    end_reg_date_time
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -857,6 +858,8 @@ donation_zero_msg - If there is not minimum and someone pays nothing
 do_not_compute_costs - Should we not compute the costs of this program?
 economy - Is Economy housing available?
 edate - end date of the program
+end_reg_date_time - format: mm/dd/yyyy hh:mm - after what date/time should
+    registrations be closed?
 extradays - How many extra days after the end date for the extended version
     of this program?
 facebook_event_id - an id referencing the event on facebook.  not a foreign key.
@@ -877,6 +880,8 @@ linked - Shall this program's web page be linked to the others?
 lunches - An encoded (essentially binary) field describing which days of the program have lunch.
 manual_reg_finance - registrations will initially have manual finance not automatic
 max - What is the expected maximum registrations for the program?
+    This number of registrations will be enforced.  After it is
+    reached registrations will be closed.
 name - A name for the program - used internally for identification.
 not_on_calendar - Should this program not be included on the calendar?
     Default no (meaning yes include).

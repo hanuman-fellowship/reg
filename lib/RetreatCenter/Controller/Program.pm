@@ -417,8 +417,27 @@ sub _get_data {
 
     $P{confnote} = cf_expand($c, $P{confnote});
 
-    if (! empty($P{max}) && $P{max} !~ m{^\s*\d+\s*$}) {
+    if (! empty($P{max})
+        && $P{max} !~ m{^\s*\d+\s*$}
+    ) {
         push @mess, "Max must be an integer";
+    }
+    if (! empty($P{end_reg_date_time})) { 
+        if (my ($d, $t) = $P{end_reg_date_time} =~ m{
+            \A \s* (\d\d/\d\d/\d\d\d\d) \s+ (\d\d:\d\d) \s* \z
+           }xms
+        ) {
+            date($d);
+            if (! date($d)) {
+                push @mess, "Invalid Date for End Reg Date Time";
+            }
+            elsif (! get_time($t)) {
+                push @mess, "Invalid Time for End Reg Date Time";
+            }
+        }
+        else {
+            push @mess, "Invalid End Reg Date Time format: mm/dd/yyyy hh:mm";
+        }
     }
     if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
         push @mess, "The GL Number must only contain digits and upper case letters.";
@@ -1328,6 +1347,8 @@ sub gen_progtable {
                 housing_not_needed
                 kayakalpa
                 children_welcome
+                max
+                end_reg_date_time
             ),
         };
     }

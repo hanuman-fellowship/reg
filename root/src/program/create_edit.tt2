@@ -204,6 +204,13 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right>End Reg Date Time</th>
+<td><input type=text value='$program.end_reg_date_time' name=end_reg_date_time size=20>
+&nbsp;&nbsp;<span style="color: green">mm/dd/yyyy hh:mm</span>
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Conf Template</th>
 <td valign=top>
 <select name=cl_template>

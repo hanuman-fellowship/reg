@@ -1,0 +1,1 @@
+alter table program add column end_reg_date_time varchar(20) not null default '';
