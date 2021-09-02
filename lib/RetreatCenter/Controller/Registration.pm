@@ -78,6 +78,7 @@ use List::Util qw/
 /;
 
 my $rst = "/var/Reg";
+my $cgi = "https://www.mountmadonna.org/cgi-bin";
 
 my $TYPE_TUITION           = 1;
 my $TYPE_MEALS_AND_LODGING = 2;
@@ -2498,6 +2499,24 @@ sub cancel : Local {
     );
 }
 
+#
+# add or remove the record in the
+# prog_registrations table on mountmadonna.org
+#
+sub _prog_reg {
+    my ($action, $prog_id, $reg) = @_;
+
+    my $per = $reg->person();
+    my $first = $per->first();
+    my $last = $per->last();
+    for ($first, $last) {
+        s{[ ]}{+}xmsg;
+    }
+    system "/usr/bin/curl -k $cgi/prog_reg?action=$action&"
+         . "prog_id=$prog_id&first=$first&last=$last"
+         . " 2>/dev/null";
+}
+
 sub cancel_do : Local {
     my ($self, $c, $id, $mmi) = @_;
 
@@ -2531,6 +2550,7 @@ sub cancel_do : Local {
         $reg->update({
             cancelled => 'yes',
         });
+
         # decrement the reg_count in the program record
         #
         my $prog_id   = $reg->program_id;
@@ -2538,6 +2558,10 @@ sub cancel_do : Local {
         $pr->update({
             reg_count => \'reg_count - 1',
         });
+
+        _prog_reg('del', $prog_id, $reg);
+
+        #
         # give credit
         #
         if (! $mmi && $credit_amount) {
@@ -6177,6 +6201,8 @@ sub uncancel : Local {
     $pr->update({
         reg_count => \'reg_count + 1',
     });
+
+    _prog_reg('add', $prog_id, $reg);
 
     # add reg history record
     _reg_hist($c, $reg_id, "UNcancelled");
