@@ -1040,7 +1040,8 @@ sub create_do : Local {
         );
         return;
     }
-    my $pr = model($c, 'Program')->find($P{program_id});
+    my $prog_id = $P{program_id};
+    my $pr = model($c, 'Program')->find($prog_id);
     if ($pr->glnum() =~ m{XX}xms) {
         error($c,
             "The GL Number has not yet been assigned.",
@@ -1058,7 +1059,7 @@ sub create_do : Local {
     if ((! $pr->allow_dup_regs())
         && (@reg = model($c, 'Registration')->search({
                            person_id  => $P{person_id},
-                           program_id => $pr->id(),
+                           program_id => $prog_id,
                   })
            )
     ) {
@@ -1107,7 +1108,7 @@ sub create_do : Local {
     _check_spelling($c, $newnote);
     my $reg = model($c, 'Registration')->create({
         person_id     => $P{person_id},
-        program_id    => $P{program_id},
+        program_id    => $prog_id,
         deposit       => $P{deposit} || 0,
         date_postmark => $P{date_postmark},
         time_postmark => $P{time_postmark},
@@ -1146,6 +1147,13 @@ sub create_do : Local {
         $pr->update({
             reg_count => $pr->reg_count + 1,
         });
+    }
+    if (exists $P{fname} && $P{fname} eq '') {
+        # a manual registration
+        # tell mountmadonna.org about it so we can enforce
+        # a maximum cap on registrations.
+        #
+        _prog_reg('add', $reg);
     }
 
     my $reg_id = $reg->id();
@@ -2504,17 +2512,12 @@ sub cancel : Local {
 # prog_registrations table on mountmadonna.org
 #
 sub _prog_reg {
-    my ($action, $prog_id, $reg) = @_;
-
-    my $per = $reg->person();
-    my $first = $per->first();
-    my $last = $per->last();
-    for ($first, $last) {
-        s{[ ]}{+}xmsg;
-    }
-    system "/usr/bin/curl -k $cgi/prog_reg?action=$action&"
-         . "prog_id=$prog_id&first=$first&last=$last"
-         . " 2>/dev/null";
+    my ($action, $reg) = @_;
+    my $prog_id = $reg->program->id();
+    my $name = $reg->person->name();
+    system "/usr/bin/curl -k '$cgi/prog_reg?action=$action"
+         . "&prog_id=$prog_id&name=$name"
+         . "' 2>/dev/null";
 }
 
 sub cancel_do : Local {
@@ -2559,7 +2562,7 @@ sub cancel_do : Local {
             reg_count => \'reg_count - 1',
         });
 
-        _prog_reg('del', $prog_id, $reg);
+        _prog_reg('del', $reg);
 
         #
         # give credit
@@ -2597,7 +2600,6 @@ sub cancel_do : Local {
               :                 " - No credit given.")))
         );
     }
-
 
     # return any assigned housing to the pool
     #
@@ -3685,8 +3687,10 @@ sub delete : Local {
     # decrement the regcount
     # unless this registration was cancelled
     # or this is a duplicated registration (but not a PR).
+    # what is a 'duplicated registration'?
     #
     if (!($reg->cancelled() || (@other_reg && ! $reg->program->PR()))) {
+        _prog_reg('del', $reg);
         model($c, 'Program')->find($prog_id)->update({
             reg_count => \'reg_count - 1',
         });
@@ -6202,7 +6206,7 @@ sub uncancel : Local {
         reg_count => \'reg_count + 1',
     });
 
-    _prog_reg('add', $prog_id, $reg);
+    _prog_reg('add', $reg);
 
     # add reg history record
     _reg_hist($c, $reg_id, "UNcancelled");
