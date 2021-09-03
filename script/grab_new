@@ -966,15 +966,18 @@ sub process_covid_vax {
         $person->update({
             covid_vax => $cf,
         });
-        $person_name = $person->name;
+        $person_name = "<a href='/person/view/$person_id'>"
+                     . $person->name
+                     . "</a>"
+                     ;
     }
     email_letter($c,
-        to      => 'jon.bjornstad@gmail.com',    # to registrar instead???
+        #to      => 'jon.bjornstad@gmail.com',    # to registrar instead???
+        to      => 'vm@mountmadonna.org, quincy@mountmadonna.org, jon.bjornstad@gmail.com',   # make a new string! TODO
         from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
         subject => 'COVID-19 Vaccination Card',
         html    => "Got COVID-19 vaccination card for $person_name",
-        activity_msg => "Received COVID-19 Vaccination card for"
-                      . " <a href='/person/view/$person_id'>$person_name</a>",
+        activity_msg => "Received COVID-19 Vaccination card for $person_name.",
     );
 }
 
