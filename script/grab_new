@@ -970,7 +970,7 @@ sub process_covid_vax {
     }
     $person_name = "<a href='https://akash.mountmadonna.org"
                  . "/rental/show_file/$cf'>"
-                 "$person_name</a>"
+                 . "$person_name</a>"
                  ;
     email_letter($c,
         to      => $string{covid_notify},
