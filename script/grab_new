@@ -950,7 +950,14 @@ sub process_covid_vax {
     rename "$get_dir/$f", "$get_dir/$cf";
     my $person_name;
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
-    if (! $person_id) {
+    if ($person_id) {
+        my $person = model($c, 'Person')->find($person_id);
+        $person->update({
+            covid_vax => $cf,
+        });
+        $person_name = $person->name;
+    }
+    else {
         #
         # the file is named "FIRST_LAST_TIME.suffix"
         # because it was uploaded during an online registration.
@@ -961,19 +968,12 @@ sub process_covid_vax {
         ($person_name) = $f =~ m{\A (.*)_\d+[.]}xms;
         $person_name =~ s{_}{ }xmsg;
     }
-    else {
-        my $person = model($c, 'Person')->find($person_id);
-        $person->update({
-            covid_vax => $cf,
-        });
-        $person_name = "<a href='/person/view/$person_id'>"
-                     . $person->name
-                     . "</a>"
-                     ;
-    }
+    $person_name = "<a href='https://akash.mountmadonna.org"
+                 . "/rental/show_file/$cf'>"
+                 "$person_name</a>"
+                 ;
     email_letter($c,
-        #to      => 'jon.bjornstad@gmail.com',    # to registrar instead???
-        to      => 'vm@mountmadonna.org, quincy@mountmadonna.org, jon.bjornstad@gmail.com',   # make a new string! TODO
+        to      => $string{covid_notify},
         from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
         subject => 'COVID-19 Vaccination Card',
         html    => "Got COVID-19 vaccination card for $person_name",

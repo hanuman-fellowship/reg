@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 package RetreatCenterDB::String;
+use lib "..";  # so can do perl -c here
 
 use base qw/DBIx::Class/;
 use HTML::Entities 'encode_entities';
@@ -127,7 +128,10 @@ ceu_lic_fee - how much to charge for issuing a ceu certificate?
 click_enlarge - the text to display to tell the user that they can click to enlarge
     a picture of the presenter in a program web page.
 commuting - the display name for the housing type 'commuting'
-costhdr - the display name for housing cost when there are no extra days in the program
+costhdr - the display name for housing cost
+    when there are no extra days in the program
+covid_notify - Who to alert (by email) when a 
+    COVID-19 Vaccination card is uploaded?
 credit_amount - when cancelling a registration in an MMC program this is
     the default amount of credit the person will receive.
 credit_nonprog - The name of an extra account that is used only

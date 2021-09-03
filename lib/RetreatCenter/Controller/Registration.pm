@@ -449,7 +449,6 @@ EOH
     # Note: we may have started to bring this online registration in
     # but aborted it before completion.  in this case we have
     # already gotten the person and attached the covid card.
-    # and the file would have been renamed...
     #
     if ($href->{covid_vax} && -e "$docs/$href->{covid_vax}") {
         #
@@ -466,20 +465,12 @@ EOH
             unlink "$docs/" . $person->covid_vax();
         }
         #
-        # this is messy.  redesign?
         # note that we have (in grab_new) prepended 'covid_vax_'
-        # to the filename in /var/Reg/documents.  Also note that
-        # the filename is covid_vax_FIRST_LAST_TIME.suffix.
-        # Now that we have a person and their $id, let's change that
-        # name to covid_vax_${person_id}.suffix to be consistent with
-        # the other ways we get a covid vax card.
+        # to the filename in /var/Reg/documents. 
+        # the filename is now covid_vax_FIRST_LAST_TIME.suffix.
         #
-        my ($suffix) = $href->{covid_vax} =~ m{[.]([a-z]+)\z}xms;
-        my $new_name = "covid_vax_" . $person->id . ".$suffix";
-        rename "$docs/covid_vax_$href->{covid_vax}",
-               "$docs/$new_name";
         $person->update({
-            covid_vax => $new_name,
+            covid_vax => "covid_vax_$href->{covid_vax}",
         });
     }
 

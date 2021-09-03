@@ -1,0 +1,3 @@
+insert into string (the_key, value) values
+    ('covid_notify', 'jon.bjornstad@gmail.com, vm@mountmadonna.org, quincy@mountmadonna.org')
+    ;
