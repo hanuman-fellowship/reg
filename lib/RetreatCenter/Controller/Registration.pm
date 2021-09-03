@@ -3630,6 +3630,13 @@ sub manual : Local {
         return;
     }
     my $prog = model($c, 'Program')->find($program_id);
+    if ($prog->max() && $prog->reg_count() >= $prog->max()) {
+        error($c,
+            "Maximum registrations have been reached.",
+            "registration/error.tt2"
+        );
+        return;
+    }
     stash($c,
         deposit       => $deposit,
         deposit_type  => $deposit_type,
@@ -6165,6 +6172,15 @@ sub uncancel : Local {
     my ($self, $c, $reg_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
+
+    my $prog = $reg->program();
+    if ($prog->max() && $prog->reg_count() >= $prog->max()) {
+        error($c,
+            "Maximum registrations have been reached.",
+            "registration/error.tt2",
+        );
+        return;
+    }
 
     # unmark cancelled
     $reg->update({
