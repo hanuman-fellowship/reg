@@ -743,10 +743,10 @@ sub prog_type {
     my $type = "";
 
     if ($self->covid_vax()) {
-        $type .= "<span class=covid>v</span>";
+        $type .= "v";
     }
     if ($self->cancelled) {
-        $type .= "<span class=red>Cancelled</span>";
+        $type .= " <span class=red>Cancelled</span>";
     }
     if ($self->level->public()) {
         $type .= " Public";
