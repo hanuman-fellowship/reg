@@ -742,30 +742,32 @@ sub prog_type {
 
     my $type = "";
 
+    if ($self->covid_vax()) {
+        $type .= "<span class=covid>v</span>";
+    }
     if ($self->cancelled) {
-        $type = "<span class=red>Cancelled</span> ";
+        $type .= "<span class=red>Cancelled</span>";
     }
     if ($self->level->public()) {
-        $type .= "Public ";
+        $type .= " Public";
     }
     if ($self->school->mmi()) {
-        $type .= "MMI ";
+        $type .= " MMI";
     }
     if (! $self->PR && ! $self->linked()) {
         if ($self->school == 0 || $self->level() eq 'A') {
-            $type .= "Unlinked ";
+            $type .= " Unlinked";
         }
     }
     if ($self->rental_id()) {
-        $type .= "Hybrid ";
+        $type .= " Hybrid";
     }
     if ($self->category->name() ne 'Normal') {
-        $type .= "Resident ";
+        $type .= " Resident";
     }
     if ($self->webready) {
-        $type .= "<span style='color: green'>w</span> ";
+        $type .= " <span style='color: green'>w</span>";
     }
-    chop $type;
     $type;
 }
 
