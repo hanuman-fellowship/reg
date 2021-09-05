@@ -151,7 +151,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <th align=right>COVID<br>Vaccination Card</th>
 <td>
 [% IF person.covid_vax %]
-<a target=_blank href='/rental/show_file/$person.covid_vax'>View</a>
+<a target=_blank href='/person/view_covid/$person.name/$person.covid_vax'>View</a>
 &nbsp; &nbsp;&nbsp;
 <a href='/person/del_covid_vax/$id' onclick="return confirm('Okay to Delete COVID Vaccination Card?');">Delete</a>
 [% ELSE %]

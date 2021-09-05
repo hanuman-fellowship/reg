@@ -969,7 +969,7 @@ sub process_covid_vax {
         $person_name =~ s{_}{ }xmsg;
     }
     $person_name = "<a href='https://akash.mountmadonna.org"
-                 . "/rental/show_file/$cf'>"
+                 . "/person/view_covid/$person_name/$cf'>"
                  . "$person_name</a>"
                  ;
     email_letter($c,

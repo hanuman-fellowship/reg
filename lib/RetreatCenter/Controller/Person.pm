@@ -51,6 +51,8 @@ use Data::Dumper;
 use Net::FTP;
 use File::Basename 'fileparse';
 
+my $docs = '/var/Reg/documents';
+
 sub index : Private {
     my ($self, $c) = @_;
 
@@ -617,7 +619,7 @@ sub update_do : Local {
 
         $fname = "covid_vax_$id$suffix";
         $hash{covid_vax} = $fname;
-        my $full_fname = "/var/Reg/documents/$fname";
+        my $full_fname = "$docs/$fname";
         $covid_vax_card->copy_to($full_fname);
         # resize the large picture to a width of 1000 pixels
         # and compress it a bit
@@ -1825,12 +1827,36 @@ sub get_gender : Local {
 sub del_covid_vax : Local {
     my ($self, $c, $per_id) = @_;
     my $per = model($c, 'Person')->find($per_id);
-    unlink '/var/Reg/documents/' . $per->covid_vax;
+    unlink "$docs/" . $per->covid_vax;
     $per->update({
         covid_vax => '',
     });
     $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
 
+sub covid_image : Local Args(1) {
+    my ($self, $c, $image_name) = @_;
+    my ($suffix) = $image_name =~ m{[.]([a-z]+)\z}xms;
+    open my $fh, '<', "$docs/$image_name"
+        or die "$image_name not found!!: $!\n";
+    $c->response->content_type("image/$suffix");
+    $c->response->body($fh);
+}
+
+sub view_covid: Local {
+    my ($self, $c, $name, $doc_name) = @_;
+    my $image = $c->uri_for("/person/covid_image/$doc_name");
+    my $html = <<"EOH";
+<style>
+body {
+    margin-left: .3in;
+    margin-top: .3in;
+}
+</style>
+<h2>COVID-19 Vaccination Card for $name</h2>
+<img src=$image>
+EOH
+    $c->res->output($html);
+}
 
 1;
