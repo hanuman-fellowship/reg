@@ -3917,6 +3917,7 @@ sub lodge : Local {
 
     my $h_type = $reg->h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
+    my $tcabin = ($h_type =~ m{cabin} )? "yes": "";
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
     my $psex   = $reg->person->sex;
@@ -3977,6 +3978,7 @@ sub lodge : Local {
         for my $h (@{$houses_in_cluster{$cl_id}}) {
             # is the max of the house inconsistent with $max?
             # or the bath status
+            # or the cabin status
             #
             # or the house resident status != program category status
             #
@@ -3985,8 +3987,13 @@ sub lodge : Local {
             #
             my $h_id = $h->id;
             if (($h->max < $low_max)
+
                 || ($h->bath && !$bath)
                 || (!$h->bath && $bath)
+
+                || (!$h->cabin && $tcabin)
+                || (!$h->cabin && $tcabin)
+
                 || (!$pr_resident && $h->resident())
                 # 9/4 Brajesh requests that all houses offered
                 # to Residential enrollees.
@@ -4289,19 +4296,7 @@ sub lodge : Local {
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type;
     HTYPE:
-    for my $htname (qw/
-        single_bath
-        single
-        dble_bath
-        dble
-        triple
-        economy
-        dormitory
-        center_tent
-        own_tent
-        own_van
-        commuting
-    /) {
+    for my $htname (housing_types(1)) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
         next HTYPE if $htname eq "single"      && ! $pr->single;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
@@ -6449,6 +6444,45 @@ sub restore : Local {
     }
     rename $fname, "/var/Reg/online/$trans_id";
     $c->response->redirect($c->uri_for("/registration/list_online"));
+}
+
+sub covid_cards : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    my $prog_name = $prog->name;
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id         => $prog_id,
+            'person.covid_vax' => { '!=' => '' },
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first me.date_start /],
+            prefetch => [qw/ person /],
+        }
+    );
+    my $html = <<"EOH";
+<style>
+body {
+    margin-top: .3in;
+    margin-left: .3in;
+    font-size: 18pt;
+}
+</style>
+<h2>COVID-19 Vaccination Cards for $prog_name</h2>
+EOH
+    for my $r (@regs) {
+        my $person = $r->person;
+        my $name = $person->last . ", " . $person->first;
+        my $image = $c->uri_for("/person/covid_image/" . $person->covid_vax);
+        $html .= <<"EOH";
+$name<br>
+<img src=$image>
+<p>
+EOH
+    }
+    $c->res->output($html);
 }
 
 1;

@@ -1211,6 +1211,7 @@ sub booking : Local {
 
     $c->stash->{h_type} = $h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
+    my $cabin  = ($h_type =~ m{cabin}) ? "yes": "";
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
     my $max    = type_max($h_type);
@@ -1238,6 +1239,7 @@ sub booking : Local {
     for my $h (model($c, 'House')->search({
                    inactive => '',
                    bath     => $bath,
+                   cabin    => $cabin,
                    tent     => $tent,
                    center   => $center,
                    max      => { '>=', $low_max },
@@ -1785,7 +1787,7 @@ sub reserve_cluster : Local {
     for my $h (@{$houses_in_cluster{$cluster_id}}) {
         my $h_id = $h->id();
         my $h_max = $h->max();
-        my $h_type = max_type($h_max, $h->bath(),
+        my $h_type = max_type($h_max, $h->bath(), $h->cabin(),
                               $h->tent(), $h->center());
         model($c, 'RentalBooking')->create({
             rental_id  => $rental_id,

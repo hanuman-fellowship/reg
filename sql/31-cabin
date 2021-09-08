@@ -1,0 +1,8 @@
+alter table housecost add column single_cabin int(11) not null default 0;
+alter table housecost add column dble_cabin int(11) not null default 0;
+insert into string (the_key, value) values ('single_cabin', 'Single Cabin');
+insert into string (the_key, value) values ('long_single_cabin', 'Single in a Cabin (1 to a room)');
+insert into string (the_key, value) values ('dble_cabin', 'Double Cabin');
+insert into string (the_key, value) values ('long_dble_cabin', 'Double in a Cabin (2 to a room)');
+update string set value = 'Single (1 to a room)' where the_key = 'long_single';
+update string set value = 'Double (2 to a room)' where the_key = 'long_dble';

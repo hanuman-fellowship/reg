@@ -21,6 +21,8 @@ __PACKAGE__->add_columns(qw/
     dble_bath
     type
     inactive
+    single_cabin
+    dble_cabin
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -41,6 +43,7 @@ center_tent - $ for center tents
 commuting - $ for commuting
 dble - $ for doubles
 dble_bath - $ for doubles with bath
+dble_cabin - $ for doubles in a cabin
 dormitory - $ for dormitories
 economy - $ for economy housing
 id - unique id
@@ -50,5 +53,6 @@ own_tent - $ for people bringing their own tent
 own_van - $ for people sleeping in their vehicle
 single - $ for singles
 single_bath - $ for singles with bath
+single_cabin - $ for singles in a cabin
 triple - $ for triples
 type - Per Day or Total

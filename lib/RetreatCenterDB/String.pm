@@ -148,6 +148,7 @@ days_pass_expire - the number of days a new password is active
 days_pass_grace - grace period for expiry
 dble - the display name for the housing type 'dble'
 dble_bath - the display name for the housing type 'dble_bath'
+dble_cabin - the display name for the housing type 'dble_cabin'
 default_date_format - the format used when doing $dt->format() or when
     a $dt is stringified in a template.
 default_num_prog_days - when choosing 'Program' how many days
@@ -266,6 +267,7 @@ long_center_tent - for housing type descriptions.  see RetreatCenterDB::Program:
 long_commuting - for housing type descriptions
 long_dble - for housing type descriptions
 long_dble_bath - for housing type descriptions
+long_dble_cabin - for housing type descriptions
 long_dormitory - for housing type descriptions
 long_economy - for housing type descriptions
 long_not_needed - for housing type descriptions
@@ -274,6 +276,7 @@ long_own_van - for housing type descriptions
 long_quad - for housing type descriptions
 long_single - for housing type descriptions
 long_single_bath - for housing type descriptions
+long_single_cabin - for housing type descriptions
 long_triple - for housing type descriptions
 long_unknown - for housing type descriptions
 lunch_charge - obsolete - can be removed.
@@ -371,7 +374,8 @@ req_mmi_dir_paid - the directory on mountmadonnainstitute.org for paid MMI payme
 seen_lodge_opts - what is the size of the &gt;select&lt; list for housing options?
     There can be many more houses in the list but this is what is initially visible.
 single - the display name for the housing type 'single'
-single_bath - the display name for the housing type 'single with bath'
+single_bath - the display name for the housing type 'single_bath'
+single_cabin - the display name for the housing type 'single_cabin'
 smtp_auth - the 'auth' field for the SMTP server
 smtp_pass - the 'password' field for the SMTP server
 smtp_port - the 'port' field for the SMTP server

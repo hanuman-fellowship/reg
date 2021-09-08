@@ -1296,6 +1296,7 @@ sub gen_progtable {
             next HTYPE if $t eq 'economy'     && !$p->economy;
             next HTYPE if $t eq 'single_bath' && !$p->sbath;
             next HTYPE if $t eq 'single'      && !$p->single;
+            next HTYPE if $t eq 'single_cabin' && !$p->single;
             next HTYPE if $t eq 'center_tent'
                 && !($PR
                      || $p->name =~ m{tnt}i

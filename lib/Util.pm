@@ -531,8 +531,10 @@ sub housing_types {
     return qw/
 		single_bath
 		single
+        single_cabin
 		dble_bath
 		dble
+        dble_cabin
 		triple
 		dormitory
 		economy
@@ -849,15 +851,17 @@ sub get_lunch {
 }
 
 my %tmax = qw/
-    single_bath 1
-    single      1
-    dble        2
-    dble_bath   2
-    triple      3
-    dormitory   7
-    economy    20
-    center_tent 1
-    own_tent    1
+    single_bath  1
+    single       1
+    single_cabin 1
+    dble         2
+    dble_bath    2
+    dble_cabin   2
+    triple       3
+    dormitory    7
+    economy     20
+    center_tent  1
+    own_tent     1
 /;
 sub type_max {
     my ($h_type) = @_;
@@ -865,7 +869,7 @@ sub type_max {
 }
 
 sub max_type {
-    my ($max, $bath, $tent, $center) = @_;
+    my ($max, $bath, $cabin, $tent, $center) = @_;
     if ($max == 1) {
         if ($tent) {
             return ($center)? "center_tent"
@@ -874,12 +878,14 @@ sub max_type {
         }
         else {
             return ($bath)? "single_bath"
+                  :($cabin)?"single_cabin"
                   :         "single"
                   ;
         }
     }
     elsif ($max == 2) {
             return ($bath)? "dble_bath"
+                  :($cabin)?"dble_cabin"
                   :         "dble"
                   ;
     }
