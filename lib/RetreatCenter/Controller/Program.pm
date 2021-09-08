@@ -2074,7 +2074,7 @@ sub export : Local {
 
     # send it off
     _send_export($c, 'mmc');
-    _send_export($c, 'mmi');        # not needed any more???
+    #_send_export($c, 'mmi');        # not needed any more???
 
     add_activity($c, "Programs and Rentals exported");
 
