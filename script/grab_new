@@ -959,8 +959,10 @@ sub process_covid_vax {
         # couldn't do this on mountmadonna.org or here with IM6
         # we installed pdftoppm and it does work okay
         my $new = "$get_dir/$cf";
-        $new =~ s{pdf}{jpg}xms;
+        $new =~ s{.pdf}{}xms;
         system "/usr/bin/pdftoppm $get_dir/$cf $new -jpeg -f 1 -singlefile";
+            # the above added .jpg to $new
+        $new .= ".jpg";
         my $tmp = "/tmp/card$$";
         system "/usr/bin/convert -resize 1000x $new $tmp";
         system "/usr/bin/convert -strip -interlace Plane -quality 65%"
