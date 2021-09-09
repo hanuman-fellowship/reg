@@ -967,7 +967,8 @@ sub process_covid_vax {
         system "/usr/bin/convert -resize 1000x $new $tmp";
         system "/usr/bin/convert -strip -interlace Plane -quality 65%"
              . " $tmp $new";
-        #unlink $tmp;
+        unlink $tmp;
+        $cf =~ s{pdf}{jpg}xms;
     }
     my $person_name;
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
@@ -999,7 +1000,7 @@ sub process_covid_vax {
         ($person_name) = $f =~ m{\A (.*)_\d+[.]}xms;
         $person_name =~ s{_}{ }xmsg;
     }
-    $person_name = "<a href='https://akash.mountmadonna.org"
+    $person_name = "<a target=_blank href='https://akash.mountmadonna.org"
                  . "/person/view_covid/$person_name/$cf'>"
                  . "$person_name</a>"
                  ;
