@@ -947,15 +947,27 @@ sub process_gift_cards {
 sub process_covid_vax {
     my ($get_dir, $f) = @_;
     my $cf = "covid_vax_$f";
+    if ($cf !~ m{[.]\w+\z}xms) {
+        # no suffix at all so assume a .jpg file
+        # shouldn't happen since we did this on mmc.org as well...
+        $cf .= ".jpg";
+    }
     rename "$get_dir/$f", "$get_dir/$cf";
     my $person_name;
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
     if ($person_id) {
         my $person = model($c, 'Person')->find($person_id);
-        $person->update({
-            covid_vax => $cf,
-        });
-        $person_name = $person->name;
+        if ($person) {
+            $person->update({
+                covid_vax => $cf,
+            });
+            $person_name = $person->name;
+        }
+        else {
+            # a stray file from somewhere?
+            unlink "$get_dir/$cf";
+            return;
+        }
     }
     else {
         #
@@ -964,6 +976,9 @@ sub process_covid_vax {
         # just get the file (in $get_dir) for later use
         # when the registration is "brought in".
         # extract the person name from the filename
+        #
+        # we can't update the person yet because the
+        # Person record may not have been created yet.
         #
         ($person_name) = $f =~ m{\A (.*)_\d+[.]}xms;
         $person_name =~ s{_}{ }xmsg;

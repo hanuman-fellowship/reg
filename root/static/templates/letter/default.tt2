@@ -1,7 +1,7 @@
 <html>
    <head>
    <meta name="viewport" content="width=device-width" />
-   
+
       <style>
          .after {
          margin-top: .5in;
@@ -64,7 +64,7 @@
          .column {
         	display: inline-block;
          }
-         
+
          .column img {
          width: 100%;
          max-width: 220px;
@@ -83,7 +83,7 @@
          margin-left: .25in;
          margin-bottom: .2in;
          }
-         
+
 				@media only screen and (max-width: 480px) {
 					#container {
 					margin: 20px;			
@@ -94,12 +94,12 @@
 					}
 				}
       </style>
-      
+
 
    </head>
    <body>
       <div id="container">
-      
+
            [% mmi = program.school.mmi %]
 
 
@@ -150,10 +150,7 @@
             </td>
          </tr>
       </table>
-      
-      
-      
-      
+
       <div class=indent>
          Dear $person.first,
       </div>
@@ -184,15 +181,15 @@
             <td class=lt2>&nbsp;\$$reg.balance</td>
          </tr>
       </table>
-      <div class=indent> 
-         This email contains important information regarding the check-in process and payments, meals, packing suggestions, transportation and cancellations.  
+      <div class=indent>
+         This email contains important information regarding the check-in process and payments, meals, packing suggestions, transportation and cancellations.
          The attached file contains a housing map, yoga class and meal schedules, and other important details about our facilities. You may want to download and/or print this file prior to your arrival.
-         Please read on to prepare for your stay on our beautiful mountain! 
+         Please read on to prepare for your stay on our beautiful mountain!
       </div>
       [% IF covid_vax %]
         <h2>COVID-19 Vaccination</h2>
-        To stay at Mount Madonna Center it is 
-        required that you be fully vaccinated against COVID-19.  We need you 
+        To stay at Mount Madonna Center it is
+        required that you be fully vaccinated against COVID-19.  We need you
         to upload an image of your vaccination card.
         You can do this in two ways:
         <ol>
@@ -232,32 +229,52 @@
             and give you the help you need.
             [% END %]
             [% END %]    <!-- if Note -->
-      <h2>Arrivals</h2>
-      <p>
-         You may pick up your room key
-         [% IF reg.balance > 0 %]
-         and pay your remaining balance
-         [% END %]
-         at the Guest Services Office in the Community Building.   Check-in
-         is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
-         &ldquo;Late Notice Board&rdquo; in the entryway of the Community
-         Building to get your key.   Check-out is at $program.prog_end_obj  on the day of your departure.
-         [% IF ! personal_retreat %]
-      <p>
-         Your program begins at $program.prog_start_obj and meets in the ${program.main_meeting_place}.
-         [% END %]
-      <h2>Gate Code</h2>
-      <p>
-         [% gc = program.gate_code %]
-         If you arrive in the evening and the gate is closed, you can open it
-         by entering this code in the keypad: #${gc}. That's POUND ${gc}.
-         Press the five keys firmly and without any pauses or it will not work.
+      [% IF program.covid_vax %]
+          <h2>Covid-19 Protocols</h2>
+          Please carefully read about our Covid-19 protocols <a target=_blank href='https://www.mountmadonna.org/coronavirus'>here</a>.
+          <h2>Arrivals and Departure</h2>
+          You will be greeted on arrival at the main gate
+          where you will be given your room key and directions
+          to your room. Upon arrival, you will also be provided
+          with a gate code that can be used for reentry.
+          <p>
+          Check in is at 3:00 pm and check out is at 11 am.
+          Unfortunately, we are unable to properly greet arrivals after 6 pm.
+      [% ELSE %]
+          <h2>Arrivals</h2>
+          <p>
+          You may pick up your room key
+          [% IF reg.balance > 0 %]
+             and pay your remaining balance
+          [% END %]
+          at the Guest Services Office in the Community Building.
+          Check-in is at ${program.reg_start_obj}.
+          If you arrive after business hours, stop by our
+          &ldquo;Late Notice Board&rdquo; in the entryway of
+          the Community Building to get your key.
+          Check-out is at $program.prog_end_obj on
+          the day of your departure.
+          [% IF ! personal_retreat %]
+              <p>
+              Your program begins at $program.prog_start_obj and
+              meets in the ${program.main_meeting_place}.
+          [% END %]
+          <h2>Gate Code</h2>
+          <p>
+          [% gc = program.gate_code %]
+          If you arrive in the evening and the gate is closed,
+          you can open it by entering this code in the keypad: #${gc}.
+          That's POUND ${gc}.  Press the five keys firmly and without
+          any pauses or it will not work.
+[% END %]   <!-- if program.covid_vax -->
+
          [% IF reg.balance > 0 %]
       <h2>Payments</h2>
       <p>
-         You are welcome to pay your balance of \$$reg.balance before arrival to expedite the
+         You are welcome to pay your balance of \$$reg.balance
+         before arrival to expedite the
          check-in process, especially if you will be arriving after hours
-         or on a Sunday when our office is closed.<br>
+         or on a Sunday when our office is closed.
          [% IF pre_payment_link %]
          You may pay in advance
          with a credit card online at
@@ -305,37 +322,69 @@
       </div>
       [% END %]
 
-      [% IF program.kayakalpa %]
-      <h2>Appointment Reservations</h2>
-      <p>
-        If you'd like to make an appointment for massage or bodywork at Kaya Kalpa Wellness Center 
-        during your stay, <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you
-        can do that here</a>. If you'd like to make an appointment for an ayurvedic wellness consultation
-        during your stay, <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you
-        can do that here</a>.
-      </p>
-      [% END %]
+    [% IF program.covid_vax %]
+        <h2>While You're Here</h2>
+        We invite you to visit the Sankat Mochan Hanuman Temple.
+        Arati service is at 6:30 am and 6 pm daily.
+        <p>
+        Ayurveda World herbal store is open:<br>
+        Wednesday, Friday and Saturday: 11 am - 2:30 pm, 3:30 - 5 pm<br>
+        Thursday and Sunday: 2 pm - 5
+        <p>
+        Our beautiful system of well-maintained trails
+        through the redwood forest is available for you to explore.
+        We have a variety of spots throughout the land that are
+        conducive to meditation and contemplation.
+        Due to the pandemic, Anjaneya's World Cafe,
+        Kaya Kalpa Wellness Center,
+        and the hot tub are not available at this time.
+    [% ELSE %]
+        [% IF program.kayakalpa %]
+            <h2>Appointment Reservations</h2>
+            <p>
+            If you'd like to make an appointment for massage
+            or bodywork at Kaya Kalpa Wellness Center
+            during your stay,
+            <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you can do that here</a>.
+            If you'd like to make an appointment for an ayurvedic
+            wellness consultation during your stay,
+            <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you can do that here</a>.
+            </p>
+        [% END %]
+    [% END %]   <!-- program.covid_vax -->
       <h2>Packing</h2>
       <p>
          A detailed packing list can be found on our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a>.
       <p>
-         We ask that you leave the following at home: food, drugs, alcohol, pets, scented body products, and all fire hazards (candles, incense, kerosene lamps etc.) 
+         We ask that you leave the following at home: food, drugs, alcohol, pets, scented body products, and all fire hazards (candles, incense, kerosene lamps etc.)
       <p>
          Here is the local <a target=_blank href='https://weather.com/weather/today/l/9425:19:US'>weather prediction</a> to help guide your packing decisions.
+
       <h2>Meals</h2>
+      [% IF program.covid_vax %]
+          Meals are served in the Community Building.
+          Brunch is at 10 am and dinner is at 5 pm.
+      [% END %]
       <p>
-         Our food service is strictly vegetarian - no meat, fish, fowl, or eggs. Please do not bring any outside food.  With advanced notice, we do our best to accommodate dietary restrictions.  If you have serious allergies, contact your retreat coordinator and/or the Guest Services Office to discuss available options.  
+      Our food service is strictly vegetarian - no meat,
+      fish, fowl, or eggs. Please do not bring any outside food.
+      With advanced notice, we do our best to accommodate dietary
+      restrictions.  If you have serious allergies,
+      contact your retreat coordinator and/or the
+      Guest Services Office to discuss available options.
       <p>
-         More information on meals, including a sample menu, can be found <a target=_blank href='https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center'>here</a>.
+      More information on meals, including a sample menu,
+      can be found <a target=_blank href='https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center'>here</a>.
+
       <h2>Getting Here</h2>
       <p>
-         Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain. 
+         Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain.
       <h2>Cancellations</h2>
       [% IF cancel_policy %]
       $cancel_policy
       [% ELSE %]
       <p>
-         If you need to cancel or change your reservation, please refer to our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>cancellation policy</a> and contact our registrar at 
+         If you need to cancel or change your reservation, please refer to our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>cancellation policy</a> and contact our registrar at
          [% rem = registrar_email %]
          <a href='mailto:$rem'>$rem</a>.
          [% END %]
@@ -345,9 +394,9 @@
       <h2>Still have questions?</h2>
       <p>
          Our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions not answered here.
-         If you have a question about your stay that is still not answered, please call the Guest Services Office at 408-846-4090. 
+         If you have a question about your stay that is still not answered, please call the Guest Services Office at 408-846-4090.
       <div class=indent>
-         We look forward to seeing you here soon! 
+         We look forward to seeing you here soon!
       </div>
       <div class=indent>
          Sincerely,<br>
