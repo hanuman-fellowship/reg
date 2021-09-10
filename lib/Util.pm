@@ -2336,7 +2336,7 @@ sub PR_progtable {
         next_hc       => $next_hc,
         next_date     => $sdate,
         type          => 'Per Day',
-        children_welcome => 'yes',
+        children_welcome => $string{pr_children},
         kayakalpa     => 'yes',
     };
     TYPE:
