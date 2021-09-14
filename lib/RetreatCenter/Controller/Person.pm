@@ -1854,7 +1854,7 @@ body {
 }
 </style>
 <h2>COVID-19 Vaccination Card for $name</h2>
-<img src=$image>
+<img src=$image width=1000>
 EOH
     $c->res->output($html);
 }

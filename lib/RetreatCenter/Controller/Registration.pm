@@ -6478,7 +6478,7 @@ EOH
         my $image = $c->uri_for("/person/covid_image/" . $person->covid_vax);
         $html .= <<"EOH";
 $name<br>
-<img src=$image>
+<img src=$image width=1000>
 <p>
 EOH
     }
