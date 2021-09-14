@@ -1876,7 +1876,9 @@ sub reget_covid_vax: Local {
     my $fname = $per->covid_vax();
     my $get_name = $fname;
     $get_name =~ s{covid_vax_}{}xms;
-    $ftp->get($get_name, "/var/Reg/documents/$fname");
+    $fname = "/var/Reg/documents/$fname";
+    unlink $fname;
+    $ftp->get($get_name, $fname);
     $ftp->quit();
     $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
