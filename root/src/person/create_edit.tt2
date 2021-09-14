@@ -126,7 +126,7 @@ function get_gender() {
            value="yes" $waiver_signed></td>
 </tr>
 
-[% IF ! person.covid_vax %]
+[% IF form_action != 'create_do' && ! person.covid_vax %]
 <tr>
 <th align=right>COVID<br>Vaccination Card</th>
 <td><input type=file name=covid_file></td>

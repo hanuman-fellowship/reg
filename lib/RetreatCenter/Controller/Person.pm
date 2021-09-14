@@ -542,6 +542,7 @@ sub create_do : Local {
             @temple = (temple_id => $fname);
         }
     }
+    delete $hash{covid_file};       # if it happens to be there...
     my $p = model($c, 'Person')->create({
         %hash,
         date_updat  => $today_d8,
