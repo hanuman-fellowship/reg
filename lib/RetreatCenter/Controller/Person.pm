@@ -1862,10 +1862,10 @@ EOH
 sub reget_covid_vax: Local {
     my ($self, $c, $per_id) = @_;
     my $per = model($c, 'Person')->find($per_id);
-    my $ftp = Net::FTP->new($string{ftp_mmc_site},
-                            Passive => $string{ftp_mmc_passive})
-            or die qq!cannot connect to $string{ftp_mmc_site}!;
-    $ftp->login($string{ftp_mmc_login}, $string{ftp_mmc_password})
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive})
+            or die qq!cannot connect to $string{ftp_site}!;
+    $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message;
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
