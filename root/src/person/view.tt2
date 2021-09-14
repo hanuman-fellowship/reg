@@ -154,6 +154,8 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <a target=_blank href='/person/view_covid/$person.last_first_name/$person.covid_vax'>View</a>
 &nbsp; &nbsp;&nbsp;
 <a href='/person/del_covid_vax/$id' onclick="return confirm('Okay to Delete COVID Vaccination Card?');">Delete</a>
+&nbsp; &nbsp;&nbsp;
+<a href='/person/reget_covid_vax/$id'">ReGet</a>
 [% ELSE %]
 &nbsp;
 [% END %]

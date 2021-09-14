@@ -1859,4 +1859,26 @@ EOH
     $c->res->output($html);
 }
 
+sub reget_covid_vax: Local {
+    my ($self, $c, $per_id) = @_;
+    my $per = model($c, 'Person')->find($per_id);
+    my $ftp = Net::FTP->new($string{ftp_mmc_site},
+                            Passive => $string{ftp_mmc_passive})
+            or die qq!cannot connect to $string{ftp_mmc_site}!;
+    $ftp->login($string{ftp_mmc_login}, $string{ftp_mmc_password})
+        or die "cannot login ", $ftp->message;
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
+    $ftp->cwd("$string{ftp_covid_vax_dir}_archive")
+        or die "cannot chdir to covid_vax_archive";
+    my $fname = $per->covid_vax();
+    my $get_name = $fname;
+    $get_name =~ s{covid_vax_}{}xms;
+    $ftp->get($get_name, "/var/Reg/documents/$fname");
+    $ftp->quit();
+    $c->response->redirect($c->uri_for("/person/view/$per_id"));
+}
+
 1;
