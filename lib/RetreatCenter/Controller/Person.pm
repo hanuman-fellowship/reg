@@ -1851,7 +1851,7 @@ sub view_covid: Local {
     my $links = $per->vax_okay?
                     "<a href=/person/vax_okay/$per_id/1>Not Okay</a>"
                :    "<a href=/person/vax_okay/$per_id>Looks Okay</a>";
-    $links .= "&nbsp;&nbsp;<a href=/person/rotate_vax/$per_id>Rotate</a>";
+    $links .= "<a style="margin-left: 1.5in;" href=/person/rotate_vax/$per_id>Rotate</a>";
     my $html = <<"EOH";
 <style>
 body {
@@ -1860,8 +1860,9 @@ body {
 }
 a {
     text-decoration: none;
+    color: blue;
     font-family: Arial;
-    font-size: 18pt;
+    font-size: 16pt;
 }
 </style>
 <h2>COVID-19 Vaccination Card for $name</h2>
