@@ -622,9 +622,9 @@ sub update_do : Local {
 
         my $fl_name = $p->name;
         $fl_name =~ s{[ ]}{_}xmsg;
-        $fname = "covid_vax_$fl_name.$suffix";
+        $fname = "$fl_name.$suffix";
         $hash{covid_vax} = $fname;
-        my $full_fname = "$docs/$fname";
+        my $full_fname = "$docs/covid_vax/$fname";
         $covid_vax_card->copy_to($full_fname);
         if (-s $full_fname > 200_000) {
             # resize the large picture to a width of 1000 pixels
@@ -1851,39 +1851,32 @@ sub covid_image : Local Args(1) {
 }
 
 sub view_covid: Local {
-    my ($self, $c, $doc_name) = @_;
-    my $name = $doc_name;
+    my ($self, $c, $fname) = @_;
+    my $name = $fname;
     $name =~ s{[.].*\z}{}xms;
     $name =~ s{_}{ }xmsg;
     my ($per) = model($c, 'Person')->search({
-                    covid_vax => $doc_name,
+                    covid_vax => $fname,
                 });
     my $id = $per? $per->id: 0;
-    my $image = $c->uri_for("/person/covid_image/$doc_name");
-    my $links = !$per         ? ''
-               :$per->vax_okay? "<a href=/person/vax_okay/$id/1>No Good</a>"
-               :                "<a href=/person/vax_okay/$id>Looks Okay</a>";
-    $links .= "<a style='margin-left: 1.5in;'"
-           .  " href='/person/rotate_vax/$doc_name'>Rotate</a>";
-    my $html = <<"EOH";
-<style>
-body {
-    margin-left: .3in;
-    margin-top: .3in;
-    font-family: Arial;
-}
-a {
-    text-decoration: none;
-    color: blue;
-    font-family: Arial;
-    font-size: 16pt;
-}
-</style>
-<h2>COVID-19 Vaccination Card for $name</h2>
-$links
-<p>
-<img src=$image width=1000>
-EOH
+    my $image = $c->uri_for("/person/covid_image/$fname");
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src',
+        INTERPOLATE  => 1,
+    });
+    my $stash = {
+        name   => $name,
+        person => $per,
+        id     => $id,
+        image  => $image,
+        fname  => $fname,
+    };
+    $tt->process(
+        "person/view_covid_vax.tt2",   # template
+        $stash,               # variables
+        \$html,               # output
+    );
     $c->res->output($html);
 }
 
@@ -1897,8 +1890,10 @@ sub vax_okay : Local {
 }
 
 sub rotate_vax : Local {
-    my ($self, $c, $doc_name) = @_;
-    $c->response->redirect($c->uri_for("/person/view_covid/$doc_name"));
+    my ($self, $c, $deg, $fname) = @_;
+    my $full_name = "/var/Reg/documents/covid_vax/$fname";
+    system "/usr/bin/convert -rotate $deg $full_name $full_name";
+    $c->response->redirect($c->uri_for("/person/view_covid/$fname"));
 }
 
 sub request_covid_vax : Local {

@@ -1,0 +1,36 @@
+<html>
+<style>
+body {
+    margin-top: 10mm;
+    margin-left: 10mm;
+    font-size: 16pt;
+    font-family: Arial;
+}
+a {
+    text-decoration: none;
+    color: blue;
+}
+.space {
+    margin-left: 1in;
+}
+</style>
+</head>
+<body>
+<h2>COVID-19 Vaccination Card for $name</h2>
+<p>
+[% IF person %]
+    [% IF person.vax_okay %]<a href=/person/vax_okay/$id/1>Not Okay</a>[% ELSE %]<a href=/person/vax_okay/$id>Looks Good</a>[% END %]
+$spp
+[% END %]
+<span class=space>Rotate</span>
+<a href='/person/rotate_vax/-90/$fname'>-90</a>
+
+<a href='/person/rotate_vax/180/$fname'>180</a>
+
+<a href='/person/rotate_vax/90/$fname'>90</a>
+<a class=space href=/person/view/$id>To Person</a>
+<a class=space href=# onclick="window.close(); return false;">Close</a>
+<p>
+<img src=$image>
+</body>
+</html>
