@@ -1845,17 +1845,27 @@ sub covid_image : Local Args(1) {
 }
 
 sub view_covid: Local {
-    my ($self, $c, $id, $name, $doc_name) = @_;
+    my ($self, $c, $per_id, $name, $doc_name) = @_;
+    my $per = model($c, 'Person')->find($per_id);
     my $image = $c->uri_for("/person/covid_image/$doc_name");
+    my $links = $per->vax_okay?
+                    "<a href=/person/vax_okay/$per_id/1>Not Okay</a>"
+               :    "<a href=/person/vax_okay/$per_id>Looks Okay</a>";
+    $links .= "&nbsp;&nbsp;<a href=/person/rotate_vax/$per_id>Rotate</a>";
     my $html = <<"EOH";
 <style>
 body {
     margin-left: .3in;
     margin-top: .3in;
 }
+a {
+    text-decoration: none;
+    font-family: Arial;
+    font-size: 18pt;
+}
 </style>
 <h2>COVID-19 Vaccination Card for $name</h2>
-<a href=/person/vax_okay/$id>Looks Good</a>
+$links
 <p>
 <img src=$image width=1000>
 EOH
@@ -1887,10 +1897,10 @@ sub reget_covid_vax: Local {
 }
 
 sub vax_okay : Local {
-    my ($self, $c, $per_id) = @_;
+    my ($self, $c, $per_id, $not) = @_;
     my $per = model($c, 'Person')->find($per_id);
     $per->update({
-        vax_okay => 'yes',
+        vax_okay => $not? '': 'yes',
     });
     $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
