@@ -1,4 +1,4 @@
 <h2>Covid Vaccinations</h2>
 [% FOR p IN people %]
-<a target=_blank href='/person/view_covid/covid_vax/$p.name/$p.covid_vax'>$p.name</a><br>
+<a target=_blank href='/person/view_covid/$p.last_first_name/$p.covid_vax'>$p.name</a><br>
 [% END %]
