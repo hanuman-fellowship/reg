@@ -626,7 +626,7 @@ sub update_do : Local {
         $hash{covid_vax} = $fname;
         my $full_fname = "$docs/$fname";
         $covid_vax_card->copy_to($full_fname);
-        if (-s $full_fname > 300_000) {
+        if (-s $full_fname > 200_000) {
             # resize the large picture to a width of 1000 pixels
             # and compress it a bit
             system "convert -resize 1000 $full_fname /tmp/$fname";
@@ -1877,30 +1877,6 @@ $links
 <img src=$image width=1000>
 EOH
     $c->res->output($html);
-}
-
-sub reget_covid_vax: Local {
-    my ($self, $c, $per_id) = @_;
-    my $per = model($c, 'Person')->find($per_id);
-    my $ftp = Net::FTP->new($string{ftp_site},
-                            Passive => $string{ftp_passive})
-            or die qq!cannot connect to $string{ftp_site}!;
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message;
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->cwd("$string{ftp_covid_vax_dir}_archive")
-        or die "cannot chdir to covid_vax_archive";
-    my $fname = $per->covid_vax();
-    my $get_name = $fname;
-    $get_name =~ s{covid_vax_}{}xms;
-    $fname = "/var/Reg/documents/$fname";
-    unlink $fname;
-    $ftp->get($get_name, $fname);
-    $ftp->quit();
-    $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
 
 sub vax_okay : Local {
