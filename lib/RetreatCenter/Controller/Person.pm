@@ -1870,6 +1870,7 @@ sub view_covid: Local {
 body {
     margin-left: .3in;
     margin-top: .3in;
+    font-family: Arial;
 }
 a {
     text-decoration: none;
@@ -1898,6 +1899,30 @@ sub vax_okay : Local {
 sub rotate_vax : Local {
     my ($self, $c, $doc_name) = @_;
     $c->response->redirect($c->uri_for("/person/view_covid/$doc_name"));
+}
+
+sub request_covid_vax : Local {
+    my ($self, $c, $per_id) = @_;
+    my $per = model($c, 'Person')->find($per_id);
+    my $first = $per->first;
+    my $name = $per->name;
+    my $user = $c->user->obj;
+    email_letter($c,
+        to      => $per->email,
+        from    => $user->first . ' ' . $user->last . ' '
+                 . '<' . $user->email . '>',
+        subject => "MMC requests your Covid Vaccination Card",
+        html    => <<"EOH",
+$first,
+<p>
+blah blah about protocol
+<p>
+Please click on <a href='https://mountmadonna.org/cgi-bin/covid_vax?person_id=$per_id&name=$name&program=program.title'>this link</a> and upload the image of your Covid-19 Vaccination Card.
+<p>
+Thank you
+EOH
+    );
+    $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
 
 1;
