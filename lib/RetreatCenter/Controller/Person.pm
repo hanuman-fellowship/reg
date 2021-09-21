@@ -49,7 +49,6 @@ use LWP::Simple;
 use Template;
 use Data::Dumper;
 use Net::FTP;
-use File::Basename 'fileparse';
 
 my $docs = '/var/Reg/documents';
 
@@ -616,16 +615,23 @@ sub update_do : Local {
     my $covid_vax_card = $c->request->upload('covid_file');
     if ($covid_vax_card) {
         my $fname = $covid_vax_card->filename();
-        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
+        my ($suffix) = $fname =~ m{[.](.*)}xms;
+        if ($suffix eq 'jpeg') {
+            $suffix = 'jpg';
+        }
 
-        $fname = "covid_vax_$id$suffix";
+        my $fl_name = $p->name;
+        $fl_name =~ s{[ ]}{_}xmsg;
+        $fname = "covid_vax_$fl_name.$suffix";
         $hash{covid_vax} = $fname;
         my $full_fname = "$docs/$fname";
         $covid_vax_card->copy_to($full_fname);
-        # resize the large picture to a width of 1000 pixels
-        # and compress it a bit
-        system "convert -resize 1000 $full_fname /tmp/$fname";
-        system "convert -strip -interlace Plane -quality 65% /tmp/$fname $full_fname";
+        if (-s $full_fname > 300_000) {
+            # resize the large picture to a width of 1000 pixels
+            # and compress it a bit
+            system "convert -resize 1000 $full_fname /tmp/$fname";
+            system "convert -strip -interlace Plane -quality 65% /tmp/$fname $full_fname";
+        }
     }
     $p->update({
         %hash,
