@@ -1844,20 +1844,27 @@ sub del_covid_vax : Local {
 sub covid_image : Local Args(1) {
     my ($self, $c, $image_name) = @_;
     my ($suffix) = $image_name =~ m{[.]([a-z]+)\z}xms;
-    open my $fh, '<', "$docs/$image_name"
+    open my $fh, '<', "$docs/covid_vax/$image_name"
         or die "$image_name not found!!: $!\n";
     $c->response->content_type("image/$suffix");
     $c->response->body($fh);
 }
 
 sub view_covid: Local {
-    my ($self, $c, $per_id, $name, $doc_name) = @_;
-    my $per = model($c, 'Person')->find($per_id);
+    my ($self, $c, $doc_name) = @_;
+    my $name = $doc_name;
+    $name =~ s{[.].*\z}{}xms;
+    $name =~ s{[ ]}{}xmsg;
+    my ($per) = model($c, 'Person')->search({
+                    covid_vax => $doc_name,
+                });
+    my $id = $per? $per->id: 0;
     my $image = $c->uri_for("/person/covid_image/$doc_name");
-    my $links = $per->vax_okay?
-                    "<a href=/person/vax_okay/$per_id/1>No Good</a>"
-               :    "<a href=/person/vax_okay/$per_id>Looks Okay</a>";
-    $links .= "<a style='margin-left: 1.5in;' href=/person/rotate_vax/$per_id>Rotate</a>";
+    my $links = !$per         ? ''
+               :$per->vax_okay? "<a href=/person/vax_okay/$id/1>No Good</a>"
+               :                "<a href=/person/vax_okay/$id>Looks Okay</a>";
+    $links .= "<a style='margin-left: 1.5in;'"
+           .  " href='/person/rotate_vax/$doc_name'>Rotate</a>";
     my $html = <<"EOH";
 <style>
 body {
@@ -1886,6 +1893,11 @@ sub vax_okay : Local {
         vax_okay => $not? '': 'yes',
     });
     $c->response->redirect($c->uri_for("/person/view/$per_id"));
+}
+
+sub rotate_vax : Local {
+    my ($self, $c, $doc_name) = @_;
+    $c->response->redirect($c->uri_for("/person/view_covid/$doc_name"));
 }
 
 1;
