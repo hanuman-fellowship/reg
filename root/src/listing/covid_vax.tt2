@@ -1,6 +1,6 @@
 <h2>Covid Vaccinations</h2>
 <ul>
 [% FOR p IN people %]
-[% IF p.vax_okay %]<img src=/static/images/checked.gif width=40>[% ELSE %]<img src=/static/images/unhappy.gif width=40>[% END %] <a target=_blank href='/person/view_covid/$p.id/$p.last_first_name/$p.covid_vax'>$p.last_first_name</a><br>
+[% IF p.vax_okay %]<img src=/static/images/checked.gif width=25>[% ELSE %]<img src=/static/images/unhappy1.gif width=25>[% END %] <a target=_blank href='/person/view_covid/$p.id/$p.last_first_name/$p.covid_vax'>$p.last_first_name</a><br>
 [% END %]
 </ul>
