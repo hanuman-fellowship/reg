@@ -1142,6 +1142,10 @@ sub main {
         login    => $string{ftp_login},
         password => $string{ftp_password},
     );
+    $ftp->binary();     # per the perldoc ...
+                        # use binary when both machines have the
+                        # same line endings.
+
     # MMC Transactions
     get_files($ftp, $string{ftp_transactions},
               $online, \&check_transaction, 'MMC');
@@ -1184,6 +1188,8 @@ sub main {
 
     $ftp->quit();   # all done with MMC
 
+=comment
+
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
         site     => $string{ftp_mmi_site},
         login    => $string{ftp_mmi_login},
@@ -1199,6 +1205,8 @@ sub main {
               $online, \&check_transaction, 'MMI');
 
     $ftp->quit();   # all done with MMI
+
+=cut
 
     mlist_alerts();
     omp_alert();
