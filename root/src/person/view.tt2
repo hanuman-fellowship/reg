@@ -151,13 +151,13 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <th align=right>COVID<br>Vaccination Card</th>
 <td>
 [% IF person.covid_vax %]
-<a target=_blank href='/person/view_covid/$person.last_first_name/$person.covid_vax'>View</a>
-&nbsp; &nbsp;&nbsp;
-<a href='/person/del_covid_vax/$id' onclick="return confirm('Okay to Delete COVID Vaccination Card?');">Delete</a>
-&nbsp; &nbsp;&nbsp;
-<a href='/person/reget_covid_vax/$id'">ReGet</a>
+    [% IF person.vax_okay %]<img src='/static/images/checked.gif'> [% END %]<a target=_blank href='/person/view_covid/$person.id/$person.last_first_name/$person.covid_vax'>View</a>
+    &nbsp; &nbsp;&nbsp;
+    <a href='/person/del_covid_vax/$id' onclick="return confirm('Okay to Delete COVID Vaccination Card?');">Delete</a>
+    &nbsp; &nbsp;&nbsp;
+    <a href='/person/reget_covid_vax/$id'">ReGet</a>
 [% ELSE %]
-&nbsp;
+    &nbsp;
 [% END %]
 </td>
 </tr>

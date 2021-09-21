@@ -45,6 +45,7 @@ __PACKAGE__->add_columns(qw/
     waiver_signed
     only_temple
     covid_vax
+    vax_okay
 /);
 # didn't work??? - check_doc complains as well...
 #__PACKAGE__->add_columns(
@@ -287,5 +288,6 @@ tel_work - work phone
 temple_id - the unique id in the temple visitor database.
     not all people will have one - only those who have reserved
     a visit to the temple.  used in grab_new.
+vax_okay - the COVID-19 vaccination card is legit
 waiver_signed - they signed a waiver of liability (yoga programs)
 zip_post - zip (or postal) code

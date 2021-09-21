@@ -1845,7 +1845,7 @@ sub covid_image : Local Args(1) {
 }
 
 sub view_covid: Local {
-    my ($self, $c, $name, $doc_name) = @_;
+    my ($self, $c, $id, $name, $doc_name) = @_;
     my $image = $c->uri_for("/person/covid_image/$doc_name");
     my $html = <<"EOH";
 <style>
@@ -1855,6 +1855,8 @@ body {
 }
 </style>
 <h2>COVID-19 Vaccination Card for $name</h2>
+<a href=/person/vax_okay/$id>Looks Good</a>
+<p>
 <img src=$image width=1000>
 EOH
     $c->res->output($html);
@@ -1881,6 +1883,15 @@ sub reget_covid_vax: Local {
     unlink $fname;
     $ftp->get($get_name, $fname);
     $ftp->quit();
+    $c->response->redirect($c->uri_for("/person/view/$per_id"));
+}
+
+sub vax_okay : Local {
+    my ($self, $c, $per_id) = @_;
+    my $per = model($c, 'Person')->find($per_id);
+    $per->update({
+        vax_okay => 'yes',
+    });
     $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
 
