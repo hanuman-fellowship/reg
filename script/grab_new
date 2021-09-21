@@ -952,14 +952,14 @@ sub process_gift_cards {
 sub process_covid_vax {
     my ($get_dir, $f) = @_;
     my $cf = "covid_vax_$f";
-    my ($suffix) = $f =~ m{([.]\w+) \z}xms;
+    my ($suffix) = $f =~ m{[.](\w+) \z}xms;
     if (! $suffix) {
         # no suffix at all so assume a .jpg file
         # shouldn't happen since we did this on mmc.org as well...
-        $cf .= ".jpg";
+        $cf .= "jpg";
     }
-    elsif ($suffix eq '.jpeg') {
-        $suffix = ".jpg";
+    elsif ($suffix eq 'jpeg') {
+        $suffix = "jpg";
         $cf =~ s{jpeg}{jpg}xms;
     }
     if ($suffix eq '.pdf') {
@@ -985,7 +985,10 @@ sub process_covid_vax {
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
     if ($person_id) {
         my $person = model($c, 'Person')->find($person_id);
-        $cf = $person->first() . '_' . $person->last() . ".$suffix";
+        $cf = 'covid_vax_'
+            . $person->first() . '_' . $person->last()
+            . ".$suffix"
+            ;
         $cf =~ s{[ ]}{ }xmsg;   # for first (or last) names like Mary Beth
         rename "$get_dir/$f", "$get_dir/$cf";
         if ($person) {
