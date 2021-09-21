@@ -1849,7 +1849,7 @@ sub view_covid: Local {
     my $per = model($c, 'Person')->find($per_id);
     my $image = $c->uri_for("/person/covid_image/$doc_name");
     my $links = $per->vax_okay?
-                    "<a href=/person/vax_okay/$per_id/1>Not Okay</a>"
+                    "<a href=/person/vax_okay/$per_id/1>No Good</a>"
                :    "<a href=/person/vax_okay/$per_id>Looks Okay</a>";
     $links .= "<a style='margin-left: 1.5in;' href=/person/rotate_vax/$per_id>Rotate</a>";
     my $html = <<"EOH";
