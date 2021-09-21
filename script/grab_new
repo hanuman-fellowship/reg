@@ -229,7 +229,7 @@ sub initialize {
     $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
     $temple_donation = make_dir("$dir/temple_donation");
     $new_hfs_dir     = make_dir("$dir/new_hfs/$year_mon_dir");
-    $covid_vax_dir   = make_dir("$dir/documents");
+    $covid_vax_dir   = make_dir("$dir/documents/covid_vax");
 }
 
 sub finalities {
@@ -946,9 +946,7 @@ sub process_gift_cards {
 # or
 #   FIRST_LAST_TIME.suffix
 #
-# in the /var/Reg/documents directory.
-# we prepend 'covid_vax' to differentiate these files
-# from other documents.
+# in the /var/Reg/documents/covid_vax directory.
 sub process_covid_vax {
     my ($get_dir, $f) = @_;
     my $cf = "covid_vax_$f";

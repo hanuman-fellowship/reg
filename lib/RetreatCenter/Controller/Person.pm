@@ -1854,7 +1854,7 @@ sub view_covid: Local {
     my ($self, $c, $doc_name) = @_;
     my $name = $doc_name;
     $name =~ s{[.].*\z}{}xms;
-    $name =~ s{[ ]}{}xmsg;
+    $name =~ s{_}{ }xmsg;
     my ($per) = model($c, 'Person')->search({
                     covid_vax => $doc_name,
                 });
