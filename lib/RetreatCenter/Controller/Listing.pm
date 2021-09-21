@@ -2754,6 +2754,7 @@ sub covid_vax : Local {
     my @people = model($c, 'Person')->search(
                     { covid_vax => { '!=' => '' } },
                     { order_by => [qw/ last first /] },
+                 );
     stash($c,
         people => \@people,
         template => 'listing/covid_vax.tt2',
