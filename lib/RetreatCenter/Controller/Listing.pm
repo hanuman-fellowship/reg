@@ -2749,4 +2749,15 @@ sub affil_tally : Local {
     );
 }
 
+sub covid_vax : Local {
+    my ($self, $c) = @_;
+    my @people = model($c, 'Person')->search({
+                     covid_vax => { '!=' => '' },
+                 });
+    stash($c,
+        people => \@people,
+        template => 'listing/covid_vax.tt2',
+    );
+}
+
 1;

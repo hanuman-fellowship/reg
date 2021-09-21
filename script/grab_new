@@ -940,7 +940,12 @@ sub process_gift_cards {
       ;
 }
 
-# the filename is "$person_id.suffix"
+# the incoming filename is
+#
+#   $person_id.suffix
+# or
+#   FIRST_LAST_TIME.suffix
+#
 # in the /var/Reg/documents directory.
 # we prepend 'covid_vax' to differentiate these files
 # from other documents.
@@ -953,11 +958,15 @@ sub process_covid_vax {
         # shouldn't happen since we did this on mmc.org as well...
         $cf .= ".jpg";
     }
-    rename "$get_dir/$f", "$get_dir/$cf";
+    elsif ($suffix eq '.jpeg') {
+        $suffix = ".jpg";
+        $cf =~ s{jpeg}{jpg}xms;
+    }
     if ($suffix eq '.pdf') {
         # convert to a .jpg and resize/compress it
         # couldn't do this on mountmadonna.org or here with IM6
         # we installed pdftoppm and it does work okay
+        #
         my $new = "$get_dir/$cf";
         $new =~ s{.pdf}{}xms;
         system "/usr/bin/pdftoppm $get_dir/$cf $new -jpeg -f 1 -singlefile";
@@ -976,6 +985,9 @@ sub process_covid_vax {
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
     if ($person_id) {
         my $person = model($c, 'Person')->find($person_id);
+        $cf = $person->first() . '_' . $person->last() . ".$suffix";
+        $cf =~ s{[ ]}{ }xmsg;   # for first (or last) names like Mary Beth
+        rename "$get_dir/$f", "$get_dir/$cf";
         if ($person) {
             $person->update({
                 covid_vax => $cf,
@@ -992,6 +1004,7 @@ sub process_covid_vax {
         #
         # the file is named "FIRST_LAST_TIME.suffix"
         # because it was uploaded during an online registration.
+        # the filename is stored in the x_covid_vax field.
         # just get the file (in $get_dir) for later use
         # when the registration is "brought in".
         # extract the person name from the filename
