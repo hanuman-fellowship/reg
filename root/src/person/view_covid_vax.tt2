@@ -28,7 +28,9 @@ $spp
 <a href='/person/rotate_vax/180/$fname'>180</a>
 
 <a href='/person/rotate_vax/90/$fname'>90</a>
+[% IF id %]
 <a class=space href=/person/view/$id>To Person</a>
+[% END %]
 <a class=space href=# onclick="window.close(); return false;">Close</a>
 <p>
 <img src=$image>

@@ -940,29 +940,35 @@ sub process_gift_cards {
       ;
 }
 
-# the incoming filename is
+# the incoming filename is either
 #
 #   $person_id.suffix
 # or
-#   FIRST_LAST_TIME.suffix
+#   FIRST_LAST.suffix
 #
 # in the /var/Reg/documents/covid_vax directory.
+#
 sub process_covid_vax {
     my ($get_dir, $f) = @_;
-    my $cf = "covid_vax_$f";
     my ($suffix) = $f =~ m{[.](\w+) \z}xms;
+    my $cf = $f;
     if (! $suffix) {
         # no suffix at all so assume a .jpg file
         # shouldn't happen since we did this on mmc.org as well...
-        $cf .= "jpg";
+        $suffix = 'jpg';
+        $cf .= ".jpg";
     }
     elsif ($suffix eq 'jpeg') {
         $suffix = "jpg";
         $cf =~ s{jpeg}{jpg}xms;
     }
-    if ($suffix eq '.pdf') {
-        # convert to a .jpg and resize/compress it
-        # couldn't do this on mountmadonna.org or here with IM6
+    if ($f ne $cf) {
+        rename "$get_dir/$f", "$get_dir/$cf";
+    }
+    if ($suffix eq 'pdf') {
+        # convert to a jpg and resize/compress it
+        # couldn't do this on mountmadonna.org or
+        # here with ImageMagic version 6.
         # we installed pdftoppm and it does work okay
         #
         my $new = "$get_dir/$cf";
@@ -970,40 +976,41 @@ sub process_covid_vax {
         system "/usr/bin/pdftoppm $get_dir/$cf $new -jpeg -f 1 -singlefile";
             # the above added .jpg to $new
         $new .= ".jpg";
-        # forget resizing and compressing
-        # it proved unreliable.  big is okay
-        #my $tmp = "/tmp/card$$";
-        #system "/usr/bin/convert -resize 1000x $new $tmp";
-        #system "/usr/bin/convert -strip -interlace Plane -quality 65%"
-        #     . " $tmp $new";
-        #unlink $tmp;
+
+        # resizing and compressing
+        my $tmp = "/tmp/card$$";
+        system "/usr/bin/convert -resize 1000x $new $tmp";
+        system "/usr/bin/convert -strip -interlace Plane -quality 65%"
+             . " $tmp $new";
+        unlink $tmp;
         $cf =~ s{pdf}{jpg}xms;
+        # we leave the .pdf there?
     }
+    # now to craft an email and an activity message
     my $person_name;
     my ($person_id) = $f =~ m{\A (\d+)[.]}xms;
     if ($person_id) {
         my $person = model($c, 'Person')->find($person_id);
-        $cf = 'covid_vax_'
-            . $person->first() . '_' . $person->last()
-            . ".$suffix"
-            ;
-        $cf =~ s{[ ]}{ }xmsg;   # for first (or last) names like Mary Beth
+        $person_name = $person->name;
+        $cf = "$person_name.$suffix";
+        $cf =~ s{[ ]}{_}xmsg;   # for the space between first and last
+                                # and for first names like Mary Beth
         rename "$get_dir/$f", "$get_dir/$cf";
         if ($person) {
             $person->update({
                 covid_vax => $cf,
             });
-            $person_name = $person->name;
         }
         else {
-            # a stray file from somewhere?
+            # a stray file from somewhere
+            # with an unknown person id?
             unlink "$get_dir/$cf";
             return;
         }
     }
     else {
         #
-        # the file is named "FIRST_LAST_TIME.suffix"
+        # the file is named "FIRST_LAST.suffix"
         # because it was uploaded during an online registration.
         # the filename is stored in the x_covid_vax field.
         # just get the file (in $get_dir) for later use
@@ -1013,11 +1020,12 @@ sub process_covid_vax {
         # we can't update the person yet because the
         # Person record may not have been created yet.
         #
-        ($person_name) = $f =~ m{\A (.*)_\d+[.]}xms;
+        $person_name = $f;
+        $person_name =~ s{[.]$suffix}{}xms;
         $person_name =~ s{_}{ }xmsg;
     }
     $person_name = "<a target=_blank href='https://akash.mountmadonna.org"
-                 . "/person/view_covid/$person_name/$cf'>"
+                 . "/person/view_covid/$cf'>"
                  . "$person_name</a>"
                  ;
     email_letter($c,
