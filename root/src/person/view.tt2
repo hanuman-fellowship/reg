@@ -156,7 +156,9 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
     <a href='/person/del_covid_vax/$id' onclick="return confirm('Okay to Delete COVID Vaccination Card?');">Delete</a>
     &nbsp; &nbsp;&nbsp;
 [% END %]
+[% IF person.email %]
 <a onclick="return confirm('Send email requesting the Covid-19 vaccination card?');" href='/person/request_covid_vax/$id'>Request</a>
+[% END %]
 </td>
 </tr>
 
