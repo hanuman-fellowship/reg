@@ -2750,9 +2750,15 @@ sub affil_tally : Local {
 }
 
 sub covid_vax : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $not_okay) = @_;
+    my @not_okay = $not_okay? (vax_okay => '')
+                  :           ()
+                  ;
     my @people = model($c, 'Person')->search(
-                    { covid_vax => { '!=' => '' } },
+                    {
+                        covid_vax => { '!=' => '' },
+                        @not_okay,
+                    },
                     { order_by => [qw/ last first /] },
                  );
     stash($c,
