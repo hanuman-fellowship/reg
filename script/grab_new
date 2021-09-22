@@ -1026,7 +1026,7 @@ sub process_covid_vax {
         $person_name =~ s{[.]$suffix}{}xms;
         $person_name =~ s{_}{ }xmsg;
     }
-    chmod 0555, "$get_dir/$cf";     # so we can rotate it?
+    chmod 0666, "$get_dir/$cf";     # so we can rotate it?
     $person_name = "<a target=_blank href='https://akash.mountmadonna.org"
                  . "/person/view_covid/$cf'>"
                  . "$person_name</a>"
