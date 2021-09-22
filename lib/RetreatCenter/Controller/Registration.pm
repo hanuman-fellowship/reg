@@ -444,21 +444,19 @@ EOH
     #
     # if there is a COVID vaccination file attach it to the Person record
     #
-    my $docs = '/var/Reg/documents';
+    my $docs = '/var/Reg/documents/covid_vax';
     #
     # Note: we may have started to bring this online registration in
     # but aborted it before completion.  in this case we have
     # already gotten the person and attached the covid card.
+    # we'll get it again... :(
     #
     # $href->{covid_vax} is the name of a file
-    # in $docs which we got via a previous grab_new.
-    # it came in with the same grab_new invocation as this online
-    # registration did.
-    # but ... note that we have (in grab_new) prepended 'covid_vax_'
-    # to the filename in /var/Reg/documents. 
-    # the filename is now covid_vax_FIRST_LAST_TIME.suffix.
+    # in $docs which we got via a grab_new.
+    # it came in with the same grab_new instance
+    # as this online registration did.
     #
-    if ($href->{covid_vax} && -e "$docs/covid_vax_$href->{covid_vax}") {
+    if ($href->{covid_vax} && -e "$docs/$href->{covid_vax}") {
         # first ... there may already be a vaccination card image
         # in the Person record from a previous registration.
         # delete it.
@@ -467,7 +465,8 @@ EOH
             unlink "$docs/" . $person->covid_vax();
         }
         $person->update({
-            covid_vax => "covid_vax_$href->{covid_vax}",
+            covid_vax => $href->{covid_vax},
+            okay_vax  => '',
         });
     }
 
