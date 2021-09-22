@@ -971,9 +971,9 @@ sub process_covid_vax {
         # here with ImageMagic version 6.
         # we installed pdftoppm and it does work okay
         #
-        my $new = "$get_dir/$cf";
+        my $new = "$get_dir/$f";
         $new =~ s{.pdf}{}xms;
-        system "/usr/bin/pdftoppm $get_dir/$cf $new -jpeg -f 1 -singlefile";
+        system "/usr/bin/pdftoppm $get_dir/$f $new -jpeg -f 1 -singlefile";
             # the above added .jpg to $new
         $new .= ".jpg";
 
@@ -983,7 +983,8 @@ sub process_covid_vax {
         system "/usr/bin/convert -strip -interlace Plane -quality 65%"
              . " $tmp $new";
         unlink $tmp;
-        $cf =~ s{pdf}{jpg}xms;
+        $f =~ s{pdf}{jpg}xms;
+        $suffix = 'jpg';
         # we leave the .pdf there?
     }
     # now to craft an email and an activity message
