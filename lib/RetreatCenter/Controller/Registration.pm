@@ -466,7 +466,7 @@ EOH
         }
         $person->update({
             covid_vax => $href->{covid_vax},
-            okay_vax  => '',
+            vax_okay  => '',
         });
     }
 
