@@ -1837,6 +1837,7 @@ sub del_covid_vax : Local {
     unlink "$docs/" . $per->covid_vax;
     $per->update({
         covid_vax => '',
+        vax_okay  => '',
     });
     $c->response->redirect($c->uri_for("/person/view/$per_id"));
 }
