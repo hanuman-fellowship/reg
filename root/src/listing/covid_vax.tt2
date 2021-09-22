@@ -1,4 +1,4 @@
-<h2>Covid-19 Vaccinations</h2>
+<h2>Covid-19 Vaccination Cards[% IF not_okay %] - Only Unchecked/Invalid[% END %]</h2>
 <ul>
 [% FOR p IN people %]
 [% IF p.vax_okay %]<img src=/static/images/checked.gif width=20>[% ELSE %]<img src=/static/images/unhappy1.gif width=20>[% END %] <a target=_blank href='/person/view_covid/$p.covid_vax'>$p.last_first_name</a><br>

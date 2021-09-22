@@ -2762,6 +2762,7 @@ sub covid_vax : Local {
                     { order_by => [qw/ last first /] },
                  );
     stash($c,
+        not_okay => $not_okay,
         people => \@people,
         template => 'listing/covid_vax.tt2',
     );
