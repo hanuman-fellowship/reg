@@ -999,6 +999,7 @@ sub process_covid_vax {
         if ($person) {
             $person->update({
                 covid_vax => $cf,
+                vax_okay  => '',
             });
         }
         else {
