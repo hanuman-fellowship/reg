@@ -464,6 +464,10 @@ EOH
         if ($person->covid_vax()) {
             unlink "$docs/" . $person->covid_vax();
         }
+        # in grab_new
+        # .pdf files were used to create a .jpg file
+        # which is better for display
+        $href->{covid_vax} =~ s{[.]pdf \z}{.jpg}xms;
         $person->update({
             covid_vax => $href->{covid_vax},
             vax_okay  => '',
