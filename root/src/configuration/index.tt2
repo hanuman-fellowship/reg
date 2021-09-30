@@ -90,6 +90,9 @@ p {
 [% IF mail_staff %]
 <a href=/user/list>Users</a><p>
 [% END %]
+[% IF prog_admin %]
+    <a href=/string/while_here>While You're Here</a><p>
+[% END %]
 </td>
 </tr>
 </table>

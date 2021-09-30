@@ -16,6 +16,7 @@ use Util qw/
     empty
     time_travel_class
     set_cache_timestamp
+    get_string
     put_string
 /;
 use Date::Simple qw/
@@ -273,6 +274,22 @@ sub time_travel_do : Local {
         value => join ' ', %date_for,
     });
     $c->forward('/person/search');
+}
+
+sub while_here : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        while_here => get_string($c, 'while_here'),
+        template => 'string/while_here.tt2',
+    );
+}
+
+sub while_here_do : Local {
+    my ($self, $c) = @_;
+    my $while_here = $c->request->params->{while_here};
+    put_string($c, 'while_here', $while_here);
+    $c->forward('/configuration/index');
 }
 
 sub badge_settings : Local {

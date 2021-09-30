@@ -1,0 +1,1 @@
+insert into string (the_key, value) values ('while_here', '');

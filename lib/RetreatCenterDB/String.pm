@@ -397,3 +397,4 @@ unknown - the display name for the housing type 'unknown'
 url_prefix - the prefix for all URLs in Reg - like https://akash.mountmadonna.org
 website - the title for a Rental's website in the online row for the rental
 weburl - the web address for a Rental's website in the online row for the rental
+while_here - The While You're Here section of the default confirmation letter

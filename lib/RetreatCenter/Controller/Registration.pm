@@ -2090,6 +2090,7 @@ sub send_conf : Local {
         pre_payment_link => $pre_pay_link,
         cancel_policy => $cancel_policy,
         covid_vax => $pr->covid_vax && ! $reg->person->covid_vax,
+        while_here => get_string($c, 'while_here'),
     };
     my $html = "";
     my $tt = Template->new({

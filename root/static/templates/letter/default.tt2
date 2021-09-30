@@ -324,6 +324,9 @@
 
     [% IF program.covid_vax %]
         <h2>While You're Here</h2>
+        <p>
+        $while_here
+        <!--
         We invite you to visit the Sankat Mochan Hanuman Temple.
         Arati service is at 6:30 am and 6 pm daily.
         <p>
@@ -338,6 +341,7 @@
         Due to the pandemic, Anjaneya's World Cafe,
         Kaya Kalpa Wellness Center,
         and the hot tub are not available at this time.
+        -->
     [% ELSE %]
         [% IF program.kayakalpa %]
             <h2>Appointment Reservations</h2>
