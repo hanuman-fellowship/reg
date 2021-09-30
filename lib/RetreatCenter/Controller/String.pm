@@ -47,6 +47,7 @@ sub list : Local {
                 the_key => { '-not_like' => 'lunch_cost%' },
                 the_key => { '-not_like' => 'dinner_cost%' },
                 the_key => { '-not_like' => '%daily_max%' },
+                the_key => { '-not_like' => '%while_here%' },
             ]
         },
         {
