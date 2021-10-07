@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenterDB::Rental;
 use base qw/DBIx::Class/;
 
+use lib '..';
+
 use Global qw/%string/;
 use Util qw/
     tt_today
@@ -302,19 +304,50 @@ sub count {
     }
     return $self->grid_max() || $self->max();
 }
-my %display_for = map { my $x = $_; $x =~ s{_}{ }xmsg; $x } qw/
-    tentative Tentative
-    sent      Contract_Sent
-    received  Contract_Received
-    arranged  Letter_Sent
-    due       Due
-    done      Done
+
+#
+# we need both an ordered array 
+# and a lookup table for the display value.
+#
+my @status_info = qw/
+    tentative-Tentative
+    sent-Contract_Sent
+    received-Contract_Received
+    arranged-Letter_Sent
+    due-Due
+    done-Done
 /;
+my @statuses = map {
+                   m{\A ([^-]*)-}xms;
+               }
+               @status_info;
+my %display_for = map {
+                      my ($x, $y) = split '-';
+                      $y =~ s{_}{ }xms;
+                      $x => $y;
+                  }
+                  @status_info;
 sub status_td {
     my ($self) = @_;
     my $status = $self->status();
     my $color = d3_to_hex($string{"rental_$status\_color"});
     return "<td align=center bgcolor=$color>$display_for{$status}</td>";
+}
+
+sub select_status {
+    my ($self) = @_;
+    my $opts = '';
+    for my $s (@statuses) {
+        $opts .= "<option value='$s'"
+              . ($self->status eq $s? ' selected': '')
+              . ">$display_for{$s}</option>\n"
+              ;
+    }
+    return <<"EOH";
+<select name=status>
+$opts
+</select>
+EOH
 }
 
 sub ndays_sent {
@@ -487,6 +520,9 @@ sub set_grid_stale {
 }
 
 sub send_rental_deposit {
+    if (-f '/tmp/Reg_Dev') {
+        return;
+    }
     my ($rental) = @_;
     my $code = $rental->grid_code();
     my $coord = $rental->coordinator();
@@ -773,7 +809,7 @@ sdate - date the rental starts
 sent_by - foreign key to user
 staff_ok - has the staff okayed this rental?
 start_hour - time the rental begins
-status - tentative, sent, received, due, done
+status - tentative, sent, received, arranged, due, done
 subtitle - secondary description of the rental for the web
 summary_id - foreign key to summary
 tentative - has this rental not been confirmed yet?

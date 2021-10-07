@@ -55,6 +55,10 @@ function check_len() {
 <td><input type=text name=sdate value='${rental.sdate_obj.format("%D")}' size=10></td>
 <th align=right><span class=red>*</span> To</th>
 <td><input type=text name=edate value='${rental.edate_obj.format("%D")}' size=10></td>
+[% IF form_action == ('update_do/' _ rental.id) %]
+<th align right>Status</th>
+<td>$rental.select_status</td>
+[% END %]
 </tr>
 
 </table>

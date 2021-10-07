@@ -497,7 +497,11 @@ sub create_from_proposal : Local {
 #
 # there are several things to compute for the display.
 # update the balance in the record once you're done.
-# and possibly reset the status.
+#
+# and possibly reset the status - not any more - Oct 2021.
+# we can now set the status manually.
+# it IS set when the contract and arrangements letter is sent
+# and when we choose 'Received'.
 #
 sub view : Local {
     my ($self, $c, $rental_id, $section) = @_;
@@ -556,6 +560,11 @@ sub view : Local {
         $bookings{$t} =~ s{, $}{};     # final comma
     }
 
+=comment
+
+    # not done any more...
+    # trying to do this automatically proved to be troublesome.
+
     my $status;
     if ($rental->tentative() || ! $rental->contract_sent()) {
         $status = 'tentative';
@@ -585,6 +594,8 @@ sub view : Local {
         status  => $status,
         tentative => $status eq 'tentative'? 'yes': '',
     });
+
+=cut
 
     #
     # is there a proposal (as yet unlinked to a rental)
@@ -1560,6 +1571,7 @@ sub arrangements : Local {
     $rental->update({
         arrangement_sent => tt_today($c)->as_d8(),
         arrangement_by   => $c->user->obj->id,
+        status           => 'arranged',
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
@@ -1571,6 +1583,7 @@ sub received : Local {
     $rental->update({
         contract_received => tt_today($c)->as_d8(),
         received_by       => $c->user->obj->id,
+        status            => 'received',
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
