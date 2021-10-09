@@ -614,6 +614,10 @@ sub update_do : Local {
     delete $hash{covid_file};
     my $covid_vax_card = $c->request->upload('covid_file');
     if ($covid_vax_card) {
+        my $existing_vax = "$docs/covid_vax/" . $p->covid_vax();
+        if (-f $existing_vax) {
+            unlink $existing_vax;
+        }
         my $fname = $covid_vax_card->filename();
         my ($suffix) = $fname =~ m{[.](.*)}xms;
         if ($suffix eq 'jpeg') {
@@ -626,11 +630,30 @@ sub update_do : Local {
         $hash{covid_vax} = $fname;
         my $full_fname = "$docs/covid_vax/$fname";
         $covid_vax_card->copy_to($full_fname);
-        if (-s $full_fname > 200_000) {
+        if ($suffix eq 'pdf') {
+            # convert to a jpg and resize/compress it
+            # couldn't do this on mountmadonna.org or
+            # here with ImageMagic version 6.
+            # we installed pdftoppm (poppler-utils) and it does work okay
+            #
+            my $new = $full_fname;
+            $new =~ s{.pdf}{}xms;
+            system "/usr/bin/pdftoppm $full_fname $new -jpeg -f 1 -singlefile";
+                # the above added .jpg to $new
+            $new .= ".jpg";
+
+            chmod 0666, $new;       # so it can be rotated
+
+            $full_fname =~ s{pdf}{jpg}xms;
+            $hash{covid_vax} =~ s{pdf}{jpg}xms;
+            # we leave the .pdf there? sure.
+        }
+        if ($suffix eq 'jpg' && -s $full_fname > 200_000) {
             # resize the large picture to a width of 1000 pixels
             # and compress it a bit
             system "convert -resize 1000 $full_fname /tmp/$fname";
-            system "convert -strip -interlace Plane -quality 65% /tmp/$fname $full_fname";
+            system "convert -strip -interlace Plane -quality 65%"
+                 . " /tmp/$fname $full_fname";
         }
     }
     $p->update({
@@ -1834,7 +1857,7 @@ sub get_gender : Local {
 sub del_covid_vax : Local {
     my ($self, $c, $per_id) = @_;
     my $per = model($c, 'Person')->find($per_id);
-    unlink "$docs/" . $per->covid_vax;
+    unlink "$docs/covid_vax/" . $per->covid_vax;
     $per->update({
         covid_vax => '',
         vax_okay  => '',
