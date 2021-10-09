@@ -639,8 +639,9 @@ sub update_do : Local {
             my $new = $full_fname;
             $new =~ s{.pdf}{}xms;
             system "/usr/bin/pdftoppm $full_fname $new -jpeg -f 1 -singlefile";
-                # the above added .jpg to $new
+                # the above added .jpg to $new so ...
             $new .= ".jpg";
+            $suffix = 'jpg';
 
             chmod 0666, $new;       # so it can be rotated
 
