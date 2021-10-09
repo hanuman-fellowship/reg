@@ -115,18 +115,16 @@ In the confirmation letter template described above, there is a
 field for you to enter this gate code so that it will be distributed
 to all your guests.
 <h3>SCHEDULE</h3>
-Please refer to your contract for meal times so that you can schedule
-your meeting times accordingly. 
-Since Brunch is served at 10:00 am on Saturday rather than Breakfast
-and Lunch at the usual times, a snack is typically served in your
-meeting space at 1:00 pm. Although check out time is 12:00 pm
-you will be served lunch at 12:30 pm as usual in the Community Building.
+Please refer to your contract for meal times so that you
+can schedule your meeting times accordingly.
+Brunch is served 10am-11am, dinner is served 5pm-6pm daily.
+Check out is at 12pm.
 <p>
-As part of your schedule, we need to arrange a time for one of our
-staff to give a 25 minute orientation on your start date.
-The orientation provides valuable
-information about our center's services, amenities, and policies.
-May we schedule our orientation for 7:00 pm?
+As part of your schedule, we need to arrange a time
+for one of our staff to give a brief orientation on your start date.
+The orientation provides valuable information about our center's services,
+amenities, and policies.
+May we schedule our orientation at the start of your first session?
 <p>
 Please send us a schedule of your meeting times, taking into
 consideration the items listed above, so that our events staff can
@@ -158,10 +156,6 @@ to.
 Would you like a sound system in your meeting space?
 If so, what kind of sound equipment would you like us to provide?
 Do you need a projector and projection screen?
-<h3>SATURDAY YOGA</h3>
-If your group has both the time and inclination to attend our
-Saturday morning yoga class from 7:30 am to 9:45 am, please let me
-know so that we may secure a space that will accommodate you.
 <h3>MAP</h3>
 Also attached is a map of our "downtown" area where you can locate
 your meeting space. When you and/or your rental coordinator arrive
@@ -196,6 +190,7 @@ Oceanview Books and Gifts store. Their email address is:
 </ul>
 <h3>OTHER QUESTIONS</h3>
 At what time on ${rental.sdate_obj.format("%A")} do you plan on arriving?
+Please plan on coming into the Guest Services office upon arrival. 
 <p>
 Please let us know which room(s) your presenter(s)/coordinator(s)
 will be staying in as soon as you know.
