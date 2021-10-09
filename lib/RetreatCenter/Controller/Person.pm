@@ -648,7 +648,7 @@ sub update_do : Local {
             $hash{covid_vax} =~ s{pdf}{jpg}xms;
             # we leave the .pdf there? sure.
         }
-        if ($suffix eq 'jpg' && -s $full_fname > 200_000) {
+        if ($suffix eq 'jpg' && ((-s $full_fname) > 200_000)) {
             # resize the large picture to a width of 1000 pixels
             # and compress it a bit
             system "convert -resize 1000 $full_fname /tmp/$fname";
