@@ -24,6 +24,7 @@ use Util qw/
     rand6
     time_travel_class
     kid_badge_names
+    JON
 /;
 use Badge;
 use Date::Simple qw/
@@ -2765,6 +2766,36 @@ sub covid_vax : Local {
         not_okay => $not_okay,
         people => \@people,
         template => 'listing/covid_vax.tt2',
+    );
+}
+
+sub future_no_vax : Local {
+    my ($self, $c) = @_;
+    #
+    # find future registrations in programs requiring a covid vaccination
+    # where the person does not have an approved covid vaccination card.
+    #
+    my $today = tt_today($c)->as_d8();
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       'program.covid_vax' => 'yes',
+                       date_end            => { '>' => $today },
+                       -or => [
+                           'person.covid_vax'  => '',
+                           'person.vax_okay'   => '',
+                        ],
+                   },
+                   {
+                       join     => [qw/ program person /],
+                       prefetch => [qw/ program person /],
+                   }
+               );
+    for my $r (@regs) {
+        JON $r->person->name, ' => ', $r->program->name;
+    }
+    stash($c,
+        regs     => \@regs,
+        template => 'listing/future_no_vax.tt2',
     );
 }
 

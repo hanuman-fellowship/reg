@@ -14,10 +14,16 @@ Phone Lists
 <a href="/listing/affil_tally">Affiliation Tally</a>
 <p class=p2>
 <a href="/listing/work_study">Work Study</a>
+<h3>Vaccination Cards</h3>
+<ul>
+<a href="/listing/covid_vax">All Cards</a>
 <p class=p2>
-<a href="/listing/covid_vax">Covid-19 Vaccination Cards</a>
+<a href="/listing/covid_vax/1">Unchecked/Invalid Cards</a>
 <p class=p2>
-<a href="/listing/covid_vax/1">Only Unchecked/Invalid Vaccination Cards</a>
+<a href="/listing/future_no_vax">Future Registrations without Valid Cards</a>
+<br>
+&nbsp;
+</ul>
 <p class=p2>
 <a target=_blank href="/listing/undup">Unduplication File</a>
 <p class=p2>

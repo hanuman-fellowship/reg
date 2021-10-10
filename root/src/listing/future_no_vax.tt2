@@ -1,0 +1,4 @@
+<h2>FUTURE NO VAX </h2>
+[% FOR r IN regs %]
+    $r.person.name => $r.program.name<br>
+[% END %]
