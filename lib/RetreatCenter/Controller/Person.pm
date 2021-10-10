@@ -32,6 +32,7 @@ use Util qw/
     charges_and_payments_options
     strip_nl
     time_travel_class
+    JON
 /;
 use Date::Simple qw/
     date
@@ -642,6 +643,7 @@ sub update_do : Local {
                 # the above added .jpg to $new so ...
             $new .= ".jpg";
             $suffix = 'jpg';
+            $fname = "$fl_name.$suffix";
 
             chmod 0666, $new;       # so it can be rotated
 
