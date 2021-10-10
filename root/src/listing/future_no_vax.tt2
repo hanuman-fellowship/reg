@@ -1,4 +1,17 @@
-<h2>FUTURE NO VAX </h2>
+<h2>Future Registrations without Valid Vaccination Cards</h2>
+<ul>
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th>Start Date</th>
+<th align=left>Program</th>
+</tr>
 [% FOR r IN regs %]
-    $r.person.name => $r.program.name<br>
+    <tr>
+    <td><a target=_blank href='/person/view/$r.person.id'>$r.person.name</a></td>
+    <td><a target=_blank href='/registration/view/$r.id'>${r.date_start_obj.format("%b %e '%q")}</a></td>
+    <td><a target=_blank href='/program/view/$r.program_id'>$r.program.name</a></td>
+    </tr>
 [% END %]
+</table>
+</ul>
