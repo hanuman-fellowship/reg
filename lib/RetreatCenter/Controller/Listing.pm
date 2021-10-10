@@ -2786,6 +2786,7 @@ sub future_no_vax : Local {
                         ],
                    },
                    {
+                       order_by => 'date_start asc',
                        join     => [qw/ program person /],
                        prefetch => [qw/ program person /],
                    }
