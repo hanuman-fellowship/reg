@@ -21,7 +21,7 @@ use Date::Simple qw/
     today
 /;
 
-my $default_packet = 'MMC_Guest_Packet.pdf';
+my $default_packet = 'MMC Guest Packet.pdf';
 my $in_two_days_d8 = (today() + 2)->as_d8();
 my $today = today()->format("%B %e, %Y"),
 my $tt = Template->new({

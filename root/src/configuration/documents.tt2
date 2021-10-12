@@ -13,7 +13,7 @@ name as shown in the left hand column.
 <table cellpadding=5>
 
 <tr><td>
-CURRENT INFO SHEET.doc
+Info Sheet.pdf
 </td><td>
 <input type=file name=a_info>
 </td></tr>
@@ -31,19 +31,19 @@ Main Area Map.pdf
 </td></tr>
 
 <tr><td>
-MMC Food.doc
+MMC Food.pdf
 </td><td>
 <input type=file name=d_food>
 </td></tr>
 
 <tr><td>
-MMC_Guest_Packet.pdf
+MMC Guest Packet.pdf
 </td><td>
 <input type=file name=e_packet>
 </td></tr>
 
 <tr><td>
-Rental Guest Confirmation Letter.doc
+Rental Guest Confirmation Letter.pdf
 </td><td>
 <input type=file name=f_rental_conf>
 </td></tr>

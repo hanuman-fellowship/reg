@@ -2145,7 +2145,7 @@ sub send_conf : Local {
         = $pr->housing_not_needed()?
             []
          :  [
-            '/var/Reg/documents/MMC_Guest_Packet.pdf',
+            '/var/Reg/documents/MMC Guest Packet.pdf',
          ]
          ;
     email_letter($c,

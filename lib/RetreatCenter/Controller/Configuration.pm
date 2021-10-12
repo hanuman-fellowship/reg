@@ -132,13 +132,13 @@ sub spellings_do : Local {
 #
 # for updating these few special 'fixed' documents:
 #
-# CURRENT INFO SHEET.doc
-# MMC_Guest_Packet.pdf
+# Info Sheet.pdf
 # Kaya Kalpa Brochure.pdf
-# Rental Guest Confirmation Letter.doc
 # Main Area Map.pdf
+# MMC Food.pdf
+# MMC Guest Packet.pdf
+# Rental Guest Confirmation Letter.pdf
 # Rental Registration Guidelines.pdf
-# MMC Food.doc
 #
 sub documents : Local {
     my ($self, $c) = @_;
@@ -149,12 +149,12 @@ sub documents : Local {
 
 # 'our' so we can reference it from elsewhere...
 our %file_named = (
-    a_info        => 'CURRENT INFO SHEET.doc',
+    a_info        => 'Info Sheet.pdf',
     b_kaya        => 'Kaya Kalpa Brochure.pdf',
     c_main_map    => 'Main Area Map.pdf',
-    d_food        => 'MMC Food.doc',
-    e_packet      => 'MMC_Guest_Packet.pdf',
-    f_rental_conf => 'Rental Guest Confirmation Letter.doc',
+    d_food        => 'MMC Food.pdf',
+    e_packet      => 'MMC Guest Packet.pdf',
+    f_rental_conf => 'Rental Guest Confirmation Letter.pdf',
     g_rental_reg  => 'Rental Registration Guidelines.pdf',
 );
 

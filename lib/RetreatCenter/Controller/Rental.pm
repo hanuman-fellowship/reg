@@ -1562,9 +1562,9 @@ sub arrangements : Local {
         html    => $html,
         files_to_attach => [
             "$dir/Main Area Map.pdf",
-            "$dir/Rental Guest Confirmation Letter.doc",
-            "$dir/MMC Food.doc",
-            "$dir/CURRENT INFO SHEET.doc",
+            "$dir/Rental Guest Confirmation Letter.pdf",
+            "$dir/MMC Food.pdf",
+            "$dir/Info Sheet.pdf"
         ],
         activity_msg => "Arrangements sent for <a href='/rental/view/$rental_id'>$rental_name</a>",
     );
