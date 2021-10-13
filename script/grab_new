@@ -985,6 +985,7 @@ sub process_covid_vax {
         chmod 0666, $new;       # so it can be rotated
         unlink $tmp;
         $f =~ s{pdf}{jpg}xms;
+        $cf =~ s{pdf}{jpg}xms;
         $suffix = 'jpg';
         # we leave the .pdf there? sure.
     }
