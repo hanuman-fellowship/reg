@@ -1,3 +1,11 @@
+<style>
+.how_used {
+    color: green;
+    margin-top: 3mm;
+    margin-left: .5in;
+    width: 400px;
+}
+</style>
 <h2>Documents</h2>
 <div style="width: 700px">
 To update one or more of these 7 documents select 
@@ -13,44 +21,68 @@ name as shown in the left hand column.
 <table cellpadding=5>
 
 <tr><td>
-Info Sheet.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/Info Sheet.pdf'>Info Sheet.pdf</a>
+<div class=how_used>
+Attached to the Arrangements email.
+</div>
+</td><td valign=top>
 <input type=file name=a_info>
 </td></tr>
 
 <tr><td>
-Kaya Kalpa Brochure.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/Kaya Kalpa Brochure.pdf'>Kaya Kalpa Brochure.pdf</a>
+<div class=how_used>
+Attached to the Contract email.
+</div>
+</td><td valign=top>
 <input type=file name=b_kaya>
 </td></tr>
 
 <tr><td>
-Main Area Map.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/Main Area Map.pdf'>Main Area Map.pdf</a>
+<div class=how_used>
+Attached to the Arrangements email.
+</div>
+</td><td valign=top>
 <input type=file name=c_main_map>
 </td></tr>
 
 <tr><td>
-MMC Food.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/MMC Food.pdf'>MMC Food.pdf</a>
+<div class=how_used>
+Attached to the Arrangements email.
+</div>
+</td><td valign=top>
 <input type=file name=d_food>
 </td></tr>
 
 <tr><td>
-MMC Guest Packet.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/MMC Guest Packet.pdf'>MMC Guest Packet.pdf</a>
+<div class=how_used>
+Attached to confirmation emails.
+It is also sent to registrants and rental attendees
+48 hours before they arrive at MMC.
+Each Program and Rental can have an <i>alternate</i> guest packet.
+</div>
+</td><td valign=top>
 <input type=file name=e_packet>
 </td></tr>
 
 <tr><td>
-Rental Guest Confirmation Letter.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/Rental Guest Confirmation Letter.pdf'>Rental Guest Confirmation Letter.pdf</a>
+<div class=how_used>
+Attached to the Arrangements email.
+</div>
+</td><td valign=top>
 <input type=file name=f_rental_conf>
 </td></tr>
 
 <tr><td>
-Rental Registration Guidelines.pdf
-</td><td>
+<a target=_blank href='/rental/show_file/Rental Registration Guidelines.pdf'>Rental Registration Guidelines.pdf</a>
+<div class=how_used>
+Attached to the Contract email.
+</div>
+</td><td valign=top>
 <input type=file name=g_rental_reg>
 </td></tr>
 
