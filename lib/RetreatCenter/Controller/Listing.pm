@@ -2795,6 +2795,7 @@ sub future_no_vax : Local {
         JON $r->person->name, ' => ', $r->program->name;
     }
     stash($c,
+        pg_title => 'Future Registrations without Valid Vaccination Cards',
         regs     => \@regs,
         template => 'listing/future_no_vax.tt2',
     );

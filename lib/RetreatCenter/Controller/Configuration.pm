@@ -143,6 +143,7 @@ sub spellings_do : Local {
 sub documents : Local {
     my ($self, $c) = @_;
     stash($c,
+        pg_title => "Documents for Reg",
         template => 'configuration/documents.tt2',
     );
 }

@@ -1898,6 +1898,7 @@ sub view_covid: Local {
         id     => $id,
         image  => $image,
         fname  => $fname,
+        pg_title => "COVID-19 Vaccination Card for $name",
     };
     $tt->process(
         "person/view_covid_vax.tt2",   # template
