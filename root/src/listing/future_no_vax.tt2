@@ -8,9 +8,10 @@
 <th align=left>Program</th>
 </tr>
 [% FOR r IN regs %]
+    [% cv = r.person.covid_vax %]
     <tr>
-    <td>[% IF r.person.covid_vax %]v[% ELSE %]&nbsp;[% END %]</td>
-    <td><a target=_blank href='/person/view/$r.person.id'>$r.person.name</a></td>
+    <td>[% IF cv %]v[% ELSE %]&nbsp;[% END %]</td>
+    <td><a target=_blank href=[% IF cv %]'/person/view_covid/$cv'[% ELSE %]'/person/view/$r.person.id'[% END %]>$r.person.name</a></td>
     <td><a target=_blank href='/registration/view/$r.id'>${r.date_start_obj.format("%b %e '%q")}</a></td>
     <td><a target=_blank href='/program/view/$r.program_id'>$r.program.name</a></td>
     </tr>
