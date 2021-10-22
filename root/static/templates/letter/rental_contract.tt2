@@ -156,7 +156,7 @@ or after 12:00 pm on the end date.</i>
 <h2>Payment and Cancellation Policies</h2>
 Presenter agrees to pay for the total amount of participants'
 occupancy of accommodations at the "Rates" per day listed above.
-The renter further agrees to pay at least the Minimum Amount Due
+The Presenter further agrees to pay at least the Minimum Amount Due
 which shall be equal to the number of
 people specified under "Facilities" above,
 multiplied by the number of nights of the rental specified in the same place,
@@ -168,7 +168,7 @@ The Minimum Amount Due is thus ${rental.max} X $nnights X \$${min_per_day} = \$$
 <p>
 Depending on the rooms and amenities chosen the final obligation for payment will likely be higher but we will require at least the Minimum Amount Due agreed to in the contract.
 <p>
-The renter will pay a deposit of \$$deposit
+The Presenter will pay a deposit of \$$deposit
 upon the signing of this contract.
 <p>
 This amount can be paid online with this <a href="${rental_deposit_url}?code=$rental.grid_code">payment link</a>.
@@ -279,7 +279,7 @@ California Code of Civil Procedure, Sec. 12811, et seq.
 Any such arbitration shall take place in the County of Santa Cruz,
 California.
 <h2>General Provisions</h2>
-The Center will present to the renter's participants a welcome-orientation of about 15 minutes on the first day of the event.
+The Center will present to the Presenter's participants a welcome-orientation of about 15 minutes on the first day of the event.
 <p>
 This agreement is not a lease and it is agreed by the
 parties that no tenancy is created hereby.
