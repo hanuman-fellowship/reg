@@ -16,7 +16,7 @@
     <td><a target=_blank href='/program/view/$r.program_id'>$r.program.name</a></td>
     </tr>
 [% END %]
-<tr><td colspan=3><div style='margin-top: 5mm'>v - an uploaded card needs validation</div></td></tr>
+<tr><td colspan=3><div style='margin-top: 5mm'>v - an uploaded card that needs validation</div></td></tr>
 </table>
 </div>
 </ul>

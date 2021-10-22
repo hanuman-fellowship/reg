@@ -61,13 +61,21 @@ Please note that we need to receive your
 requests no later than 10 days before your event.
 We may not be able to fill specific requests thereafter.
 <p>
-We also offer, by appointment, through the Kaya Kalpa Wellness Center,
-various bodywork sessions. Appointments may be booked in advance by
-calling 408-847-3276. Kaya Kalpa's office hours are Monday through
-Friday 11 am to 1 pm.  Bodywork appointments may also be made at the
-Community Building on Friday during dinner and Saturday
-during breakfast. You may want to pass this information
-on to your participants.
+We also offer, by appointment through the MMI Wellness Center,
+various bodywork treatments, private yoga sessions, and Ayurvedic
+consultations at Kaya Kalpa. Ayurveda World specializes in
+compounded Ayurvedic herbal formulations, handcrafted tinctures,
+oils, and other traditional wellness products. One may also arrange
+for a personal herbal consultation at Ayurveda World by going to
+<a target=_blank href='https://ayurveda-world-herb-store.square.site/herbal-consultations'>herbal consultations</a>.
+<p>
+Please let your participants know they can arrange for appointments
+any time prior to their stay by going to 
+<a target=_blank href='https://www.mountmadonnainstitute.org/wellnesscenter'>wellness center</a>,
+by calling 408-846-4075 (Kaya Kalpa),
+or by emailing kayakalpa@mountmadonna.org. To reach
+Ayurveda World, please call 408-847-4385 or go to
+<a target=_blank href='https://www.mountmadonnainstitute.org/health-services/ayurveda-world'>Ayurveda World</a>.
 <p>
 We will do all we can to make your stay here a warmly supported
 and pleasant one.
@@ -90,7 +98,7 @@ $signer.last
 of $signer.addr1[% IF signer.addr2 %] $signer.addr2[% END %],
 $signer.city, $signer.st_prov
 $signer.zip_post, [% IF signer.country %]$signer.country[% END %]
-for "${rental.name_trimmed}", hereafter called the Renter, hereby agree as follows:
+for "${rental.name_trimmed}", hereafter called the Presenter, hereby agree as follows:
 <h2>Facilities</h2>
 The Center will provide workshop space in the ${rental.meeting_spaces},
 or a comparable facility, and lodging for up to $rental.max
@@ -119,7 +127,7 @@ The costs below are dollars per person per night.
 Children aged 2 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
 <p>
-<b>Please note all guest rooms must be vacated by 12:00 noon.</b>
+<b>Please note all guest rooms must be vacated by 12:00 noon UNLESS OTHERWISE CONTRACTED.</b>
 Room rates include accommodations,
 [% lunch = rental.any_lunches %]
 [% IF lunch %]
@@ -133,7 +141,7 @@ and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity
 - e.g., a room with 3 beds occupied by 2 people is charged as a double.
 [% IF rental.seminar_house %]
-<b>Renter agrees to house a minimum of 15 guests in the Seminar House.</b>
+<b>Presenter agrees to house a minimum of 15 guests in the Seminar House.</b>
 [% END %]
 [% IF ! lunch %]
 If lunches are requested for the group there will be a charge
@@ -145,7 +153,7 @@ or after 12:00 pm on the end date.</i>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Payment and Cancellation Policies</h2>
-Renter agrees to pay for the total amount of participants'
+Presenter agrees to pay for the total amount of participants'
 occupancy of accommodations at the "Rates" per day listed above.
 The renter further agrees to pay at least the Minimum Amount Due
 which shall be equal to the number of
@@ -183,18 +191,18 @@ Payment Due
 These cancellation charges are effective even if the Center
 is able to arrange an alternative rental. The Center will do its
 best to offset cancellation fees with replacement revenue,
-and give some credit to the Renter, at the Center's option,
+and give some credit to the Presenter, at the Center's option,
 if it is considered feasible to do so. These cancellation charges
 are not meant as a penalty but reflect the fact that the Center
-will have both administrative expenses in connection with the rental
+will have both administrative expenses in connection with hosting your program
 and, as the date gets closer, will have less and less chance of
 obtaining a replacement rental. The Center may, in its discretion,
 reduce these cancellation charges if a replacement rental is
-obtained, but the Renter should clearly understand that the
+obtained, but the Presenter should clearly understand that the
 Center is under no obligation to make a reduction and the
-Renter should not act in anticipation that a reduction is likely to be made.
+Presenter should not act in anticipation that a reduction is likely to be made.
 At the time of the event, payment due shall be paid within the
-first day of the rental period, and shall be computed at the
+first day of the program period, and shall be computed at the
 per person per day rates under "Rates" above,
 or at the Minimum Amount Due formula above,
 whichever is greater.  Any balance carried forward will
@@ -205,26 +213,28 @@ $rental.contract_exception
 [% END %]
 <h2>Meals</h2>
 The Center will generally provide three vegetarian meals per day:
-breakfast 8:15 am, lunch 12:30 pm, and dinner 5:00 pm with the
-following exceptions: Friday dinner 5:30 pm;
-Saturday brunch 10:00 am, snack (no lunch) 1:00 pm; Sunday breakfast 8:30.
+breakfast 8:30 am, lunch 12:30 pm, and dinner 5:30 pm with the
+following exceptions: 
+On Saturdays brunch is at 10:00 am and snack (no lunch) at 1:00 pm.
+During the pandemic, the Center has been providing 2 meals a day,
+plus a snack. Please confirm meal times with the Director of Guest Services.
 To be assured of a complete, fresh, hot meal, guests must arrive
 within the first half-hour of mealtime. Meals are at the
-Community Building for the renter,
+Community Building for the Presenter,
 other guests of the Center, and the Center community.
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Concurrent Workshops</h2>
 The Center may schedule other workshops and activities during
 this workshop, provided that such activities do not use facilities
-reserved for the renter or interfere with operations of the workshop.
+reserved for the Presenter or interfere with operations of the workshop.
 <h2>Linens</h2>
-The Center will provide linens to the renter's guests occupying
+The Center will provide linens to the Presenter's guests occupying
 indoor accommodations
 including sheets, blankets, pillows, pillowcases, and towels.
 <h2>Rules</h2>
-The renter's guests will abide by Center rules,
-and the renter will help to communicate and insure the rules.
+The Presenter's guests will abide by Center rules,
+and the Presenter will help to communicate and ensure the rules are respected.
 Anyone who does not abide by the rules will be asked to leave.
 <ol>
 <li>Quiet hours are observed 9:00 pm to breakfast.
@@ -239,15 +249,15 @@ If you have special requests, please speak with us and we
 will do our best to provide for your needs.
 </ol>
 <h2>Housing Procedure</h2>
-No later than two weeks before the rental,
-renter will inform the Center of the guest list make-up
+No later than two weeks before the program,
+Presenter will inform the Center of the guest accommodation list make-up
 (number of couples, single males/females, other requested
 configurations, and the types of rooms preferred).
 We will assign housing on a space-available basis as
 described in the accompanying letter starting "Dear Friends...."
 At that two week point, the housing agreed upon by both parties
 will be confirmed, with the Center guaranteeing the housing arranged,
-and the renter guaranteeing payment for that number
+and the Presenter guaranteeing payment for that number
 or the contractual minimum, whichever is greater.
 The same will be true if any additional housing requests are
 received after that point.
@@ -273,19 +283,19 @@ The Center will present to the renter's participants a welcome-orientation of ab
 This agreement is not a lease and it is agreed by the
 parties that no tenancy is created hereby.
 <p>
-Renter shall indemnify, defend and hold the Center harmless from any claims,
+Presenter shall indemnify, defend and hold the Center harmless from any claims,
 actions, damages, liabilities, costs and expenses (including attorneys' fees
 and costs) resulting from the loss of life, injury or damage to property
-arising from any occurrence related to Renter's activities on the Center's
-premises, or caused wholly or in part by any act or omission of Renter
-or its representatives.  Renter waives any potential claim by Renter
+arising from any occurrence related to Presenter's activities on the Center's
+premises, or caused wholly or in part by any act or omission of Presenter
+or its representatives.  Presenter waives any potential claim by Presenter
 against the Center in the event of any such occurrence.
 <p>
 This agreement is intended to be a complete statement of the
 terms and conditions of the rental, and for the protection of both parties,
 any modification of this agreement is required to be in writing
 signed by both parties or it will not be enforceable.
-This contract shall be void unless signed by Renter and
+This contract shall be void unless signed by Presenter and
 returned to the Center with the required deposit within two weeks
 of the date alongside the Guest Services Director's signature.
 <p>
