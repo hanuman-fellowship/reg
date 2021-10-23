@@ -137,8 +137,8 @@ sub spellings_do : Local {
 # Main Area Map.pdf
 # MMC Food.pdf
 # MMC Guest Packet.pdf
-# Rental Guest Confirmation Letter.pdf
-# Rental Registration Guidelines.pdf
+# Program Guest Confirmation Letter.pdf
+# Program Registration Guidelines.pdf
 #
 sub documents : Local {
     my ($self, $c) = @_;
@@ -155,8 +155,8 @@ our %file_named = (
     c_main_map    => 'Main Area Map.pdf',
     d_food        => 'MMC Food.pdf',
     e_packet      => 'MMC Guest Packet.pdf',
-    f_rental_conf => 'Rental Guest Confirmation Letter.pdf',
-    g_rental_reg  => 'Rental Registration Guidelines.pdf',
+    f_rental_conf => 'Program Guest Confirmation Letter.pdf',
+    g_rental_reg  => 'Program Registration Guidelines.pdf',
 );
 
 sub documents_do : Local {

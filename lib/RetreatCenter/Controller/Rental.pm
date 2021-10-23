@@ -1495,7 +1495,7 @@ sub email_arrangements : Local {
     }
     stash($c,
         rental   => $rental,
-        subject  => "MMC Rental Arrangements for '" . $rental->name_trimmed() . "'",
+        subject  => "MMC Program Arrangements for '" . $rental->name_trimmed() . "'",
         template => "rental/email_arrangements.tt2",
     );
 }
@@ -1562,7 +1562,7 @@ sub arrangements : Local {
         html    => $html,
         files_to_attach => [
             "$dir/Main Area Map.pdf",
-            "$dir/Rental Guest Confirmation Letter.pdf",
+            "$dir/Program Guest Confirmation Letter.pdf",
             "$dir/MMC Food.pdf",
             "$dir/Info Sheet.pdf"
         ],
@@ -1745,11 +1745,11 @@ sub contract : Local {
                  . ' <' . $user->email . '>',
         to      => \@to,
         cc      => \@cc,
-        subject => "MMC Rental Contract with '" . $rental->name_trimmed() . "'",
+        subject => "MMC Program Contract with '" . $rental->name_trimmed() . "'",
         html    => $preface,
         files_to_attach => [
             $contract,
-            "$dir/Rental Registration Guidelines.pdf",
+            "$dir/Program Registration Guidelines.pdf",
             "$dir/Kaya Kalpa Brochure.pdf",
         ],
         activity_msg => 'Contract sent for'
