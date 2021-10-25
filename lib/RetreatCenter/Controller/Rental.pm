@@ -1735,7 +1735,7 @@ sub contract : Local {
     ) or die "error in processing template: "
              . $tt->error();
     my $rental_name = $rental->name_trimmed(1);
-    my $contract = "/tmp/$rental_name MMC Rental Contract.html";
+    my $contract = "/tmp/$rental_name MMC Program Contract.html";
     open my $out, '>', $contract or return;   # what to do??
     print {$out} $html;
     close $out;
@@ -1750,7 +1750,7 @@ sub contract : Local {
         files_to_attach => [
             $contract,
             "$dir/Program Registration Guidelines.pdf",
-            "$dir/Kaya Kalpa Brochure.pdf",
+            #"$dir/Kaya Kalpa Brochure.pdf",
         ],
         activity_msg => 'Contract sent for'
                       . " <a href='/rental/view/$rental_id'>$rental_name</a>",
