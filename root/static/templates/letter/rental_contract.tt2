@@ -127,7 +127,9 @@ The costs below are dollars per person per night.
 [% IF hc.economy %]
 <tr><td>Economy</td><td align=right>$hc.economy</td></tr>
 [% END %]
+[% IF hc.dormitory %]
 <tr><td>Dormitory (4-7 to a room)</td><td align=right>$hc.dormitory</td></tr>
+[% END %]
 <tr><td>Triple</td><td align=right>$hc.triple</td></tr>
 <tr><td>Double</td><td align=right>$hc.dble</td></tr>
 <tr><td>Double with bath</td><td align=right>$hc.dble_bath</td></tr>
