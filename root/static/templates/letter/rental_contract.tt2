@@ -107,12 +107,21 @@ people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B 
 to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates:
 <h2>Rates</h2>
 [% hc = rental.housecost %]
+<!-- should generate this section rather than all the IFs here -->
+[% IF hc.type == 'Per Day' %]
 The costs below are dollars per person per night.
+[% END %]
 <table cellpadding=2>
+[% IF hc.commuting %]
 <tr><td>Commuting</th><td align=right>$hc.commuting</td></tr>
+[% END %]
+[% IF hc.own_tent %]
 <tr><td>Own Tent</th><td align=right>$hc.own_tent</td></tr>
+[% END %]
+[% IF hc.own_van %]
 <tr><td>Own Van</th><td align=right>$hc.own_van</td></tr>
-[% IF rental.summer %]
+[% END %]
+[% IF rental.summer && hc.center_tent %]
 <tr><td>Center Tent</th><td align=right>$hc.center_tent</td></tr>
 [% END %]
 [% IF hc.economy %]
