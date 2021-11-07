@@ -213,11 +213,13 @@ reduce these cancellation charges if a replacement program is
 obtained, but the Presenter should clearly understand that the
 Center is under no obligation to make a reduction and the
 Presenter should not act in anticipation that a reduction is likely to be made.
+<p>
 At the time of the event, payment due shall be paid within the
-first day of the program period, and shall be computed at the
-per person per day rates under "Rates" above,
+first day of the program period, and shall be computed per
+the "Rates" outlined above,
 or at the Minimum Amount Due formula above,
-whichever is greater.  Any balance carried forward will
+whichever is greater.  
+Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
 [% IF rental.contract_exception %]
 <h2>Exceptions</h2>
@@ -225,7 +227,7 @@ $rental.contract_exception
 [% END %]
 <h2>Meals</h2>
 The Center will generally provide three vegetarian meals per day:
-breakfast 8:30 am, lunch 12:30 pm, and dinner 5:30 pm with the
+breakfast 8:30 am, lunch 12:30 pm, and dinner 5:15 pm with the
 following exceptions: 
 On Saturdays brunch is at 10:00 am and snack (no lunch) at 1:00 pm.
 During the pandemic, the Center has been providing 2 meals a day,
@@ -260,6 +262,7 @@ are made for periods less than one week at a time.
 If you have special requests, please speak with us and we
 will do our best to provide for your needs.
 </ol>
+[% ! IF rental.program_id %]
 <h2>Housing Procedure</h2>
 No later than two weeks before the program,
 Presenter will inform the Center of the guest accommodation list make up
@@ -278,6 +281,7 @@ later than two weeks out will be accepted.
 For housing requests received within the last week before the event,
 those that can be accepted will be surcharged \$${rental_late_out}.00 per
 outdoor accommodation and \$${rental_late_in}.00 per indoor accommodation.
+[% END %]
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Arbitration</h2>
