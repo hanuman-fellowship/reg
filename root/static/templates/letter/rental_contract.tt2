@@ -262,7 +262,7 @@ are made for periods less than one week at a time.
 If you have special requests, please speak with us and we
 will do our best to provide for your needs.
 </ol>
-[% ! IF rental.program_id %]
+[% IF ! rental.program_id %]
 <h2>Housing Procedure</h2>
 No later than two weeks before the program,
 Presenter will inform the Center of the guest accommodation list make up
