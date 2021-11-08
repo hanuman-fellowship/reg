@@ -226,6 +226,7 @@ These costs will apply for each day the person stays - regardless of how many ot
 <tr>
 <th align=right valign=top>Contract Exceptions</th>
 <td colspan=2><textarea name=contract_exception cols=60 rows=5>
+$rental.contract_exception
 </textarea>
 </tr>
 

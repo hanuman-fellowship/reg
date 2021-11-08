@@ -24,6 +24,13 @@ to help us with planning.
 When responding to this message, please use the 'Reply All'
 feature of your email program so that all staff involved
 in preparing for your event can keep up with our correspondence.
+[% IF rental.program_id %]
+Here is the web link for registration:
+<p>
+<ul>
+<a target=_blank href='https://mountmadonna.org/cgi-bin/id=$rental.id'>https://mountmadonna.org/cgi-bin/id=$rental.id'</a>
+</ul>
+[% ELSE %]
 <h3>HOUSING PROCEDURES</h3>
 In order to assist you in the housing process,
 we have reserved a list of various types of rooms for your use and
@@ -57,12 +64,12 @@ matter if the guest attends. You may wish to pass on that
 cost to any guest who cancels.  Reserve rooms only when
 you are committing to pay for them.
 <p>
-14 days prior to the start date of your program is the last date
+7 days prior to the start date of your program is the last date
 we can guarantee housing for your group. If we receive requests
 for housing after that point, we do not guarantee accommodation,
 even if you haven't met your contractual maximum yet.
 Of course, we will continue to accommodate requests as we can.
-You can assign up to as many people to a room as there are beds
+You can assign up to as many people to a room as there are beds.
 <p>
 Any indoor housing reservations made less than one week
 before the start date of your program incur a \$${string.rental_late_in} late
@@ -73,6 +80,7 @@ Simply enter your guests' names and then click on the "Submit" link.
 Whichever way you arrange housing for your participants,
 we need to know 14 days before your arrival the occupancy
 of each room you've reserved.
+[% END %]
 [% IF rental.seminar_house_sleeping %]
 <p>
 Since your group is meeting in the Seminar House, you are committed
@@ -93,7 +101,7 @@ people, not beds, are in the room (i.e., one person in a dorm room
 gets the single rate, not the dorm rate.
 <p>
 Also, please inform any of your camping guests that the campgrounds
-are a 5-10 minute walk from the central area. If they do not have
+are a 10-15 minute walk from the central area. If they do not have
 a vehicle, and cannot hand-carry their equipment, it may be best
 if they request indoor housing.
 <h3>GUEST CONFIRMATION INFORMATION</h3>
@@ -117,7 +125,7 @@ to all your guests.
 <h3>SCHEDULE</h3>
 Please refer to your contract for meal times so that you
 can schedule your meeting times accordingly.
-Brunch is served 10am-11am, dinner is served 5pm-6pm daily.
+$meal_times
 Check out is at 12pm.
 <p>
 As part of your schedule, we need to arrange a time

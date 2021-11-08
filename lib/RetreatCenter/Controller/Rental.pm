@@ -1514,6 +1514,9 @@ sub arrangements : Local {
         signed   => ucfirst $c->user->username,
         string => \%string,
         gate_code => $rental->summary->gate_code || 'XXXX',
+        meal_times => ($rental->sdate_obj->year >= 2022?
+             'Breakfast 8:30 am, lunch 12:30 pm, and dinner 5:15 pm with the following exceptions: On Saturdays brunch is at 10:00 am and snack (no lunch) at 1:00 pm.'
+            :'Brunch is served 10am-11am, dinner is served 5pm-6pm daily.')
     };
     my $html;
     $tt->process(
