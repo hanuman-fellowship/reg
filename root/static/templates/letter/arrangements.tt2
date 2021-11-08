@@ -25,6 +25,7 @@ When responding to this message, please use the 'Reply All'
 feature of your email program so that all staff involved
 in preparing for your event can keep up with our correspondence.
 [% IF rental.program_id %]
+<h3>REGISTRATION PROCEDURE</h3>
 Here is the web link for registration:
 <p>
 <ul>
@@ -80,7 +81,6 @@ Simply enter your guests' names and then click on the "Submit" link.
 Whichever way you arrange housing for your participants,
 we need to know 14 days before your arrival the occupancy
 of each room you've reserved.
-[% END %]
 [% IF rental.seminar_house_sleeping %]
 <p>
 Since your group is meeting in the Seminar House, you are committed
@@ -100,6 +100,7 @@ triple, double, or single). We determine cost based on how many
 people, not beds, are in the room (i.e., one person in a dorm room
 gets the single rate, not the dorm rate.
 <p>
+[% END %]
 Also, please inform any of your camping guests that the campgrounds
 are a 10-15 minute walk from the central area. If they do not have
 a vehicle, and cannot hand-carry their equipment, it may be best
