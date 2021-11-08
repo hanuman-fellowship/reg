@@ -1565,7 +1565,8 @@ sub arrangements : Local {
         html    => $html,
         files_to_attach => [
             "$dir/Main Area Map.pdf",
-            "$dir/Program Guest Confirmation Letter.pdf",
+            ($rental->program_id? ()
+            :                     "$dir/Program Guest Confirmation Letter.pdf"),
             "$dir/MMC Food.pdf",
             "$dir/Info Sheet.pdf"
         ],

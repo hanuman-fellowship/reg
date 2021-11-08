@@ -31,6 +31,11 @@ Here is the web link for registration:
 <ul>
 <a target=_blank href='https://mountmadonna.org/cgi-bin/id=$rental.id'>https://mountmadonna.org/cgi-bin/id=$rental.id</a>
 </ul>
+<p>
+Registrants will receive a confirmation letter that confirms
+their housing assignment,
+provides a gate code for after hours access, and other information about
+their stay at Mount Madonna Center.
 [% ELSE %]
 <h3>HOUSING PROCEDURES</h3>
 In order to assist you in the housing process,
@@ -105,6 +110,7 @@ Also, please inform any of your camping guests that the campgrounds
 are a 10-15 minute walk from the central area. If they do not have
 a vehicle, and cannot hand-carry their equipment, it may be best
 if they request indoor housing.
+[% IF ! rental.program_id %]
 <h3>GUEST CONFIRMATION INFORMATION</h3>
 We've attached a template document modeled after the confirmation
 note that we automatically send to Mount Madonna guests when they
@@ -112,6 +118,7 @@ register for our programs and retreats.  You can modify this document
 to fill in the gate codes, particular times and dates of your
 program, and include it with information that you provide to your
 guests when they register with you.
+[% END %]
 <h3>GATE CODE</h3>
 We have a gate that closes each night at 7:00 pm (closed all day on
 Sundays). The code to enter the property after hours: #${gate_code}.  The
@@ -119,10 +126,12 @@ pound sign is part of the code and each key must be entered without
 pause.  If guests are staying in the Oaks cabins/campgrounds behind
 the school, the code for the upper gate is 1${gate_code}. No pound sign is
 required for entrance into the Oaks area.
+[% IF ! rental.program_id %]
 <p>
 In the confirmation letter template described above, there is a
 field for you to enter this gate code so that it will be distributed
 to all your guests.
+[% END %]
 <h3>SCHEDULE</h3>
 Please refer to your contract for meal times so that you
 can schedule your meeting times accordingly.
