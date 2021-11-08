@@ -118,7 +118,6 @@ register for our programs and retreats.  You can modify this document
 to fill in the gate codes, particular times and dates of your
 program, and include it with information that you provide to your
 guests when they register with you.
-[% END %]
 <h3>GATE CODE</h3>
 We have a gate that closes each night at 7:00 pm (closed all day on
 Sundays). The code to enter the property after hours: #${gate_code}.  The
@@ -126,7 +125,6 @@ pound sign is part of the code and each key must be entered without
 pause.  If guests are staying in the Oaks cabins/campgrounds behind
 the school, the code for the upper gate is 1${gate_code}. No pound sign is
 required for entrance into the Oaks area.
-[% IF ! rental.program_id %]
 <p>
 In the confirmation letter template described above, there is a
 field for you to enter this gate code so that it will be distributed
