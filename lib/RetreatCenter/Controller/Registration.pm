@@ -436,6 +436,12 @@ EOH
                  $pr->name, ", ", $c->user->username(), "\n";
     close $log;
 
+    # the need for these preferences is in flux ...
+    for my $k (qw/ e_mailings snail_mailings share_mailings /) {
+        if (! exists $href->{$k}) {
+            $href->{$k} = 0;
+        }
+    }
     #
     # find or create a person object.
     #
