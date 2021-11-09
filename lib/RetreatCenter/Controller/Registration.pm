@@ -534,7 +534,7 @@ EOF
             # not staying - commuting for the last night's festivities
             $href->{house1} = 'commuting';
             $href->{house2} = 'commuting';
-            my $edate = $pr->edate;
+            my $edate = $pr->edate_obj;
             stash($c, date_start => $edate-1);
             stash($c, date_end   => $edate);
         }
