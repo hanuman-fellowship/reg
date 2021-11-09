@@ -516,7 +516,7 @@ EOH
             my $all_dates = join ', ', 
                             map { date($_)->format("%b %e") }
                             @dates;
-            $href->{request} .= <<'EOF'
+            $href->{request} .= <<"EOF"
 <p class=p2>
 <span style="background-color: red;">
 There are gaps in the dates!
