@@ -29,7 +29,7 @@ in preparing for your event can keep up with our correspondence.
 Here is the web link for registration:
 <p>
 <ul>
-<a target=_blank href='https://mountmadonna.org/cgi-bin/id=$rental.id'>https://mountmadonna.org/cgi-bin/id=$rental.id</a>
+<a target=_blank href='https://mountmadonna.org/cgi-bin/id=$rental.id'>https://mountmadonna.org/cgi-bin/reg1?id=$rental.id</a>
 </ul>
 <p>
 Registrants will receive a confirmation letter that confirms
