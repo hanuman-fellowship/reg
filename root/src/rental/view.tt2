@@ -74,7 +74,7 @@ th a:hover {
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/received/$id">Received</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/arrangements/$id">Arrangements</a>
+<a target=_blank href="/rental/arrangements/$id">Arrangements</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/email_arrangements/$id">Email Arrangements</a>
 &nbsp;&nbsp;&nbsp;
