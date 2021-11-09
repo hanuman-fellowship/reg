@@ -497,35 +497,46 @@ EOH
     # for programs gotten with 'reg_by_day' we have another
     # special case.
     #
-    if ($href->{by_day_dates}) {
-        my @dates = split ',', $href->{by_day_dates};
+    if (exists $href->{by_day_dates}) {
+        my @dates;
+        if ($href->{by_day_dates}) {
             # these are the dates of the nights they're staying
-        my $sdate = date($dates[0]);
-        my $edate = date($dates[-1]);
-        stash($c, date_start => $sdate);
-        stash($c, date_end   => $edate+1);
-            # +1 above because it is the date they're leaving
-        if ($edate - $sdate >= @dates) {
-            # like this: 20211229,20211231
-            # where they are not staying on the 30th
-            # or 20211231,20220105,20220110
-            # where they are not staying from the 1st to the 4th
-            # or from the 6th to the 9th.
-            # it could happen!
-            # in this rare case book the room the entire time
-            # but charge them just for the days they're here
-            # and put a comment in the person's registration
-            #
-            my $all_dates = join ', ', 
-                            map { date($_)->format("%b %e") }
-                            @dates;
-            $href->{request} .= <<"EOF"
+            @dates = split ',', $href->{by_day_dates};
+            my $sdate = date($dates[0]);
+            my $edate = date($dates[-1]);
+            stash($c, date_start => $sdate);
+            stash($c, date_end   => $edate+1);
+                # +1 above because it is the date they're leaving
+            if ($edate - $sdate >= @dates) {
+                # like this: 20211229,20211231
+                # where they are not staying on the 30th
+                # or 20211231,20220105,20220110
+                # where they are not staying from the 1st to the 4th
+                # or from the 6th to the 9th.
+                # it could happen!
+                # in this rare case book the room the entire time
+                # but charge them just for the days they're here
+                # and put a comment in the person's registration
+                #
+                my $all_dates = join ', ', 
+                                map { date($_)->format("%b %e") }
+                                @dates;
+                $href->{request} .= <<"EOF"
 <p class=p2>
 <span style="background-color: red;">
 There are gaps in the dates!
 </span><br>
 $all_dates
 EOF
+            }
+        }
+        else {
+            # not staying - commuting for the last night's festivities
+            $href->{house1} = 'commuting';
+            $href->{house2} = 'commuting';
+            my $edate = $pr->edate;
+            stash($c, date_start => $edate-1);
+            stash($c, date_end   => $edate);
         }
     }
 
