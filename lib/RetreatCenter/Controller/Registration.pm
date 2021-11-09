@@ -466,10 +466,11 @@ EOH
         # first ... there may already be a vaccination card image
         # in the Person record from a previous registration.
         # delete it.
+        # some flaw here ... TODO!!
         #
-        if ($person->covid_vax()) {
-            unlink "$docs/" . $person->covid_vax();
-        }
+        #if ($person->covid_vax()) {
+        #    unlink "$docs/" . $person->covid_vax();
+        #}
         # in grab_new
         # .pdf files were used to create a .jpg file
         # which is better for display
