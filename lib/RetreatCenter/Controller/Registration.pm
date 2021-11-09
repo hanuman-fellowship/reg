@@ -498,10 +498,12 @@ EOH
     #
     if ($href->{by_day_dates}) {
         my @dates = split ',', $href->{by_day_dates};
+            # these are the dates of the nights they're staying
         my $sdate = date($dates[0]);
         my $edate = date($dates[-1]);
         stash($c, date_start => $sdate);
-        stash($c, date_end   => $edate);
+        stash($c, date_end   => $edate+1);
+            # +1 above because it is the date they're leaving
         if ($edate - $sdate >= @dates) {
             # like this: 20211229,20211231
             # where they are not staying on the 30th
