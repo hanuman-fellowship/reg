@@ -19,15 +19,9 @@ my $start = date($sdate);
 my $end   = date($edate);
 # dates have been validated
 
-sub trim_pennies {
-    my $amt = shift;
-    $amt =~ s{[.]\d+$}{}xms;
-    return $amt;
-}
-
 my $c = db_init();
-my $html = '';
-$html .= join ',',
+my $csv_file = '/tmp/jon.csv';
+my $header = join(',',
            'Name',
            'Type',
            'Start Date',
@@ -39,14 +33,22 @@ $html .= join ',',
            'Double Cost',
            'Single/Bath Cost',
            'Total Paid',
-         ;
-$html .= "<br>\n";
+         ) . "\n";
 my ($PR_came, $PR_paid, $PR_people_days) = (0, 0, 0);
 my ($SG_came, $SG_paid, $SG_people_days) = (0, 0, 0);
 my ($MMI_nprog, $MMI_came,  $MMI_paid,
     $MMI_prog_days, $MMI_people_days)  = (0, 0, 0, 0, 0);
-my ($PROG_nprog, $PROG_came, $PROG_paid,
-    $PROG_prog_days, $PROG_people_days) = (0, 0, 0, 0, 0);
+my ($MMC_nprog, $MMC_came, $MMC_paid,
+    $MMC_prog_days, $MMC_people_days) = (0, 0, 0, 0, 0);
+
+my %lines = (
+    PR => [],
+    SG => [],
+    MMC => [],
+    MMI => [],
+    Rental => [],
+);
+
 my @progs = model($c, 'Program')->search(
                 {
                     sdate => { between => [ $start->as_d8, $end->as_d8 ] },
@@ -110,26 +112,25 @@ for my $prog (@progs) {
     }
     else {
         $code = 'MMC';
-        ++$PROG_nprog;
-        $PROG_came += $n_came;
-        $PROG_paid += $tot_paid;
-        $PROG_prog_days += $prog_days;
-        $PROG_people_days += $people_days;
+        ++$MMC_nprog;
+        $MMC_came += $n_came;
+        $MMC_paid += $tot_paid;
+        $MMC_prog_days += $prog_days;
+        $MMC_people_days += $people_days;
     }
-    $html .= join ',', 
-                       $name,
-                       $code,
-                       $sdate->format("%D"),
-                       $edate->format("%D"),
-                       $prog->tuition,
-                       $n_came,
-                       $prog_days,
-                       $people_days,
-                       $prog->housecost->dble,
-                       $prog->housecost->single_bath,
-                       $tot_paid,
-                       ;
-    $html .= "<br>\n";
+    push @{$lines{$code}},
+        join(',', $name,
+                  $code,
+                  $sdate->format("%D"),
+                  $edate->format("%D"),
+                  $prog->tuition,
+                  $n_came,
+                  $prog_days,
+                  $people_days,
+                  $prog->housecost->dble,
+                  $prog->housecost->single_bath,
+                  trim_pennies($tot_paid))
+        . "\n";
 }
 my @rentals = model($c, 'Rental')->search(
     {
@@ -139,7 +140,6 @@ my @rentals = model($c, 'Rental')->search(
         order_by => 'sdate asc',
     }
 );
-$html .= "-----<br>\n";
 my $RENT_nrentals = 0;
 my $RENT_paid = 0;
 my $RENT_days = 0;
@@ -180,23 +180,38 @@ for my $rent (@rentals) {
     $RENT_paid += $tot_paid;
     $RENT_n_people += $n_people;
     $RENT_n_people_days += $n_people_days;
-    $html .= join ',',
-        $rent->name,
-        'Rental',
-        $sdate->format("%D"),
-        $edate->format("%D"),
-        0,      # tuition (none)
-        $n_people,
-        $edate - $sdate,
-        $n_people_days,
-        $rent->housecost->dble,
-        $rent->housecost->single_bath,
-        $tot_paid,
+    push @{$lines{Rental}},
+        join(',',
+             $rent->name,
+             'Rental',
+             $sdate->format("%D"),
+             $edate->format("%D"),
+             0,      # tuition (none)
+             $n_people,
+             $edate - $sdate,
+             $n_people_days,
+             $rent->housecost->dble,
+             $rent->housecost->single_bath,
+             trim_pennies($tot_paid))
+        . "\n"
         ;
-    $html .= "<br>\n";
 }
-$html .= "<p>\n";
-$html .= <<'EOH';
+
+# CSV file
+open my $csv, '>', $csv_file
+    or die "can't open $csv_file: $!\n";
+print {$csv} $header;
+for my $type (qw/ PR SG MMC MMI Rentals /) {
+    for my $line (@{$lines{$type}}) {
+        print {$csv} $line;
+    }
+}
+close $csv;
+
+# Summary Table for email
+my $html = <<'EOH';
+See the attached CSV file.
+<p>
 <table cellpadding=5 border=1>
 <tr align=left>
 <th>Type</th>
@@ -207,17 +222,21 @@ $html .= <<'EOH';
 <th>Total Revenue</th>
 </tr>
 EOH
-my $disp = commify(trim_pennies($PROG_paid));
+
+# MMC
+my $disp = commify(trim_pennies($MMC_paid));
 $html .= <<"EOH";
 <tr align=right>
 <td align=left>MMC</td>
-<td>$PROG_nprog</td>
-<td>$PROG_prog_days</td>
-<td>$PROG_came</td>
-<td>$PROG_people_days</td>
+<td>$MMC_nprog</td>
+<td>$MMC_prog_days</td>
+<td>$MMC_came</td>
+<td>$MMC_people_days</td>
 <td>$disp</td>
 </tr>
 EOH
+
+# MMI
 $disp = commify(trim_pennies($MMI_paid));
 $html .= <<"EOH";
 <tr align=right>
@@ -275,4 +294,14 @@ email_letter($c,
     from    => 'jon.bjornstad@gmail.com',
     subject => "Summary of financial activity $start to $end",
     html    => $html,
+    files_to_attach => [
+        $csv_file,
+    ],
 );
+
+sub trim_pennies {
+    my $amt = shift;
+    $amt =~ s{[.]\d+$}{}xms;
+    return $amt;
+}
+
