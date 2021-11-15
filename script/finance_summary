@@ -17,10 +17,11 @@ use RetreatCenterDB;
 my ($sdate, $edate, $email) = @ARGV;
 my $start = date($sdate);
 my $end   = date($edate);
+my $d = $start->as_d8() . '_' . $end->as_d8();
 # dates have been validated
 
 my $c = db_init();
-my $csv_file = '/tmp/jon.csv';
+my $csv_file = '/tmp/data_$d.csv';
 my $header = join(',',
            'Name',
            'Type',
@@ -209,7 +210,8 @@ for my $type (qw/ PR SG MMC MMI Rentals /) {
 close $csv;
 
 # Summary Table for email
-my $html = <<'EOH';
+my $html = <<"EOH";
+<h2>Financial Activity from $start to $end</h2>
 See the attached CSV file.
 <p>
 <table cellpadding=5 border=1>
@@ -288,6 +290,7 @@ EOH
 
 $html .= <<"EOH";
 </table>
+<p>
 EOH
 email_letter($c,
     to      => $email,
@@ -298,6 +301,9 @@ email_letter($c,
         $csv_file,
     ],
 );
+sleep 5;   # to get the email sent??
+unlink $csv_file;
+# all done
 
 sub trim_pennies {
     my $amt = shift;
