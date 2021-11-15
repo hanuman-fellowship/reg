@@ -1,0 +1,2 @@
+insert into string (the_key, value) values ('rental_cancel_mmc_color', '110,110,245');
+insert into string (the_key, value) values ('rental_cancel_host_color', '255,90,5');
