@@ -213,7 +213,7 @@ sub event_type {
 sub rental_type {
     my ($self) = @_;
     my $type = "";
-    if ($self->cancelled()) {
+    if ($self->status() =~ m{cancel}xms) {
         $type .= "Cancelled ";
     }
     else {
@@ -316,6 +316,8 @@ my @status_info = qw/
     arranged-Letter_Sent
     due-Due
     done-Done
+    cancel_mmc-Canceled_by_MMC
+    cancel_host-Canceled_by_Host
 /;
 my @statuses = map {
                    m{\A ([^-]*)-}xms;
@@ -323,15 +325,16 @@ my @statuses = map {
                @status_info;
 my %display_for = map {
                       my ($x, $y) = split '-';
-                      $y =~ s{_}{ }xms;
+                      $y =~ s{_}{ }xmsg;
                       $x => $y;
                   }
                   @status_info;
 sub status_td {
     my ($self) = @_;
     my $status = $self->status();
-    my $color = d3_to_hex($string{"rental_$status\_color"});
-    return "<td align=center bgcolor=$color>$display_for{$status}</td>";
+    my $bgcolor = d3_to_hex($string{"rental_$status\_color"});
+    my $color = $status =~ m{cancel}xms? 'white': 'black';
+    return "<td align=center style='background: $bgcolor; color: $color'>$display_for{$status}</td>";
 }
 
 sub select_status {
@@ -579,7 +582,6 @@ sub compute_balance {
 
     my $n_nights = $rental->edate_obj() - $rental->sdate_obj();
     my $hc = $rental->housecost();
-    my $dorm_rate = $hc->dormitory();
     my $per_day = $hc->type() eq 'Per Day';
     my $max = $rental->max();
     my $tot_housing = $rental->housing_charge();
@@ -590,8 +592,8 @@ sub compute_balance {
     #
     my $min_lodging = int(0.75
                           * $max
-                          * ($per_day? $n_nights: 1)
-                          * $dorm_rate
+                          * $n_nights
+                          * 100 
                          );
     if ($tot_housing < $min_lodging) {
         $min_cost = 1;
@@ -665,7 +667,7 @@ sub compute_balance {
                      + $start_charge
                      + $end_charge
                      ;
-    if ($rental->cancelled()) {
+    if ($rental->status() =~ m{cancel_mmc}xms) {
         $tot2_charges = 0;
     }
 
@@ -694,7 +696,6 @@ sub compute_balance {
             rental         => $rental,
             tot_housing    => $tot_housing,
             final_tot_housing => $final_tot_housing,
-            dorm_rate      => $dorm_rate,
             n_nights       => $n_nights,
             per_day        => $per_day,
             min_lodging    => $min_lodging,
@@ -809,7 +810,7 @@ sdate - date the rental starts
 sent_by - foreign key to user
 staff_ok - has the staff okayed this rental?
 start_hour - time the rental begins
-status - tentative, sent, received, arranged, due, done
+status - tentative, sent, received, arranged, due, done, cancel_mmc, cancel_host
 subtitle - secondary description of the rental for the web
 summary_id - foreign key to summary
 tentative - has this rental not been confirmed yet?

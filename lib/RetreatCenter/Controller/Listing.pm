@@ -24,7 +24,6 @@ use Util qw/
     rand6
     time_travel_class
     kid_badge_names
-    JON
 /;
 use Badge;
 use Date::Simple qw/
@@ -2791,9 +2790,6 @@ sub future_no_vax : Local {
                        prefetch => [qw/ program person /],
                    }
                );
-    for my $r (@regs) {
-        JON $r->person->name, ' => ', $r->program->name;
-    }
     stash($c,
         pg_title => 'Future Registrations without Valid Vaccination Cards',
         regs     => \@regs,

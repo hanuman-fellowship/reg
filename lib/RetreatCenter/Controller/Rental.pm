@@ -2635,25 +2635,6 @@ sub update_refresh_do : Local {
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 
-sub cancel : Local {
-    my ($self, $c, $id) = @_;
-
-    my $r = model($c, 'Rental')->find($id);
-    if ($r->cancelled) {
-        $r->update({
-            cancelled => '',
-        });
-    }
-    else {
-        _check_several_things($c, $r, 'cancel') or return;
-        $r->update({
-            cancelled => 'yes',
-            linked    => '',
-        });
-    }
-    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
-}
-
 sub grab_new : Local {
     my ($self, $c, $rental_id) = @_;
 

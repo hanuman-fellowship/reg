@@ -40,14 +40,6 @@ th a:hover {
     [% END %]
     <a href="/rental/duplicate/$id">Duplicate</a>
     &nbsp;&nbsp;&nbsp;
-    [% IF editable %]
-        [% cmd = 'Cancel' %]
-        [% SET cmd = 'UnCancel' IF rental.cancelled %]
-            <a href=/rental/cancel/$id
-               onclick="return 'y' == window.prompt('$cmd \'$rental.name\'.\nAre you sure? y/n');"
-            >$cmd</a>
-        &nbsp;&nbsp;&nbsp;
-    [% END %]
 [% END %]
 [% IF rental.proposal_id %]
 <a href="/proposal/view/$rental.proposal_id">To Proposal</a>
