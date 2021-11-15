@@ -21,7 +21,7 @@ my $d = $start->as_d8() . '_' . $end->as_d8();
 # dates have been validated
 
 my $c = db_init();
-my $csv_file = '/tmp/data_$d.csv';
+my $csv_file = "/tmp/data_$d.csv";
 my $header = join(',',
            'Name',
            'Type',
