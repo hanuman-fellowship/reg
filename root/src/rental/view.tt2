@@ -78,7 +78,7 @@ th a:hover {
 <tr>
 <td>
 <b>Name</b>
-<span class=larger>$rental.name[% IF rental.cancelled %] <span class=bred>Cancelled</span>[% END %]</span>
+<span class=larger>$rental.name</span>
 <b>From</b>
 $rental.sdate_obj <span class=dow>${rental.sdate_obj.format("%a")}</span>
 <b>To</b>

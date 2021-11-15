@@ -810,11 +810,14 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
-
     my $section = $P{section};
     delete $P{section};
 
     my $r = model($c, 'Rental')->find($id);
+    if ($P{status} =~ m{cancel}xms) {
+        _check_several_things($c, $r, 'cancel') or return;
+        $P{cancelled} = 'yes';      # historical
+    }
     if ($P{start_hour} >= 1300) {
         # they won't be having lunch on their arrival day
         # since they arrive after lunch ends

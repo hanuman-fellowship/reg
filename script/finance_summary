@@ -14,12 +14,10 @@ use Date::Simple qw/
 /;
 use RetreatCenterDB;
 
-open JON, '>/tmp/jon.html';
-print JON "ARGV @ARGV\n";
-
 my ($sdate, $edate, $email) = @ARGV;
 my $start = date($sdate);
 my $end   = date($edate);
+# dates have been validated
 
 sub trim_pennies {
     my $amt = shift;
@@ -38,10 +36,13 @@ $html .= join ',',
            '# People',
            'Event Days',
            'People Days',
+           'Double Cost',
+           'Single/Bath Cost',
            'Total Paid',
          ;
 $html .= "<br>\n";
-my ($PRSG_came, $PRSG_paid, $PRSG_people_days) = (0, 0, 0);
+my ($PR_came, $PR_paid, $PR_people_days) = (0, 0, 0);
+my ($SG_came, $SG_paid, $SG_people_days) = (0, 0, 0);
 my ($MMI_nprog, $MMI_came,  $MMI_paid,
     $MMI_prog_days, $MMI_people_days)  = (0, 0, 0, 0, 0);
 my ($PROG_nprog, $PROG_came, $PROG_paid,
@@ -87,11 +88,17 @@ for my $prog (@progs) {
         $people_days += $reg->date_end_obj - $reg->date_start_obj;
     }
     my $code;
-    if ($name =~ m{Personal\s+Retreat|Special\s+Guest}xms) {
-        $code = 'PR/SG';
-        $PRSG_came += $n_came;
-        $PRSG_paid += $tot_paid;
-        $PRSG_people_days += $people_days;
+    if ($name =~ m{Personal\s+Retreat}xms) {
+        $code = 'PR';
+        $PR_came += $n_came;
+        $PR_paid += $tot_paid;
+        $PR_people_days += $people_days;
+    }
+    elsif ($name =~ m{Special\s+Guest}xms) {
+        $code = 'SG';
+        $SG_came += $n_came;
+        $SG_paid += $tot_paid;
+        $SG_people_days += $people_days;
     }
     elsif ($name =~ m{MMI|Institute|YTT}xmsi || $prog->school->mmi) {
         $code = 'MMI';
@@ -118,6 +125,8 @@ for my $prog (@progs) {
                        $n_came,
                        $prog_days,
                        $people_days,
+                       $prog->housecost->dble,
+                       $prog->housecost->single_bath,
                        $tot_paid,
                        ;
     $html .= "<br>\n";
@@ -180,6 +189,8 @@ for my $rent (@rentals) {
         $n_people,
         $edate - $sdate,
         $n_people_days,
+        $rent->housecost->dble,
+        $rent->housecost->single_bath,
         $tot_paid,
         ;
     $html .= "<br>\n";
@@ -229,22 +240,36 @@ $html .= <<"EOH";
 <td>$disp</td>
 </tr>
 EOH
-$disp = commify(trim_pennies($PRSG_paid));
+
+# Personal Retreats
+$disp = commify(trim_pennies($PR_paid));
 $html .= <<"EOH";
 <tr align=right>
-<td align=left>PRs & SGs</td>
+<td align=left>PRs</td>
 <td>&nbsp;</td>
 <td>&nbsp</td>
-<td>$PRSG_came</td>
-<td>$PRSG_people_days</td>
+<td>$PR_came</td>
+<td>$PR_people_days</td>
 <td>$disp</td>
 </tr>
 EOH
+
+# Special Guests
+$disp = commify(trim_pennies($SG_paid));
+$html .= <<"EOH";
+<tr align=right>
+<td align=left>SGs</td>
+<td>&nbsp;</td>
+<td>&nbsp</td>
+<td>$SG_came</td>
+<td>$SG_people_days</td>
+<td>$disp</td>
+</tr>
+EOH
+
 $html .= <<"EOH";
 </table>
 EOH
-print JON $html;
-close JON;
 email_letter($c,
     to      => $email,
     from    => 'jon.bjornstad@gmail.com',
