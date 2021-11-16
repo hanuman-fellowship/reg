@@ -60,6 +60,7 @@ my @progs = model($c, 'Program')->search(
             );
 for my $prog (@progs) {
     my $name = $prog->name;
+    $name =~ s{,}{}xmsg;
     my $n_came = 0;
     my $tot_paid = 0;
     my $tuition = $prog->tuition;
@@ -202,7 +203,7 @@ for my $rent (@rentals) {
 open my $csv, '>', $csv_file
     or die "can't open $csv_file: $!\n";
 print {$csv} $header;
-for my $type (qw/ PR SG MMC MMI Rentals /) {
+for my $type (qw/ PR SG MMC MMI Rental /) {
     for my $line (@{$lines{$type}}) {
         print {$csv} $line;
     }
