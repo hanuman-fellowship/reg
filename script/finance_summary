@@ -58,9 +58,18 @@ my @progs = model($c, 'Program')->search(
                     order_by => 'sdate asc',
                 }
             );
+PROG:
 for my $prog (@progs) {
     my $name = $prog->name;
     $name =~ s{,}{}xmsg;
+    if ($name !~ m{New.*Year}xms
+        && ($prog->sdate_obj->year != $prog->edate_obj->year)
+    ) {
+        # likely an MMI credentialed program from the
+        # years when we were keeping track of school, level, category, etc
+        # we're not doing that any more.
+        next PROG;
+    }
     my $n_came = 0;
     my $tot_paid = 0;
     my $tuition = $prog->tuition;
