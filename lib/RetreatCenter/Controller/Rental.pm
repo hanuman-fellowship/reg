@@ -1626,6 +1626,10 @@ sub _contract_ready {
     if (! $cs) {
         push @mess, "Contracts need a coordinator or a contract signer.";
     }
+    elsif (empty($cs->tel_home()) && empty($cs->tel_cell())) {
+        push @mess, $cs->name()
+                    . " does not have a home or cell phone number.";
+    }
     elsif (empty($cs->addr1())) {
         push @mess, $cs->name()
                     . " does not have an address.";
