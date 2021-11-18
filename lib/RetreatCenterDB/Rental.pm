@@ -743,6 +743,11 @@ sub name_trimmed {
     $name;
 }
 
+sub gate_code {
+    my ($self) = @_;
+    return $self->summary()->gate_code();
+}
+
 1;
 __END__
 overview - A rental is created when some other organization wants

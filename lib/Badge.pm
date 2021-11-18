@@ -115,7 +115,7 @@ sub get_title_code {
     }
     $title =~ s{\A .* (Special \s+ Guest) .*}{$1}xms;
     $title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
-    my $code = $event->summary->gate_code();
+    my $code = $event->gate_code();
     my $name = $event->name;
     my $mess;
     if (empty($title)) {
