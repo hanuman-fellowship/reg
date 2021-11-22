@@ -657,7 +657,7 @@ sub update_do : Local {
             system "convert -resize 1000 $full_fname /tmp/$fname";
             system "convert -strip -interlace Plane -quality 65%"
                  . " /tmp/$fname $full_fname";
-            chmod 0666, $full_name;       # so it can be rotated
+            chmod 0666, $full_fname;       # so it can be rotated
         }
     }
     $p->update({
