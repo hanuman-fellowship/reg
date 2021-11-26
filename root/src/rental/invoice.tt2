@@ -35,10 +35,10 @@ Total from the web housing grid: \$[% commify(tot_housing) %]
 <p>
 <div class=para>
 However, the <i>minimum</i> lodging cost was contractually agreed
-to be<br>3/4 times the maximum ($rental.max)
-times $n_nights nights * \$100
+to be<br>the maximum ($rental.max)
+times $n_nights nights * \$$string.min_per_day
 <ul>
-.75 * $rental.max * $n_nights * \$100 = \$[% commify(final_tot_housing) %]
+$rental.max * $n_nights * \$$string.min_per_day = \$[% commify(final_tot_housing) %]
 <ul>
 </div>
 [% END %]

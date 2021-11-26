@@ -590,10 +590,9 @@ sub compute_balance {
    
     # how does the total cost compare to the minimum?
     #
-    my $min_lodging = int(0.75
-                          * $max
+    my $min_lodging = int($max
                           * $n_nights
-                          * 100 
+                          * $string{min_per_day}
                          );
     if ($tot_housing < $min_lodging) {
         $min_cost = 1;

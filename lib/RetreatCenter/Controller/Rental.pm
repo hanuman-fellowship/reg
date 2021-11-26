@@ -1678,9 +1678,9 @@ sub contract : Local {
     });
     my $nnights  = date($rental->edate()) - date($rental->sdate());
     my $agreed = $rental->max()
-             * $nnights
-             * $string{min_per_day}
-             ;
+                 * $nnights
+                 * $string{min_per_day}
+                 ;
     my $contract_sent = $rental->contract_sent? $rental->contract_sent_obj
                         :                       tt_today($c);
     my %stash = (
