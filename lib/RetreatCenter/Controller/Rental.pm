@@ -154,7 +154,7 @@ sub _get_data {
     if ($P{max} !~ m{^\d+$}) {
         push @mess, "Invalid maximum.";
     }
-    if (! $P{deposit} =~ m{^\d+$}) {
+    if ($P{deposit} !~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
     }
     if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {

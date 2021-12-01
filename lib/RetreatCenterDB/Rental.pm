@@ -584,7 +584,10 @@ sub compute_balance {
     my $hc = $rental->housecost();
     my $per_day = $hc->type() eq 'Per Day';
     my $max = $rental->max();
+
+    # TODO: if hybrid or not ...
     my $tot_housing = $rental->housing_charge();
+
     my $final_tot_housing = $tot_housing;
     my $min_cost = 0;
    
