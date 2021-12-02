@@ -828,6 +828,19 @@ sub Bank_account {
           ;
 }
 
+# for hybrid rentals to determine if a minimum was reached
+sub tot_reg_payments {
+    my ($self) = @_;
+
+    my $tot = 0;
+    for my $r ($self->registrations()) {
+        for my $p ($r->payments()) {
+            $tot += $p->amount();
+        }
+    }
+    return $tot;
+}
+
 1;
 __END__
 overview - Programs are MMC (and MMI) sponsored events for which we do registrations of individuals.

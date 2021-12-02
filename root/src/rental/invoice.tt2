@@ -30,7 +30,12 @@ ${rental.sdate_obj.format("%B %e, %Y")}
 to ${rental.edate_obj.format("%B %e, %Y")}</h1>
 
 <h2>Housing Charges</h2>
-Total from the web housing grid: \$[% commify(tot_housing) %]
+[% IF rental.program_id %]
+Total payments for $nregs registrations:
+[% ELSE %]
+Total from the web housing grid:
+[% END %]
+\$[% commify(tot_housing) %]
 [% IF min_cost %]
 <p>
 <div class=para>

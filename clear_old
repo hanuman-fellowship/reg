@@ -1,0 +1,7 @@
+#!/bin/bash
+export DBI_DSN="dbi:mysql:reg2"
+export PERL5LIB=/var/www/cpan-lib/lib/perl5
+export PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+log=/var/Reg/output/clear_old.out
+cd /var/www/src
+/var/www/src/script/clear_old.pl >>$log 2>&1

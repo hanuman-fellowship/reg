@@ -817,6 +817,22 @@ sub update_do : Local {
     if ($P{status} =~ m{cancel}xms) {
         _check_several_things($c, $r, 'cancel') or return;
         $P{cancelled} = 'yes';      # historical
+        if ($r->status() !~ m{cancel}xms) {
+            # we are canceling today
+            $P{rental_canceled} = tt_today($c)->as_d8();
+        }
+    }
+    elsif ($P{status} !~ m{cancel}xms) {
+        if ($r->status() =~ m{cancel}xms) {
+            # we are UNcanceling
+            # canceled, canceling, cancelation
+            # vs
+            # cancelled, cancelling, cancellation
+            # British vs American?
+            #
+            $P{cancelled} = '';
+            $P{rental_canceled} = '';
+        }
     }
     if ($P{start_hour} >= 1300) {
         # they won't be having lunch on their arrival day
@@ -1968,8 +1984,6 @@ sub invoice : Local {
     my $html = $rental->compute_balance(1);
     $c->res->output($html);
 }
-
-
 
 sub link_proposal : Local {
     my ($self, $c, $rental_id, $proposal_id) = @_;

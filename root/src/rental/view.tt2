@@ -70,7 +70,7 @@ th a:hover {
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/email_arrangements/$id">Email Arrangements</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/invoice/$id">Invoice</a>
+<a target=_blank href="/rental/invoice/$id">Invoice</a>
 <p class=p2>
 [% END %]
 
@@ -461,6 +461,11 @@ none
 <tr>
 <th align=right>Arrangement Letter Sent</th>
 <td colspan=2>$rental.arrangement_sent_obj [% IF rental.arrangement_sent %]by $rental.arrangement_by.username[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Cancelation Date</th>
+<td colspan=2>$rental.rental_canceled_obj</td>
 </tr>
 
 <tr>

@@ -84,6 +84,7 @@ __PACKAGE__->add_columns(qw/
     image
     alt_packet
     contract_exception
+    rental_canceled
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -182,6 +183,10 @@ sub sdate_obj {
 sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";
+}
+sub rental_canceled_obj {
+    my ($self) = @_;
+    return date($self->rental_canceled) || "";
 }
 sub any_lunches {
     my ($self) = @_;
@@ -585,8 +590,11 @@ sub compute_balance {
     my $per_day = $hc->type() eq 'Per Day';
     my $max = $rental->max();
 
+    my $hybrid = $rental->program_id();
+
     # TODO: if hybrid or not ...
-    my $tot_housing = $rental->housing_charge();
+    my $tot_housing = $hybrid? $rental->program->tot_reg_payments()
+                     :         $rental->housing_charge();
 
     my $final_tot_housing = $tot_housing;
     my $min_cost = 0;
@@ -696,6 +704,7 @@ sub compute_balance {
             string         => \%string,
             commify        => \&commify,
             rental         => $rental,
+            nregs          => $hybrid? $rental->program->reg_count(): 0,
             tot_housing    => $tot_housing,
             final_tot_housing => $final_tot_housing,
             n_nights       => $n_nights,
@@ -810,6 +819,7 @@ received_by - foreign key to user
 refresh_days - what days should the bedding be refreshed?
     This is an encoded field similar to lunches.
     This is used for longer term rentals.
+rental_canceled - date the rental was canceled (by Host or by MMC)
 rental_created - date the rental was created
 rental_follows - does another rental follow this one?
     used in generating the make up list.

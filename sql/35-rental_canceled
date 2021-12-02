@@ -1,0 +1,1 @@
+alter table rental add column rental_canceled char(8) default '';
