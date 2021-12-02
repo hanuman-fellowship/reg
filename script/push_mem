@@ -6,6 +6,7 @@ use lib 'lib';
 use Util qw/
     model
     db_init
+    add_activity
 /;
 use RetreatCenterDB;    # ??? why can't we move this to Util?
 use Global qw/
@@ -110,7 +111,7 @@ sub omp_send_and_load {
     $ftp->put("/tmp/$omp_fname", $omp_fname)
         or return "no put";
     $ftp->quit();
-    my $output = `curl $string{omp_load_url}`;
+    my $output = `curl -sk $string{omp_load_url}`;
     if ($output !~ m{done}) {
         return "no load: $output";
     }
@@ -124,7 +125,13 @@ sub quote {
 }
 
 omp_init();
+my $n = 0;
 for my $m (model($c, 'Member')->all()) {
     omp_add($c, $m);
+    ++$n;
 }
-print omp_send_and_load(), "\n";
+my $result = omp_send_and_load();
+add_activity($c, $result eq 'successfully pushed'?
+                     "$n members pushed to mountmadonna.org"
+                :    "error in pushing members: $result");
+print "$result\n";
