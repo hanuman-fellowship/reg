@@ -983,6 +983,14 @@ sub delete : Local {
 sub _check_several_things {
     my ($c, $r, $what) = @_;
     my $id = $r->id();
+    if ($what eq 'delete' && $r->payments()) {
+        stash($c,
+            action => "/rental/view/$id",
+            message => "Sorry, cannot delete a rental when there are payments.",
+            template => 'action_message.tt2',
+        );
+        return 0;
+    }
     my @res_clust = reserved_clusters($c, $id, 'Rental');
     my @blocks = $r->blocks();
     my @bookings = $r->bookings();
