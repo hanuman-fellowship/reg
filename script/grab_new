@@ -1024,9 +1024,20 @@ sub process_covid_vax {
         # we can't update the person yet because the
         # Person record may not have been created yet.
         #
+        # BUT ... if an _existing_ person is REuploading a card
+        # we should clear out vax_okay on the Person record...
+        #
         $person_name = $f;
         $person_name =~ s{[.]$suffix}{}xms;
         $person_name =~ s{_}{ }xmsg;
+        for my $p (model($c, 'Person')->search({
+                       covid_vax => $cf,
+                   })
+        ) {
+            $p->update({
+                vax_okay => '',
+            });
+        }
     }
     chmod 0666, "$get_dir/$cf";     # so we can rotate it?
     $person_name = "<a target=_blank href='https://akash.mountmadonna.org"
