@@ -1162,6 +1162,8 @@ sub dec20 : Local {
         {
             sanskrit => 'Sanskrit',
             string   => \%string,
+            has_email => 1,
+            secure_code => 'xxxx',
         },
         \$html,           # output
     ) or die $tt->error;
