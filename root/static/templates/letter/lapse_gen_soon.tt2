@@ -1,16 +1,9 @@
 [% INCLUDE top.tt2 %]
 Dear $sanskrit,
 <p>
-Thank you for your on-going generous commitment to the Hanuman Fellowship
-over this past year. Your annual General Membership in the Fellowship is
-due to expire on December 31, ${exp_year}. We respectfully ask you to renew your
-membership and continue to be part of our supportive community.
+[% INCLUDE middle.tt2 %]
 <p>
-The Fellowship is a self-sustaining community dedicated to the
-attainment of peace. Your membership dues provide the needed funding
-and pledge of support to the projects, inspired by the guidance of Babaji,
-which foster this ideal. 
-Please reply with your payment of \$$string.mem_gen_amt to continue your
+Please submit your payment of \$$string.mem_gen_amt to continue your
 General Membership for another year.
 <p>
 [% INCLUDE info.tt2 %]

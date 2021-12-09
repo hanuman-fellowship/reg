@@ -7,13 +7,13 @@ ${message}
 </td>
 <td align=right valign=bottom>
 <img height=150
-     src="http://www.hanumanfellowship.org/img/hanuman.png">
+     src="http://www.hanumanfellowship.org/files/hanuman.png">
 </td>
 </tr>
 </table>
 [% ELSE %]
 <img style="margin-left: 6in"
      height=150
-     src="http://www.hanumanfellowship.org/img/hanuman.png">
+     src="http://www.hanumanfellowship.org/files/hanuman.png">
 <br>
 [% END %]

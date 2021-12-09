@@ -1,9 +1,12 @@
 [% IF has_email %]
-<p>You can securely and simply pay your membership dues online
+<p>You can securely pay your membership dues online
 by <a href=${string.omp_pay_url}?code=$secure_code>clicking here</a>.</p>
 <p>
 [% END %]
-If you would like to switch to one of the new payment categories ($25+ KY or free for residents) or, if you wish to pay with a personal check, the new HFS Membership application form and information about the levels of membership can be found
+If you would like to switch to one of the new payment categories
+($25+ Karma Yoga or free for residents) or, if you wish to pay
+with a personal check, the HFS Membership application form
+and information about the levels of membership can be found
 <a href=http://www.hanumanfellowship.org/HFS_Membership_Application.pdf >here</a>.
 Please print and mail the application form with your payment to renew your membership.
 </p>
@@ -12,9 +15,9 @@ Please print and mail the application form with your payment to renew your membe
 Please note:
 
 <ul>
-<li>We are attempting to communicate primarily by email, so please make sure that we have your current email address and other contact information.</li>
+<li>We value communicating primarily by email, so please make sure that we have your current email address and other contact information.</li>
 
-<li>To claim a Tax Deduction for this donation, you must deduct the value of any benefits you receive. Our federal tax identification number is 51-0174679. This organization is a 501c (3) tax exempt organization, IRS Section 170(b (2)(iii) for both federal and state tax purposes.</li>
+<li>To claim a tax deduction for this donation, you must deduct the value of any benefits you receive. Our federal tax identification number is 51-0174679. This organization is a 501c (3) tax exempt organization, IRS Section 170(b (2)(iii) for both federal and state tax purposes.</li>
 </ul>
 </p>
 <p>In Peace,</p>

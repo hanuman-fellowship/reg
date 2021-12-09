@@ -1,22 +1,14 @@
 [% INCLUDE top.tt2 %]
 Dear $sanskrit,
 <p>
-Thank you for your on-going generous commitment to the Hanuman
-Fellowship over this past year.  Your annual Sponsoring Membership
-in the Fellowship is due to expire on December 31, ${exp_year}.
-We respectfully ask you to renew your membership and continue to be
-part of our supportive community. 
-<p>
-The Fellowship is a self-sustaining community dedicated to the
-attainment of peace. Your membership dues provide the needed funding
-and pledge of support to the projects, inspired by the guidance of Babaji,
-which foster that ideal. 
+[% INCLUDE middle.tt2 %]
 <p>
 Your payment of dues in the amount of \$$string.mem_spons_year
 by December 31, $exp_year will assure that your benefits do not expire.
-Your payment will be applied toward a Life Membership goal of \$${string.mem_life_total}.
-Sponsor payments may also be paid at a semiannual rate of \$$string.mem_spons_semi_year
-by December 31st and June 30th by special arrangement with the
-Membership Secretary.
+Your payment will be applied toward a Life Membership goal
+of \$${string.mem_life_total}.
+Sponsor payments may also be paid at a semiannual rate
+of \$$string.mem_spons_semi_year by December 31st and June 30th.
+If you wish to do so, please arrange with the Membership Secretary.
 <p>
 [% INCLUDE info.tt2 %]

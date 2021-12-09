@@ -130,7 +130,7 @@ sub voter_ok : Local {
 }
 
 sub list : Local {
-    my ($self, $c, $no_lapsed) = @_;
+    my ($self, $c, $exclude_lapsed) = @_;
 
     my $pat = trim($c->request->params->{pat});
     my @members = ();
@@ -167,14 +167,14 @@ sub list : Local {
                 order_by => ['person.last', 'person.first' ],
             }
         );
-        if ($no_lapsed) {
+        if ($exclude_lapsed) {
             @members = grep { ! $_->lapsed() } @members;
         }
     }
     my @files = <$omp_dir/*>;
     stash($c,
         pat      => $pat,
-        no_lapsed => $no_lapsed,
+        excluded => $exclude_lapsed,
         online   => scalar(@files),
         members  => \@members,
         template => "member/list.tt2",
@@ -1094,6 +1094,78 @@ sub _xaccount_mem_pay {
         the_date    => today()->as_d8(),
         time        => get_time()->t24(),
     });
+}
+
+sub auto_mailings : Local {
+    my ($self, $c) = @_;
+    stash($c,
+        template  => "member/auto_mailings.tt2",
+    );
+}
+
+sub dec10gen : Local {
+    my ($self, $c) = @_;
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $exp_year = (localtime)[5] + 1900;
+    my $html;
+    $tt->process(
+        "lapse_gen_soon.tt2",# template
+        {
+            sanskrit => 'Sanskrit',
+            string   => \%string,
+            exp_year => $exp_year,
+            has_email => 1,
+            secure_code => 'xxxx',
+        },
+        \$html,           # output
+    ) or die $tt->error;
+    $c->res->output($html);
+}
+
+sub dec10spons : Local {
+    my ($self, $c) = @_;
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $exp_year = (localtime)[5] + 1900;
+    my $html;
+    $tt->process(
+        "lapse_spons_soon.tt2",# template
+        {
+            sanskrit => 'Sanskrit',
+            string   => \%string,
+            exp_year => $exp_year,
+            has_email => 1,
+            secure_code => 'xxxx',
+        },
+        \$html,           # output
+    ) or die $tt->error;
+    $c->res->output($html);
+}
+
+sub dec20 : Local {
+    my ($self, $c) = @_;
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $html;
+    $tt->process(
+        "lapse.tt2",# template
+        {
+            sanskrit => 'Sanskrit',
+            string   => \%string,
+        },
+        \$html,           # output
+    ) or die $tt->error;
+    $c->res->output($html);
 }
 
 1;

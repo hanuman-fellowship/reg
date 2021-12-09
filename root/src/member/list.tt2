@@ -1,18 +1,24 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
-<a href="/member/list/1">No Lapsed</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/member/membership_list">Members w/\$</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/member/voter_list">Voter List</a>
-<p class=p2>
-<a href="/member/membership_list/1">Members</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/member/non_email">Without Email</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/member/bulk">Bulk Mailings</a>
+[% IF excluded %]
+<a href="/member/list">Include Lapsed</a>
+[% ELSE %]
+<a href="/member/list/1">Exclude Lapsed</a>
+[% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/member/list_online">Online ($online)</a>
+<p class=p2>
+<a href="/member/voter_list">Voter List</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/member/membership_list/1">Category Tally</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/member/membership_list">Category Tally w/ \$</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/member/non_email">Without Email</a>
+<p class=p2>
+<a target=_blank href="/member/bulk">Bulk Mailings</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/member/auto_mailings">Auto Mailings</a>
 </td><td>
 <form action=/member/list>
 <table cellpadding=5>
@@ -25,7 +31,7 @@ Search <input type=text name=pat id=pat size=12 value='$pat'>
     [% ELSE %]
         Showing all members matching '$pat'.
     [% END %]
-[% ELSIF no_lapsed %]
+[% ELSIF excluded %]
 Showing current active members.
 [% ELSE %]
 Showing active members - including lapsed.
