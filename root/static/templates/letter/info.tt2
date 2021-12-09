@@ -25,7 +25,7 @@ Please note:
 The Hanuman Fellowship<br>
 Membership Secretary<br>
 <a href=mailto:$string.mem_email>$string.mem_email</a><br>
-$string.mem_phone
+<!-- $string.mem_phone -->
 </p>
 </body>
 </html>
