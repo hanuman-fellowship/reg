@@ -45,11 +45,11 @@ If Written Notice Is Received
 Payment Due
 </th>
 </tr>
-<tr><td>More than 360 days before arrival date</td><td>\$0</td></tr>
-<tr><td>181 to 360 days before arrival date</td><td>10% of Minimum Amount Due</td></tr>
-<tr><td>121 to 180 days before arrival date</td><td>25% of Minimum Amount Due</td></tr>
-<tr><td>61 to 120 days before arrival date</td><td>50% of Minimum Amount Due</td></tr>
-<tr><td>0 to &nbsp;&nbsp;60 days before arrival date</td><td>75% of Minimum Amount Due</td></tr>
+<tr><td>More than 360 days prior to arrival</td><td>\$0</td></tr>
+<tr><td>181 to 360 days prior to arrival</td><td>10% of Minimum Amount Due</td></tr>
+<tr><td>121 to 180 days prior to arrival</td><td>25% of Minimum Amount Due</td></tr>
+<tr><td>61 to 120 days prior to arrival</td><td>50% of Minimum Amount Due</td></tr>
+<tr><td>0 to &nbsp;&nbsp;60 days prior to arrival</td><td>75% of Minimum Amount Due</td></tr>
 </table>
 <p>
 The cancellation was received $ndays days prior to arrival so the Payment Due is:
