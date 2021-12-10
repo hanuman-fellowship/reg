@@ -589,22 +589,66 @@ sub compute_balance {
     my $hc = $rental->housecost();
     my $per_day = $hc->type() eq 'Per Day';
     my $max = $rental->max();
-
+    my $deposit = $rental->deposit();
+    my $min_lodging = int($max
+                          * $n_nights
+                          * $string{min_per_day}
+                         );
     my $hybrid = $rental->program_id();
 
-    # TODO: if hybrid or not ...
+    if ($invoice && $rental->status eq 'cancel_host') {
+        my $tt = Template->new({
+            INTERPOLATE => 1,
+            INCLUDE_PATH => 'root/src/rental',
+        });
+        my $ndays = $rental->sdate_obj()-$rental->rental_canceled_obj()+1;
+        my @advance = (
+            { low =>   0, high =>   60, pct => 75 },
+            { low =>  61, high =>  120, pct => 50 },
+            { low => 121, high =>  180, pct => 25 },
+            { low => 181, high =>  365, pct => 10 },    # ??
+            { low => 366, high => 9999, pct =>  0 },    # ??
+        );
+        my $pct;
+        ADV:
+        for my $adv (@advance) {
+            if ($adv->{low} <= $ndays && $ndays <= $adv->{high}) {
+                $pct = $adv->{pct};
+                last ADV;
+            }
+        }
+        my $due = int(($pct/100) * $min_lodging);
+        my $balance = $due - $deposit;
+        $rental->update({
+            balance => $balance,
+        });
+        my $html;
+        $tt->process(
+            'cancel_host_invoice.tt2',
+            {
+                rental  => $rental,
+                deposit => $deposit,
+                max     => $max,
+                nnights => $n_nights,
+                ndays   => $ndays,
+                pct     => $pct,
+                due     => $due,
+                balance => $balance,
+                min_per_day => $string{min_per_day},
+                min_lodging => $min_lodging,
+            },
+            \$html,
+        );
+        return $html;
+    }
     my $tot_housing = $hybrid? $rental->program->tot_reg_payments()
-                     :         $rental->housing_charge();
+                              :         $rental->housing_charge();
 
     my $final_tot_housing = $tot_housing;
     my $min_cost = 0;
    
     # how does the total cost compare to the minimum?
     #
-    my $min_lodging = int($max
-                          * $n_nights
-                          * $string{min_per_day}
-                         );
     if ($tot_housing < $min_lodging) {
         $min_cost = 1;
         $final_tot_housing = $min_lodging;

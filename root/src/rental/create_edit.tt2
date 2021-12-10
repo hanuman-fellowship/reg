@@ -246,6 +246,11 @@ $rental.contract_exception
 </tr>
 
 <tr>
+<th align=right>Cancelation Date</th>
+<td><input type=text name=rental_canceled value='${rental.rental_canceled_obj.format("%D")}' size=10></td>
+</tr>
+
+<tr>
 <th align=right>PR Alert</th>
 <td><input type=text name=pr_alert value='$rental.pr_alert' size=70></td>
 </tr>

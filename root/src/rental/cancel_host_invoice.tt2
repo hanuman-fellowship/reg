@@ -1,0 +1,60 @@
+<html>
+<head>
+<style>
+body {
+    margin: .5in;
+}
+body, th, td {
+    font-size: 18pt;
+}
+td {
+    text-align: right;
+}
+</style>
+</head>
+<body>
+<h2>Invoice for $rental.name</h2>
+Arrival date: ${rental.sdate_obj.format("%B %e, %Y")}<br>
+Departure date: ${rental.edate_obj.format("%B %e, %Y")}
+<p>
+We received written notice that you wished to cancel the program.
+<p>
+This notice was received on ${rental.rental_canceled_obj.format("%B %e, %Y")}.
+<p>
+The program was cancelled $ndays days before the start date.
+<p>
+There was a deposit of \$${deposit}.
+<p>
+The program would have been for $nnights nights.<br>
+The maximum number of people requested was ${max}.
+<p>
+The contractually agreed Minimum Amount Due was:<br>
+<ul>
+    # nights x maximum x \$$min_per_day
+<p>
+    $nnights x $max x \$$min_per_day = \$$min_lodging
+</ul>
+<p>
+The cancellation policy in the contract reads like this:<p>
+<table cellpadding=10 border=1>
+<tr align=left>
+<th>
+If Written Notice Is Received
+</th>
+<th>
+Payment Due
+</th>
+</tr>
+<tr><td>More than 360 days before arrival date</td><td>\$0</td></tr>
+<tr><td>181 to 360 days before arrival date</td><td>10% of Minimum Amount Due</td></tr>
+<tr><td>121 to 180 days before arrival date</td><td>25% of Minimum Amount Due</td></tr>
+<tr><td>61 to 120 days before arrival date</td><td>50% of Minimum Amount Due</td></tr>
+<tr><td>0 to &nbsp;&nbsp;60 days before arrival date</td><td>75% of Minimum Amount Due</td></tr>
+</table>
+<p>
+The cancellation was received $ndays days prior to arrival so the Payment Due is:
+<ul>
+$pct% of \$$min_lodging = \$$due
+</ul>
+<p>
+Balance = Payment Due - Deposit = $due - $deposit = \$$balance

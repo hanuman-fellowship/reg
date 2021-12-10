@@ -521,7 +521,12 @@ sub view : Local {
     my $current_date = tt_today($c);
     my $is_editable = 1;
 
-    if ($rental->status ne 'due' && $current_date > $rental->edate_obj + $string{max_days_after_program_ends}) {
+    if ($rental->status ne 'due'
+        && $current_date
+           >
+          ($rental->edate_obj
+           + $string{max_days_after_program_ends})
+    ) {
         $is_editable = 0;
     }
 
