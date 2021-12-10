@@ -2235,6 +2235,19 @@ sub _house_opts {
 
 sub del_charge : Local {
     my ($self, $c, $charge_id) = @_;
+    my $charge = model($c, 'RentalCharge')->find($charge_id);
+    stash($c,
+        template  => 'rental/confirm.tt2',
+        type      => 'charge',   
+        amount    => $charge->amount(),
+        item_id   => $charge_id,
+        name      => $charge->rental->name(),
+        rental_id => $charge->rental->id(),
+    );
+}
+
+sub del_charge_do : Local {
+    my ($self, $c, $charge_id) = @_;
 
     my $charge = model($c, 'RentalCharge')->find($charge_id);
     my $rental_id = $charge->rental_id();
@@ -2243,6 +2256,19 @@ sub del_charge : Local {
 }
 
 sub del_payment : Local {
+    my ($self, $c, $payment_id) = @_;
+    my $payment = model($c, 'RentalPayment')->find($payment_id);
+    stash($c,
+        template  => 'rental/confirm.tt2',
+        type      => 'payment',   
+        item_id   => $payment_id,
+        amount    => $payment->amount(),
+        name      => $payment->rental->name(),
+        rental_id => $payment->rental->id(),
+    );
+}
+
+sub del_payment_do : Local {
     my ($self, $c, $payment_id) = @_;
 
     my $payment = model($c, 'RentalPayment')->find($payment_id);

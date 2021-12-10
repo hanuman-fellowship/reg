@@ -1,0 +1,9 @@
+<h2>Deleting!</h2>
+<ul>
+Deleting $type of \$$amount for Rental '${name}'.
+<p class=p2>
+Are you sure?
+<p class=p2>
+<a href=/rental/view/$rental_id/3>No, I made a mistake.</a>
+<a style="margin-left: .5in" href=/rental/del_${type}_do/$item_id>YES, I'm sure.</a>
+</ul>
