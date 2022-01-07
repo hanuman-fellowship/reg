@@ -988,10 +988,12 @@ sub delete : Local {
 sub _check_several_things {
     my ($c, $r, $what) = @_;
     my $id = $r->id();
-    if ($what eq 'delete' && $r->payments()) {
+    my @payments = $r->payments();
+    if ($what eq 'delete' && @payments) {
+        my $npay = @payments;
         stash($c,
             action => "/rental/view/$id",
-            message => "Sorry, cannot delete a rental when there are payments.",
+            message => "Sorry, cannot delete a rental when there are $npay payments.",
             template => 'action_message.tt2',
         );
         return 0;

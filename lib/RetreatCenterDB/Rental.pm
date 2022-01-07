@@ -578,10 +578,18 @@ sub image_url {
     return "/rental/image_file/r$type-" . $self->id . ".jpg";
 }
 
+#
 # make sure the local grid is current???
 # if the rental is cancelled do not include any lodging costs at all.
 # all that would be left is the deposit, yes?
 # if $invoice is set we present the invoice, otherwise no.
+#
+# what if we have a hybrid with several registrations
+# and then the host cancels?  What happens to the monies
+# we received from the registrations?  What was the understanding
+# about the cancellation policy for those individuals?
+# and how does this figure into the Minimum Amount Due?
+#
 sub compute_balance {
     my ($rental, $invoice) = @_;
 
@@ -721,10 +729,6 @@ sub compute_balance {
                      + $start_charge
                      + $end_charge
                      ;
-    if ($rental->status() =~ m{cancel_mmc}xms) {
-        $tot2_charges = 0;
-    }
-
     my $tot_payments = 0;
     for my $p ($rental->payments()) {
         $tot_payments += $p->amount();
