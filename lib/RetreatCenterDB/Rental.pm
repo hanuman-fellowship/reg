@@ -219,17 +219,19 @@ sub rental_type {
     my ($self) = @_;
     my $type = "";
     if ($self->status() =~ m{cancel}xms) {
-        $type .= "Cancelled ";
+        $type .= "Cancelled";
     }
     else {
-        if ($self->program_id) {
-            $type .= "Hybrid ";
-        }
         if ($self->linked) {
-            $type .= "<span style='color: green'>w</span> ";
+            $type .= "<span style='color: green'>w</span>";
+        }
+        if ($self->grid_stale eq 'yes') {
+            $type .= "<span style='color: red'>S</span>";
+        }
+        if ($self->program_id) {
+            $type = "Hybrid $type";
         }
     }
-    chop $type;
     return $type;
 }
 # see also - sub meeting_spaces
