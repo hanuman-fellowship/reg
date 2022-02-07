@@ -229,7 +229,7 @@ sub rental_type {
             $type .= "<span style='color: red'>S</span>";
         }
         if ($self->program_id) {
-            $type = "Hybrid $type";
+            $type = "Hybrid&nbsp;$type";
         }
     }
     return $type;
