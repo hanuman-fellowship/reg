@@ -1965,6 +1965,8 @@ sub export : Local {
                 linked
 
                 do_not_compute_costs
+
+                confnote
             /),
             sdate => $p->sdate_obj->format($fmt),
             edate => $p->edate_obj->format($fmt),
