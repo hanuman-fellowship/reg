@@ -1350,6 +1350,7 @@ sub gen_progtable {
                 children_welcome
                 max
                 end_reg_date_time
+                confnote
             ),
         };
     }
