@@ -373,21 +373,23 @@ sub own_center_do : Local {
         my $cluster_name = $cluster_for_id{$house->cluster_id};
         my $x = $house->x;
         my $center;
-        my $incr = $cluster_name =~ m{Oak}xms? 150: 60;
+        # moving the daily pic box left/right is not correct
+        # so leave it out for now.
+        #my $incr = $cluster_name =~ m{Oak}xms? 150: 60;
         if ($house->center) {
             $center = '';
             $cluster_name =~ s{Center}{Own}xms;
-            $x -= $incr;
+        #    $x -= $incr;
         }
         else {
             $center = 'yes';
             $cluster_name =~ s{Own}{Center}xms;
-            $x += $incr;
+        #    $x += $incr;
         }
         $house->update({
             center     => $center,
             cluster_id => $id_for_cluster{$cluster_name},
-            x          => $x,
+        #    x          => $x,
         });
     }
     set_cache_timestamp($c);
