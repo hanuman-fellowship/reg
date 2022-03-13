@@ -1,0 +1,6 @@
+<p class=p2>
+The following errors were found:
+<ul>
+[% mess %]
+</ul>
+Close this window, fix them, and try again.

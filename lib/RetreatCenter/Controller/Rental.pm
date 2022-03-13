@@ -2865,5 +2865,4 @@ sub del_alt_packet : Local {
     $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
-
 1;

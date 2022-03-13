@@ -2,6 +2,14 @@
 <ul>
 <a href=/report/list>General Reports</a>
 <p class=p2>
+Email Addresses of Leaders and Contact People
+<ul>
+<form target=_blank action="/listing/contact_email" method=POST>
+Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+<input type=submit value="Go"></td>
+</form>
+</ul>
 Phone Lists
 <ol>
 <li><a href="/listing/phone_columns">In Columns</a>
@@ -39,33 +47,24 @@ Phone Lists
     <a href="/listing/activity_tally">Date of Last Contact - Tally by Year</a>
     <p class=p2>
     [% IF Catalyst.check_user_roles('prog_admin') %]
-        <form action="/registration/online_history" method=POST>
-        <table>
-        <tr>
-        <td>
-        <a href="/registration/online_history?sdate=week">Online Registration History</a>
-        </td>
-        <td align=left>
-        Start <input type=text name=sdate size=10>
-        End <input type=text name=edate size=10>
-        <input type=submit value="Go"></td>
-        </tr>
-        </table>
-        </form>
 
-        <form action="/listing/childcare" method=POST>
-        <table>
-        <tr>
-        <td>
-        <b>Childcare Needs</b>&nbsp;&nbsp;
-        </td>
-        <td align=left>
+        <a href="/registration/online_history?sdate=week">Online Registration History</a>
+        <ul>
+        <form action="/registration/online_history" method=POST>
         Start <input type=text name=sdate size=10>
         End <input type=text name=edate size=10>
         <input type=submit value="Go"></td>
-        </tr>
-        </table>
         </form>
+        </ul>
+
+        Childcare Needs
+        <ul>
+        <form action="/listing/childcare" method=POST>
+        Start <input type=text name=sdate size=10>
+        End <input type=text name=edate size=10>
+        <input type=submit value="Go">
+        </form>
+        </ul>
     [% END %]
     <hr width=600 align=left>
     <form action="/listing/mark_inactive">

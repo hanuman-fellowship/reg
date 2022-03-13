@@ -2797,4 +2797,112 @@ sub future_no_vax : Local {
     );
 }
 
+sub contact_email : Local {
+    my ($self, $c) = @_;
+ 
+    my $sdate = trim($c->request->params->{sdate});
+    my $edate = trim($c->request->params->{edate});
+    my $start = date($sdate);
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "error_close.tt2";
+        return;
+    }
+    my $end = date($edate);
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $edate";
+        $c->stash->{template} = "error_close.tt2";
+        return;
+    }
+    if ($end < $start) {
+        $c->stash->{mess} = "End date must be after Start date.";
+        $c->stash->{template} = "error_close.tt2";
+        return;
+    }
+    my $tt = Template->new({
+        INTERPOLATE => 1,
+        INCLUDE_PATH => 'root/src/listing',
+        EVAL_PERL    => 0,
+    }) or die Template->error;
+    my @progs = model($c, 'Program')->search(
+        {
+            sdate => { '>=' => $start->as_d8() },
+            edate => { '<=' => $end->as_d8()   },
+            rental_id => 0,       # no hybrids
+            category_id  => 1,    # must be 'normal' program
+            cancelled => '',
+        },
+        {
+            order_by => 'sdate asc',
+        },
+    );
+    my %emails;
+    my @prog_data;
+    for my $p (@progs) {
+        for my $l ($p->leaders()) {
+            my $em = $l->person->email();
+            if ($em && $em !~ m{mountmadonna}xmsi) {
+                my $person_name = $l->person->name();
+                my $prog_name = $p->name();
+                $prog_name =~ s{,}{}xmsg;
+                push @prog_data, {
+                    email => $em,
+                    name => $person_name,
+                    program => $prog_name,
+                    sdate => $p->sdate_obj->format('%D'),
+                };
+                $emails{"$person_name <$em>"} = 1;
+            }
+        }
+    }
+
+    # next is Rentals and contact person
+    my @rentals = model($c, 'Rental')->search(
+        {
+            sdate => { '>=' => $start->as_d8() },
+            edate => { '<=' => $end->as_d8()   },
+            cancelled => '',
+        },
+        {
+            order_by => 'sdate asc',
+        },
+    );
+    my @rent_data;
+    RENTAL:
+    for my $r (@rentals) {
+        my $person = $r->contract_signer || $r->coordinator;
+        if (! $person || !$person->email) {
+            next RENTAL;
+        }
+        my $em = $person->email;
+        my $nm = $person->name();
+        my $rn = $r->name();
+        $rn =~ s{,}{}xmsg;
+        push @rent_data, {
+            sdate => $r->sdate_obj->format('%D'),
+            rental  => $rn,
+            email => $em,
+            name => $nm,
+        };
+        $emails{"$nm <$em>"} = 1;
+    }
+
+    my $fname = "/var/Reg/report/contact_emails.csv";
+    $tt->process(
+        "contact_email.tt2",             # template
+        {
+            start  => $start,
+            end    => $end,
+            prog_data => \@prog_data,
+            rent_data => \@rent_data,
+            emails => [ sort keys %emails ],
+        },
+        $fname,
+    ) or die "error in processing template: "
+             . $tt->error();
+    $c->response->redirect(
+        $c->uri_for("/report/show_report_file/contact_emails.csv"));
+}
+
+
 1;

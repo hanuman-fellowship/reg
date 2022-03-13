@@ -1,0 +1,18 @@
+Contact Emails for Programs and Rentals from $start.format('%D') to $end.format('%D')
+
+Programs:
+
+Email,Name,Program,Start Date
+[% FOR d IN prog_data %]$d.email,$d.name,$d.program,$d.sdate
+[% END %]
+
+Rentals:
+
+Email,Name,Rental,Start Date
+[% FOR d IN rent_data %]$d.email,$d.name,$d.rental,$d.sdate
+[% END %]
+
+Unique Email Addresses:
+
+[% FOR e IN emails %]$e
+[% END %]
