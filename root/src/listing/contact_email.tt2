@@ -1,4 +1,4 @@
-Contact Emails for Programs and Rentals from $start.format('%D') to $end.format('%D')
+Contact Emails for Programs and Rentals from ${start.format('%D')} to ${end.format('%D')}
 
 Programs:
 
