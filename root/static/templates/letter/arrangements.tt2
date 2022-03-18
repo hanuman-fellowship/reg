@@ -195,15 +195,6 @@ and transportation:
 <ul>
 <a href=https://www.mountmadonna.org/transportation-directions>https://www.mountmadonna.org/transportation-directions</a>
 </ul>
-<h3>BOOKS</h3>
-If you have a moment, the bookstore would like to support your
-workshop by offering a selection of books featuring topics aligned
-with your retreat focus. Are there any titles you would like to
-recommend? If yes, please email any book recommendations to our
-Oceanview Books and Gifts store. Their email address is:
-<ul>
-<a href="mailto:oceanview@mountmadonna.org">oceanview@mountmadonna.org</a>
-</ul>
 <h3>OTHER QUESTIONS</h3>
 At what time on ${rental.sdate_obj.format("%A")} do you plan on arriving?
 Please plan on coming into the Guest Services office upon arrival. 
