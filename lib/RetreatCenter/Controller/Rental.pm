@@ -1702,7 +1702,8 @@ sub contract : Local {
     if (! _contract_ready($c, $rental, 1)) {
         return;
     }
-    $rental->send_rental_deposit();
+    # temporary!!! JON TODO ???
+    #$rental->send_rental_deposit();
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -1736,8 +1737,10 @@ sub contract : Local {
         rental_deposit_url => $string{rental_deposit_url},
         user   => $c->user,
     );
+    # temporary until new contract is approved
+    my $new = $rental->name =~ m{\A -}xms? 'new_': '';
     $tt->process(
-        "rental_contract.tt2",# template
+        "${new}rental_contract.tt2",     # template
         \%stash,          # variables
         \$html,           # output
     ) or die "error in processing template: "

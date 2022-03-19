@@ -1,0 +1,36 @@
+<style>
+body {
+    width: 700px;
+    font-family: Arial;
+    font-size: 13pt;
+    margin-bottom: .5in;
+}
+</style>
+Greetings ${rental.coordinator.first},
+<p>
+Mount Madonna Center is most pleased to be able to host your group, '$rental.name_trimmed'.
+Attached you will find:
+<ol>
+<li>Program Contract
+<li>Registration and Advertising Guidelines
+<!-- <li>Kaya Kalpa Wellness Brochure -->
+</ol>
+Please sign the contract and return it to me.  You have 3 options for this signing:
+<ol>
+<li>Print and sign the contract and return it to me via postal mail.
+<li>Print and sign the contract, scan the signed copy,
+and then attach the scanned image to a reply email to me.
+<li>You will <i>also</i> receive an email from me via DocuSign.
+With a link in that email you can sign the contract <i>electronically</i>. 
+</ol>
+There is a required deposit of \$${rental.deposit} which
+will hold the venue and accommodations
+for the dates you have reserved.
+You may use this <a href="${rental_deposit_url}?code=${rental.grid_code}">payment link</a> (also found in the attached contract) to pay your deposit.  You could, of course, send a check via postal mail.
+<p>
+Thank you and best wishes,
+<p>
+$program_director<br>
+Guest Services Director<br>
+Mount Madonna Center
+<p>

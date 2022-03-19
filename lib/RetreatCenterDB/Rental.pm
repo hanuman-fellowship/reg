@@ -16,6 +16,7 @@ use Util qw/
     housing_types
     penny
     add_br
+    JON
 /;
 use Date::Simple qw/
     date
@@ -399,10 +400,20 @@ sub summer {
 }
 
 # see also - sub meeting_places
+# places - abbreviations, spaces - names
+# $type is either 'all' (default), 'meeting', 'breakout', or 'dorm'
 sub meeting_spaces {
-    my ($self) = @_;
+    my ($self, $type) = @_;
 
-    my @places = map { $_->meeting_place->name } $self->bookings;
+    $type ||= 'all';
+    my @places = map { $_->meeting_place->name }
+                 grep {
+                     $type eq 'all'
+                     || ($type eq 'meeting'  && ! $_->breakout && ! $_->dorm)
+                     || ($type eq 'breakout' && $_->breakout)
+                     || ($type eq 'dorm'     && $_->dorm)
+                 }
+                 $self->bookings;
     if (@places == 1) {
         return $places[0];
     }
@@ -547,7 +558,7 @@ sub send_rental_deposit {
     }
     my ($rental) = @_;
     my $code = $rental->grid_code();
-    my $coord = $rental->coordinator();
+    my $coord = $rental->coordinator() || $rental->contract_signer;
     open my $out, '>', "/tmp/$code";
     print {$out} Dumper({
         first    => $coord->first(),
