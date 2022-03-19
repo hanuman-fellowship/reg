@@ -15,6 +15,7 @@ use Util qw/
     d3_to_hex
     housing_types
     penny
+    add_br
 /;
 use Date::Simple qw/
     date
@@ -85,6 +86,17 @@ __PACKAGE__->add_columns(qw/
     alt_packet
     contract_exception
     rental_canceled
+    in_group_name
+    av_request
+    meal_request
+    housing_request
+    meeting_request
+    other_request
+    av_request_cost
+    meal_request_cost
+    housing_request_cost
+    meeting_request_cost
+    other_request_cost
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -809,6 +821,31 @@ sub gate_code {
     return $self->summary()->gate_code();
 }
 
+sub av_request_br {
+    my ($self) = @_;
+    return add_br($self->av_request);
+}
+
+sub housing_request_br {
+    my ($self) = @_;
+    return add_br($self->housing_request);
+}
+
+sub meal_request_br {
+    my ($self) = @_;
+    return add_br($self->meal_request);
+}
+
+sub meeting_request_br {
+    my ($self) = @_;
+    return add_br($self->meeting_request);
+}
+
+sub other_request_br {
+    my ($self) = @_;
+    return add_br($self->other_request);
+}
+
 1;
 __END__
 overview - A rental is created when some other organization wants
@@ -820,6 +857,8 @@ overview - A rental is created when some other organization wants
 alt_packet - filename (in /var/Reg/documents) of an alternate guest packet
 arrangement_sent - date that the arrangement letter was sent
 arrangement_by - who sent the arrangement letter
+av_request - special audio/visual requests
+av_request_cost - cost of special audio/visual requests
 badge_title - A short version of the title to fit on the badges.
 balance - the outstanding balance
 cancelled - boolean - was this rental cancelled?  Set/Unset by a menu link.
@@ -850,15 +889,24 @@ grid_stale - is the web grid in need of refreshing?
 housecost_id - foreign key to housecost
 housing_charge - total cost from the housing grid
 housing_note - free text describing any issues with the rental housing
+housing_request - special housing request
+housing_request_cost - cost of special housing request
 id - unique id
 image - does this rental have an image?
+in_group_name - contract is in the group name instead of contract signer
 linked - should this rental be included on the online Event calendar?
 lunches - an encoded (essentially binary) field for when lunches are requested.
 max - the maximum number of people expected.  this is used
     to determine the financial obligation of the renter.
+meal_request - special requests for meals
+meal_request_cost - cost of special requests for meals
+meeting_request - special meeting place request
+meeting_request_cost - cost of special meeting place request
 mmc_does_reg - will we be doing registration for this event?
     if so, a parallel hybrid program will be created.
 name - a brief name of the rental for internal purposes
+other_request - special other request
+other_request_cost - cost of special other request
 phone - phone number for the web page, if wanted
 pr_alert - This rental has an effect on PRs.  This column contains
     text to 'pop up' when a person registers for a PR whose dates

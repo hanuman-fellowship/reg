@@ -152,10 +152,13 @@ sub _get_data {
         push @mess, "Invalid email: $P{email}";
     }
     if ($P{max} !~ m{^\d+$}) {
-        push @mess, "Invalid maximum.";
+        push @mess, "Invalid maximum: $P{max}";
     }
     if ($P{deposit} !~ m{^\d+$}) {
-        push @mess, "Invalid deposit.";
+        push @mess, "Invalid deposit: $P{deposit}";
+    }
+    if ($P{av_request_cost} !~ m{^\d+$}) {
+        push @mess, "Invalid Audio/Visual Cost: $P{av_request_cost}";
     }
     if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
         push @mess, "The GL Number must only contain digits and upper case letters.";
@@ -167,6 +170,7 @@ sub _get_data {
     $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
     #$P{staff_ok}     = "" unless exists $P{staff_ok};
     $P{rental_follows} = "" unless exists $P{rental_follows};
+    $P{in_group_name} = "" unless exists $P{in_group_name};
 
     #
     # quick hack here - fixed cost houses
@@ -231,9 +235,10 @@ sub create : Local {
             expected       => 0,
                 # see comment in Program.pm in create().
         },
-        check_mmc_does_reg => '',
-        #check_staff_ok     => '',
+        check_mmc_does_reg   => '',
+        #check_staff_ok      => '',
         check_rental_follows => '',
+        check_in_group_name  => '',
     );
 }
 
@@ -793,6 +798,7 @@ sub update : Local {
         template    => "rental/create_edit.tt2",
         check_linked    => ($r->linked()   )? "checked": "",
         check_tentative => ($r->tentative())? "checked": "",
+        check_in_group_name => ($r->in_group_name())? "checked": "",
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
         #check_staff_ok => ($r->staff_ok())? "checked": "",
         check_rental_follows => ($r->rental_follows())? "checked": "",
@@ -2082,8 +2088,9 @@ sub duplicate : Local {
         form_action        => "duplicate_do/$rental_id",
         template           => "rental/create_edit.tt2",
         check_mmc_does_reg => ($orig_r->mmc_does_reg())? "checked": "",
-        #check_staff_ok     => ($orig_r->staff_ok())? "checked": "",
+        #check_staff_ok    => ($orig_r->staff_ok())? "checked": "",
         rental_follows     => ($orig_r->rental_follows())? "checked": "",
+        in_group_name      => ($orig_r->in_group_name())? "checked": "",
     );
 }
 

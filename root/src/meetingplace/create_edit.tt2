@@ -20,6 +20,11 @@
 </tr>
 
 <tr>
+<th align=right><span class=red>*</span> Cost</th>
+<td><input type=text name=cost value=$meetingplace.cost></td>
+</tr>
+
+<tr>
 <th align=right><span class=red>*</span> Display Order</th>
 <td><input type=text name=disp_ord value=$meetingplace.disp_ord></td>
 </tr>

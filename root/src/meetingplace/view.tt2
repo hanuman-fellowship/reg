@@ -23,6 +23,11 @@
 </tr>
 
 <tr>
+<th align=right>Cost</th>
+<td align=left>$mp.cost</td>
+</tr>
+
+<tr>
 <th align=right>Display Order</th>
 <td>$mp.disp_ord</td>
 </tr>

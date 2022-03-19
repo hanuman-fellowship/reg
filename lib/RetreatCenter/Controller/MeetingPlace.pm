@@ -30,6 +30,7 @@ sub create : Local {
         green           => 127,
         blue            => 127,
         check_sleep_too => '',
+        cost            => 0,
         form_action     => "create_do",
         template        => "meetingplace/create_edit.tt2",
     );
@@ -38,7 +39,7 @@ sub create : Local {
 my %hash;
 my @mess;
 sub _get_data {
-    my ($c) = @_;
+    my ($c, $update) = @_;
 
     %hash = %{ $c->request->params() };
     $hash{$_} =~ s{^\s*|\s*$}{}g for keys %hash;
@@ -46,25 +47,32 @@ sub _get_data {
         $hash{sleep_too} = '';
     }
     @mess = ();
-    for my $f (qw/abbr name disp_ord color/) {
+    for my $f (qw/abbr name disp_ord color cost/) {
         if (empty($hash{$f})) {
             push @mess, "\u$f cannot be blank";
         }
     }
     if (! @mess) {
-        if (! $hash{max} =~ m{^\d+$}) {
+        if ($hash{max} !~ m{^\d+$}) {
             push @mess, "Illegal maximum: $hash{max}";
         }
+        if ($hash{cost} !~ m{^\d+$}) {
+            push @mess, "Illegal cost: $hash{cost}";
+        }
     }
-    # is there a house with the same name/abbreviation?
-    my ($house) = model($c, 'House')->search({
-                      name => $hash{abbr},
-                  });
-    if ($house && !$hash{sleep_too}) {
-        push @mess, "Since there is also a House named '$hash{abbr}' you must check 'For Sleeping'.";
-    }
-    if ($hash{sleep_too} && ! $house) {
-        push @mess, "Since you checked 'For Sleeping' there must be a House with the name '$hash{abbr}' but there isn't.  Add it first.";
+    if (! $update) {
+        # we are creating a new meeting place
+
+        # is there *another* house with the same name/abbreviation?
+        my ($house) = model($c, 'House')->search({
+                          name => $hash{abbr},
+                      });
+        if ($house && !$hash{sleep_too}) {
+            push @mess, "Since there is also a House named '$hash{abbr}' you must check 'For Sleeping'.";
+        }
+        if ($hash{sleep_too} && ! $house) {
+            push @mess, "Since you checked 'For Sleeping' there must be a House with the name '$hash{abbr}' but there isn't.  Add it first.";
+        }
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -104,6 +112,9 @@ sub list : Local {
         @mp = sort { $b->max <=> $a->max } @mp;
     }
     elsif ($sort == 2) {
+        @mp = sort {$b->cost <=> $a->cost } @mp;
+    }
+    elsif ($sort == 3) {
         @mp = sort _by_disp @mp;
     }
     for my $mp (@mp) {
@@ -154,7 +165,7 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    _get_data($c);
+    _get_data($c, 1);
     return if @mess;
 
     model($c, 'MeetingPlace')->find($id)->update(\%hash);

@@ -405,6 +405,11 @@ none
 </tr>
 
 <tr>
+<th align=right>Contract in Group Name</th>
+<td>$rental.in_group_name</td>
+</tr>
+
+<tr>
 <th align=right>Start Hour</th>
 <td>$rental.start_hour_obj</td>
 </tr>
@@ -483,6 +488,35 @@ none
 [% END %]
 </tr>
 [% END %]
+
+<tr><td height=30></td></tr>
+<tr><td colspan=2><h2>Special Requests</h2></td></tr>
+
+<tr>
+<th valign=top align=right>Audio/Visual</th>
+<td>$rental.av_request_br</td>
+</tr>
+<tr><td></td><td>Cost: $rental.av_request_cost</td></tr>
+<tr>
+<th valign=top align=right>Housing</th>
+<td>$rental.housing_request_br</td>
+</tr>
+<tr><td></td><td>Cost: $rental.housing_request_cost</td></tr>
+<tr>
+<th valign=top align=right>Meals</th>
+<td>$rental.meal_request_br</td>
+</tr>
+<tr><td></td><td>Cost: $rental.meal_request_cost</td></tr>
+<tr>
+<th valign=top align=right>Meeting Place</th>
+<td>$rental.meeting_request_br</td>
+</tr>
+<tr><td></td><td>Cost: $rental.meeting_request_cost</td></tr>
+<tr>
+<th valign=top align=right>Other</th>
+<td>$rental.other_request_br</td>
+</tr>
+<tr><td></td><td>Cost: $rental.other_request_cost</td></tr>
 
 </table>
 <p>

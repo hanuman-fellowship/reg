@@ -1,0 +1,14 @@
+alter table rental add column in_group_name char(3) default '';
+
+alter table rental add column av_request text;
+alter table rental add column av_request_cost int(11) default 0;
+alter table rental add column meal_request text;
+alter table rental add column meal_request_cost int(11) default 0;
+alter table rental add column housing_request text;
+alter table rental add column housing_request_cost int(11) default 0;
+alter table rental add column meeting_request text;
+alter table rental add column meeting_request_cost int(11) default 0;
+alter table rental add column other_request text;
+alter table rental add column other_request_cost int(11) default 0;
+
+alter table meeting_place add column cost int(11) default 0;

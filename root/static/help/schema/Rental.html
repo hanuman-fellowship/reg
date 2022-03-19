@@ -16,6 +16,10 @@ Table: rental
 <dd>date that the arrangement letter was sent</dd>
 <dt>arrangement_by</dt>
 <dd>who sent the arrangement letter</dd>
+<dt>av_request</dt>
+<dd>special audio/visual requests</dd>
+<dt>av_request_cost</dt>
+<dd>cost of special audio/visual requests</dd>
 <dt>badge_title</dt>
 <dd>A short version of the title to fit on the badges.</dd>
 <dt>balance</dt>
@@ -68,20 +72,38 @@ Table: rental
 <dd>total cost from the housing grid</dd>
 <dt>housing_note</dt>
 <dd>free text describing any issues with the rental housing</dd>
+<dt>housing_request</dt>
+<dd>special housing request</dd>
+<dt>housing_request_cost</dt>
+<dd>cost of special housing request</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>image</dt>
 <dd>does this rental have an image?</dd>
+<dt>in_group_name</dt>
+<dd>contract is in the group name instead of contract signer</dd>
 <dt>linked</dt>
 <dd>should this rental be included on the online Event calendar?</dd>
 <dt>lunches</dt>
 <dd>an encoded (essentially binary) field for when lunches are requested.</dd>
 <dt>max</dt>
 <dd>the maximum number of people expected.  this is used to determine the financial obligation of the renter.</dd>
+<dt>meal_request</dt>
+<dd>special requests for meals</dd>
+<dt>meal_request_cost</dt>
+<dd>cost of special requests for meals</dd>
+<dt>meeting_request</dt>
+<dd>special meeting place request</dd>
+<dt>meeting_request_cost</dt>
+<dd>cost of special meeting place request</dd>
 <dt>mmc_does_reg</dt>
 <dd>will we be doing registration for this event? if so, a parallel hybrid program will be created.</dd>
 <dt>name</dt>
 <dd>a brief name of the rental for internal purposes</dd>
+<dt>other_request</dt>
+<dd>special other request</dd>
+<dt>other_request_cost</dt>
+<dd>cost of special other request</dd>
 <dt>phone</dt>
 <dd>phone number for the web page, if wanted</dd>
 <dt>pr_alert</dt>
@@ -94,6 +116,8 @@ Table: rental
 <dd>foreign key to <a href=User.html>user</a></dd>
 <dt>refresh_days</dt>
 <dd>what days should the bedding be refreshed? This is an encoded field similar to lunches. This is used for longer term rentals.</dd>
+<dt>rental_canceled</dt>
+<dd>date the rental was canceled (by Host or by MMC)</dd>
 <dt>rental_created</dt>
 <dd>date the rental was created</dd>
 <dt>rental_follows</dt>
@@ -107,7 +131,7 @@ Table: rental
 <dt>start_hour</dt>
 <dd>time the rental begins</dd>
 <dt>status</dt>
-<dd>tentative, sent, received, due, done</dd>
+<dd>tentative, sent, received, arranged, due, done, cancel_mmc, cancel_host</dd>
 <dt>subtitle</dt>
 <dd>secondary description of the rental for the web</dd>
 <dt>summary_id</dt>

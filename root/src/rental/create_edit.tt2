@@ -190,6 +190,11 @@ These costs will apply for each day the person stays - regardless of how many ot
 </tr>
 
 <tr>
+<th align=right>Contract in Group Name</th>
+<td><input type=checkbox name=in_group_name value="yes" $check_in_group_name></td>
+</tr>
+
+<tr>
 <th align=right>Start Hour</th>
 <td><input type=text name=start_hour value='$rental.start_hour_obj' size=8></td>
 </tr>
@@ -253,6 +258,59 @@ $rental.contract_exception
 <tr>
 <th align=right>PR Alert</th>
 <td><input type=text name=pr_alert value='$rental.pr_alert' size=70></td>
+</tr>
+
+<tr><td height=30></td></tr>
+
+<tr>
+<td colspan=2><h2>Special Requests</h2></td>
+</tr>
+<tr>
+<tr>
+<th valign=top>Audio/Visual</th>
+<td><textarea name=av_request cols=60 rows=5>$rental.av_request</textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><b>Cost</b> <input type=text name=av_request_cost value=$rental.av_request_cost size=5></td>
+</tr>
+<tr>
+<th valign=top>Housing</th>
+<td><textarea name=housing_request cols=60 rows=5>$rental.housing_request</textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><b>Cost</b> <input type=text name=housing_request_cost value=$rental.housing_request_cost size=5></td>
+</tr>
+<tr>
+<th valign=top>Meals</th>
+<td><textarea name=meal_request cols=60 rows=5>$rental.meal_request</textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><b>Cost</b> <input type=text name=meal_request_cost value=$rental.meal_request_cost size=5></td>
+</tr>
+<tr>
+<th valign=top>Meeting Place</th>
+<td><textarea name=meeting_request cols=60 rows=5>$rental.meeting_request</textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><b>Cost</b> <input type=text name=meeting_request_cost value=$rental.meeting_request_cost size=5></td>
+</tr>
+<th valign=top>Other</th>
+<td><textarea name=other_request cols=60 rows=5>$rental.other_request</textarea></td>
+</tr>
+<tr>
+<td></td>
+<td><b>Cost</b> <input type=text name=other_request_cost value=$rental.other_request_cost size=5></td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<input type=submit id=sub value="Submit">
+</td>
 </tr>
 
 </table>

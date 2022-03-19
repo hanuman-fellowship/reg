@@ -93,6 +93,7 @@ our @EXPORT_OK = qw/
     fixed_document
     check_alt_packet
     check_file_upload
+    add_br
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2575,6 +2576,12 @@ sub check_alt_packet {
         $upload->copy_to("/var/Reg/documents/$fname");
     }
     return 1;
+}
+
+sub add_br {
+    my ($s) = @_;
+    $s =~ s{$}{<br>}xmsg;
+    return $s;
 }
 
 1;
