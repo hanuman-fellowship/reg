@@ -332,9 +332,9 @@ none
 </tr>
 
 <tr>
-<th>Meeting Places</th>
+<th valign=center>Meeting Places</th>
 <td align=left valign=top colspan=3>
-<table cellpadding=12><tr><td>
+<table cellpadding=12><tr><td valign=top>
 <b>Meet</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]

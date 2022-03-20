@@ -142,7 +142,14 @@ __PACKAGE__->has_many(charges => 'RetreatCenterDB::RentalCharge',
                       { order_by => "id desc" });
 
 # bookings
-__PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
+__PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking',
+                      'rental_id',
+                      {
+                          join     => 'meeting_place',
+                          prefetch => 'meeting_place',
+                          order_by => 'meeting_place.name',
+                      }
+                     );
 
 # blocks
 __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
@@ -855,6 +862,38 @@ sub meeting_request_br {
 sub other_request_br {
     my ($self) = @_;
     return add_br($self->other_request);
+}
+
+sub meeting_place_table {
+    my ($self) = @_;
+    my $total = 0;
+    my $html = <<'EOH';
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th align=right>Cost</th>
+</tr>
+EOH
+    for my $b ($self->bookings) {
+        my $mp = $b->meeting_place;
+        my $name = $mp->name;
+        my $cost = $mp->cost;
+        $total += $cost;
+        $html .= <<"EOH";
+<tr>
+<td align=left>$name</td>
+<td align=right>$cost</td>
+</tr>
+EOH
+    }
+    $html .= <<"EOH";
+<tr>
+<td></td>
+<td align=right style="border-top: 1px solid black">$total</td>
+</tr>
+</table>
+EOH
+    return $html, $total;
 }
 
 1;

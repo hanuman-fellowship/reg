@@ -149,7 +149,8 @@ sub update_do : Local {
         housecost_id => $id,
         sdate => { '>=' => tt_today($c)->as_d8() },
     })) {
-        $r->send_grid_data();
+        # JON TODO ??? Temporary
+        # $r->send_grid_data();
     }
     $c->response->redirect($c->uri_for('/housecost/list'));
 }

@@ -1702,8 +1702,6 @@ sub contract : Local {
     if (! _contract_ready($c, $rental, 1)) {
         return;
     }
-    # temporary!!! JON TODO ???
-    #$rental->send_rental_deposit();
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -1717,6 +1715,15 @@ sub contract : Local {
                  ;
     my $contract_sent = $rental->contract_sent? $rental->contract_sent_obj
                         :                       tt_today($c);
+    my ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table;
+    my $deposit = $nnights * $mp_cost_per_day;
+    if ($rental->deposit != $deposit) {
+        $rental->update({
+            deposit => $deposit,
+        });
+    }
+    # temporary!!! JON TODO ???
+    #$rental->send_rental_deposit();
     my %stash = (
         today   => tt_today($c),
         email   => $email,
@@ -1727,7 +1734,7 @@ sub contract : Local {
         pl_nights => ($nnights == 1? '': 's'),
         min_per_day => $string{min_per_day},
         agreed  => commify($agreed),
-        deposit => commify($rental->deposit()),
+        deposit => commify($deposit),
         rental_lunch_cost => $string{rental_lunch_cost},
         program_director => $string{program_director},
         rental_late_in => $string{rental_late_in},
@@ -1735,6 +1742,8 @@ sub contract : Local {
         contract_sent => $contract_sent,
         contract_expire => $contract_sent + 17,
         rental_deposit_url => $string{rental_deposit_url},
+        mp_table => $mp_table,
+        mp_cost_per_day => $mp_cost_per_day,
         user   => $c->user,
     );
     # temporary until new contract is approved
