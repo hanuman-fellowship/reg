@@ -16,7 +16,6 @@ use Util qw/
     housing_types
     penny
     add_br
-    JON
 /;
 use Date::Simple qw/
     date

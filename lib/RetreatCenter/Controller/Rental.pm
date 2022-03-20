@@ -1722,8 +1722,7 @@ sub contract : Local {
             deposit => $deposit,
         });
     }
-    # temporary!!! JON TODO ???
-    #$rental->send_rental_deposit();
+    $rental->send_rental_deposit();
     my %stash = (
         today   => tt_today($c),
         email   => $email,
