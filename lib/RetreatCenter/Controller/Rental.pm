@@ -159,10 +159,11 @@ sub _get_data {
     }
     # Special Request fields
     my %full_name = (
-        'av'    => 'Audio/Visual',
-        'meal'  => 'Meal',
-        'meet'  => 'Meeting Place',
-        'other' => 'Other',
+        'av'      => 'Audio/Visual',
+        'housing' => 'Housing',
+        'meal'    => 'Meal',
+        'meeting' => 'Meeting Place',
+        'other'   => 'Other',
     );
     for my $w (qw/ av meal meet mp other /) {
         my $key = "${w}_request_cost";
