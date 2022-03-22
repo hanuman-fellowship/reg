@@ -157,8 +157,21 @@ sub _get_data {
     if ($P{deposit} !~ m{^\d+$}) {
         push @mess, "Invalid deposit: $P{deposit}";
     }
-    if ($P{av_request_cost} !~ m{^\d+$}) {
-        push @mess, "Invalid Audio/Visual Cost: $P{av_request_cost}";
+    # Special Request fields
+    my %full_name = (
+        'av'    => 'Audio/Visual',
+        'meal'  => 'Meal',
+        'meet'  => 'Meeting Place',
+        'other' => 'Other',
+    );
+    for my $w (qw/ av meal meet mp other /) {
+        my $key = "${w}_request_cost";
+        if ($P{$key} =~ m{\A \s* \z}xms) {
+            $P{$key} = 0;
+        }
+        if ($P{$key} !~ m{^\d+$}xms) {
+            push @mess, "Invalid $full_name{$w} Cost: $P{$key}";
+        }
     }
     if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
         push @mess, "The GL Number must only contain digits and upper case letters.";

@@ -172,7 +172,7 @@ $mp_table
 <p>
 $nnights days * \$$mp_cost_per_day per day = \$$deposit deposit
 <p>
-This amount can be paid online with this <a href="${rental_deposit_url}?code=$rental.grid_code">payment link</a>.
+<b>This deposit is unrefundable can be paid online with this <a href="${rental_deposit_url}?code=$rental.grid_code">payment link</a></b>.
 <p>
 <i>There will be a charge of
 \$2/person/hour for any additional time before 4:00 pm on the start date,
