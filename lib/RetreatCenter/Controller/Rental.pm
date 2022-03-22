@@ -165,7 +165,7 @@ sub _get_data {
         'meeting' => 'Meeting Place',
         'other'   => 'Other',
     );
-    for my $w (qw/ av meal meet mp other /) {
+    for my $w (keys %full_name) {
         my $key = "${w}_request_cost";
         if ($P{$key} =~ m{\A \s* \z}xms) {
             $P{$key} = 0;
