@@ -272,7 +272,7 @@ $rental.contract_exception
 </tr>
 <tr>
 <td></td>
-<td><b>Cost</b> <input type=text name=av_request_cost value=$rental.av_request_cost size=5></td>
+<td><b>Cost</b> <input type=text name=av_request_cost value='$rental.av_request_cost' size=5></td>
 </tr>
 <tr>
 <th valign=top>Housing</th>
@@ -280,7 +280,7 @@ $rental.contract_exception
 </tr>
 <tr>
 <td></td>
-<td><b>Cost</b> <input type=text name=housing_request_cost value=$rental.housing_request_cost size=5></td>
+<td><b>Cost</b> <input type=text name=housing_request_cost value='$rental.housing_request_cost' size=5></td>
 </tr>
 <tr>
 <th valign=top>Meals</th>
@@ -288,7 +288,7 @@ $rental.contract_exception
 </tr>
 <tr>
 <td></td>
-<td><b>Cost</b> <input type=text name=meal_request_cost value=$rental.meal_request_cost size=5></td>
+<td><b>Cost</b> <input type=text name=meal_request_cost value='$rental.meal_request_cost' size=5></td>
 </tr>
 <tr>
 <th valign=top>Meeting Place</th>
@@ -296,14 +296,14 @@ $rental.contract_exception
 </tr>
 <tr>
 <td></td>
-<td><b>Cost</b> <input type=text name=meeting_request_cost value=$rental.meeting_request_cost size=5></td>
+<td><b>Cost</b> <input type=text name=meeting_request_cost value='$rental.meeting_request_cost' size=5></td>
 </tr>
 <th valign=top>Other</th>
 <td><textarea name=other_request cols=60 rows=5>$rental.other_request</textarea></td>
 </tr>
 <tr>
 <td></td>
-<td><b>Cost</b> <input type=text name=other_request_cost value=$rental.other_request_cost size=5></td>
+<td><b>Cost</b> <input type=text name=other_request_cost value='$rental.other_request_cost' size=5></td>
 </tr>
 
 <tr>
