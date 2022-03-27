@@ -141,6 +141,7 @@ with a guest will pay 1/2 of the above rates.
 <p>
 <b>Please note all guest rooms must be vacated by 12:00 noon UNLESS OTHERWISE CONTRACTED.</b>
 Room rates include accommodations,
+<!-- lunch is now (3/27/22) ALWAYS provided 
 [% lunch = rental.any_lunches %]
 [% IF lunch %]
 three meals
@@ -148,6 +149,7 @@ three meals
 two meals and a snack
 [% END %]
 per day,
+-->
 applicable state and local taxes, insurance, meeting space,
 and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity - e.g.,
@@ -155,10 +157,12 @@ a room with 3 beds occupied by 2 people is charged as a double.
 [% IF rental.seminar_house %]
 <b>Presenter agrees to house a minimum of 15 guests in the Seminar House.</b>
 [% END %]
+<!-- see above comment about lunches
 [% IF ! lunch %]
 If lunches are requested for the group there will be a charge
 of \$$rental_lunch_cost/person/day.
 [% END %]
+-->
 <i>There will be a charge of
 \$2/person/hour for any additional time before 4:00 pm on the start date,
 or after 12:00 pm on the end date.</i>

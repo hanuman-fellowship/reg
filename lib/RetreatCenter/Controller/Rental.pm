@@ -353,7 +353,7 @@ sub create_do : Local {
     new_event_alert(
         $c,
         1, 'Rental',
-        $P{name}, 
+        $P{name},
         $c->uri_for("/rental/view/$id"),
     );
     if ($P{mmc_does_reg}) {
@@ -488,7 +488,7 @@ sub create_from_proposal : Local {
     new_event_alert(
         $c,
         1, 'Rental',
-        $P{name}, 
+        $P{name},
         $c->uri_for("/rental/view/$rental_id"),
     );
 
@@ -717,7 +717,7 @@ sub list : Local {
         rentals  => [
             # past due ones first
             model($c, 'Rental')->search(
-                {   
+                {
                     #cancelled => '',
                     edate => { '<', $today },
                     status => 'due',
@@ -966,7 +966,7 @@ sub delete : Local {
         # do not have ...
         # what to do?   just prohibit it from the UI.
         # first clear out any registrations, bookings, etc from the program
-        # then on the mysql command line 
+        # then on the mysql command line
         # - update the rental and set program_id to 0
         #   and mmi_does_reg to ''
         # - delete the program (it won't cascade)
@@ -1192,7 +1192,7 @@ sub new_charge_do : Local {
 
     my $amount = trim($c->request->params->{amount});
     my $what   = trim($c->request->params->{what});
-    
+
     my @mess = ();
     if (empty($amount)) {
         push @mess, "Missing Amount";
@@ -1312,7 +1312,7 @@ sub booking : Local {
                    @opt,
                },
                { order_by => 'name' }
-              ) 
+              )
     ) {
         my $h_id = $h->id;
         #
@@ -1701,7 +1701,7 @@ sub _contract_ready {
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "rental/" 
+        $c->stash->{template} = "rental/"
                               . ($new_window? 'close_': '')
                               . "error.tt2";
         return 0;
@@ -1729,14 +1729,28 @@ sub contract : Local {
                  ;
     my $contract_sent = $rental->contract_sent? $rental->contract_sent_obj
                         :                       tt_today($c);
-    my ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table;
-    my $deposit = $nnights * $mp_cost_per_day;
-    if ($rental->deposit != $deposit) {
-        $rental->update({
-            deposit => $deposit,
-        });
+
+    # temporary until new contract is approved
+    my $new = $rental->name =~ m{\A -}xms? 'new_': '';
+
+    my ($deposit, $mp_table, $mp_cost_per_day);
+
+    if ($new) {
+        ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table;
+        $deposit = $nnights * $mp_cost_per_day;
+        # force the deposit field
+        # we no longer want to or need to manually edit that value...
+        if ($rental->deposit != $deposit) {
+            $rental->update({
+                deposit => $deposit,
+            });
+        }
+    }
+    else {
+        $deposit = $rental->deposit;
     }
     $rental->send_rental_deposit();
+
     my %stash = (
         today   => tt_today($c),
         email   => $email,
@@ -1755,12 +1769,10 @@ sub contract : Local {
         contract_sent => $contract_sent,
         contract_expire => $contract_sent + 17,
         rental_deposit_url => $string{rental_deposit_url},
-        mp_table => $mp_table,
-        mp_cost_per_day => $mp_cost_per_day,
+        mp_table => $mp_table,                  # new contract only
+        mp_cost_per_day => $mp_cost_per_day,    # new contract only
         user   => $c->user,
     );
-    # temporary until new contract is approved
-    my $new = $rental->name =~ m{\A -}xms? 'new_': '';
     $tt->process(
         "${new}rental_contract.tt2",     # template
         \%stash,          # variables
@@ -2029,7 +2041,7 @@ sub invoice : Local {
 
 sub link_proposal : Local {
     my ($self, $c, $rental_id, $proposal_id) = @_;
-    
+
     # proposal id in rental
     model($c, 'Rental')->find($rental_id)->update({
         proposal_id => $proposal_id,
@@ -2071,7 +2083,7 @@ sub duplicate : Local {
         id      => undef,
         sdate   => "",
         edate   => "",
-        glnum   => "", 
+        glnum   => "",
         image   => '',   # not yet
         balance => 0,
         status  => "",
@@ -2218,7 +2230,7 @@ $c->log->info("copying images from $old_id to $new_id: $img/r$let-$old_id.jpg to
     new_event_alert(
         $c,
         1, 'Rental',
-        $P{name}, 
+        $P{name},
         $c->uri_for("/rental/view/$new_id"),
     );
 
@@ -2273,7 +2285,7 @@ sub del_charge : Local {
     my $charge = model($c, 'RentalCharge')->find($charge_id);
     stash($c,
         template  => 'rental/confirm.tt2',
-        type      => 'charge',   
+        type      => 'charge',
         amount    => $charge->amount(),
         item_id   => $charge_id,
         name      => $charge->rental->name(),
@@ -2295,7 +2307,7 @@ sub del_payment : Local {
     my $payment = model($c, 'RentalPayment')->find($payment_id);
     stash($c,
         template  => 'rental/confirm.tt2',
-        type      => 'payment',   
+        type      => 'payment',
         item_id   => $payment_id,
         amount    => $payment->amount(),
         name      => $payment->rental->name(),
@@ -2413,7 +2425,7 @@ sub update_payment_do : Local {
 sub _get_cluster_groups {
     my ($c, $rental_id) = @_;
 
-    my @reserved = 
+    my @reserved =
         model($c, 'RentalCluster')->search(
         { rental_id => $rental_id },
         {
@@ -2798,7 +2810,7 @@ sub badge : Local {
 
 sub badge_do : Local {
     my ($self, $c) = @_;
-    
+
     my %P = %{ $c->request->params() };
     my @mess;
     if (empty($P{name})) {
