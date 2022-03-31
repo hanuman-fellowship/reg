@@ -5,3 +5,23 @@ is already registered for
 <a href=/program/view/[% program.id %]>[% program.name %]</a>.
 <p class=p2>
 See [% IF person.sex == 'M' %]his[% ELSE %]her[% END %] registration <a href=/registration/view/[% registration.id %]>here</a>.
+<p>
+[% IF deposit %]
+This person paid a deposit of \$${deposit}.
+[% END %]
+<p>
+[% IF green_amount %]
+They made a contribution of \$${green_amount} to the Green Scene Fund.
+[% END %]
+[% IF comment %]
+They made this comment:
+<div style='width: 600px'>
+$comment
+</div>
+[% END %]
+<p>
+Shall this duplicate registration be deleted?
+<a onclick='confirm("Are you sure?");' href=#>Yes</a>
+&nbsp; &nbsp; &nbsp;
+<input id='back' type=button value="No, Go Back" onclick="history.go(-1)">
+<script type='text/javascript'>document.getElementById('back').focus();</script>
