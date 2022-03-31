@@ -3,12 +3,13 @@
 is already registered for
 <a href=/program/view/$program.id>$program.name</a>.
 <p class=p2>
-See their registration <a href=/registration/view/$registration.id>here</a>.
-<p class=p2>
+See their current registration <a href=/registration/view/$registration.id>here</a>.
+<p class=p2 style="margin-top: .2in">
+In <i>this</i> registration
 [% IF deposit %]
-They paid a deposit of \$${deposit}.
+they paid a deposit of \$${deposit}.
 [% ELSE %]
-They paid no deposit at all.
+they paid no deposit at all.
 [% END %]
 <p class=p2>
 [% IF green_amount %]
