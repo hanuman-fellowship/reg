@@ -3826,6 +3826,7 @@ sub lodge : Local {
     my $reg        = model($c, 'Registration')->find($id);
     my $pr         = $reg->program();
     my $PR         = $pr->PR();
+    my $SG         = $pr->SG();
     my $program_id = $reg->program_id();
 
     my %reserved_cids = 
@@ -3995,7 +3996,7 @@ sub lodge : Local {
     # which clusters are NOT available?
     #
     my %or_cids;
-    if ($PR) {
+    if ($PR || $SG) {
         %or_cids = PR_other_reserved_cids($c, $reg->date_start(),
                                               $reg->date_end()   );
     }
