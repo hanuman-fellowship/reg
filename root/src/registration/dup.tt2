@@ -22,7 +22,7 @@ $comment
 </div>
 [% END %]
 <p class=p2>
-Shall this duplicate registration be deleted?
+Shall this duplicate registration be archived?
 <a onclick='confirm("Are you sure?");' href=/registration/move_dup_reg/$fname/$date_postmark>Yes</a>
 &nbsp; &nbsp; &nbsp;
 <input id='back' type=button value="No, Go Back" onclick="history.go(-1)">

@@ -288,6 +288,7 @@ sub get_files {
 sub check_transaction {
     my ($get_dir, $f, @params) = @_;
 
+    chmod 0666, "$get_dir/$f";
     my $href = x_file_to_href("$get_dir/$f");
     my $kk   = $href->{kayakalpa};
     my $desc = $href->{description};
