@@ -56,6 +56,7 @@ use Util qw/
     slurp
     time_travel_class
     kid_badge_names
+    JON
 /;
 use POSIX qw/
     ceil
@@ -6542,6 +6543,22 @@ $name<br>
 EOH
     }
     $c->res->output($html);
+}
+
+sub move_dup_reg : Local {
+    my ($self, $c, $fname, $d8) = @_;
+    open my $out, '>>', "$rst/online/$fname";
+    print {$out} "duplicate registration, moved aside\n";
+    close $out;
+    my $dir = "$rst/online_done/"
+            . substr($d8, 0, 4)
+            . '-'
+            . substr($d8, 4, 2)
+            ;
+    mkdir $dir unless -d $dir;
+    JON "mv $rst/online/$fname $dir/$fname";
+    #rename "$rst/online/$fname", "$dir/$fname";
+    $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 
 1;
