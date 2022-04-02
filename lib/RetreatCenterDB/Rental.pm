@@ -320,7 +320,7 @@ sub dates_tr2 {
 sub count {
     my ($self) = @_;
 
-    if ($self->cancelled()) {
+    if ($self->status() =~ m{cancel}xms) {
         # it has been cancelled - ignore the web grid
         return 0;
     }
@@ -911,6 +911,7 @@ av_request_cost - cost of special audio/visual requests
 badge_title - A short version of the title to fit on the badges.
 balance - the outstanding balance
 cancelled - boolean - was this rental cancelled?  Set/Unset by a menu link.
+    this is obsolete - we now rely on the status - does it contain 'cancel'?
 color - RGB values for the DailyPic display.
 comment - free text describing the rental
 contract_exception - optional text describing any

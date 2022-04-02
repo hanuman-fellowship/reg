@@ -100,7 +100,8 @@ sub badges_in_date_range : Local {
     my @rentals = model($c, 'Rental')->search(
                       {
                           sdate => { between => [ $from, $to ] },
-                          'cancelled'  => '',
+                          #'cancelled'  => '',
+                          status => { -not_like => '%cancel%' },
                           program_id => 0,  # non-hybrids
                       }
                   );
@@ -719,7 +720,7 @@ sub meal_list : Local {
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
-                      cancelled => '',
+                      status => { -not_like => '%cancel%' },
                       #
                       # update: we now can both have people register
                       # on the program side AND also have a web grid
@@ -996,7 +997,8 @@ EOL
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
-            cancelled => '',
+            #cancelled => '',
+            status => { -not_like => '%cancel%' },
         },
     );
     stash($c,
@@ -1944,7 +1946,8 @@ sub summary : Local {
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
-            cancelled => '',
+            #cancelled => '',
+            status => { -not_like => '%cancel%' },
 # don't require that the section have any content
 #            "summary.$section" => { '!=' => '' },
         },
@@ -2059,7 +2062,8 @@ sub orient_windup : Local {
                 model($c, 'Rental')->search({
                     sdate => { '<=' => $ow_to8   },
                     edate => { '>=' => $ow_from8 },
-                    cancelled => '',
+                    #cancelled => '',
+                    status => { -not_like => '%cancel%' },
                 })
     ) {
         my $sum = $ev->summary();
@@ -2146,7 +2150,8 @@ sub gate_codes : Local {
                 model($c, 'Rental')->search({
                     sdate => { '<=' => $gc_to8   },
                     edate => { '>=' => $gc_from8 },
-                    cancelled => '',
+                    #cancelled => '',
+                    status => { -not_like => '%cancel%' },
                 })
     ) {
         if ($ev->event_type() eq 'program'
@@ -2861,7 +2866,8 @@ sub contact_email : Local {
         {
             sdate => { '>=' => $start->as_d8() },
             edate => { '<=' => $end->as_d8()   },
-            cancelled => '',
+            #cancelled => '',
+            status => { -not_like => '%cancel%' },
         },
         {
             order_by => 'sdate asc',

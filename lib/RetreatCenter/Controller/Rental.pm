@@ -841,7 +841,7 @@ sub update_do : Local {
     my $r = model($c, 'Rental')->find($id);
     if ($P{status} =~ m{cancel}xms) {
         _check_several_things($c, $r, 'cancel') or return;
-        $P{cancelled} = 'yes';      # historical
+        $P{cancelled} = 'yes';      # historical - no longer relied on
         if ($r->status() !~ m{cancel}xms) {
             # we are canceling today
             $P{rental_canceled} = tt_today($c)->as_d8();
