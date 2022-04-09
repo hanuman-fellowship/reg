@@ -635,7 +635,7 @@ sub detail_disp {
 #   will be having dinner or not.
 # people in DCM programs do not eat at all.
 # PRs always have lunch except for their arrival day (but never
-#     on a Saturday).
+#     on a Saturday).  Same for Special Guests registrations.
 # Blocks with people in them will eat as if they were in a PR
 #   for the date range.   This is true even for blocks that are bound
 #   to a Rental where the rental begins early.
@@ -793,7 +793,7 @@ sub meal_list : Local {
         my $ed = $ol->edate();
 
         my $prog_end_dinner = $prog->prog_end() >= 1700;
-        my $PR = $prog->PR();
+        my $PR = $prog->PR() || $prog->SG();
         #
         # optimizations???
         # have a $n = day number?  so $d++; $n++; and then 'if lunch($n)'
