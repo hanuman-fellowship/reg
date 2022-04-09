@@ -2,11 +2,12 @@
 use strict;
 use warnings;
 
-my @files = `ls -1t /var/Reg/backup`;
+chdir '/var/Reg/backup' or die "no chdir";
+my @files = `ls -1t`;
 chomp @files;
 my @to_delete = splice @files, 10;
 print scalar(localtime), "\n";
-print "in /var/Reg/backup deleting @to_delete\n";
+print "In /var/Reg/backup deleting @to_delete\n";
 for my $f (@to_delete) {
     unlink $f or print "could not unlink $f: $!\n";
 }
