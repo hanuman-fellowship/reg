@@ -38,78 +38,131 @@ provides a gate code for after hours access, and other information about
 their stay at Mount Madonna Center.
 [% ELSE %]
 <h3>HOUSING PROCEDURES</h3>
+Please do not hesitate to let us know if you
+have questions about managing your housing process and commitment.
+<p>
 In order to assist you in the housing process,
-we have reserved a list of various types of rooms for your use and
-provided you with the following weblink
+we have reserved a list of various types of rooms for your use,
+based on earlier conversations about the needs of your group.
+We have also provided you with the following weblink
 where you can fill in the names of your guests.
-This is a preliminary housing grid to get you started,
-but you'll need to let us know how many and what types
-of additional rooms you would like to reserve as soon
-as possible, and we will then add them to the grid
-as reservations for your group.
+This initial housing grid is based on your "maximum" number
+noted in the contract. Please let us know how many and what
+types of additional rooms you want to reserve as soon as possible, and we will add them to the grid as reservations for your group.
 <p>
 <ul>
 <a href='${string.grid_url}?code=${rental.grid_code}'>${string.grid_url}?code=$rental.grid_code
 </a>
 <p>
 </ul>
-(Please refer to your contract for housing rates
-and payment and cancellation policies.)
+Please refer to your contract for housing rates
+and payment and cancellation policies.
+Your minimum housing commitment to
+MMC is defined in the contract. If you
+have questions about the above, please
+contact the Guest Services Director
+at 408-846-4009.
 <p> 
-As soon as you start getting requests for housing,
-let us know so that your guests have a better chance of
-getting their first preferences for housing.
-Make sure you get a second choice in case first choices
-aren't available. While we have agreed to provide lodging
-for your maximum number of participants, we don't guarantee
-providing lodging preferences.
+The Web Housing Grid lists the Room
+#s and identifies the number of beds
+in each room. You may begin to fill in
+the web grid with the names and email
+address for each of your participants,
+but only as they fully commit to your
+program. We recommend you reserve a bed
+only when you have either received the
+appropriate housing payment from your
+participant, or you are committed to
+paying for the bed yourself. While
+we have agreed to provide lodging
+for your "maximum" number of
+participants listed in the contract, we
+don't guarantee being able to provide
+for all lodging preferences. You can
+assign up to as many people to a room
+as there are beds. Housing rates are
+based on how many people are in a room,
+not the room itself. See contract
+for rates. The Web Housing Grid will
+also show the rates for each type
+of accommodation at the bottom of
+the page.
 <p>
-Once you have reserved a room for that guest,
-you become financially obligated to pay for that space no
-matter if the guest attends. You may wish to pass on that
-cost to any guest who cancels.  Reserve rooms only when
-you are committing to pay for them.
+The last date we can guarantee housing
+for your group is 10 days prior to the
+start of your program. If we receive
+requests for housing after that date,
+we cannot guarantee accommodation, even
+if you haven't met your contractual
+maximum yet. Of course, we will
+continue to accommodate your requests
+as we have housing availability.
 <p>
-7 days prior to the start date of your program is the last date
-we can guarantee housing for your group. If we receive requests
-for housing after that point, we do not guarantee accommodation,
-even if you haven't met your contractual maximum yet.
-Of course, we will continue to accommodate requests as we can.
-You can assign up to as many people to a room as there are beds.
+To enter and then save your housing
+assignments on the Housing Grid
+simply enter your guests' names, email
+contact, and then click on the "Submit"
+link. Whichever way you arrange housing
+for your participants, we need to
+know 7 days before your arrival the
+final occupancy of each room you've
+reserved. If you do not need all the
+rooms assigned to your program, you
+must also release them 10 days prior
+to the start of the program.
 <p>
-Any indoor housing reservations made less than one week
-before the start date of your program incur a \$${string.rental_late_in} late
-charge that you may wish to pass on to your participants.
-Outdoor housing reservations incur a similar late charge of \$${string.rental_late_out}.
+Seven days prior to your program,
+you become financially obligated for
+all the housing reflected on your web
+grid. Up to then, you can move people
+around, and add and subtract rooms
+and assignments. At the 7 day mark,
+MMC also fully commits to reserving all
+housing on your housing grid at that
+time. Should you need additional rooms,
+less than 7 days prior to your program,
+we will happily add them to the grid as
+long as we have them available. Should
+you have cancellations or withdrawals
+after the 7 day mark, you will still
+incur a charge for those beds.
 <p>
-Simply enter your guests' names and then click on the "Submit" link.
-Whichever way you arrange housing for your participants,
-we need to know 14 days before your arrival the occupancy
-of each room you've reserved.
+Please note that for any room reserved
+on your final web housing grid, you
+are agreeing to pay for at least one
+bed in that space for the duration of
+your retreat.
+<p>
+A note about our rooms: You can assign
+up to as many people to a room as
+there are beds (e.g. a 4-bed room can
+be used as a dorm, triple, double,
+or single). We determine cost based
+on how many people, not beds, are
+in the room (i.e., one person housed
+in a dorm room pays the single rate,
+not the dorm rate.
+<p>
 [% IF rental.seminar_house_sleeping %]
 <p>
-Since your group is meeting in the Seminar House, you are committed
-to paying for at least 15 spaces in that building. The Seminar House
-has 16 beds and 6 foam mattresses in lofts for a total of 22 spaces.
-All the rooms in the Seminar House are included in this preliminary
+Since your group is meeting in the Seminar
+House, you are committed to paying for at least
+15 spaces in that building. The Seminar House
+has 16 beds and 6 foam mattresses in lofts for
+a total of 22 spaces.  All the rooms in the
+Seminar House are included in this preliminary
 web grid.
 [% END %]
-<p>
-Please note that for any housing space reserved on your final
-web housing grid, you are agreeing to pay for at least one
-bed in that space for the duration of your retreat.
-<p>
-A note about our rooms: You can assign up to as many people to a
-room as there are beds (e.g. a 4-bed room can be used as a dorm,
-triple, double, or single). We determine cost based on how many
-people, not beds, are in the room (i.e., one person in a dorm room
-gets the single rate, not the dorm rate.
-<p>
-[% END %]
+[% END %]  <!-- if not hybrid -->
+<h3>IMPORTANT CAMPING INFORMATION</h3>
 Also, please inform any of your camping guests that the campgrounds
 are a 10-15 minute walk from the central area. If they do not have
 a vehicle, and cannot hand-carry their equipment, it may be best
-if they request indoor housing.
+if they request indoor housing.  Cell
+phones do not typically get reception
+and there is no wireless connectivity
+in the campgrounds. MMC does not
+currently provide tents for guests.
 [% IF ! rental.program_id %]
 <h3>GUEST CONFIRMATION INFORMATION</h3>
 We've attached a template document modeled after the confirmation
