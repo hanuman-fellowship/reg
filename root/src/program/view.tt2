@@ -334,6 +334,7 @@ Web/Files
 <tr><th align=right>Retreat</th><td>$program.retreat</td></tr>
 <tr><th align=right>Waiver Needed</th><td>$program.waiver_needed</td></tr>
 <tr><th align=right>COVID Vaccination Required</th><td>$program.covid_vax</td></tr>
+<tr><th align=right>Strangers Can Share</th><td>$program.strangers_share</td></tr>
 <tr><th align=right>Not on Calendar</th><td>$program.not_on_calendar</td></tr>
 <tr><th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th><td>$program.tub_swim</td></tr>
 <tr>

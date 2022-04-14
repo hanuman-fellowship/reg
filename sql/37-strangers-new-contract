@@ -1,0 +1,2 @@
+alter table program add column strangers_share varchar(3) not null default '';
+alter table rental add column new_contract varchar(3) not null default '';

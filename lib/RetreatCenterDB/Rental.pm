@@ -97,6 +97,7 @@ __PACKAGE__->add_columns(qw/
     housing_request_cost
     meeting_request_cost
     other_request_cost
+    new_contract
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -955,6 +956,7 @@ meeting_request_cost - cost of special meeting place request
 mmc_does_reg - will we be doing registration for this event?
     if so, a parallel hybrid program will be created.
 name - a brief name of the rental for internal purposes
+new_contract - use the new contract (started March 2022)
 other_request - special other request
 other_request_cost - cost of special other request
 phone - phone number for the web page, if wanted

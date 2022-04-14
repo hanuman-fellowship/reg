@@ -114,6 +114,8 @@ sub create : Local {
         check_allow_dup_regs => '',
         check_kayakalpa     => 'checked',
         check_children_welcome => 'checked',
+        check_covid_vax => 'checked',
+        check_strangers_share => '',
         check_retreat       => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
@@ -222,6 +224,7 @@ sub _get_data {
         allow_dup_regs
         kayakalpa
         children_welcome
+        strangers_share
         sbath
         single
         retreat
@@ -928,6 +931,7 @@ sub update : Local {
         donation
         allow_dup_regs kayakalpa
         children_welcome
+        strangers_share
         retreat
         economy commuting webready linked do_not_compute_costs
         not_on_calendar tub_swim waiver_needed covid_vax housing_not_needed
@@ -1348,6 +1352,7 @@ sub gen_progtable {
                 housing_not_needed
                 kayakalpa
                 children_welcome
+                strangers_share
                 max
                 end_reg_date_time
                 confnote
@@ -1429,6 +1434,7 @@ sub duplicate : Local {
         donation
         allow_dup_regs kayakalpa
         children_welcome
+        strangers_share
         retreat
         commuting economy webready linked
         not_on_calendar tub_swim

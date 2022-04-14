@@ -25,7 +25,7 @@ Table: rental
 <dt>balance</dt>
 <dd>the outstanding balance</dd>
 <dt>cancelled</dt>
-<dd>boolean - was this rental cancelled?  Set/Unset by a menu link.</dd>
+<dd>boolean - was this rental cancelled?  Set/Unset by a menu link. this is obsolete - we now rely on the status - does it contain 'cancel'?</dd>
 <dt>color</dt>
 <dd>RGB values for the DailyPic display.</dd>
 <dt>comment</dt>
@@ -100,6 +100,8 @@ Table: rental
 <dd>will we be doing registration for this event? if so, a parallel hybrid program will be created.</dd>
 <dt>name</dt>
 <dd>a brief name of the rental for internal purposes</dd>
+<dt>new_contract</dt>
+<dd>use the new contract (started March 2022)</dd>
 <dt>other_request</dt>
 <dd>special other request</dd>
 <dt>other_request_cost</dt>

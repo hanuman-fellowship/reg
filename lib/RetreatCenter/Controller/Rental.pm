@@ -185,6 +185,7 @@ sub _get_data {
     #$P{staff_ok}     = "" unless exists $P{staff_ok};
     $P{rental_follows} = "" unless exists $P{rental_follows};
     $P{in_group_name} = "" unless exists $P{in_group_name};
+    $P{new_contract} = "" unless exists $P{new_contract};
 
     #
     # quick hack here - fixed cost houses
@@ -253,6 +254,7 @@ sub create : Local {
         #check_staff_ok      => '',
         check_rental_follows => '',
         check_in_group_name  => '',
+        check_new_contract  => 'yes',
     );
 }
 
@@ -813,6 +815,7 @@ sub update : Local {
         check_linked    => ($r->linked()   )? "checked": "",
         check_tentative => ($r->tentative())? "checked": "",
         check_in_group_name => ($r->in_group_name())? "checked": "",
+        check_new_contract => ($r->new_contract())? "checked": "",
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
         #check_staff_ok => ($r->staff_ok())? "checked": "",
         check_rental_follows => ($r->rental_follows())? "checked": "",
@@ -1730,12 +1733,11 @@ sub contract : Local {
     my $contract_sent = $rental->contract_sent? $rental->contract_sent_obj
                         :                       tt_today($c);
 
-    # temporary until new contract is approved
-    my $new = $rental->name =~ m{\A -}xms? 'new_': '';
-
     my ($deposit, $mp_table, $mp_cost_per_day);
 
-    if ($new) {
+    my $new = '';
+    if ($rental->new_contract()) {
+        $new = 'new_';
         ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table;
         $deposit = $nnights * $mp_cost_per_day;
         # force the deposit field
@@ -1774,7 +1776,7 @@ sub contract : Local {
         user   => $c->user,
     );
     $tt->process(
-        "${new}rental_contract.tt2",     # template
+        "${new}rental_contract.tt2",
         \%stash,          # variables
         \$html,           # output
     ) or die "error in processing template: "
@@ -2128,6 +2130,7 @@ sub duplicate : Local {
         #check_staff_ok    => ($orig_r->staff_ok())? "checked": "",
         rental_follows     => ($orig_r->rental_follows())? "checked": "",
         in_group_name      => ($orig_r->in_group_name())? "checked": "",
+        new_contract       => ($orig_r->new_contract())? "checked": "",
     );
 }
 

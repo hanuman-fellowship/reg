@@ -101,6 +101,7 @@ __PACKAGE__->add_columns(qw/
     donation_tiers
     covid_vax
     end_reg_date_time
+    strangers_share
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -928,6 +929,7 @@ sbath - Are singles with bath allowed?
 school_id - foreign key to school
 sdate - start date of the program.
 single - Are singles allowed for this program?
+strangers_share - Can strangers share a double?
 subtitle - A secondary description of the program.  For the web page.
 summary_id - foreign key to summary
 tub_swim - should we mention the hot tub and lake swimming in the conf letter?
