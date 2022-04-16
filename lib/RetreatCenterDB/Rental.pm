@@ -245,11 +245,11 @@ sub rental_type {
         if ($self->linked) {
             $type .= "<span style='color: green'>w</span>";
         }
-        if ($self->grid_stale eq 'yes') {
-            $type .= "<span style='color: red'>S</span>";
-        }
         if ($self->program_id) {
             $type = "Hybrid&nbsp;$type";
+        }
+        elsif ($self->grid_stale eq 'yes') {
+            $type .= "<span style='color: red'>S</span>";
         }
     }
     return $type;
