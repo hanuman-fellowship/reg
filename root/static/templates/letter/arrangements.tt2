@@ -147,11 +147,10 @@ not the dorm rate.
 <p>
 Since your group is meeting in the Seminar
 House, you are committed to paying for at least
-15 spaces in that building. The Seminar House
-has 16 beds and 6 foam mattresses in lofts for
-a total of 22 spaces.  All the rooms in the
-Seminar House are included in this preliminary
-web grid.
+11 spaces in that building. The Seminar House
+has 16 beds total.
+All the rooms in the Seminar House are included in
+the preliminary web grid.
 [% END %]
 [% END %]  <!-- if not hybrid -->
 <h3>IMPORTANT CAMPING INFORMATION</h3>

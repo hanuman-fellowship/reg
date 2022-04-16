@@ -4,7 +4,7 @@
 [% FOR p IN progs %]
     <tr>
     <td>$p.sdate_obj</td>
-    <td><a href='/program/view/$p.id'>$p.name</a></td>
+    <td width=350><a href='/program/view/$p.id'>$p.name</a></td>
     <td><a href='/housecost/view/$p.housecost.id'>$p.housecost.name</a></td>
     </tr>
 [% END %]
@@ -14,7 +14,7 @@
 [% FOR r IN rentals %]
     <tr>
     <td>$r.sdate_obj</td>
-    <td><a href='/rental/view/$r.id'>$r.name</a></td>
+    <td width=350><a href='/rental/view/$r.id'>$r.name</a></td>
     <td><a href='/housecost/view/$r.housecost.id'>$r.housecost.name</a></td>
     </tr>
 [% END %]
