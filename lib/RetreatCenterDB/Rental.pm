@@ -242,14 +242,16 @@ sub rental_type {
         $type .= "Cancelled";
     }
     else {
-        if ($self->linked) {
-            $type .= "<span style='color: green'>w</span>";
-        }
         if ($self->program_id) {
-            $type = "Hybrid&nbsp;$type";
+            $type = 'Hybrid';
         }
-        elsif ($self->grid_stale eq 'yes') {
-            $type .= "<span style='color: red'>S</span>";
+        else {
+            if ($self->grid_stale eq 'yes') {
+                $type = "<span style='color: red'>S</span>";
+            }
+            if ($self->linked) {
+                $type .= "<span style='color: green'>w</span>";
+            }
         }
     }
     return $type;
