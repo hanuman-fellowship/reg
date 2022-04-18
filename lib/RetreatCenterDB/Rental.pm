@@ -424,13 +424,16 @@ sub meeting_spaces {
                      || ($type eq 'dorm'     && $_->dorm)
                  }
                  $self->bookings;
-    if (@places == 1) {
+    if (! @places) {
+        return '';
+    }
+    elsif (@places == 1) {
         return $places[0];
     }
     elsif (@places == 2) {
         return "$places[0] and $places[1]";
     }
-    else {
+    elsif (@places > 2) {
         my $last = pop @places;
         return join ", ", @places, " and $last";
     }
