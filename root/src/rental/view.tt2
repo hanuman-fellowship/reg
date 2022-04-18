@@ -410,6 +410,11 @@ none
 </tr>
 
 <tr>
+<th align=right>Meeting Place Deposit</th>
+<td>$rental.mp_deposit</td>
+</tr>
+
+<tr>
 <th align=right>Contract in Group Name</th>
 <td>$rental.in_group_name</td>
 </tr>

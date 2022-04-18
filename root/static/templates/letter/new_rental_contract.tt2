@@ -163,6 +163,7 @@ There may be no private baths available.<p>
 [% END %]
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
+[% IF rental.mp_deposit %]
 <b>Facility Use Fees</b> are based on the specific meeting space
 and/or breakout rooms reserved, on a per day (up to 24 hr use) basis.
 The Presenter will pay the Facilities Use Fee as a deposit
@@ -176,10 +177,10 @@ $nnights days * \$$mp_cost_per_day per day = \$$deposit deposit
 <p>
 <b>This deposit is unrefundable can be paid online with this <a href="${rental_deposit_url}?code=$rental.grid_code">payment link</a></b>.
 <p>
+[% END %]
 <i>There will be a charge of
 \$2/person/hour for any additional time before 4:00 pm on the start date,
 or after 12:00 pm on the end date.</i>
-<div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Payment and Cancellation Policies</h2>
 Presenter agrees to pay for the total amount of participants'
@@ -195,6 +196,13 @@ multiplied by a nominal rate of \$${min_per_day}.
 The Minimum Amount Due is thus ${rental.max} X $nnights X \$${min_per_day} = \$${agreed}.
 <p>
 Depending on the rooms and amenities chosen the final obligation for payment will likely be higher but we will require at least the Minimum Amount Due agreed to in the contract.
+[% IF ! rental.mp_deposit %]
+<p>
+The Presenter will pay a deposit of \$$deposit
+upon the signing of this contract.
+<p>
+This amount can be paid online with this <a href="${rental_deposit_url}?code=$rental.grid_code">payment link</a>.
+[% END %]
 <p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>

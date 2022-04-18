@@ -186,6 +186,7 @@ sub _get_data {
     $P{rental_follows} = "" unless exists $P{rental_follows};
     $P{in_group_name} = "" unless exists $P{in_group_name};
     $P{new_contract} = "" unless exists $P{new_contract};
+    $P{mp_deposit} = "" unless exists $P{mp_deposit};
 
     #
     # quick hack here - fixed cost houses
@@ -255,6 +256,7 @@ sub create : Local {
         check_rental_follows => '',
         check_in_group_name  => '',
         check_new_contract  => 'yes',
+        check_mp_deposit    => 'yes',
     );
 }
 
@@ -816,6 +818,7 @@ sub update : Local {
         check_tentative => ($r->tentative())? "checked": "",
         check_in_group_name => ($r->in_group_name())? "checked": "",
         check_new_contract => ($r->new_contract())? "checked": "",
+        check_mp_deposit => ($r->mp_deposit())? "checked": "",
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
         #check_staff_ok => ($r->staff_ok())? "checked": "",
         check_rental_follows => ($r->rental_follows())? "checked": "",
@@ -1735,9 +1738,8 @@ sub contract : Local {
 
     my ($deposit, $mp_table, $mp_cost_per_day);
 
-    my $new = '';
-    if ($rental->new_contract()) {
-        $new = 'new_';
+    my $new = $rental->new_contract()? 'new_': '';
+    if ($rental->new_contract && $rental->mp_deposit) {
         ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table;
         $deposit = $nnights * $mp_cost_per_day;
         # force the deposit field
@@ -1751,7 +1753,7 @@ sub contract : Local {
     else {
         $deposit = $rental->deposit;
     }
-    $rental->send_rental_deposit();
+    $rental->send_rental_deposit() unless -f '/tmp/Reg_Dev';
 
     my %stash = (
         today   => tt_today($c),
@@ -2131,6 +2133,7 @@ sub duplicate : Local {
         rental_follows     => ($orig_r->rental_follows())? "checked": "",
         in_group_name      => ($orig_r->in_group_name())? "checked": "",
         new_contract       => ($orig_r->new_contract())? "checked": "",
+        mp_deposit         => ($orig_r->mp_deposit())? "checked": "",
     );
 }
 

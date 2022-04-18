@@ -98,6 +98,7 @@ __PACKAGE__->add_columns(qw/
     meeting_request_cost
     other_request_cost
     new_contract
+    mp_deposit
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -957,6 +958,9 @@ meeting_request - special meeting place request
 meeting_request_cost - cost of special meeting place request
 mmc_does_reg - will we be doing registration for this event?
     if so, a parallel hybrid program will be created.
+mp_deposit - Deposit is taken from meeting place reservations.
+    Only effective in new contracts (April 2022).  Otherwise
+    the deposit is taken directly from the deposit field.
 name - a brief name of the rental for internal purposes
 new_contract - use the new contract (started March 2022)
 other_request - special other request

@@ -195,6 +195,11 @@ These costs will apply for each day the person stays - regardless of how many ot
 </tr>
 
 <tr>
+<th align=right>Meeting Place Deposit</th>
+<td><input type=checkbox name=mp_deposit value="yes" $check_mp_deposit></td>
+</tr>
+
+<tr>
 <th align=right>Contract in Group Name</th>
 <td><input type=checkbox name=in_group_name value="yes" $check_in_group_name></td>
 </tr>
