@@ -332,13 +332,13 @@ equipment, it may be best if they request indoor housing. Cell phones
 do not typically get reception and there is no wireless connectivity in
 the campgrounds. MMC does not currently provide tents for guests.
 [% END %]
-[% IF rental.av_request || rental.housing_request || rental.meal_request || rental.meeting_request || rental.other_request %]
-<div style='page-break-after:always'></div>
-<div style="height: .25in"></div>
 [% IF rental.contract_exception %]
 <h2>Exceptions</h2>
 $rental.contract_exception
 [% END %]
+[% IF rental.av_request || rental.housing_request || rental.meal_request || rental.meeting_request || rental.other_request %]
+<div style='page-break-after:always'></div>
+<div style="height: .25in"></div>
 <h2>Additional Requests</h2>
 [% IF rental.av_request %]
     <h3>Audio Visual</h3>
