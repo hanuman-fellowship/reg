@@ -829,7 +829,6 @@ sub update : Local {
                         id       => $r->housecost_id,
                         inactive => { '!=' => 'yes' },
                     ],
-                    name => { 'like' => '%rental%' },
                 },
                 { order_by => 'name' },
             ) ],
