@@ -1,8 +1,21 @@
 <a name=top></a>
 [% prog_staff = Catalyst.check_user_roles('prog_staff') %]
 <style type="text/css">
+.aa {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-left: .4in;
+}
+.dd {
+    margin-left: .4in;
+    margin-bottom: .2in;
+    width: 650px;
+}
+.highlight {
+    background: yellow;
+}
 p {
-    margin-top: 0px;
+    margin-top: 5px;
     margin-bottom: 0px;
 }
 </style>
@@ -68,103 +81,135 @@ $happening.status_td
 [% END %]
 </tr>
 </table>
+
+
 <style type="text/css">
 th {
     text-align: right;
+}
+th, td {
     vertical-align: top;
 }
 </style>
 [% IF type == 'rental' %]
-<table cellpadding=3 border=0>
-
-<tr>
-<td align=right><a href=/summary/update_top/$type/$sum.id>MMC Arrangements<br>Coordinator</a></td>
-<td valign=top>$sum.prog_person</td>
-</tr>
-
-<tr>
-<th align=right>Start Hour</th><td>$happening.start_hour_obj.ampm</td>
-<th align=right>Meeting Places</th>
-<td>[% happening.meeting_places('meeting') %]</td>
-</tr>
-
-<tr>
-<th>End Hour</th><td>$happening.end_hour_obj.ampm</td>
-<th align=right>Breakout Places</th>
-<td>[% happening.meeting_places('breakout') %]</td>
-</tr>
-
-<tr>
-<th>Maximum</th><td>$happening.max</td>
-<th align=right>Dorms</th>
-<td>[% happening.meeting_places('dorm') %]</td>
-</tr>
-
-<tr>
-<th>Current Count</th><td>$happening.count</td>
-</tr>
-
-</table>
-[% ELSE %]
-
-<table cellpadding=3 border=0>
-
-<tr>
-<td align=right><a href=/summary/update_top/$type/$sum.id>MMC Arrangements<br>Coordinator</a></td>
-<td valign=top>$sum.prog_person</td>
-</tr>
-
-<tr>
-<th align=right valign=top width=180>Leaders</th>
-<td colspan=4>
-<table>
-[% FOR l IN happening.leaders %]
-    [% p = l.person %]
-    <tr>
-    <td>
+    <table cellpadding=5>
+    <th align=right width=180 valign=top>Contact Person</th>
+    <td valign=top colspan=2>
+    [% coord = happening.coordinator %]
     [% IF prog_staff %]
-    <a href=/person/view/$p.id>$p.first $p.last</a>
+        <a href=/person/view/$coord.id>$coord.first $coord.last</a>
     [% ELSE %]
-    $p.first $p.last
+        $coord.first $coord.last
     [% END %]
-    </td>
-    <td colspan=3>[% IF p.email %]<a href='mailto:$p.email'>$p.email</a>[% END %]</td>
-    <td>
-    [% IF p.tel_home %]$p.tel_home home[% END %]
-    [% IF p.tel_work %]$p.tel_work work[% END %]
-    [% IF p.tel_cell %]$p.tel_cell cell[% END %]
-    </td>
-    </tr>
+    <a href='mailto:$coord.email'>$coord.email</a><br>
+    [% IF coord.tel_home %]$coord.tel_home home<br>[% END %]
+    [% IF coord.tel_work %]$coord.tel_work work<br>[% END %]
+    [% IF coord.tel_cell %]$coord.tel_cell cell [% END %]
+    [% IF happening.cs_person_id %]
+        [% cs = happening.contract_signer %]
+        <tr>
+        <th align=right valign=top>Contract Signer</th>
+        <td valign=top colspan=2>
+        [% IF prog_staff %]
+            <a href=/person/view/$cs.id>$cs.first $cs.last</a>
+        [% ELSE %]
+            $cs.first $cs.last
+        [% END %]
+        <a href='mailto:$cs.email'>$cs.email</a><br>
+        [% IF cs.tel_home %]$cs.tel_home home<br>[% END %]
+        [% IF cs.tel_work %]$cs.tel_work work<br>[% END %]
+        [% IF cs.tel_cell %]$cs.tel_cell cell [% END %]
+        </td>
+        </tr>
+    [% END %]
 [% END %]
 </table>
-</td>
-</tr>
-[% pr = happening %]
-<tr>
-<th align=right>Registration Start</th><td>$pr.reg_start_obj&nbsp;&nbsp;<b>End</b> $pr.reg_end_obj</td>
-<th align=right>Meeting Places</th>
-<td align=left>[% pr.meeting_places('meeting') %]</td>
-</tr>
-<tr>
-<th align=right>Program Start</th><td>$pr.prog_start_obj&nbsp;&nbsp;<b>End</b> $pr.prog_end_obj</td>
-<th align=right>Breakout Places</th>
-<td align=left>[% pr.meeting_places('breakout') %]</td>
-</tr>
 
-<tr>
-<th>Count</th><td>$pr.reg_count[% IF pr.extradays %]/$pr.full_count[% END %]</td>
-<th align=right>Dorms</th>
-<td align=left>[% pr.meeting_places('dorm') %]</td>
-</tr>
-</table>
+[% IF type == 'rental' %]
+    <table cellpadding=3 border=0>
+    <tr>
+    <th align=right>Start Hour</th><td>$happening.start_hour_obj.ampm</td>
+    <th align=right>Meeting Places</th>
+    <td>[% happening.meeting_places('meeting') %]</td>
+    </tr>
+
+    <tr>
+    <th>End Hour</th><td>$happening.end_hour_obj.ampm</td>
+    <th align=right>Breakout Places</th>
+    <td>[% happening.meeting_places('breakout') %]</td>
+    </tr>
+
+    <tr>
+    <th>Maximum</th><td>$happening.max</td>
+    <th align=right>Dorms</th>
+    <td>[% happening.meeting_places('dorm') %]</td>
+    </tr>
+
+    <tr>
+    <th>Current Count</th><td>$happening.count</td>
+    </tr>
+
+    </table>
+[% ELSE %]
+
+    <table cellpadding=3 border=0>
+    <tr>
+    <th align=right valign=top width=180>Leaders</th>
+    <td colspan=4>
+    <table>
+    [% FOR l IN happening.leaders %]
+        [% p = l.person %]
+        <tr>
+        <td>
+        [% IF prog_staff %]
+            <a href=/person/view/$p.id>$p.first $p.last</a>
+        [% ELSE %]
+            $p.first $p.last
+        [% END %]
+        </td>
+        <td colspan=3>[% IF p.email %]<a href='mailto:$p.email'>$p.email</a>[% END %]</td>
+        <td>
+        [% IF p.tel_home %]$p.tel_home home[% END %]
+        [% IF p.tel_work %]$p.tel_work work[% END %]
+        [% IF p.tel_cell %]$p.tel_cell cell[% END %]
+        </td>
+        </tr>
+    [% END %]
+    </table>
+    </td>
+    </tr>
+    [% pr = happening %]
+    <tr>
+    <th align=right>Registration Start</th><td>$pr.reg_start_obj&nbsp;&nbsp;<b>End</b> $pr.reg_end_obj</td>
+    <th align=right>Meeting Places</th>
+    <td align=left>[% pr.meeting_places('meeting') %]</td>
+    </tr>
+    <tr>
+    <th align=right>Program Start</th><td>$pr.prog_start_obj&nbsp;&nbsp;<b>End</b> $pr.prog_end_obj</td>
+    <th align=right>Breakout Places</th>
+    <td align=left>[% pr.meeting_places('breakout') %]</td>
+    </tr>
+
+    <tr>
+    <th>Count</th><td>$pr.reg_count[% IF pr.extradays %]/$pr.full_count[% END %]</td>
+    <th align=right>Dorms</th>
+    <td align=left>[% pr.meeting_places('dorm') %]</td>
+    </tr>
+    </table>
 [% END %]
 
 <p class=p2>
 
+<a class=aa href=/summary/update_top/$type/$sum.id>Summary Details</a>
+
 <table cellpadding=3 border=0>
+<tr>
+<th align=left>MMC Arrangements<br>Coordinator</th>
+<td>$sum.prog_person</td>
+</tr>
 
 <tr>
-<th width=180>Gate Code</th><td valign=top>[% IF gate_code %]#$gate_code or 1$gate_code for the MMS entrance[% END %]</td>
+<th>Gate Code</th><td valign=top>[% IF gate_code %]#$gate_code or 1$gate_code for the MMS entrance[% END %]</td>
 <th>Registration<br>Location</th><td valign=top>$registration_location</td>
 </tr>
 
@@ -191,116 +236,17 @@ th {
 <td colspan=2></td>
 <th>Staff Departure</th><td colspan=3>$staff_departure</td>
 </tr>
-
-<a name=leader_housing></a>
-<tr><td align=right valign=top>
-<a href=/summary/update_sect/leader_housing/$type/$sum.id>Leader Housing</a><br>
-<a href=/summary/update/$type/$sum.id><img src=/static/images/pencil.png height=25 border=0></a>
-</td>
-<td colspan=3 valign=top>$sum.leader_housing</td></tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/signage/$type/$sum.id>Signage</a></td>
-<td colspan=3 valign=top>$sum.signage</td>
-</tr>
-
-<tr>
-<td align=right valign=top>
-<a href=/summary/update_sect/flowers/$type/$sum.id>Flowers</a><br>
-<a href=/summary/update/$type/$sum.id><img src=/static/images/pencil.png height=25 border=0></a>
-</td>
-<td colspan=3 valign=top>$sum.flowers</td>
-</tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/field_staff_std_setup/$type/$sum.id>Field Staff Standard Setup</a></td>
-<td colspan=3 valign=top>$sum.field_staff_std_setup</td>
-</tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/field_staff_setup/$type/$sum.id>Field Staff Setup</a></td>
-<td colspan=3 valign=top>$sum.field_staff_setup</td>
-</tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/workshop_schedule/$type/$sum.id>Workshop Schedule</a></td>
-<td colspan=3 valign=top>$sum.workshop_schedule</td>
-</tr>
-
-<a name=sound_setup></a>
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/sound_setup/$type/$sum.id>Sound Setup</a><br>
-<a href=/summary/update/$type/$sum.id><img src=/static/images/pencil.png height=25 border=0></a></td>
-<td colspan=3 valign=top>$sum.sound_setup</td>
-</tr>
-
-<a name=food_service></a>
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/food_service/$type/$sum.id>CB Food Service</a></td>
-<td colspan=3 valign=top>$sum.food_service</td>
-</tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/feedback/$type/$sum.id>Feedback</a></td>
-<td colspan=3 valign=top>$sum.feedback</td>
-</tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/miscellaneous/$type/$sum.id>Miscellaneous</a></td>
-<td colspan=3 valign=top>$sum.miscellaneous</td>
-</tr>
-
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/workshop_description/$type/$sum.id>Workshop Description</a></td>
-<td colspan=3 valign=top>$sum.workshop_description</td>
-</tr>
-
-[% IF type == 'rental' %]
-<tr>
-<th align=right width=180 valign=top>Contact Person</th>
-<td valign=top colspan=2>
-[% coord = happening.coordinator %]
-[% IF prog_staff %]
-<a href=/person/view/$coord.id>$coord.first $coord.last</a>
-[% ELSE %]
-$coord.first $coord.last
-[% END %]
-<br>
-<a href='mailto:$coord.email'>$coord.email</a><br>
-[% IF coord.tel_home %]$coord.tel_home home<br>[% END %]
-[% IF coord.tel_work %]$coord.tel_work work<br>[% END %]
-[% IF coord.tel_cell %]$coord.tel_cell cell [% END %]
-</td>
-</tr>
-
-[% IF happening.cs_person_id %]
-[% cs = happening.contract_signer %]
-<tr>
-<th align=right valign=top>Contract Signer</th>
-<td valign=top colspan=2>
-[% IF prog_staff %]
-<a href=/person/view/$cs.id>$cs.first $cs.last</a>
-[% ELSE %]
-$cs.first $cs.last
-[% END %]
-<br>
-<a href='mailto:$cs.email'>$cs.email</a><br>
-[% IF cs.tel_home %]$cs.tel_home home<br>[% END %]
-[% IF cs.tel_work %]$cs.tel_work work<br>[% END %]
-[% IF cs.tel_cell %]$cs.tel_cell cell [% END %]
-</td>
-</tr>
-[% END %]
-[% END %]
-<a name=check_list></a>
-<tr>
-<td align=right valign=top><a href=/summary/update_sect/check_list/$type/$sum.id>Check List</a></th>
-<td colspan=3 valign=top>$sum.check_list</td>
-</tr>
-
 </table>
 
-<table>
+[% FOR s IN sections %]
+<a name=$s.name></a>
+<a class=aa href=/summary/update_sect/$s.name/$type/$sum.id>$s.title</a>
+<div class=dd>
+$s.text
+</div>
+[% END %]
+
+<table cellpadding=5>
 <tr>
 <td>Updated</td>
 <td>$sum.date_updated_obj</td>

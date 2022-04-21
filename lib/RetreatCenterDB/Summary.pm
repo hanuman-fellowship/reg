@@ -47,6 +47,9 @@ __PACKAGE__->add_columns(qw/
     date_sent
     time_sent
     who_sent
+    internal_comm
+    snack
+    breakdown
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -105,6 +108,7 @@ overview - The summary contains all kinds of information that enable the MMC sta
     Lots of free text fields.
 alongside - which other activities are alongside this event?
 back_to_back - does another activity abutt this one?
+breakdown - notes on how to break down
 check_list - things to not forget
 converted_spaces - meeting rooms that become dorms
 date_sent - when was this summary last sent?
@@ -116,6 +120,7 @@ flowers - free text
 food_service - free text
 gate_code - the gate code
 id - unique id
+internal_comm - used for purely internal communication
 leader_housing - free text
 leader_name - free text
 miscellaneous - free text
@@ -125,6 +130,7 @@ orientation - free text
 prog_person - which person in the program office is in charge of this event?
 registration_location - free text
 signage - free text
+snack - what's for snack?
 sound_setup - free text
 staff_arrival - free text
 staff_departure - free text

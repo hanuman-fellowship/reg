@@ -1,5 +1,9 @@
+<html>
+<head>
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
-    <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+</head>
+<body>
 <a name=top></a>
 <h2>[% Type %] Summary</h2>
 <p>
@@ -23,15 +27,22 @@ th {
     text-align: right;
 }
 </style>
-<form action="/summary/update_section_do/$section/$type/$sum.id"
+<form name=form
+      action="/summary/update_section_do/$section/$type/$sum.id"
       method=POST
 >
 <ul>
 <h2>$section_disp</h2>
-<textarea name=section rows=$rows cols=60>
+<textarea id=section name=section rows=$rows cols=60 autofocus>
 $section_data
 </textarea>
 <p class=p2>
 <input id=sub type=submit value="Submit"></td></tr>
 </form>
 </ul>
+</html>
+<script>
+myto = setTimeout(function() {
+tinyMCE.execCommand('mceFocus',false,'section');
+}, 10);
+</script>

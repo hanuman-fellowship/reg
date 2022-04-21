@@ -1,5 +1,18 @@
+<head>
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+<style>
+.aa {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-left: .4in;
+}
+.dd {
+    margin-left: .4in;
+    margin-bottom: .3in;
+}
+</style>
+</head>
 <a name=top></a>
 <h2>[% Type %] Summary</h2>
 <p>
@@ -32,9 +45,11 @@ th {
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>MMC Arrangements<br>Coordinator</th>
-<td valign=top><input type=text name=prog_person value="$sum.prog_person"></td>
-</tr>
+<th align=right>MMC Arrangements<br>Coordinator
+</th>
+<td valign=top><input type=text name=prog_person value="$sum.prog_person">
+<input style="margin-left: 1.5in" id=sub type=submit value="Submit"></td>
+<tr>
 
 <tr>
 <th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=4></td>
@@ -70,128 +85,29 @@ th {
 <td><input type=text name=staff_departure value='[% sum.staff_departure %]' size=20></td>
 </tr>
 
+</table>
 
-<tr>
-<th valign=top>Leader Housing
-<br><br><input id=sub type=submit value="Submit">
-</th>
-<td colspan=3>
-<textarea id=leader_housing name=leader_housing rows=[% leader_housing_rows %] cols=60>
-[% sum.leader_housing %]
+[% FOR s IN sections %]
+<div class=aa>$s.title  <input style="margin-left: 2in" id=sub type=submit value="Submit"></div>
+<div class=dd>
+<textarea id=$s.name name=$s.name rows=$s.rows cols=65>
+$s.text
 </textarea>
-</td>
-</tr>
+</div>
+[% END %]
 
-<tr>
-<th valign=top>Signage</th>
-<td colspan=3>
-<textarea id=signage name=signage rows=[% signage_rows %] cols=60>
-[% sum.signage %]
-</textarea>
-</td>
-</tr>
-
-<tr>
-<th valign=top>Flowers
-</th>
-<td colspan=3>
-<textarea id=flowers name=flowers rows=[% flowers_rows %] cols=60>
-[% sum.flowers %]
-</textarea>
-</td>
-</tr>
-
-<tr><th valign=top>Field Staff Standard Setup</th>
-<td colspan=3>
-<textarea id=field_staff_std_setup name=field_staff_std_setup rows=[% field_staff_std_setup_rows %] cols=60>
-[% sum.field_staff_std_setup %]
-</textarea>
-</td></tr>
-
-<tr><th valign=top>Field Staff Setup
-<br><br>
-<input id=sub type=submit value="Submit">
-</th>
-<td colspan=3>
-<textarea id=field_staff_setup name=field_staff_setup rows=[% field_staff_setup_rows %] cols=60>
-[% sum.field_staff_setup %]
-</textarea>
-</td></tr>
-
-<tr><th valign=top>Workshop Schedule</th>
-<td colspan=3>
-<textarea id=workshop_schedule name=workshop_schedule rows=[% workshop_schedule_rows %] cols=60>
-[% sum.workshop_schedule %]
-</textarea>
-</td></tr>
-
-
-<tr><th valign=top>Sound Setup</th>
-<td colspan=3>
-<textarea id=sound_setup name=sound_setup rows=[% sound_setup_rows %] cols=60>
-[% sum.sound_setup %]
-</textarea>
-</td></tr>
-
-<tr>
-<th valign=top>CB Food Service
-<br><br><input id=sub type=submit value="Submit">
-</th>
-<td colspan=3>
-<textarea id=food_service name=food_service rows=[% food_service_rows %] cols=60>
-[% sum.food_service %]
-</textarea>
-</td>
-</tr>
-
-<tr>
-<th valign=top>Feedback
-</th>
-<td colspan=3>
-<textarea id=feedback name=feedback rows=[% feedback_rows %] cols=60>
-[% sum.feedback %]
-</textarea>
-</td>
-</tr>
-
-<tr>
-<th valign=top>Miscellaneous
-<br><br>
-<input id=sub type=submit value="Submit">
-</th>
-<td colspan=3>
-<textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
-[% sum.miscellaneous %]
-</textarea>
-</td>
-</tr>
-
-<tr><th valign=top>Workshop Description</th>
-<td colspan=3>
-<textarea id=workshop_description name=workshop_description rows=[% workshop_description_rows %] cols=60>
-[% sum.workshop_description %]
-</textarea>
-</td></tr>
-
-<tr>
-<th valign=top>Check List</th>
-<td colspan=3>
-<textarea id=check_list name=check_list rows=[% check_list_rows %] cols=60>
-[% sum.check_list %]
-</textarea>
-</td>
-</tr>
+<table cellpadding=3 border=0>
 
 [% IF sum.needs_verification %]
 <tr>
 <td></td>
-<td><input type=checkbox name=needs_verification value="yes" checked>Needs To Be Verified</td>
+<td><input type=checkbox name=needs_verification value="yes" checked> Needs To Be Verified</td>
 </tr>
 [% END %]
 
 </table>
 </form>
-<a name=bottom>
+<a name=bottom></a>
 <script type="text/javascript">
 document.form.prog_person.focus();
 </script>

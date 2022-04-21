@@ -27,6 +27,40 @@ use Global qw/
 /;
 use Template;
 
+my @sections;
+
+sub calc_sections {
+    my ($summary) = @_;
+    @sections = map {
+        my ($name, $title) = split /[|]/;
+        $title =~ s{_}{ }xmsg;
+        my $text = $summary->$name();
+        {
+            name  => $name,
+            title => $title,
+            text  => highlight($text),
+            rows  => lines($text) + 5,
+        }
+    }
+    qw!
+    internal_comm|Internal_Communications
+    leader_housing|Leader_Housing
+    signage|Signage
+    flowers|Flowers
+    field_staff_std_setup|Field_Staff_Standard_Setup
+    snack|Snack
+    field_staff_setup|Field_Staff_Setup
+    workshop_schedule|Workshop_Schedule
+    sound_setup|A/V_Setup
+    food_service|CB_Food_Service
+    feedback|Feedback
+    miscellaneous|Miscellaneous
+    workshop_description|Workshop_Description
+    check_list|Check_List
+    breakdown|Breakdown
+    !;
+}
+
 sub view : Local {
     my ($self, $c, $type, $id) = @_;
 
@@ -40,7 +74,6 @@ sub view : Local {
         alongside
         back_to_back
         leader_name
-        leader_housing
         staff_arrival
         staff_departure
         converted_spaces
@@ -85,8 +118,9 @@ sub view : Local {
             );
         }
     }
-
+    calc_sections($summary);
     stash($c,
+        sections  => \@sections,
         type      => $type,
         Type      => ucfirst $type,
         happening => $happening,
@@ -116,23 +150,9 @@ sub update : Local {
  
     my $sum = model($c, 'Summary')->find($sum_id);
     my $happening = $sum->$type();
-    for my $f (qw/
-        leader_housing
-        signage
-        miscellaneous
-        feedback
-        food_service
-        flowers
-        field_staff_std_setup
-        field_staff_setup
-        workshop_schedule
-        sound_setup
-        check_list
-        converted_spaces
-    /) {
-        $c->stash->{"$f\_rows"} = lines($sum->$f()) + 5;    # 5 in strings?
-    }
+    calc_sections($sum);
     stash($c,
+        sections  => \@sections,
         Type      => ucfirst $type,
         type      => lc $type,
         happening => $happening,
@@ -193,7 +213,10 @@ sub update_sect : Local {
 sub _trans {
     my ($s) = @_;
     $s =~ s{_}{ }g;
-    $s =~ s{ std }{ standard };
+    $s =~ s{std}{standard};
+    $s =~ s{comm}{communication};
+    $s =~ s{breakdown}{breakdown notes};
+    $s =~ s{sound}{A/V};
     $s =~ s{\b(\w)}{\u$1}g;
     if ($s =~ m{^Food}) {   # special case
         $s = "CB $s";
@@ -212,7 +235,7 @@ sub update_section_do : Local {
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
     });
-    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id#$section"));
 }
 
 sub update_top : Local {
@@ -419,7 +442,6 @@ sub email_do : Local {
         alongside
         back_to_back
         leader_name
-        leader_housing
         staff_arrival
         staff_departure
         converted_spaces
@@ -447,25 +469,27 @@ sub email_do : Local {
     $stash->{Type}      = ucfirst $type;
     $stash->{happening} = $happening;
     $stash->{sum}       = $summary;
+    calc_sections($summary);
+    $stash->{sections} = \@sections;
     my $html;
     $tt->process(
         "view.tt2", 
          $stash,
          \$html,
     ) or die "error in processing template: ";
-    $html =~ s{.*?<h2>}{<h2>}xms;
-    $html =~ s{<div.*?</div>}{}xms;
-    $html =~ s{<a\s+href=.mailto[^>]*>(.*?)</a>}{$1}xmsg;
-    $html =~ s{<a[^>]*>}{<b>}xmsg;
-    $html =~ s{</a[^>]*>}{</b>}xmsg;
-    $html =~ s{<img[^>]*>}{}xmsg;
-    $html =~ s{<b>(Edit|To\ Top)</b>}{}xmsg;
-    $html =~ s{<td\ align=center.*?</td>}{}xms;
+    $html =~ s{<a\s+class=aa[^>]*>}{<span class=xy>}xmsg;
+    $html =~ s{<a[^>]*>}{<span>}xmsg;
+    $html =~ s{</a[^>]*>}{</span>}xmsg;
+    $html =~ s{<b>Internal\s+Communications.*?</div>}{}xms;
+    $html =~ s{Updated.*}{}xms;
+    $html =~ s{<table cellpadding=5>\s*<tr>\s*<td>}{}xms;
+    $html =~ s{<span>Email.*To\s+Bottom</span>}{}xms;
     $html =~ s{\A}{
         <style>
         body { margin: .5in; }
         .larger { font-size: 18pt; font-weight: bold; color: darkgreen; }
         .dow { color: red; }
+        .xy { font-size: 18pt; color: blue; font-weight: bold; }
         </style>
         $intro
     }xms;

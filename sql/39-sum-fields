@@ -1,0 +1,3 @@
+alter table summary add column internal_comm text;
+alter table summary add column snack text;
+alter table summary add column breakdown text;

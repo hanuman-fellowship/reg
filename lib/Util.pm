@@ -1364,8 +1364,8 @@ sub highlight {
     if (! defined $s) {
         return "";
     }
-    return ($s =~ m{TBD|\?|\*}? "<span class=highlight>$s</span>"
-            :                   $s                               );
+    $s =~ s{TBD}{<span class=highlight>TBD</span>}xmsgi;
+    $s;
 }
 
 sub other_reserved_cids {

@@ -1663,6 +1663,7 @@ sub email_contract : Local {
     }
     stash($c,
         rental   => $rental,
+        CC       => $c->user->email,
         template => "rental/email_contract.tt2",
     );
 }
