@@ -157,7 +157,6 @@ is charged as a <i>double</i>.
 <tr><td>Single with bath</td><td align=right>$hc.single_bath</td></tr>
 </table>
 <p>
-There may be no private baths available.<p>
 [% IF rental.seminar_house %]
 <b>Presenter agrees to house a minimum of 11 guests in the Seminar House.</b>
 [% END %]
