@@ -58,6 +58,7 @@ use Global qw/
     %houses_in_cluster
     @clusters
     %house_name_of
+    $lunch_always_date
 /;
 use HLog;
 use Badge;
@@ -220,6 +221,10 @@ sub _get_data {
         $P{fch_encoded} .= "$cost @house_ids|";
     }
     $P{fch_encoded} =~ s{ \| \z }{}xms;
+    my $hc = model($c, 'HouseCost')->find($P{housecost_id});
+    if ($hc && $hc->name() !~ m{rental}xmsi) {
+        push @mess, "The housing cost does not have 'rental' in its name";
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
@@ -553,6 +558,8 @@ sub view : Local {
         $is_editable = 0;
     }
 
+    my $show_lunch = $rental->sdate_obj < $lunch_always_date;
+
     my @payments = $rental->payments;
     my $tot_payments = 0;
     for my $p (@payments) {
@@ -669,13 +676,14 @@ sub view : Local {
         tot_payments   => penny($tot_payments),
         balance        => commify($rental->balance_disp()),
         section        => $section,
-        lunch_table    => lunch_table(
+        show_lunch     => $show_lunch,
+        lunch_table    => $show_lunch? lunch_table(
                               1,
                               $rental->lunches(),
                               $rental->sdate_obj(),
                               $rental->edate_obj(),
                               $rental->start_hour_obj(),
-                          ),
+                          ): '',
         refresh_table    => ($rental->edate()-$rental->sdate() >= 7)?
                                 refresh_table(
                                               1,
@@ -864,7 +872,10 @@ sub update_do : Local {
             $P{rental_canceled} = '';
         }
     }
-    if ($P{start_hour} >= 1300) {
+    if ($P{start_hour} >= 1300
+        &&
+        $r->sdate_obj() < $lunch_always_date
+    ) {
         # they won't be having lunch on their arrival day
         # since they arrive after lunch ends
         #
@@ -1573,9 +1584,7 @@ sub arrangements : Local {
         signed   => ucfirst $c->user->username,
         string => \%string,
         gate_code => $rental->summary->gate_code || 'XXXX',
-        meal_times => ($rental->sdate_obj->year >= 2022?
-             'Breakfast 8:30-9:30 am, lunch 12:30-1:30 pm, and dinner 5:15-6:15 pm with the following exceptions: On Saturdays brunch is at 10:00-11:00 am and snack (no lunch) at 1:00-2:00 pm.'
-            :'Brunch is served 10:00-11:00 am, dinner is served 5:00-6:00 pm daily.')
+        new_meal_times => $rental->sdate_obj->year >= 2022,
     };
     my $html;
     $tt->process(
@@ -1699,11 +1708,14 @@ sub _contract_ready {
     if ($hc_name !~ m{rental}i) {
         push @mess, "The housing cost must have 'Rental' in its name.";
     }
-    if ($rental->lunches() =~ m{1} && $hc_name !~ m{lunch}i) {
-        push @mess, "Since are lunches provided the housing cost must have 'Lunch' in its name.";
-    }
-    if ($rental->lunches() !~ m{1} && $hc_name =~ m{lunch}i) {
-        push @mess, "Housing Cost includes Lunch but no lunches provided.";
+    if ($rental->sdate_obj < $lunch_always_date) {
+        if ($rental->lunches() =~ m{1} && $hc_name !~ m{lunch}i) {
+            push @mess, "Since are lunches provided the housing cost"
+                      . " must have 'Lunch' in its name.";
+        }
+        if ($rental->lunches() !~ m{1} && $hc_name =~ m{lunch}i) {
+            push @mess, "Housing Cost includes Lunch but no lunches provided.";
+        }
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;

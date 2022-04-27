@@ -34,6 +34,7 @@ use Date::Simple qw/
 use DateRange;
 use Global qw/
     %string
+    $always_lunch_date
 /;
 use List::Util qw/
     uniq
@@ -629,6 +630,8 @@ sub detail_disp {
 #     _program_ _start_ time is before 1:00 pm).
 # similarily rental lunches CAN happen on the first
 #   day - depending on the start time.
+# As of 4/1/2022 all rentals and programs ALWAYS have lunch.
+#   No selecting of which days have lunch.
 # dinner does not happen on the departure date - for programs and rentals.
 # but for MMI _courses_ dinner IS served on the last day.
 #   Not quite - look at the program end time to see if the people
@@ -810,7 +813,11 @@ sub meal_list : Local {
                                      ($d != $r_start
                                       || $prog->prog_start() < $lunch_end)
                                      &&
-                                     (lunch($d) || $PR)
+                                     ($PR
+                                      ||
+                                      $prog->sdate_obj >= $always_lunch_date
+                                      ||
+                                      lunch($d))
                                      ;
             add('dinner', $np)    if $d != $r_end || $prog_end_dinner;
         }
@@ -879,7 +886,10 @@ sub meal_list : Local {
                 $info = [ "$n people" , $r_name ];  # set it back
             }
             # LUNCH
-            if (lunch($d)) {
+            if ($r->sdate_obj() >= $always_lunch_date
+                ||
+                lunch($d)
+            ) {
                 if ($d == $r_start && $start_hour < $lunch_end) {
                     add('lunch',     $n);
                 }

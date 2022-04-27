@@ -25,7 +25,9 @@ use warnings;
 #
 package Global;
 
-use Date::Simple;
+use Date::Simple qw/
+    date
+/;
 
 use base 'Exporter';
 our @EXPORT_OK = qw/
@@ -39,6 +41,8 @@ our @EXPORT_OK = qw/
     %houses_in_cluster
     %house_name_of
     %annotations_for
+
+    $lunch_always_date
 /;
 
 our %string;
@@ -50,6 +54,7 @@ our %house_name_of;
 our %annotations_for;
 our %system_affil_id_for;
 our @hfs_affil_ids;
+our $lunch_always_date;
 
 my $scts = 'sys_cache_timestamp';
 
@@ -134,6 +139,7 @@ sub init {
     }
 
     Date::Simple->default_format($string{default_date_format});
+    $lunch_always_date = date('4/1/2022');
 }
 
 1;

@@ -300,13 +300,16 @@ none
 [% END %]
 </p>
 
-<div style="margin-top: .3in"><span class=head>Lunches</span>
-[% IF editable %]
-    <span class=updlunch><a href="/rental/update_lunch/$id">Update</a></span>
-[% END %]
-</div>
+[% IF show_lunch %]
+    <div style="margin-top: .3in"><span class=head>Lunches</span>
+    [% IF editable %]
+        <span class=updlunch>
+        <a href="/rental/update_lunch/$id">Update</a></span>
+    [% END %]
+    </div>
 
-<div class=lunch>$lunch_table</div>
+    <div class=lunch>$lunch_table</div>
+[% END %]
 
 [% IF refresh_table %]
     <div style="margin-top: .1in"><span class=head>Days to Refresh Rooms</span>

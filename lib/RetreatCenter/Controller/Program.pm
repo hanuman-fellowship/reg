@@ -54,6 +54,7 @@ use Net::FTP;
 use Global qw/
     %string
     @clusters
+    $always_lunch_date
 /;
 use File::Copy;
 use JSON;
@@ -678,6 +679,7 @@ sub view : Local {
     if (! ($p->PR()
            || $p->category->name() ne 'Normal'
            || $p->level->long_term()
+           || $p->sdate_obj >= $always_lunch_date
           )
     ) {
         stash($c,
@@ -997,10 +999,14 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
+    my $p = model($c, 'Program')->find($id);
     _get_data($c);
     return if @mess;
 
-    if ($P{prog_start} >= 1300) {
+    if ($P{prog_start} >= 1300
+        &&
+        $p->sdate_obj() < $always_lunch_date
+    ) {
         # can't have lunch on the first day
         #
         clear_lunch();
@@ -1018,7 +1024,6 @@ sub update_do : Local {
     if (! $c->check_user_roles('prog_admin')) {
         delete $P{glnum};
     }
-    my $p = model($c, 'Program')->find($id);
     $P{max} ||= 0;
     if (   $p->sdate       ne $P{sdate}
         || $p->edate       ne $P{edate}
