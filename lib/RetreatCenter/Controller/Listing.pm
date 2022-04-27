@@ -34,7 +34,7 @@ use Date::Simple qw/
 use DateRange;
 use Global qw/
     %string
-    $always_lunch_date
+    $lunch_always_date
 /;
 use List::Util qw/
     uniq
@@ -815,7 +815,7 @@ sub meal_list : Local {
                                      &&
                                      ($PR
                                       ||
-                                      $prog->sdate_obj >= $always_lunch_date
+                                      $prog->sdate_obj >= $lunch_always_date
                                       ||
                                       lunch($d))
                                      ;
