@@ -108,7 +108,7 @@ use Time::Simple qw/
 use Template;
 use Global qw/
     %string
-    $always_lunch_date
+    $lunch_always_date
 /;
 use Email::Stuffer;
 use Email::Sender::Transport::SMTP;
