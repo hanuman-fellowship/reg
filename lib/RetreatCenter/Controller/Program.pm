@@ -54,7 +54,7 @@ use Net::FTP;
 use Global qw/
     %string
     @clusters
-    $always_lunch_date
+    $lunch_always_date
 /;
 use File::Copy;
 use JSON;
@@ -679,7 +679,7 @@ sub view : Local {
     if (! ($p->PR()
            || $p->category->name() ne 'Normal'
            || $p->level->long_term()
-           || $p->sdate_obj >= $always_lunch_date
+           || $p->sdate_obj >= $lunch_always_date
           )
     ) {
         stash($c,
@@ -1005,7 +1005,7 @@ sub update_do : Local {
 
     if ($P{prog_start} >= 1300
         &&
-        $p->sdate_obj() < $always_lunch_date
+        $p->sdate_obj() < $lunch_always_date
     ) {
         # can't have lunch on the first day
         #

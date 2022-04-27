@@ -886,7 +886,7 @@ sub meal_list : Local {
                 $info = [ "$n people" , $r_name ];  # set it back
             }
             # LUNCH
-            if ($r->sdate_obj() >= $always_lunch_date
+            if ($r->sdate_obj() >= $lunch_always_date
                 ||
                 lunch($d)
             ) {
