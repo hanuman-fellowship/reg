@@ -992,6 +992,8 @@ EOL
     @programs = grep {
                     ! $_->PR()
                     &&
+                    ! $_->SG()
+                    &&
                     (! $_->school->mmi()
                      ||
                      ! $_->level->long_term()
