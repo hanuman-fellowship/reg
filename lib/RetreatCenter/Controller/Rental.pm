@@ -2317,6 +2317,7 @@ sub del_charge_do : Local {
     my $charge = model($c, 'RentalCharge')->find($charge_id);
     my $rental_id = $charge->rental_id();
     $charge->delete();
+    $rental->compute_balance();
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
@@ -2339,6 +2340,7 @@ sub del_payment_do : Local {
     my $payment = model($c, 'RentalPayment')->find($payment_id);
     my $rental_id = $payment->rental_id();
     $payment->delete();
+    $rental->compute_balance();
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
@@ -2379,6 +2381,7 @@ sub update_charge_do : Local {
         amount => $amount,
         what   => $what,
     });
+    $rental->compute_balance();
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
@@ -2431,6 +2434,7 @@ sub update_payment_do : Local {
         amount    => $amount,
         type      => $type,
     });
+    $rental->compute_balance();
     # ??? does not update the time.  okay?
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
