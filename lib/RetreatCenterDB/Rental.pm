@@ -87,16 +87,18 @@ __PACKAGE__->add_columns(qw/
     contract_exception
     rental_canceled
     in_group_name
+
     av_request
-    meal_request
-    housing_request
-    meeting_request
-    other_request
     av_request_cost
+    meal_request
     meal_request_cost
+    housing_request
     housing_request_cost
+    meeting_request
     meeting_request_cost
+    other_request
     other_request_cost
+
     new_contract
     mp_deposit
 /);
@@ -691,6 +693,10 @@ sub compute_balance {
                               :         $rental->housing_charge();
 
     my $final_tot_housing = $tot_housing;
+
+    # for hybrids we have ALREADY collected the money, yes???
+    # but it may not have exceeded the minimum.
+
     my $min_cost = 0;
    
     # how does the total cost compare to the minimum?
@@ -758,6 +764,21 @@ sub compute_balance {
         }
         $end_charge = int($ec);
     }
+
+    # new contract charges for meeting places => deposit
+    my ($mp_table, $mp_cost_per_day);
+    if ($rental->new_contract()) {
+        ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table();
+    }
+
+    # costs for special requests
+    my $sr_cost = $rental->av_request_cost
+                + $rental->meal_request_cost
+                + $rental->housing_request_cost
+                + $rental->meeting_request_cost
+                + $rental->other_request_cost
+                ;
+
     my $tot_charges = 0;
     for my $ch ($rental->charges()) {
         $tot_charges += $ch->amount();
@@ -766,6 +787,9 @@ sub compute_balance {
                      + $tot_charges
                      + $start_charge
                      + $end_charge
+                     + $sr_cost
+                     + ($rental->new_contract? 
+                           $n_nights * $mp_cost_per_day: 0)
                      ;
     my $tot_payments = 0;
     for my $p ($rental->payments()) {
@@ -797,6 +821,12 @@ sub compute_balance {
             per_day        => $per_day,
             min_lodging    => $min_lodging,
             min_cost       => $min_cost,
+
+            # new contract:
+            mp_table       => $mp_table,
+            mp_cost_per_day => $mp_cost_per_day,
+
+            sr_cost        => $sr_cost,
 
             extra_time     => $extra_start || $extra_end,
 
@@ -893,9 +923,10 @@ EOH
 EOH
     }
     $html .= <<"EOH";
+<tr><td colspan=2><hr></td></tr>
 <tr>
-<td></td>
-<td align=right style="border-top: 1px solid black">$total</td>
+<td>Total</td>
+<td align=right>$total</td>
 </tr>
 </table>
 EOH
