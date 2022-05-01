@@ -389,6 +389,7 @@ sub check_grid {
         grid_max       => $max,
         housing_charge => $tot_cost,
     });
+    $rental->compute_balance();
     my $rname = $rental->name;
     my $rid = $rental->id;
     msg "grid <a href='/rental/view/$rid'>$rname</a>";

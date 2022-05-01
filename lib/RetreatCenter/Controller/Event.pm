@@ -1567,6 +1567,11 @@ sub del_meeting_place : Local {
 
     $booking->delete();
 
+    if ($hap_type eq 'rental') {
+        my $rental = model($c, 'Rental')->find($hap_id);
+        $rental->compute_balance();
+    }
+
     # also remove any 'bound blocks' for meeting places
     # that are also sleeping places.
     #
@@ -1790,6 +1795,10 @@ sub which_mp_do : Local {
         }
 
         check_makeup_new($c, $h_id, $sdate);
+    }
+    if ($hap_type eq 'rental') {
+        my $rental = model($c, 'Rental')->find($hap_id);
+        $rental->compute_balance();
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events
