@@ -35,7 +35,7 @@ Number of Nights: $n_nights
     <ul>
     $mp_table
     <p>
-    \$[% commify(mp_cost_per_day) %] per day * $n_nights days = \$[% commify(total_mp_cost) %]
+    \$[% commify(mp_cost_per_day) %] per day * $n_nights days = \$[% commify(mp_total_cost) %]
     </ul>
 [% END %]
 
