@@ -330,14 +330,14 @@ none
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Tentative</th>
+<th align=right width=200px>Tentative</th>
 <td>$rental.tentative</td>
 </tr>
 
 <tr>
 <th valign=center>Meeting Places</th>
 <td align=left valign=top colspan=3>
-<table cellpadding=12><tr><td valign=top>
+<table cellpadding=12 border=0><tr><td valign=top>
 <b>Meet</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]
@@ -377,10 +377,8 @@ none
 </td></tr></table>
 [% IF editable %]
     [% IF Catalyst.check_user_roles('prog_admin') %]
-        <tr>
-        <td></td>
-        <td align=left colspan=2><a href="/event/add_meeting_place/rental/$id">Add</a></td>
-        </tr>
+        <p>
+        <a href="/event/add_meeting_place/rental/$id">Add</a>
     [% END %]
 [% END %]
 
@@ -395,6 +393,8 @@ none
     <a href="/rental/coordinator_update/$id">Update</a>
 [% END %]
 </td>
+</tr>
+<tr>
 <th valign=top align=right>Contract Signer</th>
 <td valign=top>
 [% IF rental.cs_person_id %]
@@ -463,27 +463,27 @@ none
 
 <tr>
 <th align=right>Rental Created</th>
-<td colspan=2>$rental.rental_created_obj [% IF rental.rental_created %]by $rental.created_by.username[% END %]</td>
+<td>$rental.rental_created_obj [% IF rental.rental_created %]by $rental.created_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Contract Sent</th>
-<td colspan=2>$rental.contract_sent_obj [% IF rental.contract_sent %]by $rental.sent_by.username[% END %]</td>
+<td>$rental.contract_sent_obj [% IF rental.contract_sent %]by $rental.sent_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Contract Received</th>
-<td colspan=2>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
+<td>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Arrangement Letter Sent</th>
-<td colspan=2>$rental.arrangement_sent_obj [% IF rental.arrangement_sent %]by $rental.arrangement_by.username[% END %]</td>
+<td>$rental.arrangement_sent_obj [% IF rental.arrangement_sent %]by $rental.arrangement_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Cancelation Date</th>
-<td colspan=2>$rental.rental_canceled_obj</td>
+<td>$rental.rental_canceled_obj</td>
 </tr>
 
 <tr>
@@ -495,7 +495,7 @@ none
 <tr>
 <th align=right>Color</th>
 [% IF rental.color %]
-<td id=color style="cursor: pointer" width=100 bgcolor=$rental.color_bg onclick="window.location.href='/rental/color/$id'">
+<td id=color style="cursor: pointer" bgcolor=$rental.color_bg onclick="window.location.href='/rental/color/$id'">
 [% ELSE %]
 <td><a href=/rental/color/$id>Update</a></td>
 [% END %]
@@ -503,31 +503,31 @@ none
 [% END %]
 
 <tr><td height=30></td></tr>
-<tr><td colspan=2><h2>Special Requests</h2></td></tr>
+<tr><td colspan=3><h2>Special Requests</h2></td></tr>
 
 <tr>
 <th valign=top align=right>Audio/Visual</th>
-<td>$rental.av_request_br</td>
+<td colspan=2>$rental.av_request_br</td>
 </tr>
 <tr><td></td><td>Cost: $rental.av_request_cost</td></tr>
 <tr>
 <th valign=top align=right>Housing</th>
-<td>$rental.housing_request_br</td>
+<td colspan=2>$rental.housing_request_br</td>
 </tr>
 <tr><td></td><td>Cost: $rental.housing_request_cost</td></tr>
 <tr>
 <th valign=top align=right>Meals</th>
-<td>$rental.meal_request_br</td>
+<td colspan=2>$rental.meal_request_br</td>
 </tr>
 <tr><td></td><td>Cost: $rental.meal_request_cost</td></tr>
 <tr>
 <th valign=top align=right>Meeting Place</th>
-<td>$rental.meeting_request_br</td>
+<td colspan=2>$rental.meeting_request_br</td>
 </tr>
 <tr><td></td><td>Cost: $rental.meeting_request_cost</td></tr>
 <tr>
 <th valign=top align=right>Other</th>
-<td>$rental.other_request_br</td>
+<td colspan=2>$rental.other_request_br</td>
 </tr>
 <tr><td></td><td>Cost: $rental.other_request_cost</td></tr>
 
