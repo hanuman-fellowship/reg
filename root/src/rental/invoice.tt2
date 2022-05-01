@@ -183,8 +183,8 @@ You requested lodging for a maximum of $rental.max people.
 <h2>Balance</h2>
 <ul>
 <table class=ind cellpadding=3 border=0>
-<tr><th class=xx>Charges</th><td class=yy>[% commify(tot2_charges) %]</td></tr>
-<tr><th class=xx>Payments</th><td class=yy>-[% commify(tot_payments) %]</td></tr>
+<tr><td class=xx>Charges</td><td class=yy>[% commify(tot2_charges) %]</td></tr>
+<tr><td class=xx>Payments</td><td class=yy>-[% commify(tot_payments) %]</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><th class=xx>Balance Due</th><td class=yy>\$[% commify(balance) %]</td></tr>
 </table>
