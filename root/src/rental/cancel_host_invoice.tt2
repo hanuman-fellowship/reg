@@ -24,7 +24,7 @@ This notice was received on ${rental.rental_canceled_obj.format("%B %e, %Y")}.
 <p>
 The program was cancelled $ndays days before the arrival date.
 <p>
-There was a deposit of \$${deposit}.
+There was [% IF rental.new_contract %]an <b>unrefundable</b>[% ELSE %]a[% END %] deposit of \$${deposit}.
 <p>
 The program would have been for $nnights nights.<br>
 The maximum number of people requested was ${max}.
@@ -58,4 +58,8 @@ The cancellation was received $ndays days prior to arrival so the Payment Due is
 $pct% of \$$min_lodging = \$$due
 </ul>
 <p>
+[% IF rental.new_contract %]
+Payment Due = \$$balance
+[% ELSE %]
 Balance = Payment Due - Deposit = $due - $deposit = \$$balance
+[% END %]

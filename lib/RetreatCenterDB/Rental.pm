@@ -666,7 +666,11 @@ sub compute_balance {
             }
         }
         my $due = int(($pct/100) * $min_lodging);
-        my $balance = $due - $deposit;
+        my $balance = $due;
+        if (! $rental->new_contract) {
+            # unrefundable if new contract
+            $balance -= $deposit;
+        }
         $rental->update({
             balance => $balance,
         });
