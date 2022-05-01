@@ -766,9 +766,14 @@ sub compute_balance {
     }
 
     # new contract charges for meeting places => deposit
-    my ($mp_table, $mp_cost_per_day);
+    my ($mp_table, $mp_cost_per_day, $mp_total_cost);
     if ($rental->new_contract()) {
         ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table();
+        $mp_total_cost = $mp_cost_per_day * $n_nights;
+    }
+    else {
+        # old contracts
+        $mp_total_cost = 0;
     }
 
     # costs for special requests
@@ -783,7 +788,8 @@ sub compute_balance {
     for my $ch ($rental->charges()) {
         $tot_charges += $ch->amount();
     }
-    my $tot2_charges = $final_tot_housing
+    my $tot2_charges = $mp_total_cost       # non-zero only for new contracts
+                     + $final_tot_housing
                      + $tot_charges
                      + $start_charge
                      + $end_charge
@@ -825,6 +831,7 @@ sub compute_balance {
             # new contract:
             mp_table       => $mp_table,
             mp_cost_per_day => $mp_cost_per_day,
+            mp_total_cost   => $mp_total_cost,
 
             sr_cost        => $sr_cost,
 
