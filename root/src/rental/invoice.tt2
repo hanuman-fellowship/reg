@@ -144,15 +144,15 @@ You requested lodging for a maximum of $rental.max people.
 [% IF rental.new_contract %]
 <tr><td class=xx>Meeting Places</td><td class=yy>[% commify(rental.deposit) %]</td></tr>
 [% END %]
+[% IF sr_cost %]
+<tr><td class=xx>Special Requests</td><td class=yy>[% commify(sr_cost) %]</td></tr>
+[% END %]
 <tr><td class=xx>Housing</td><td class=yy>[% commify(final_tot_housing) %]</td></tr>
 [% IF extra_start %]
 <tr><td class=xx>Extra Start Time</td><td class=yy>[% commify(start_charge) %]</td></tr>
 [% END %]
 [% IF extra_end %]
 <tr><td class=xx>Extra End Time</td><td class=yy>[% commify(end_charge) %]</td></tr>
-[% END %]
-[% IF sr_cost %]
-<tr><td class=xx>Special Requests</td><td class=yy>[% commify(sr_cost) %]</td></tr>
 [% END %]
 <tr><td class=xx>Other</td><td class=yy>[% commify(tot_charges) %]</td></tr>
 <tr><td colspan=2><hr></td></tr>
