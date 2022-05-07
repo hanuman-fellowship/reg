@@ -455,6 +455,11 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right valign=top>Registration<br>Message</th>
+<td colspan=2 valign=top>$program.reg_msg</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Conf Template</th>
 <td valign=top>$program.cl_template</td>
 </tr>

@@ -1342,6 +1342,7 @@ sub gen_progtable {
                 donation_tiers
                 donation_minimum
                 donation_zero_msg
+                reg_msg
                 req_pay
                 do_not_compute_costs
                 dncc_why
@@ -1968,6 +1969,7 @@ sub export : Local {
                 donation_minimum
                 donation_tiers
                 donation_zero_msg
+                reg_msg
                 cancellation_policy
                 reg_start
                 reg_end

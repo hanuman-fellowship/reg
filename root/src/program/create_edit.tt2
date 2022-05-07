@@ -212,6 +212,13 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right valign=top>Registration<br>Message</th>
+<td colspan=6>
+<textarea name=reg_msg cols=70 rows=3>$program.reg_msg</textarea>
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Conf Template</th>
 <td valign=top>
 <select name=cl_template>

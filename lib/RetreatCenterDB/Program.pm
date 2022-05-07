@@ -102,6 +102,7 @@ __PACKAGE__->add_columns(qw/
     covid_vax
     end_reg_date_time
     strangers_share
+    reg_msg
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -921,6 +922,8 @@ reg_count - The number of current registrants.
     This field keeps changing as people sign up and cancel.
     Too difficult and time consuming to keep recomputing it.
 reg_end - Time that registration ends on the first day.
+reg_msg - An optional message to appear near
+    the top of the first registration page.
 reg_start - Time that registration begins on the first day.
 rental_id - foreign key to rental - if the program is a 'hybrid'.
 req_pay - Do registrations for this program allow requested payments?
