@@ -1635,7 +1635,6 @@ sub arrangements : Local {
             "$dir/Main Area Map.pdf",
             ($rental->program_id? ()
             :                     "$dir/Program Guest Confirmation Letter.pdf"),
-            "$dir/MMC Food.pdf",
             "$dir/Info Sheet.pdf"
         ],
         activity_msg => "Arrangements sent for <a href='/rental/view/$rental_id'>$rental_name</a>",

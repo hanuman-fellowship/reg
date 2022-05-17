@@ -2,7 +2,7 @@
 <head>
 <style>
 body {
-    width: 700px;
+    width: 80%;
     margin-top: 10mm;
     margin-left: 10mm;
     margin-bottom: 10mm;
@@ -14,16 +14,12 @@ body {
 <body>
 Dear ${rental.coordinator.first},
 <p>
-We'd like to get started working out the details for your upcoming
-'${rental.name_trimmed}' program from ${rental.sdate_obj.format("%A, %D")}
-to ${rental.edate_obj.format("%A, %D")} at Mount Madonna Center.
-This initial email contains information to help you plan
-your program and requests some information from you as well,
-to help us with planning.
-<p>
-When responding to this message, please use the 'Reply All'
-feature of your email program so that all staff involved
-in preparing for your event can keep up with our correspondence.
+We are looking forward to having your program "${rental.name_trimmed}" here on
+${rental.sdate_obj.format("%A, %D")} to ${rental.edate_obj.format("%A, %D")}.
+We'd like to get started on your program arrangement details.
+Please let me know if you are the preferred contact person,
+or if you have a different staff member designated to
+coordinate the details below.
 [% IF rental.program_id %]
 <h3>REGISTRATION PROCEDURE</h3>
 Here is the web link for registration:
@@ -38,38 +34,27 @@ provides a gate code for after hours access, and other information about
 their stay at Mount Madonna Center.
 [% ELSE %]
 <h3>HOUSING PROCEDURES</h3>
-Please do not hesitate to let us know if you
-have questions about managing your housing process and commitment.
-<p>
 In order to assist you in the housing process,
-we have reserved a list of various types of rooms for your use,
-based on earlier conversations about the needs of your group.
-We have also provided you with the following weblink
-where you can fill in the names of your guests.
-This initial housing grid is based on your "maximum" number
-noted in the contract. Please let us know how many and what
-types of additional rooms you want to reserve as soon as possible, and we will add them to the grid as reservations for your group.
+we have reserved a block of rooms for you and your
+program participants.
+The following weblink will be used as an
+initial housing grid
+where you will fill in the names and emails of
+your participants.
 <p>
 <ul>
 <a href='${string.grid_url}?code=${rental.grid_code}'>${string.grid_url}?code=$rental.grid_code
 </a>
 <p>
 </ul>
-Please refer to your contract for housing rates
-and payment and cancellation policies.
-Your minimum housing commitment to
-MMC is defined in the contract. If you
-have questions about the above, please
-contact the Guest Services Director
-at 408-846-4009.
-<p> 
+<p>
 The Web Housing Grid lists the Room
 #s and identifies the number of beds
-in each room. You may begin to fill in
-the web grid with the names and email
-address for each of your participants,
-but only as they fully commit to your
-program. We recommend you reserve a bed
+in each room. Please fill in the web
+grid with the name and email address for each
+participant, but only as they fully commit
+to your program.
+We recommend you reserve a bed
 only when you have either received the
 appropriate housing payment from your
 participant, or you are committed to
@@ -77,16 +62,12 @@ paying for the bed yourself. While
 we have agreed to provide lodging
 for your "maximum" number of
 participants listed in the contract, we
-don't guarantee being able to provide
-for all lodging preferences. You can
-assign up to as many people to a room
+cannot guarantee all lodging preferences.
+You can assign up to as many people to a room
 as there are beds. Housing rates are
 based on how many people are in a room,
-not the room itself. See contract
-for rates. The Web Housing Grid will
-also show the rates for each type
-of accommodation at the bottom of
-the page.
+not the room itself. Please refer to your contract
+for housing rates and payment and cancellation policies.
 <p>
 The last date we can guarantee housing
 for your group is 10 days prior to the
@@ -94,54 +75,13 @@ start of your program. If we receive
 requests for housing after that date,
 we cannot guarantee accommodation, even
 if you haven't met your contractual
-maximum yet. Of course, we will
-continue to accommodate your requests
-as we have housing availability.
+minimum financial commitment for meals
+and accomodations.  Should you have cancellations
+or withdrawals after the 10 day mark, you may
+still incur a charge for those beds.
 <p>
-To enter and then save your housing
-assignments on the Housing Grid
-simply enter your guests' names, email
-contact, and then click on the "Submit"
-link. Whichever way you arrange housing
-for your participants, we need to
-know 7 days before your arrival the
-final occupancy of each room you've
-reserved. If you do not need all the
-rooms assigned to your program, you
-must also release them 10 days prior
-to the start of the program.
-<p>
-Seven days prior to your program,
-you become financially obligated for
-all the housing reflected on your web
-grid. Up to then, you can move people
-around, and add and subtract rooms
-and assignments. At the 7 day mark,
-MMC also fully commits to reserving all
-housing on your housing grid at that
-time. Should you need additional rooms,
-less than 7 days prior to your program,
-we will happily add them to the grid as
-long as we have them available. Should
-you have cancellations or withdrawals
-after the 7 day mark, you will still
-incur a charge for those beds.
-<p>
-Please note that for any room reserved
-on your final web housing grid, you
-are agreeing to pay for at least one
-bed in that space for the duration of
-your retreat.
-<p>
-A note about our rooms: You can assign
-up to as many people to a room as
-there are beds (e.g. a 4-bed room can
-be used as a dorm, triple, double,
-or single). We determine cost based
-on how many people, not beds, are
-in the room (i.e., one person housed
-in a dorm room pays the single rate,
-not the dorm rate.
+If you have questions about the above, please
+contact the Guest Services Director at 408-846-4009.
 <p>
 [% IF rental.seminar_house_sleeping %]
 <p>
@@ -153,6 +93,15 @@ All the rooms in the Seminar House are included in
 the preliminary web grid.
 [% END %]
 [% END %]  <!-- if not hybrid -->
+<h3>GATE CODE</h3>
+Our main entrance gate closes at 6:00 pm daily.
+For any arrivals after 6:00 pm, the following gate code will
+be required to enter the property: #${gate_code}.
+The pound sign is part of the code and each key must
+be entered without pause. If you have program participants
+staying in the Oaks cabins/campgrounds,
+the code for the upper gate is 1${gate_code}.
+(No pound sign is required)
 <h3>IMPORTANT CAMPING INFORMATION</h3>
 Also, please inform any of your camping guests that the campgrounds
 are a 10-15 minute walk from the central area. If they do not have
@@ -163,71 +112,58 @@ and there is no wireless connectivity
 in the campgrounds. MMC does not
 currently provide tents for guests.
 [% IF ! rental.program_id %]
-<h3>GUEST CONFIRMATION INFORMATION</h3>
+<h3>GUEST CONFIRMATION TEMPLATE</h3>
 We've attached a template document modeled after the confirmation
 note that we automatically send to Mount Madonna guests when they
 register for our programs and retreats.  You can modify this document
 to fill in the gate codes, particular times and dates of your
 program, and include it with information that you provide to your
 guests when they register with you.
-<h3>GATE CODE</h3>
-We have a gate that closes each night at 7:00 pm (closed all day on
-Sundays). The code to enter the property after hours: #${gate_code}.  The
-pound sign is part of the code and each key must be entered without
-pause.  If guests are staying in the Oaks cabins/campgrounds behind
-the school, the code for the upper gate is 1${gate_code}. No pound sign is
-required for entrance into the Oaks area.
-<p>
-In the confirmation letter template described above, there is a
-field for you to enter this gate code so that it will be distributed
-to all your guests.
 [% END %]
 <h3>SCHEDULE</h3>
-Please refer to your contract for meal times so that you
-can schedule your meeting times accordingly.
-[% IF new_meal_times %]
-Breakfast 8:30-9:30 am, lunch 12:30-1:30 pm, and dinner 5:15-6:15 pm with the following exceptions: On Saturdays brunch is at 10:00-11:00 am and snack (no lunch) at 1:00-2:00 pm.
-[% ELSE %]
-Brunch is served 10:00-11:00 am, dinner is served 5:00-6:00 pm daily.
-[% END %]
-Check out is at 12:00 pm.
-<p>
-As part of your schedule, we need to arrange a time
-for one of our staff to give a brief orientation on your start date.
-The orientation provides valuable information about our center's services,
-amenities, and policies.
-May we schedule our orientation at the start of your first session?
-<p>
-Please send us a schedule of your meeting times, taking into
-consideration the items listed above, so that our events staff can
-attend to your meeting space at times least disruptive to your
-group.
-<h3>MEETING SPACE SET-UP</h3>
-Your meeting space is in the ${rental.meeting_spaces}.  Please let us know
-what equipment you want and any preferences for arrangements. This
-includes, but is not limited to, the following:
-<p>
+Please send us your Program Schedule as soon as you can,
+taking into consideration our center's meal times,
+Arati, and Orientation.  This will help our staff to be
+mindful of when you will be in or out of session.
 <ul>
-<li>Backjacks
-<li>Chairs
-<li>Pillows
-<li>Audio/Visual equipment
-<li>Flipcharts, whiteboards, easels, markers
-<li>Tables (standard folding tables & low alter tables)
-<li>Risers, Lecterns
-<li>Yoga props
-</ul> 
+<li><b>Mealtimes</b>:
+Breakfast 8:30-9:30 am, lunch 12:30-1:30 pm, and dinner 5:15-6:15 pm with the following exceptions: On Saturdays brunch is at 10:00-11:00 am and snack (no lunch) at 1:00-2:00 pm.
+<li><b>Arati</b> (Ceremony of light): 6:30am and 6:00pm daily at the Temple.
+<li><b>Orientation</b>: As part of your schedule, we will arrange a time for one of our staff to give a brief fifteen minute orientation on your start date. The orientation provides valuable information about our center's services, amenities, and policies.
+</ul>
+<h3>ARRANGEMENTS</h3>
+Your meeting space will be in the ${rental.meeting_spaces}.
+To help us set-up your meeting space, please fill out
+the information below.  Please mark the items desiredd with
+an X, and write in the quantities needed to the right.
+You may copy and paste this into a separate email.
 <p>
-Please be as specific as possible about any preferences for set-up
-and seating so that we may most closely meet your needs. Please
-also have all requests in no later than 10 days before your start
-date. We cannot guarantee fulfilling any requests made less than
-10 days in advance of your start date, but we will always attempt
-to.
-<h3>SOUND AND PROJECTION EQUIPMENT</h3>
-Would you like a sound system in your meeting space?
-If so, what kind of sound equipment would you like us to provide?
-Do you need a projector and projection screen?
+Meeting Equipment:<br>
+__  Flipcharts _______<br>
+__  Whiteboards _______<br>
+__  Easels _______<br>
+__  Tables (standard folding tables?, altar table?, presenter side table?) Please specify types.<br>
+__  Backjacks_______<br>
+__  Chairs _______<br>
+__  Pillows _______<br>
+<p>
+Yoga props:<br>
+__ Mats_______<br>
+__ Bolsters_______<br>
+__ Blankets_______<br>
+__ Yoga blocks_______<br>
+__ Straps _______<br>
+<p>
+Audio/Visual Equipment:<br>
+Please share with us any specific audio/visual needs related to your contract.
+<p>
+We ask you to be as specific as possible about any
+preferences for set-up
+and seating so that we may most closely meet your needs.
+All requests must be submitted no later than 10 days before
+your start date. We cannot guarantee fulfilling any requests
+made less than 10 days in advance of your start date,
+but we will always do our best.
 <h3>MAP</h3>
 Also attached is a map of our "downtown" area where you can locate
 your meeting space. When you and/or your program coordinator arrive
@@ -236,33 +172,31 @@ will provide each of your guests an information packet, which will
 include this map as well as an information sheet (also attached for
 your reference) that lists meal and yoga times and our center's
 services and policies.
-<h3>FOOD SERVICE</h3>
-Please let me know of any guests with special dietary restrictions
-no later than one week before the start date of your event. We
-cannot guarantee that we can accommodate specific dietary needs,
-but we will do what we can. If we cannot accommodate a dietary need,
-we will let you know so that the person with that need can decide
-whether or not to attend. The attached "MMC Food" document describes
-some options for folks with a restricted diet.
-<h3>TRANSPORTATION</h3>
-Please refer to the following site on our website for directions
-and transportation:
+<h3>FURTHER QUESTIONS</h3>
+<ol>
+<li>Please provide the names of all staff for your program;
+i.e: Presenters, Coordinators, and your
+"On-site point of contact".
+<li>What time shall we give an orientation to your group?
+We recommend this to be held at the beginning of your
+first session.
+<li>Please let us know any special dietary needs/food allergies
+no later than 10 days before the start date of your event.
+<li>Brief description of your program.
+This can be a sentence or two, or a short paragraph.
+We share this with our resident community informing them
+of your upcoming program and the work you do.
+<li>Signage -  We'd like to welcome your group with signage
+around the property. Please let us know how to greet
+your program participants.
+</ol>
 <p>
-<ul>
-<a href=https://www.mountmadonna.org/transportation-directions>https://www.mountmadonna.org/transportation-directions</a>
-</ul>
-<h3>OTHER QUESTIONS</h3>
-At what time on ${rental.sdate_obj.format("%A")} do you plan on arriving?
-Please plan on coming into the Guest Services office upon arrival. 
-<p>
-Please let us know which room(s) your presenter(s)/coordinator(s)
-will be staying in as soon as you know.
-<p>
-Please don't hesitate to call or email me with any questions you
-may have. I look forward to working with you and making this event
+Please feel free to call or email me with any questions!
+Happy to schedule a call, too.
+I look forward to working with you in making this event
 a success.
 <p>
-Warm regards,<br>
+In Service,<br>
 $signed
 <p>
 </body>

@@ -117,34 +117,37 @@
 							 </tr>
 							 <tr>
 									<td>Monday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td>Tuesday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td>Wednesday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td>Thursday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td>Friday</td>
-									<td class=rt>10:00 am - 6:00 pm</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td>Saturday</td>
-									<td class=rt>10:00 am - 6:00 pm</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td>Sunday</td>
-									<td class=rt>10:00 am - 3:30 pm</td>
+									<td class=rt>11:00 am - 5:30 pm</td>
 							 </tr>
 							 <tr>
 									<td colspan=2 align=center><b>408-846-4090</b></td>
+							 </tr>
+							 <tr>
+									<td colspan=2 align=center><b><a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a></b></td>
 							 </tr>
 						</table>
             </td>
@@ -173,12 +176,16 @@
             <td class=lt2>&nbsp;$htdesc</td>
          </tr>
          <tr>
-            <th class=rt2>Deposit received</th>
+            <th class=rt2>Amount Paid</th>
             <td class=lt2>&nbsp;\$$reg.deposit_disp</td>
          </tr>
          <tr>
             <th class=rt2>Balance remaining</th>
             <td class=lt2>&nbsp;\$$reg.balance</td>
+         </tr>
+         <tr>
+            <th class=rt2>Gate Code</th>
+            <td class=lt2>&nbsp;#$program.gate_code</td>
          </tr>
       </table>
       <div class=indent>
@@ -186,23 +193,10 @@
          The attached file contains a housing map, yoga class and meal schedules, and other important details about our facilities. You may want to download and/or print this file prior to your arrival.
          Please read on to prepare for your stay on our beautiful mountain!
       </div>
-      [% IF covid_vax %]
-        <h2>COVID-19 Vaccination</h2>
-        To stay at Mount Madonna Center it is
-        required that you be fully vaccinated against COVID-19.  We need you
-        to upload an image of your vaccination card.
-        You can do this in two ways:
-        <ol>
-        <li>Follow <a href='https://mountmadonna.org/cgi-bin/covid_vax?person_id=$person.id&name=$person.name'>this link</a> and upload the image.
-        <li>Send us <a href="mailto:registrar@mountmadonna.org?subject=COVID Vaccination Card for $person.name in $program.title">an email</a>
-        and attach the image.
-        </ol>
-      [% END %]
       <p>
          [% IF    reg.confnote_not_empty
          || program.confnote_not_empty
          || reg.early || reg.late
-         || (personal_retreat && sunday)
          %]
          <h2>Notes</h2>
          <p>
@@ -217,56 +211,40 @@
             [% IF program.confnote_not_empty %]
             $program.confnote
             [% END %]
-            [% IF personal_retreat && sunday %]
-         <p>
-            <b>Please note that the Guest Services Office is not open on Sunday.</b><br>
-            Your room will be available for check-in at 4:00 pm.
-            Upon arrival, please go to the Community Building lobby, where you will
-            find an arrival package containing all you need to find your way to
-            your lodging, a meal and yoga class schedule, and maps of the Center.
-            If other concerns arise on Sunday, you can find a contact phone number
-            on the door of the Guest Services Office. Someone will answer your call
-            and give you the help you need.
-            [% END %]
-            [% END %]    <!-- if Note -->
+[% END %]    <!-- if Note or early or late -->
       [% IF program.covid_vax %]
-          <h2>Covid-19 Protocols</h2>
+          <h2>COVID-19 Protocols</h2>
           Please carefully read about our Covid-19 protocols <a target=_blank href='https://www.mountmadonna.org/coronavirus'>here</a>.
-          <h2>Arrivals and Departure</h2>
-          You will be greeted on arrival at the main gate
-          where you will be given your room key and directions
-          to your room. Upon arrival, you will also be provided
-          with a gate code that can be used for reentry.
-          <p>
-          Check in is at 3:00 pm and check out is at 11 am.
-          Unfortunately, we are unable to properly greet arrivals after 6 pm.
-      [% ELSE %]
-          <h2>Arrivals</h2>
-          <p>
-          You may pick up your room key
-          [% IF reg.balance > 0 %]
-             and pay your remaining balance
-          [% END %]
-          at the Guest Services Office in the Community Building.
-          Check-in is at ${program.reg_start_obj}.
-          If you arrive after business hours, stop by our
-          &ldquo;Late Notice Board&rdquo; in the entryway of
-          the Community Building to get your key.
-          Check-out is at $program.prog_end_obj on
-          the day of your departure.
-          [% IF ! personal_retreat %]
-              <p>
-              Your program begins at $program.prog_start_obj and
-              meets in the ${program.main_meeting_place}.
-          [% END %]
-          <h2>Gate Code</h2>
-          <p>
-          [% gc = program.gate_code %]
-          If you arrive in the evening and the gate is closed,
-          you can open it by entering this code in the keypad: #${gc}.
-          That's POUND ${gc}.  Press the five keys firmly and without
-          any pauses or it will not work.
-[% END %]   <!-- if program.covid_vax -->
+      [% IF covid_vax %]
+        <p>
+        To stay at Mount Madonna Center it is
+        required that you be fully vaccinated against COVID-19.  We need you
+        to upload an image of your vaccination card.
+        You can do this in two ways:
+        <ol>
+        <li>Follow <a href='https://mountmadonna.org/cgi-bin/covid_vax?person_id=$person.id&name=$person.name'>this link</a> and upload the image.
+        <li>Send us <a href="mailto:registrar@mountmadonna.org?subject=COVID Vaccination Card for $person.name in $program.title">an email</a>
+        and attach the image.
+        </ol>
+      [% END %]
+      [% END %]
+  <h2>Arrival and Departure</h2>
+  You will be greeted on arrival at the main gate (445 Summit
+  Rd) where you will be directed to the Guest Services Office
+  located in the Community Building. The Guest Services Staff will
+  provide you with your information packet, a map of the Center,
+  and can help with any additional questions.  Check-in is between
+  3:00 to 5:30 pm, and check-out is noon. Please note, you are more
+  than welcome to stay for lunch on the day of departure after
+  vacating your room.
+<p>
+  <b>Late Arrivals</b>:<br>
+  Our main gate closes at 6:00 pm each day. Please call the Guest
+  Services Office if you are unable to arrive by 5:30pm, and
+  refer to your Gate Code listed above in this document. Please
+  pick up your arrival packet and key on the 'After-Hours Arrivals'
+  bulletin board located in the Community Building
+  next to the Reception Office window.
 
          [% IF reg.balance > 0 %]
       <h2>Payments</h2>
@@ -322,27 +300,9 @@
       </div>
       [% END %]
 
-    [% IF program.covid_vax %]
         <h2>While You're Here</h2>
         <p>
         $while_here
-        <!--
-        We invite you to visit the Sankat Mochan Hanuman Temple.
-        Arati service is at 6:30 am and 6 pm daily.
-        <p>
-        Ayurveda World herbal store is open:<br>
-        Wednesday, Friday and Saturday: 11 am - 2:30 pm, 3:30 - 5 pm<br>
-        Thursday and Sunday: 2 pm - 5
-        <p>
-        Our beautiful system of well-maintained trails
-        through the redwood forest is available for you to explore.
-        We have a variety of spots throughout the land that are
-        conducive to meditation and contemplation.
-        Due to the pandemic, Anjaneya's World Cafe,
-        Kaya Kalpa Wellness Center,
-        and the hot tub are not available at this time.
-        -->
-    [% ELSE %]
         [% IF program.kayakalpa %]
             <h2>Appointment Reservations</h2>
             <p>
@@ -355,7 +315,6 @@
             <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you can do that here</a>.
             </p>
         [% END %]
-    [% END %]   <!-- program.covid_vax -->
       <h2>Packing</h2>
       <p>
          A detailed packing list can be found on our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a>.
@@ -382,29 +341,27 @@
       restrictions.  If you have serious allergies,
       contact your retreat coordinator and/or the
       Guest Services Office to discuss available options.
-      <p>
-      More information on meals, including a sample menu,
-      can be found <a target=_blank href='https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center'>here</a>.
-
       <h2>Getting Here</h2>
       <p>
          Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain.
       <h2>Cancellations</h2>
-      [% IF cancel_policy %]
-      $cancel_policy
-      [% ELSE %]
-      <p>
-         If you need to cancel or change your reservation, please refer to our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>cancellation policy</a> and contact our registrar at
-         [% rem = registrar_email %]
-         <a href='mailto:$rem'>$rem</a>.
-         [% END %]
+For Personal Retreat or Program reservation cancellations received
+at least two weeks before your reservation date, you will receive a
+full refund to your credit card. For cancellations received from two
+weeks to 48 hours prior to the reservation date, you will be charged
+a processing fee of $50 and the remainder of your payment will be
+held as a credit for you to reserve a future Personal Retreat or
+Program within one year. Credits are not transferable to another
+person. If you cancel within 48 hours of your reservation date,
+if you do not show up, or if you leave early you will not receive
+a refund.
       <h2>Maps</h2>
       <p>
          Maps of the <a target=_bank href='https://www.mountmadonna.org/assets/img/Main_Area_Map_MMC.pdf'>Mount Madonna property</a> and <a target=_blank href='https://www.mountmadonna.org/assets/img/Trail_Map_MMC.pdf'>hiking trails</a> may help orient you to the center.
       <h2>Still have questions?</h2>
       <p>
          Our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions not answered here.
-         If you have a question about your stay that is still not answered, please call the Guest Services Office at 408-846-4090.
+         If you have a question about your stay that is still not answered, please call the Guest Services Office at 408-846-4090 or email us at <a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>.
       <div class=indent>
          We look forward to seeing you here soon!
       </div>
