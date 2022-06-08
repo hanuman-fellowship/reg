@@ -1,0 +1,30 @@
+<html>
+<head>
+<style>
+body {
+    margin: .5in;
+    font-size: 18pt;
+}
+</style>
+</head>
+<body>
+Leader name: $leader<br>
+Leader phone: $phone<br>
+Leader email: $email<br>
+Group name: $group_name<br>
+Dates: $dates<br>
+[% IF desc %]
+Description:<ul>$desc</ul>
+[% END %]
+How many? $how_many<br>
+Vegetarian okay? $vegetarian<br>
+[% IF retreat_type %]
+Retreat Type: $retreat_type<br>
+[% END %]
+[% IF needs %]
+Needs: $needs<br>
+[% END %]
+How did you learn about MMC?: $learn<br>
+[% IF else %]
+What else should we know?<ul>$else</ul>
+[% END %]
