@@ -175,7 +175,7 @@ Is that okay with you? <span class=required>*</span><br>
 <ul>
 <input type=radio name=vegetarian value='Yes'>Yes<br>
 <input type=radio name=vegetarian value='NO'>No<br>
-</ulk
+</ul>
 <p>
 Retreat Type<br>
 <ul>
