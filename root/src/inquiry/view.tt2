@@ -6,6 +6,9 @@ th {
     text-align: right;
     vertical-align: top;
 }
+td {
+    vertical-align: top;
+}
 </style>
 <h2>Inquiry for <span style='color: green'>$inquiry.group_name</span></h2>
 <ul>
