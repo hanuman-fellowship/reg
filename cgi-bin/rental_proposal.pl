@@ -31,23 +31,17 @@ if ($param{leader_name}) {
     }
     delete $param{other_needs};
     delete $param{other_retreat_type};
-use Data::Dumper;
-JON Dumper \%param;
     my $html;
     Template->new(INTERPOLATE => 1)->process(
         'rental_proposal.tt2',
         \%param,
         \$html,
     );
-    eval {
     model($c, 'Inquiry')->create(
         \%param
     );
-    };
-    if ($@) {
-        JON $@;
-    }
     email_letter(
+        from => 'notifications@mountmadonna.org',
         to => 'jon.bjornstad@gmail.com',
         subject => "Rental Proposal from $param{leader_name}",
         html => $html,
