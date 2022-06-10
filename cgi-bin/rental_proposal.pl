@@ -161,13 +161,13 @@ Short description of retreat<br>
 <p>
 How many participants do you anticipate? <span class=required>*</span><br>
 <ul>
-<input type=radio name=how_many value=20> 20-25<br>
-<input type=radio name=how_many value=25> 25-40<br>
-<input type=radio name=how_many value=40> 40-60<br>
-<input type=radio name=how_many value=60> 60-80<br>
-<input type=radio name=how_many value=80> 80-100<br>
-<input type=radio name=how_many value=100> 100-150<br>
-<input type=radio name=how_many value=150> 150+<br>
+<input type=radio name=how_many value='20-25'> 20-25<br>
+<input type=radio name=how_many value='25-40'> 25-40<br>
+<input type=radio name=how_many value='40-60'> 40-60<br>
+<input type=radio name=how_many value='60-80'> 60-80<br>
+<input type=radio name=how_many value='80-100'> 80-100<br>
+<input type=radio name=how_many value='100-150'> 100-150<br>
+<input type=radio name=how_many value='150+'> 150+<br>
 </ul>
 <p>
 Mount Madonna Center is a strict vegetarian community.<br>

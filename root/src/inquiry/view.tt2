@@ -13,7 +13,7 @@ th {
 <tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
 <tr><th>Leader Name</th><td>$inquiry.leader_name</td></tr>
 <tr><th>Phone</th><td>$inquiry.phone</td></tr>
-<tr><th>Email</th><td>$inquiry.email</td></tr>
+<tr><th>Email</th><td><a href='mailto:$inquiry.email'>$inquiry.email</a></td></tr>
 <tr><th>Group Name</th><td>$inquiry.group_name</td></tr>
 <tr><th>Retreat Type</th><td>$inquiry.retreat_type</td></tr>
 <tr><th>Dates Requested</th><td>$inquiry.dates</td></tr>

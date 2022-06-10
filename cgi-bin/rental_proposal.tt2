@@ -10,7 +10,7 @@ body {
 <body>
 Leader name: $leader_name<br>
 Leader phone: $phone<br>
-Leader email: $email<br>
+Leader email: <a href='mailto:$email'>$email</a><br>
 Group name: $group_name<br>
 Dates: $dates<br>
 [% IF description %]
