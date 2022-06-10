@@ -37,7 +37,7 @@ if ($param{leader}) {
         \$html,
     );
     model($c, 'Inquiry')->create(
-        %param
+        \%param
     );
     email_letter(
         to => 'jon.bjornstad@gmail.com',
