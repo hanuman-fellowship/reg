@@ -136,7 +136,7 @@ function check_fields() {
 <img src='https://www.mountmadonna.org/assets/img/logo/mmc-teal.png' width=500>
 <br>
 <h1>Rental Proposal Form</h1>
-<form action='https://mountmadonna.org/cgi-bin/rental_proposal.pl'
+<form action='https://akash.mountmadonna.org/cgi-bin/rental_proposal.pl'
       method=GET
       onsubmit='return check_fields();'
 >
