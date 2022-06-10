@@ -18,7 +18,7 @@ my %param = %{ $q->Vars() };
 for my $n (qw/ description what_else /) {
     $param{$n} =~ s{\n}{<br>}xmsg;
 }
-if ($param{leader}) {
+if ($param{leader_name}) {
     for my $f (keys %param) {
         if ($param{$f} =~ m{\0}xms) {
             my @arr = split "\0", $param{$f};
@@ -49,7 +49,7 @@ JON Dumper \%param;
     }
     email_letter(
         to => 'jon.bjornstad@gmail.com',
-        subject => "Rental Proposal from $param{leader}",
+        subject => "Rental Proposal from $param{leader_name}",
         html => $html,
     );
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
@@ -76,7 +76,7 @@ body, input, textarea, .submit, option, select {
 </style>
 <script>
 var fields = [
-    { id: 'leader', regexp: '\\S',
+    { id: 'leader_name', regexp: '\\S',
                     err: 'Missing Leader Name' },
     { id: 'phone',  regexp: '^[0-9 -.()]+$',
                     err: 'Invalid Phone number' },
@@ -145,7 +145,7 @@ Fill out the form below and we will be in touch with you soon.
 <span class=required>*</span> indicates fields that are required
 <p>
 Name of Group Leader <span class=required>*</span><br>
-<input type=text size=45 name=leader id=leader><p>
+<input type=text size=45 name=leader_name id=leader_name><p>
 Contact phone number <span class=required>*</span><br>
 <input type=text size=45 name=phone id=phone><p>
 Contact email address <span class=required>*</span><br>
@@ -205,6 +205,6 @@ Anything else we should know?<br>
 <p>
 <input style="background: lightgreen" type=submit value='Submit'>
 </form>
-<script>document.getElementById('leader').focus();</script>
+<script>document.getElementById('leader_name').focus();</script>
 EOH
 }

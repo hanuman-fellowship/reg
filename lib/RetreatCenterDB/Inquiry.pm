@@ -7,7 +7,7 @@ __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('inquiry');
 __PACKAGE__->add_columns(qw/
    id
-   name
+   leader_name
    phone
    email
    group_name
@@ -33,7 +33,7 @@ group_name - name of the group
 how_many - size of the group
 id - unique id
 learn - how did they learn of MMC?
-name - name of leader
+leader_name - name of leader
 needs - various things they need
 phone - phone number of the leader
 retreat_type - type of retreat - possibly more than one

@@ -8,7 +8,7 @@ body {
 </style>
 </head>
 <body>
-Leader name: $leader<br>
+Leader name: $leader_name<br>
 Leader phone: $phone<br>
 Leader email: $email<br>
 Group name: $group_name<br>
