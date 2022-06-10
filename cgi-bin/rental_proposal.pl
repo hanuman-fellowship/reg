@@ -7,11 +7,14 @@ print $q->header();
 use Template;
 use lib '../lib';
 use Util qw/
+    db_init
+    model
     email_letter
 /;
+my $c = db_init();
 
 my %param = %{ $q->Vars() };
-for my $n (qw/ desc else /) {
+for my $n (qw/ description what_else /) {
     $param{$n} =~ s{\n}{<br>}xmsg;
 }
 if ($param{leader}) {
@@ -19,15 +22,22 @@ if ($param{leader}) {
         if ($param{$f} =~ m{\0}xms) {
             my @arr = split "\0", $param{$f};
             my $key = "other_$f";
-            push @arr, $param{$key} if $param{$key};
+            if ($param{$key}) {
+                push @arr, $param{$key};
+            }
             $param{$f} = join(', ', @arr);
         }
     }
+    delete $param{other_needs};
+    delete $param{other_retreat_type};
     my $html;
     Template->new(INTERPOLATE => 1)->process(
         'rental_proposal.tt2',
         \%param,
         \$html,
+    );
+    model($c, 'Inquiry')->create(
+        %param
     );
     email_letter(
         to => 'jon.bjornstad@gmail.com',
@@ -137,7 +147,7 @@ Name of Group <span class=required>*</span><br>
 What dates are you contemplating? <span class=required>*</span><br>
 <input type=text size=45 name=dates id=dates><p>
 Short description of retreat<br>
-<textarea name=desc rows=4 cols=48>
+<textarea name=description rows=4 cols=48>
 </textarea>
 <p>
 How many participants do you anticipate? <span class=required>*</span><br>
@@ -182,7 +192,7 @@ How did you learn about Mount Madonna Center? <span class=required>*</span><br>
 <input type=text size=45 name=learn id=learn><p>
 <p>
 Anything else we should know?<br>
-<textarea name=else rows=4 cols=48>
+<textarea name=what_else rows=4 cols=48>
 </textarea>
 <p>
 <input style="background: lightgreen" type=submit value='Submit'>

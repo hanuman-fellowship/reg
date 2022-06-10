@@ -1,0 +1,15 @@
+create table inquiry (
+   id int(11) primary key auto_increment,
+   name varchar(256) not null,
+   phone varchar(256) not null,
+   email varchar(256) not null,
+   group_name varchar(256) not null,
+   dates varchar(256) not null,
+   description text,
+   how_many varchar(32) not null,
+   vegetarian char(3) not null,
+   retreat_type varchar(256),
+   needs varchar(256),
+   learn varchar(256),
+   what_else text
+);

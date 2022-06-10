@@ -92,6 +92,7 @@ my @classes = qw/
     GiftCards
 
     File
+    Inquiry
 /;
 
 __PACKAGE__->load_classes({
