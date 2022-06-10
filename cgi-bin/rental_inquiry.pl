@@ -134,7 +134,7 @@ function check_fields() {
 </script>
 </head>
 <body>
-<img src='https://www.mountmadonna.org/assets/img/logo/mmc-teal.png' width=500>
+<img src='https://www.mountmadonna.org/assets/img/logo/mmc-teal.png' width=400>
 <br>
 <h1>Rental Inquiry Form</h1>
 <form action='https://akash.mountmadonna.org/cgi-bin/rental_inquiry.pl'
