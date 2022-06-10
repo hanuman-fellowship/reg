@@ -7,6 +7,7 @@ print $q->header();
 use Template;
 use lib '../lib';
 use Util qw/
+    JON
     db_init
     model
     email_letter
@@ -30,15 +31,22 @@ if ($param{leader}) {
     }
     delete $param{other_needs};
     delete $param{other_retreat_type};
+use Data::Dumper;
+JON Dumper \%param;
     my $html;
     Template->new(INTERPOLATE => 1)->process(
         'rental_proposal.tt2',
         \%param,
         \$html,
     );
+    eval {
     model($c, 'Inquiry')->create(
         \%param
     );
+    };
+    if ($@) {
+        JON $@;
+    }
     email_letter(
         to => 'jon.bjornstad@gmail.com',
         subject => "Rental Proposal from $param{leader}",
