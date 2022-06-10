@@ -40,7 +40,7 @@ if ($param{leader_name}) {
     model($c, 'Inquiry')->create(
         \%param
     );
-    email_letter(
+    email_letter($c,
         from => 'notifications@mountmadonna.org',
         to => 'jon.bjornstad@gmail.com',
         subject => "Rental Proposal from $param{leader_name}",
