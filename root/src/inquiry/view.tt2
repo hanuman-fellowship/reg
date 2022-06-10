@@ -1,0 +1,24 @@
+<br><br>
+<a href=/inquiry/list>List</a>
+<p class=p2>
+<style>
+th {
+    text-align: right;
+}
+</style>
+<h2>Inquiry</h2>
+<ul>
+<table cellpadding=5>
+<tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
+<tr><th>Leader Name</th><td>$inquiry.leader_name</td></tr>
+<tr><th>Phone</th><td>$inquiry.phone</td></tr>
+<tr><th>Email</th><td>$inquiry.email</td></tr>
+<tr><th>Group Name</th><td>$inquiry.group_name</td></tr>
+<tr><th>Retreat Type</th><td>$inquiry.retreat_type</td></tr>
+<tr><th>Dates Requested</th><td>$inquiry.dates</td></tr>
+<tr><th>Description</th><td>$inquiry.description</td></tr>
+<tr><th>What Else?</th><td>$inquiry.what_else</td></tr>
+<tr><th>Needs<td></th><td>$inquiry.needs</td></tr>
+<tr><th>How Many?</th><td>$inquiry.how_many</td></tr>
+</table>
+</ul>

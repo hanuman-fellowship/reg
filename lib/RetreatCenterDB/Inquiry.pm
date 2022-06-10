@@ -3,6 +3,13 @@ use warnings;
 package RetreatCenterDB::Inquiry;
 use base qw/DBIx::Class/;
 
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time 
+/;
+
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('inquiry');
 __PACKAGE__->add_columns(qw/
@@ -23,6 +30,16 @@ __PACKAGE__->add_columns(qw/
    what_else
 /);
 __PACKAGE__->set_primary_key(qw/id/);
+
+sub the_date_obj {
+    my ($self) = @_;
+    return date($self->the_date) || "";
+}
+
+sub the_time_obj {
+    my ($self) = @_;
+    return get_time($self->the_time) || "";
+}
 
 1;
 __END__
