@@ -15,11 +15,13 @@ th {
 <tr><th>Phone</th><td>$inquiry.phone</td></tr>
 <tr><th>Email</th><td><a href='mailto:$inquiry.email'>$inquiry.email</a></td></tr>
 <tr><th>Group Name</th><td>$inquiry.group_name</td></tr>
-<tr><th>Retreat Type</th><td>$inquiry.retreat_type</td></tr>
 <tr><th>Dates Requested</th><td>$inquiry.dates</td></tr>
 <tr><th>Description</th><td>$inquiry.description</td></tr>
-<tr><th>What Else?</th><td>$inquiry.what_else</td></tr>
-<tr><th>Needs</th><td>$inquiry.needs</td></tr>
 <tr><th>How Many?</th><td>$inquiry.how_many</td></tr>
+<tr><th>Vegetarian Okay?</th><td>$inquiry.vegetarian</td></tr>
+<tr><th>Retreat Type</th><td>$inquiry.retreat_type</td></tr>
+<tr><th>Needs</th><td>$inquiry.needs</td></tr>
+<tr><th>How learned about MMC?</th><td>$inquiry.learn</td></tr>
+<tr><th>What Else?</th><td>$inquiry.what_else</td></tr>
 </table>
 </ul>
