@@ -173,9 +173,9 @@ How many participants do you anticipate? <span class=required>*</span><br>
 Mount Madonna Center is a strict vegetarian community.<br>
 Is that okay with you? <span class=required>*</span><br>
 <ul>
-<input type=radio name=vegetarian value='yes'>Yes<br>
-<input type=radio name=vegetarian value='no'>No<br>
-</ul>
+<input type=radio name=vegetarian value='Yes'>Yes<br>
+<input type=radio name=vegetarian value='NO'>No<br>
+</ulk
 <p>
 Retreat Type<br>
 <ul>
