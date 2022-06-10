@@ -6,8 +6,13 @@ my $q = CGI->new();
 print $q->header();
 use Template;
 use lib '../lib';
+use Date::Simple qw/
+    today
+/;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
-    JON
     db_init
     model
     email_letter
@@ -38,6 +43,8 @@ if ($param{leader_name}) {
         \$html,
     );
     model($c, 'Inquiry')->create(
+        the_date => today()->as_d8(),
+        the_time => get_time->t24(),
         \%param
     );
     email_letter($c,

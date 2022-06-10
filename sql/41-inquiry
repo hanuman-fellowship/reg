@@ -1,5 +1,7 @@
 create table inquiry (
    id int(11) primary key auto_increment,
+   the_date char(8) not null,
+   the_time char(4) not null,
    leader_name varchar(256) not null,
    phone varchar(256) not null,
    email varchar(256) not null,

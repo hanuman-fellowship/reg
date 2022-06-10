@@ -7,6 +7,8 @@ __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('inquiry');
 __PACKAGE__->add_columns(qw/
    id
+   the_date
+   the_time
    leader_name
    phone
    email
@@ -37,5 +39,7 @@ leader_name - name of leader
 needs - various things they need
 phone - phone number of the leader
 retreat_type - type of retreat - possibly more than one
+the_date - the date the inquiry came in
+the_time - the time the inquiry came in
 vegetarian - boolean yes/'' - must be 'yes'
 what_else - what else did they want us to know?

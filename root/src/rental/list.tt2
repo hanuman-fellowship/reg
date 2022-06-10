@@ -3,6 +3,8 @@
 </h2>
 <form action="/rental/listpat" name=form>
 [% IF admin %]
+<a href="/inquiry/list">Inquiries</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/proposal/list">Proposals</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/create"
