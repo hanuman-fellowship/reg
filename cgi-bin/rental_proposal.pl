@@ -42,11 +42,11 @@ if ($param{leader_name}) {
         \%param,
         \$html,
     );
-    model($c, 'Inquiry')->create(
+    model($c, 'Inquiry')->create({
         the_date => today()->as_d8(),
         the_time => get_time->t24(),
-        \%param
-    );
+        %param,
+    });
     email_letter($c,
         from => 'notifications@mountmadonna.org',
         to => 'jon.bjornstad@gmail.com',
