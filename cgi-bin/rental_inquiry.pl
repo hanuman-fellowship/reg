@@ -38,7 +38,7 @@ if ($param{leader_name}) {
     delete $param{other_retreat_type};
     my $html;
     Template->new(INTERPOLATE => 1)->process(
-        'rental_proposal.tt2',
+        'rental_inquiry.tt2',
         \%param,
         \$html,
     );
@@ -50,7 +50,7 @@ if ($param{leader_name}) {
     email_letter($c,
         from => 'notifications@mountmadonna.org',
         to => 'jon.bjornstad@gmail.com',
-        subject => "Rental Proposal from $param{leader_name}",
+        subject => "Rental Inquiry from $param{leader_name}",
         html => $html,
     );
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
@@ -136,8 +136,8 @@ function check_fields() {
 <body>
 <img src='https://www.mountmadonna.org/assets/img/logo/mmc-teal.png' width=500>
 <br>
-<h1>Rental Proposal Form</h1>
-<form action='https://akash.mountmadonna.org/cgi-bin/rental_proposal.pl'
+<h1>Rental Inquiry Form</h1>
+<form action='https://akash.mountmadonna.org/cgi-bin/rental_inquiry.pl'
       method=GET
       onsubmit='return check_fields();'
 >
