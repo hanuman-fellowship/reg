@@ -50,7 +50,8 @@ if ($param{leader_name}) {
     );
     email_letter($c,
         from    => 'notifications@mountmadonna.org',
-        to      => 'jon.bjornstad@gmail.com',
+        to      => 'jon.bjornstad@gmail.com'
+        cc      => "$param{leader_name} <$param{email}>",
         subject => "Rental Inquiry from $param{leader_name}",
         html    => $html,
     );

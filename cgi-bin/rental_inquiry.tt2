@@ -16,12 +16,14 @@ th {
 </style>
 </head>
 <body>
+<!--
 See this <a href='https://akash.mountmadonna.org/inquiry/view/$inquiry_id'>inquiry in Reg</a>.
 <p>
-<table cellpadding=5>
+-->
+<table cellpadding=4>
 <tr><th>Leader name</th><td>$leader_name</td></tr>
-<tr><th>Leader phone</th><td>$phone</td></tr>
-<tr><th>Leader email</th><td><a href='mailto:$email'>$email</a></td></tr>
+<tr><th>Phone</th><td>$phone</td></tr>
+<tr><th>Email</th><td><a href='mailto:$email'>$email</a></td></tr>
 <tr><th>Group name</th><td>$group_name</td></tr>
 <tr><th>Dates</th><td>$dates</td></tr>
 [% IF description %]
