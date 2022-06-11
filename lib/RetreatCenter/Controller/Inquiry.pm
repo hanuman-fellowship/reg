@@ -54,10 +54,12 @@ sub notes : Local {
 sub notes_do : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
+    my $notes = $c->request->params->{notes};
+    $notes =~ s{\n}{<br>\n}xmsg;
     $inq->update({
-        notes => $c->request->params->{notes},
+        notes => $notes,
     });
-    $c->response->redirect($c->uri_for('/inquiry/view/$inq_id'));
+    $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
 }
 
 sub access_denied : Private {
