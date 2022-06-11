@@ -28,6 +28,7 @@ __PACKAGE__->add_columns(qw/
    needs
    learn
    what_else
+   notes
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -54,6 +55,7 @@ id - unique id
 learn - how did they learn of MMC?
 leader_name - name of leader
 needs - various things they need
+notes - added by MMC after receiving the inquiry
 phone - phone number of the leader
 retreat_type - type of retreat - possibly more than one
 the_date - the date the inquiry came in

@@ -13,5 +13,6 @@ create table inquiry (
    retreat_type varchar(256),
    needs varchar(256),
    learn varchar(256),
-   what_else text
+   what_else text,
+   notes text
 );
