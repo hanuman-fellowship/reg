@@ -8,6 +8,7 @@ body {
 }
 th, td {
     font-size: 18pt;
+    vertical-align: top;
 }
 th {
     text-align: right;
@@ -34,8 +35,8 @@ See this <a href='https://akash.mountmadonna.org/inquiry/view/$inquiry_id'>inqui
 [% IF needs %]
 <tr><th>Needs</th><td>$needs</td></tr>
 [% END %]
-<tr><th>How did you learn about MMC?</th><td>$learn</td></tr>
+<tr><th>How did you<br>learn about MMC?</th><td>$learn</td></tr>
 [% IF what_else %]
-<tr><th>What else should we know?</th><td>$what_else</td></tr>
+<tr><th>What else?</th><td>$what_else</td></tr>
 [% END %]
 </table>
