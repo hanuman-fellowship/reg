@@ -55,7 +55,7 @@ if ($param{leader_name}) {
         cc      => "$param{leader_name} <$param{email}>",
         subject => "Rental Inquiry from $param{leader_name}",
         html    => $html,
-        activity_msg => "Rental Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>";
+        activity_msg => "Rental Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>",
     );
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
 }
