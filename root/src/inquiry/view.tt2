@@ -13,7 +13,7 @@ td {
 <h2>Inquiry for <span style='color: green'>$inquiry.group_name</span></h2>
 <ul>
 <table cellpadding=5>
-<tr><th><a href=/inquiry/notes/$inquiry.id>Notes</a></th><td>$inquiry.notes</td></tr>
+<tr><td align=right><a href=/inquiry/notes/$inquiry.id>Notes</a></td><td>$inquiry.notes</td></tr>
 <tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
 <tr><th>Leader Name</th><td>$inquiry.leader_name</td></tr>
 <tr><th>Phone</th><td>$inquiry.phone</td></tr>

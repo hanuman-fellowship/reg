@@ -15,7 +15,9 @@ td {
 <table cellpadding=5>
 <tr><th>Notes</th><td>
 <form action='/inquiry/notes_do/$inquiry.id'>
-<textarea rows=$nrows cols=50>$inquiry.notes</textarea>
+<textarea name=notes id=notes rows=$nrows cols=50>$inquiry.notes</textarea>
+<br>
+<input type=submit value='Submit'>
 </form>
 </td></tr>
 <tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
@@ -33,3 +35,4 @@ td {
 <tr><th>What Else?</th><td>$inquiry.what_else</td></tr>
 </table>
 </ul>
+<script>document.getElementById('notes').focus()</script>
