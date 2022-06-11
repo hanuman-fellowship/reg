@@ -41,7 +41,8 @@ if ($param{leader_name}) {
         the_time => get_time->t24(),
         %param,
     });
-    $param{inquiry_id} = $inquiry->id();
+    my $inq_id = $inquiry->id();
+    $param{inquiry_id} = $inq_id;
     my $html;
     Template->new(INTERPOLATE => 1)->process(
         'rental_inquiry.tt2',
@@ -54,6 +55,7 @@ if ($param{leader_name}) {
         cc      => "$param{leader_name} <$param{email}>",
         subject => "Rental Inquiry from $param{leader_name}",
         html    => $html,
+        activity_msg => "Rental Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>";
     );
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
 }
