@@ -34,8 +34,11 @@ sub list : Local {
 sub view : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
+    my $notes = $inq->notes();
+    $notes =~ s{\n}{<br>\n}xmsg;
     stash($c,
         inquiry  => $inq,
+        notes    => $notes,
         template => 'inquiry/view.tt2',
     );
 }
@@ -54,10 +57,8 @@ sub notes : Local {
 sub notes_do : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
-    my $notes = $c->request->params->{notes};
-    $notes =~ s{\n}{<br>\n}xmsg;
     $inq->update({
-        notes => $notes,
+        notes => $c->request->params->{notes},
     });
     $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
 }
