@@ -4,27 +4,38 @@
 body {
     margin: .5in;
     font-size: 18pt;
+    font-family: Arial;
+}
+th, td {
+    font-size: 18pt;
+}
+th {
+    text-align: right;
 }
 </style>
 </head>
 <body>
-Leader name: $leader_name<br>
-Leader phone: $phone<br>
-Leader email: <a href='mailto:$email'>$email</a><br>
-Group name: $group_name<br>
-Dates: $dates<br>
+See this <a href='https://akash.mountmadonna.org/inquiry/view/$inquiry_id'>inquiry in Reg</a>.
+<p>
+<table cellpadding=5>
+<tr><th>Leader name</th><td>$leader_name</td></tr>
+<tr><th>Leader phone</th><td>$phone</td></tr>
+<tr><th>Leader email</th><td><a href='mailto:$email'>$email</a></td></tr>
+<tr><th>Group name</th><td>$group_name</td></tr>
+<tr><th>Dates</th><td>$dates</td></tr>
 [% IF description %]
-Description:<ul>$description</ul>
+<tr><th>Description</th><td>$description</td></tr>
 [% END %]
-How many? $how_many<br>
-Vegetarian okay? $vegetarian<br>
+<tr><th>How many?</th><td>$how_many</td></tr>
+<tr><th>Vegetarian okay?</th><td>$vegetarian</td></tr>
 [% IF retreat_type %]
-Retreat Type: $retreat_type<br>
+<tr><th>Retreat Type</th><td>$retreat_type</td></tr>
 [% END %]
 [% IF needs %]
-Needs: $needs<br>
+<tr><th>Needs</th><td>$needs</td></tr>
 [% END %]
-How did you learn about MMC?: $learn<br>
+<tr><th>How did you learn about MMC?</th><td>$learn</td></tr>
 [% IF what_else %]
-What else should we know?<ul>$what_else</ul>
+<tr><th>What else should we know?</th><td>$what_else</td></tr>
 [% END %]
+</table>

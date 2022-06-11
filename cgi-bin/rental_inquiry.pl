@@ -36,22 +36,23 @@ if ($param{leader_name}) {
     }
     delete $param{other_needs};
     delete $param{other_retreat_type};
+    my $inquiry = model($c, 'Inquiry')->create({
+        the_date => today()->as_d8(),
+        the_time => get_time->t24(),
+        %param,
+    });
+    $param{inquiry_id} = $inquiry->id();
     my $html;
     Template->new(INTERPOLATE => 1)->process(
         'rental_inquiry.tt2',
         \%param,
         \$html,
     );
-    model($c, 'Inquiry')->create({
-        the_date => today()->as_d8(),
-        the_time => get_time->t24(),
-        %param,
-    });
     email_letter($c,
-        from => 'notifications@mountmadonna.org',
-        to => 'jon.bjornstad@gmail.com',
+        from    => 'notifications@mountmadonna.org',
+        to      => 'jon.bjornstad@gmail.com',
         subject => "Rental Inquiry from $param{leader_name}",
-        html => $html,
+        html    => $html,
     );
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
 }
