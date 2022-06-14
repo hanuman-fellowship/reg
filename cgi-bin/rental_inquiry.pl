@@ -17,7 +17,11 @@ use Util qw/
     model
     email_letter
 /;
+use Global qw/
+    %string
+/;
 my $c = db_init();
+Global->init($c, 1, 1);     # to get %strings:
 
 my %param = %{ $q->Vars() };
 for my $n (qw/ description what_else /) {
@@ -51,7 +55,7 @@ if ($param{leader_name}) {
     );
     email_letter($c,
         from    => 'notifications@mountmadonna.org',
-        to      => 'jon.bjornstad@gmail.com',
+        to      => $string{rental_coord_email},
         cc      => "$param{leader_name} <$param{email}>",
         subject => "Rental Inquiry from $param{leader_name}",
         html    => $html,
