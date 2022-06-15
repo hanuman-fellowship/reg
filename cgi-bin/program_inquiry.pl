@@ -199,7 +199,6 @@ What needs do you have?<br>
 <ul>
 <input type=checkbox name=needs value='Yoga props'> Yoga props<br>
 <input type=checkbox name=needs value='Wifi'> Wifi<br>
-<input type=checkbox name=needs value='Massage tables'> Massage tables<br>
 <input type=checkbox name=needs value='Projector and screen'> Projector and screen<br>
 <input type=checkbox name=needs value='Audio setup'> Audio setup<br>
 Other: <input type=text size=33 name=other_needs>
