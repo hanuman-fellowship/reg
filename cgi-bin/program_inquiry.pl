@@ -146,7 +146,7 @@ function check_fields() {
 <br>
 <h1>Program Inquiry Form</h1>
 <form action='https://akash.mountmadonna.org/cgi-bin/program_inquiry.pl'
-      method=POST
+      method=GET
       onsubmit='return check_fields();'
 >
 Fill out the form below and we will be in touch with you soon.
