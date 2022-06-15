@@ -49,17 +49,17 @@ if ($param{leader_name}) {
     $param{inquiry_id} = $inq_id;
     my $html;
     Template->new(INTERPOLATE => 1)->process(
-        'rental_inquiry.tt2',
+        'program_inquiry.tt2',
         \%param,
         \$html,
     );
     email_letter($c,
         from    => 'notifications@mountmadonna.org',
-        to      => $string{rental_coord_email},
+        to      => $string{program_inquiry_email},
         cc      => "$param{leader_name} <$param{email}>",
-        subject => "Rental Inquiry from $param{leader_name}",
+        subject => "Program Inquiry from $param{leader_name}",
         html    => $html,
-        activity_msg => "Rental Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>",
+        activity_msg => "Program Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>",
     );
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
 }
@@ -144,9 +144,9 @@ function check_fields() {
 <body>
 <img src='https://www.mountmadonna.org/assets/img/logo/mmc-teal.png' width=400>
 <br>
-<h1>Rental Inquiry Form</h1>
-<form action='https://akash.mountmadonna.org/cgi-bin/rental_inquiry.pl'
-      method=GET
+<h1>Program Inquiry Form</h1>
+<form action='https://akash.mountmadonna.org/cgi-bin/program_inquiry.pl'
+      method=POST
       onsubmit='return check_fields();'
 >
 Fill out the form below and we will be in touch with you soon.

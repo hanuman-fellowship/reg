@@ -344,6 +344,7 @@ pr_max_nights - the maximum number of nights for a PR registration
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
 program_director - the name of the Program Director - for the contract
+program_inquiry_email - the person to notify when a program inquiry comes in
 quad - for housing type descriptions
 reception_email - who should be notified when an MMC mailing list request comes in?
 redirect_email - If empty, ALL outgoing email will be sent to these comma separated address(es).
