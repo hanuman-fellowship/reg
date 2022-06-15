@@ -180,14 +180,15 @@ sub _get_data {
     }
     # checkboxes are not sent at all if not checked
     #
-    $P{linked}       = "" unless exists $P{linked};
-    $P{tentative}    = "" unless exists $P{tentative};
-    $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
-    #$P{staff_ok}     = "" unless exists $P{staff_ok};
+    $P{linked}         = "" unless exists $P{linked};
+    $P{tentative}      = "" unless exists $P{tentative};
+    $P{mmc_does_reg}   = "" unless exists $P{mmc_does_reg};
+    $P{day_retreat}    = "" unless exists $P{day_retreat};
+    #$P{staff_ok}      = "" unless exists $P{staff_ok};
     $P{rental_follows} = "" unless exists $P{rental_follows};
-    $P{in_group_name} = "" unless exists $P{in_group_name};
-    $P{new_contract} = "" unless exists $P{new_contract};
-    $P{mp_deposit} = "" unless exists $P{mp_deposit};
+    $P{in_group_name}  = "" unless exists $P{in_group_name};
+    $P{new_contract}   = "" unless exists $P{new_contract};
+    $P{mp_deposit}     = "" unless exists $P{mp_deposit};
 
     #
     # quick hack here - fixed cost houses
@@ -256,12 +257,13 @@ sub create : Local {
             expected       => 0,
                 # see comment in Program.pm in create().
         },
+        check_day_retreat    => '',
         check_mmc_does_reg   => '',
         #check_staff_ok      => '',
         check_rental_follows => '',
         check_in_group_name  => '',
-        check_new_contract  => 'yes',
-        check_mp_deposit    => 'yes',
+        check_new_contract   => 'yes',
+        check_mp_deposit     => 'yes',
     );
 }
 
@@ -827,6 +829,7 @@ sub update : Local {
         check_in_group_name => ($r->in_group_name())? "checked": "",
         check_new_contract => ($r->new_contract())? "checked": "",
         check_mp_deposit => ($r->mp_deposit())? "checked": "",
+        check_day_retreat => ($r->day_retreat())? "checked": "",
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
         #check_staff_ok => ($r->staff_ok())? "checked": "",
         check_rental_follows => ($r->rental_follows())? "checked": "",
@@ -2139,6 +2142,7 @@ sub duplicate : Local {
         check_linked       => ($orig_r->linked())? "checked": "",
         form_action        => "duplicate_do/$rental_id",
         template           => "rental/create_edit.tt2",
+        check_day_retreat  => ($orig_r->day_retreat())? "checked": "",
         check_mmc_does_reg => ($orig_r->mmc_does_reg())? "checked": "",
         #check_staff_ok    => ($orig_r->staff_ok())? "checked": "",
         rental_follows     => ($orig_r->rental_follows())? "checked": "",

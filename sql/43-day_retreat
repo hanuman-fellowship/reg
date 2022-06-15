@@ -1,0 +1,1 @@
+alter table rental add column day_retreat varchar(3) not null default '';

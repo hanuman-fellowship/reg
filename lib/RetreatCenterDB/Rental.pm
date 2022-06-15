@@ -101,6 +101,7 @@ __PACKAGE__->add_columns(qw/
 
     new_contract
     mp_deposit
+    day_retreat
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -972,6 +973,7 @@ counts - the number of people attending the rental
     each day from start to end - space separated
 created_by - foreign key to user who created the rental
 cs_person_id - foreign key to person
+day_retreat - is this a retreat just for the day?  no housing needed.
 deposit - how much deposit is required?
 edate - date the rental ends
 email - email address for the rental to put on the little web page (if desired)

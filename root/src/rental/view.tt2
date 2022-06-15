@@ -433,6 +433,11 @@ none
 </tr>
 
 <tr>
+<th align=right>Day Retreat</th>
+<td>$rental.day_retreat</td>
+</tr>
+
+<tr>
 <th align=right>MMC Does Registration</th>
 <td>$rental.mmc_does_reg</td>
 </tr>

@@ -218,6 +218,11 @@ These costs will apply for each day the person stays - regardless of how many ot
 
 <tr>
 <td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=day_retreat $check_day_retreat> <b>Day Retreat</b></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
 <td colspan=2><input type=checkbox value="yes" name=mmc_does_reg $check_mmc_does_reg> <b>MMC Does Registration</b></td>
 </tr>
 
