@@ -1170,4 +1170,25 @@ sub dec20 : Local {
     $c->res->output($html);
 }
 
+sub jul11 : Local {
+    my ($self, $c) = @_;
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $html;
+    $tt->process(
+        "alt_lapse.tt2",# template
+        {
+            sanskrit => 'Sanskrit',
+            string   => \%string,
+            has_email => 1,
+            secure_code => 'xxxx',
+        },
+        \$html,           # output
+    ) or die $tt->error;
+    $c->res->output($html);
+}
+
 1;
