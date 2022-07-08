@@ -557,6 +557,8 @@ sub process_new_hfs {
             total_paid     => $total + ($general? 0: $amount),
             sponsor_nights => $general? 0: nights_for($month),
             category       => $general? "General": "Sponsor",
+            date_general   => $general? $exp_date: '',
+            date_sponsor   => $general? '': $exp_date,
         });
     }
     my $mem_id = $mem->id();
