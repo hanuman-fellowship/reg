@@ -1103,8 +1103,15 @@ sub auto_mailings : Local {
     );
 }
 
-sub dec10gen : Local {
-    my ($self, $c) = @_;
+my %letter_for = qw/
+    dec10      lapse_gen_soon.tt2
+    dec10spons lapse_spons_soon.tt2
+    dec20      lapse.tt2
+    jul11      alt_lapse.tt2
+/;
+
+sub show_letter : Local {
+    my ($self, $c, $month_day) = @_;
     my $tt = Template->new({
         INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
@@ -1113,76 +1120,11 @@ sub dec10gen : Local {
     my $exp_year = (localtime)[5] + 1900;
     my $html;
     $tt->process(
-        "lapse_gen_soon.tt2",# template
+        $letter_for{$month_day},
         {
             sanskrit => 'Sanskrit',
             string   => \%string,
             exp_year => $exp_year,
-            has_email => 1,
-            secure_code => 'xxxx',
-        },
-        \$html,           # output
-    ) or die $tt->error;
-    $c->res->output($html);
-}
-
-sub dec10spons : Local {
-    my ($self, $c) = @_;
-    my $tt = Template->new({
-        INTERPOLATE  => 1,
-        INCLUDE_PATH => 'root/static/templates/letter',
-        EVAL_PERL    => 0,
-    });
-    my $exp_year = (localtime)[5] + 1900;
-    my $html;
-    $tt->process(
-        "lapse_spons_soon.tt2",# template
-        {
-            sanskrit => 'Sanskrit',
-            string   => \%string,
-            exp_year => $exp_year,
-            has_email => 1,
-            secure_code => 'xxxx',
-        },
-        \$html,           # output
-    ) or die $tt->error;
-    $c->res->output($html);
-}
-
-sub dec20 : Local {
-    my ($self, $c) = @_;
-    my $tt = Template->new({
-        INTERPOLATE  => 1,
-        INCLUDE_PATH => 'root/static/templates/letter',
-        EVAL_PERL    => 0,
-    });
-    my $html;
-    $tt->process(
-        "lapse.tt2",# template
-        {
-            sanskrit => 'Sanskrit',
-            string   => \%string,
-            has_email => 1,
-            secure_code => 'xxxx',
-        },
-        \$html,           # output
-    ) or die $tt->error;
-    $c->res->output($html);
-}
-
-sub jul11 : Local {
-    my ($self, $c) = @_;
-    my $tt = Template->new({
-        INTERPOLATE  => 1,
-        INCLUDE_PATH => 'root/static/templates/letter',
-        EVAL_PERL    => 0,
-    });
-    my $html;
-    $tt->process(
-        "alt_lapse.tt2",# template
-        {
-            sanskrit => 'Sanskrit',
-            string   => \%string,
             has_email => 1,
             secure_code => 'xxxx',
         },
