@@ -677,6 +677,9 @@ sub process_mlist {
         push @affil_ids, $system_affil_id_for{"MMC Annual Yoga Retreats"},
                          $system_affil_id_for{"MMC Hosted by MMC"};
     }
+    push @affil_ids, $system_affil_id_for{"Web Site Subscriber"};
+        # the above will be removed when this person
+        # registers for a program
     my ($person_id, $person, $status) = add_or_update_deduping(
         $c, \%hash,
         affil_ids => \@affil_ids,
