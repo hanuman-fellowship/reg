@@ -1211,12 +1211,12 @@ sub create_do : Local {
     }
 
     # remove a Web Site Subscriber affiliation, if any
-    AFFIL:
-    for my $a ($reg->person->affils()) {
-        if ($a->id() == $system_affil_id_for{"Web Site Subscriber"}) {
-            $a->delete();
-            last AFFIL;
-        }
+    my $ap = model($c, 'AffilPerson')->search({
+                 p_id => $P{person_id},
+                 a_id => $system_affil_id_for{'Web Site Subscriber'},
+             });
+    if ($ap) {
+        $ap->delete();
     }
 
     my $reg_id = $reg->id();
