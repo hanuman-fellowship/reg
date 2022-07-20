@@ -2334,6 +2334,8 @@ sub PR_progtable {
         disc_pr       => $string{disc_pr},
         disc_pr_start => $string{disc_pr_start},
         disc_pr_end   => $string{disc_pr_end},
+        discount_code => $currPR->discount_code,
+        discount_pct  => $currPR->discount_pct,
         footnotes     => '',
         collect_total => 'yes',
         do_not_compute_costs => '0',

@@ -1351,6 +1351,8 @@ sub gen_progtable {
                 donation_tiers
                 donation_minimum
                 donation_zero_msg
+                discount_code
+                discount_pct
                 reg_msg
                 req_pay
                 do_not_compute_costs
