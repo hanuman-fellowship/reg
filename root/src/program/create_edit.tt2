@@ -337,6 +337,16 @@ Examples: <span class=ex>50 100</span> $ORS <span class=ex>25 50 100 other</span
 </tr>
 
 <tr>
+<th align=right valign=top>Discount Code</th>
+<td><input type=text name=discount_code size=20 value=$program.discount_code></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Discount Percentage</th>
+<td><input type=text name=discount_pct size=3 value=$program.discount_pct></td>
+</tr>
+
+<tr>
 <th align=right>% Tuition (+ M/L)</th>
 <td><input type=text name=percent_tuition size=3 value=$program.percent_tuition></td>
 </tr>

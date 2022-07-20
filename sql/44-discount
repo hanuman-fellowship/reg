@@ -1,0 +1,2 @@
+alter table program add column discount_pct varchar(3) default '';
+alter table program add column discount_code varchar(20) default '';

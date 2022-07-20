@@ -103,6 +103,8 @@ __PACKAGE__->add_columns(qw/
     end_reg_date_time
     strangers_share
     reg_msg
+    discount_pct
+    discount_code
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -865,6 +867,8 @@ confnote - A note that is included in ALL confirmation notes.
 covid_vax - Is proof of a COVID vaccination required?
 created_by - the user who created the program - foreign key to user
 deposit - the amount required to deposit when registering.
+discount_code - discount code for this program
+discount_pct - the percentage discount for this program given the code
 dncc_why - an obsolete field
 donation - Registrants pay what they want - by donation.
 donation_minimum - What is the minimum donation amount?  Could be 0.

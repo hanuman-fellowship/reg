@@ -365,6 +365,9 @@ sub _get_data {
             push @mess, "$readable{$f} must be a number";
         }
     }
+    if (!empty($P{discount_code}) && $P{discount_pct} !~ m{\A \s*\d+\s*\z}xms) {
+            push @mess, "Discount Percentage must be a number";
+    }
     # check format of donation_tiers
     if (! empty($P{donation_tiers})) {
         my $s = $P{donation_tiers};
@@ -445,6 +448,12 @@ sub _get_data {
     }
     if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
         push @mess, "The GL Number must only contain digits and upper case letters.";
+    }
+    if (!empty($P{discount_code}) && empty($P{discount_pct})) {
+        push @mess, "Discount Percentage cannot be blank.";
+    }
+    if (empty($P{discount_code}) && !empty($P{discount_pct})) {
+        push @mess, "Discount Code cannot be blank.";
     }
     if (@mess) {
         error($c,
@@ -1969,6 +1978,8 @@ sub export : Local {
                 donation_minimum
                 donation_tiers
                 donation_zero_msg
+                discount_code
+                discount_pct
                 reg_msg
                 cancellation_policy
                 reg_start

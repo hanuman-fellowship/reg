@@ -561,6 +561,16 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right valign=top>Discount Code</th>
+<td colspan=2 valign=top>$program.discount_code</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Discount Percentage</th>
+<td colspan=2 valign=top>$program.discount_pct</td>
+</tr>
+
+<tr>
 <th align=right>% Tuition (+ M/L)</th>
 <td>$program.percent_tuition</td>
 </tr>
