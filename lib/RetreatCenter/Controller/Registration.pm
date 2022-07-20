@@ -1210,10 +1210,10 @@ sub create_do : Local {
         _prog_reg('add', $reg);
     }
 
-    # remove a Web Site Subscriber affiliation, if any
+    # remove a Website Subscriber affiliation, if any
     my $ap = model($c, 'AffilPerson')->search({
                  p_id => $P{person_id},
-                 a_id => $system_affil_id_for{'Web Site Subscriber'},
+                 a_id => $system_affil_id_for{'Website Subscriber'},
              });
     if ($ap) {
         $ap->delete();

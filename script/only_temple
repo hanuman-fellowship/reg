@@ -11,7 +11,8 @@ use RetreatCenterDB;    # ??? why can't we move this to Util?
 my $c = db_init();
 my $n = 0;
 for my $p (model($c, 'Person')->all()) {
-    my @affils = $p->affils();
+    # 144 is the 'Website Subscriber' affil
+    my @affils = grep { $_->a_id != 144 } $p->affils();
     my $only = '';
     if (@affils == 1 && $affils[0]->descrip eq 'Temple Guest') {
         $only = 'yes';
