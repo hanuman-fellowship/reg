@@ -1210,6 +1210,15 @@ sub create_do : Local {
         _prog_reg('add', $reg);
     }
 
+    # remove a Web Site Subscriber affiliation, if any
+    AFFIL:
+    for my $a ($reg->person->affils()) {
+        if ($a->id() == $system_affil_id_for{"Web Site Subscriber"}) {
+            $a->delete();
+            last AFFIL;
+        }
+    }
+
     my $reg_id = $reg->id();
 
     # prepare for history records
