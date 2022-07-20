@@ -579,12 +579,21 @@ EOF
                              :                                       'none',
         date_postmark   => $date->as_d8(),
         time_postmark   => $href->{time},
-        green_amount    => $href->{green_amount},
         gc_code         => $href->{gc_code},
         gc_used         => $href->{gc_used},
         gc_balance      => $href->{gc_balance},
+
+        green_amount    => $href->{green_amount},
+            # below is where we subtract off a possible
+            # non-zero green scene amount.
+            # later we will add a RegPayment for the deposit
+            # that is calculated here
         deposit         => int($href->{amount} - $href->{green_amount}),
         deposit_type    => 'O',
+
+        # discount code?
+        discount_amt    => $href->{discount_amt},
+
         ceu_license     => $href->{ceu_license},
         "$href->{howHeard}_checked" => "selected",
     );
@@ -1243,6 +1252,25 @@ sub create_do : Local {
             used_reg_id => $reg_id,
         });
     }
+
+    # was a discount code used?
+    # if so, add a negative RegCharge record
+    # so the balance of the registration is correct
+    if ($P{discount_amt}) {
+        model($c, 'RegHistory')->create({
+            what    => "Discount Code was entered.",
+            @who_now,
+        });
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => '',        # NOT automatic
+            amount  => -1*$P{discount_amt},
+            type    => $TYPE_OTHER,
+            what    => "Discount of "
+                     . $pr->discount_pct . '%',
+        });
+    }
+
     # was a gift card used?
     # if so, add a negative RegCharge record
     # so the balance of the registration is correct
