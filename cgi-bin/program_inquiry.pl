@@ -132,6 +132,9 @@ function check_fields() {
         }
     }
     if (mess === '') {
+        var el = document.getElementById('submit');
+        el.disabled = true; // no double clicking...
+        el.value = 'Sending...';
         return true;
     }
     else {
@@ -211,7 +214,7 @@ Anything else we should know?<br>
 <textarea name=what_else rows=4 cols=48>
 </textarea>
 <p>
-<input style="background: lightgreen" type=submit value='Submit'>
+<input style="background: lightgreen" type=submit id=submit value='Submit'>
 </form>
 <script>document.getElementById('leader_name').focus();</script>
 EOH
