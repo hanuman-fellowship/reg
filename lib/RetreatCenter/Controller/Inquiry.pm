@@ -63,6 +63,31 @@ sub notes_do : Local {
     $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
 }
 
+sub change_status : Local {
+    my ($self, $c, $inq_id) = @_;
+    my $inq = model($c, 'Inquiry')->find($inq_id);
+    my @statuses = $self->statuses(); 
+    my $status_opts = '';
+    for my $st (@statuses) {
+        my $selected = $st eq $inq->status? ' selected': '';
+        $status_opts .= "<option value='$st'$selected></option>\n";
+    }
+    stash($c,
+        inquiry  => $inq,
+        status_opts => $status_opts,
+        template => 'inquiry/change_status_view.tt2',
+    );
+}
+
+sub change_status_do : Local {
+    my ($self, $c, $inq_id) = @_;
+    my $inq = model($c, 'Inquiry')->find($inq_id);
+    $inq->update({
+        status => $c->request->params->{new_status},
+    });
+    $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
+}
+
 sub access_denied : Private {
     my ($self, $c) = @_;
 
