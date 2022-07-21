@@ -35,7 +35,7 @@ sub view : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
     my $notes = $inq->notes();
-    $notes =~ s{\n}{<br>\n}xmsg;
+    #$notes =~ s{\n}{<br>\n}xmsg;
     stash($c,
         inquiry  => $inq,
         notes    => $notes,
@@ -69,9 +69,8 @@ sub change_status : Local {
     my @statuses = $inq->statuses(); 
     my $status_opts = '';
     for my $i (0 .. $#statuses) {
-        my $st = $statuses[$i];
-        my $selected = $st eq $inq->status? ' selected': '';
-        $status_opts .= "<option value=$i$selected>$st</option>\n";
+        my $selected = $i eq $inq->status? ' selected': '';
+        $status_opts .= "<option value=$i$selected>$statuses[$i]</option>\n";
     }
     stash($c,
         inquiry  => $inq,
