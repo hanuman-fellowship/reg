@@ -16,6 +16,7 @@ td {
 <tr><td align=right><a href=/inquiry/notes/$inquiry.id>Notes</a></td><td>$notes</td></tr>
                         <!-- not $inquiry.notes above -->
 
+<tr><th>Status</th><td>$inquiry.status_disp</td></tr>
 <tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
 <tr><th>Leader Name</th><td><a target=_blank href='/person/view/$inquiry.person_id'>$inquiry.leader_name</a></td></tr>
 <tr><th>Phone</th><td>$inquiry.phone</td></tr>
