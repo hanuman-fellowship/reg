@@ -56,7 +56,7 @@ sub status_disp {
     my ($self) = @_;
     return $status[$self->status];
 }
-# class method
+# class method?
 sub statuses {
     my ($self) = @_;
     return @status;

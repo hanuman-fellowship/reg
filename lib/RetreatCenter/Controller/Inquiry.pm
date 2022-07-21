@@ -66,7 +66,7 @@ sub notes_do : Local {
 sub change_status : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
-    my @statuses = $self->statuses(); 
+    my @statuses = $inq->statuses(); 
     my $status_opts = '';
     for my $st (@statuses) {
         my $selected = $st eq $inq->status? ' selected': '';
