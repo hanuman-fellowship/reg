@@ -47,20 +47,30 @@ if ($param{leader_name}) {
     });
     my $inq_id = $inquiry->id();
     $param{inquiry_id} = $inq_id;
-    my $html;
-    Template->new(INTERPOLATE => 1)->process(
-        'program_inquiry.tt2',
-        \%param,
-        \$html,
-    );
-    email_letter($c,
-        from    => 'notifications@mountmadonna.org',
-        to      => $string{program_inquiry_email},
-        cc      => "$param{leader_name} <$param{email}>",
-        subject => "Program Inquiry from $param{leader_name}",
-        html    => $html,
-        activity_msg => "Program Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>",
-    );
+    my $msg = "Program Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>";
+    if ($param{what_else} !~ m{no\s*email}xms) {
+        my $html;
+        Template->new(INTERPOLATE => 1)->process(
+            'program_inquiry.tt2',
+            \%param,
+            \$html,
+        );
+        email_letter($c,
+            from    => 'notifications@mountmadonna.org',
+            to      => $string{program_inquiry_email},
+            cc      => "$param{leader_name} <$param{email}>",
+            subject => "Program Inquiry from $param{leader_name}",
+            html    => $html,
+            activity_msg => $msg,
+        );
+    }
+    else {
+        model($c, 'Activity')->create({
+            message => $msg,
+            cdate => today()->as_d8(),
+            ctime => get_time->t24(),
+        });
+    }
     print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
 }
 else {
