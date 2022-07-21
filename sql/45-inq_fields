@@ -1,0 +1,3 @@
+alter table inquiry add column person_id integer default 0;
+alter table inquiry add column rental_id integer default 0;
+alter table inquiry add column status integer default 0;

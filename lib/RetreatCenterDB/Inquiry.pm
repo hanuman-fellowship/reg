@@ -29,6 +29,9 @@ __PACKAGE__->add_columns(qw/
    learn
    what_else
    notes
+   status
+   person_id
+   rental_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -56,8 +59,12 @@ learn - how did they learn of MMC?
 leader_name - name of leader
 needs - various things they need
 notes - added by MMC after receiving the inquiry
+person_id - id of the Person record for the leader
 phone - phone number of the leader
+rental_id - if converted - the id of the rental
 retreat_type - type of retreat - possibly more than one
+status - integer index into status array
+    New, Contacted, Denied, Tentative, Rental
 the_date - the date the inquiry came in
 the_time - the time the inquiry came in
 vegetarian - boolean yes/'' - must be 'yes'
