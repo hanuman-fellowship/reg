@@ -68,9 +68,10 @@ sub change_status : Local {
     my $inq = model($c, 'Inquiry')->find($inq_id);
     my @statuses = $inq->statuses(); 
     my $status_opts = '';
-    for my $st (@statuses) {
+    for my $i (0 .. $#statuses) {
+        my $st = $statuses[$i];
         my $selected = $st eq $inq->status? ' selected': '';
-        $status_opts .= "<option value='$st'$selected></option>\n";
+        $status_opts .= "<option value=$i$selected>$st</option>\n";
     }
     stash($c,
         inquiry  => $inq,
