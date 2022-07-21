@@ -45,6 +45,23 @@ sub the_time_obj {
     return get_time($self->the_time) || "";
 }
 
+my @status = qw/
+    New
+    Contacted
+    Denied
+    Tentative
+    Rental
+/;
+sub status_disp {
+    my ($self) = @_;
+    return $status[$self->status];
+}
+# class method
+sub statuses {
+    my ($self) = @_;
+    return @status;
+}
+
 1;
 __END__
 overview - Inquiries are filled out online and then a row is entered

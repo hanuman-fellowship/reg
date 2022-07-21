@@ -1,10 +1,17 @@
 <h2>Inquiries</h2>
 <ul>
 <table cellpadding=5>
+<tr>
+<th>Date</th>
+<th>Leader</th>
+<th>Status</th>
+<th>Group Name</th>
+</tr>
 [% FOR i IN inquiries %]
 <tr>
 <td>${i.the_date_obj.format("%D")}</td>
 <td><a href=/inquiry/view/$i.id>$i.leader_name</a></td>
+<td><a href=$i.status_disp</td>
 <td>$i.group_name</td>
 </tr>
 [% END %]
