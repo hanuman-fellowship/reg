@@ -35,7 +35,10 @@ sub view : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
     my $notes = $inq->notes();
-    #$notes =~ s{\n}{<br>\n}xmsg;
+
+    # not needed?
+    # $notes =~ s{\n}{<br>\n}xmsg;
+
     stash($c,
         inquiry  => $inq,
         notes    => $notes,

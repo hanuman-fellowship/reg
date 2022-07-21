@@ -15,11 +15,11 @@ td {
 <h2>Inquiry for <span style='color: green'>$inquiry.group_name</span></h2>
 <ul>
 <table cellpadding=5>
-<tr><th>Notes</th><td>$notes</td></tr>
+<tr><th>Notes</th><td>$inquiry.notes</td></tr>
 <tr><th>Status</th>
 <td>
 <form action='/inquiry/change_status_do/$inquiry.id'>
-<select name=new_status>
+<select name=new_status size=8>
 $status_opts
 </select>
 <br>
