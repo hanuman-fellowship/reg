@@ -40,6 +40,10 @@ if ($param{leader_name}) {
     }
     delete $param{other_needs};
     delete $param{other_retreat_type};
+    my $no_email = 0;
+    if ($param{what_else} =~ s{no\s*email}{}xms) {
+        $no_email = 1;
+    }
     my $inquiry = model($c, 'Inquiry')->create({
         the_date => today()->as_d8(),
         the_time => get_time->t24(),
@@ -48,7 +52,7 @@ if ($param{leader_name}) {
     my $inq_id = $inquiry->id();
     $param{inquiry_id} = $inq_id;
     my $msg = "Program Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>";
-    if ($param{what_else} !~ m{no\s*email}xms) {
+    if (! $no_email) {
         my $html;
         Template->new(INTERPOLATE => 1)->process(
             'program_inquiry.tt2',
