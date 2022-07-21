@@ -77,6 +77,7 @@ sub change_status : Local {
     }
     stash($c,
         inquiry  => $inq,
+        nstatus => scalar(@statuses),
         status_opts => $status_opts,
         template => 'inquiry/change_status_view.tt2',
     );

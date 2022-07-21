@@ -19,7 +19,7 @@ td {
 <tr><th>Status</th>
 <td>
 <form action='/inquiry/change_status_do/$inquiry.id'>
-<select name=new_status size=8>
+<select name=new_status size=$nstatus>
 $status_opts
 </select>
 <br>
