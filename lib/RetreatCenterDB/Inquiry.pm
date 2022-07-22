@@ -73,7 +73,7 @@ sub csv {
          ;
     for my $f (qw/
         leader_name phone email
-        notes status group_name
+        notes status_disp group_name
         dates description
         how_many vegetarian
         retreat_type needs
