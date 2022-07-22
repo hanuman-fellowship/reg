@@ -95,7 +95,7 @@ sub change_status_do : Local {
 sub export : Local {
     my ($self, $c) = @_;
     open my $out, '>', "/var/Reg/report/inquiry.csv";
-    print {$out} join '|', map { my $s = $_; $s =~ s{_}{}xmsg; $s; } qw/
+    print {$out} join "\t", map { my $s = $_; $s =~ s{_}{ }xmsg; $s; } qw/
         Date Time Leader Phone Email
         Notes Status
         Group_Name Dates Description

@@ -65,10 +65,11 @@ sub statuses {
 sub csv {
     my ($self) = @_;
     my $csv = '';
+    my $tab = "\t";
     $csv .= date($self->the_date)->format("%D")
-         .  ', '
+         .  $tab 
          .  get_time($self->the_time)->ampm()
-         . ', '
+         . $tab
          ;
     for my $f (qw/
         leader_name phone email
@@ -80,10 +81,9 @@ sub csv {
     /) {
         my $s = $self->$f;
         $s =~ s{}{}xmsg;
-        $s =~ s{[|]}{ OR }xmsg; # just in case...
-        $csv .= "$s|";
+        $csv .= "$s\t";
     }
-    chop $csv;      # the final |
+    chop $csv;      # the final tab
     return $csv;
 }
 
