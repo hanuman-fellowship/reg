@@ -84,7 +84,7 @@ sub csv {
         }
         $csv .= "$s, ";
     }
-    $csv =~ s{,\s\z}{}xms;
+    $csv =~ s{,\s\z}{\n}xms;
     return $csv;
 }
 
