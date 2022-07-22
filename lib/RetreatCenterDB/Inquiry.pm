@@ -66,9 +66,9 @@ sub csv {
     my ($self) = @_;
     my $csv = '';
     my $tab = "\t";
-    $csv .= date($self->the_date)->format("%D")
+    $csv .= date($self->the_date)->format("%F")
          .  $tab 
-         .  get_time($self->the_time)->ampm()
+         .  get_time($self->the_time)->t24()
          . $tab
          ;
     for my $f (qw/

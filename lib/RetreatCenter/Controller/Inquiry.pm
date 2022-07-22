@@ -103,7 +103,11 @@ sub export : Local {
         Needs How_Learn What_Else
     /;
     print {$out} "\n";
-    for my $inq (model($c, 'Inquiry')->all()) {
+    for my $inq (model($c, 'Inquiry')->search(
+                     {},
+                     { order_by => 'date asc time asc' },
+                 )
+    ) {
         print {$out} $inq->csv, "\n";
     }
     close $out;
