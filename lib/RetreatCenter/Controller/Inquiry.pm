@@ -92,6 +92,23 @@ sub change_status_do : Local {
     $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
 }
 
+sub export : Local {
+    my ($self, $c) = @_;
+    open my $out, '>', "/var/Reg/report/inquiry.csv";
+    print {$out} join ', ', map { my $s = $_; $s =~ s{_}{}xmsg; $s; } qw/
+        Date Time Leader Phone Email
+        Notes Status
+        Group_Name Dates Description
+        How_Many Vegetarian Retreat_Type
+        Needs How_Learn What_Else
+    /;
+    for my $inq (model($c, 'Inquiry')->all()) {
+        print {$out} $inq->csv;
+    }
+    close $out;
+    $c->response->redirect($c->uri_for("/report/show_report_file/inquiry.csv"));
+}
+
 sub access_denied : Private {
     my ($self, $c) = @_;
 

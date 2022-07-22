@@ -62,6 +62,32 @@ sub statuses {
     return @status;
 }
 
+sub csv {
+    my ($self) = @_;
+    my $csv = '';
+    $csv .= date($self->the_date)->format("%D")
+         .  ', '
+         .  get_time($self->the_time)->ampm()
+         . ', '
+         ;
+    for my $f (qw/
+        leader_name phone email
+        notes status group_name
+        dates description
+        how_many vegetarian
+        retreat_type needs
+        learn what_else
+    /) {
+        my $s = $self->$f;
+        if ($s =~ m{,}xms) {
+            $s = qq{"$s"};
+        }
+        $csv .= "$s, ";
+    }
+    $csv =~ s{,\s\z}{}xms;
+    return $csv;
+}
+
 1;
 __END__
 overview - Inquiries are filled out online and then a row is entered
