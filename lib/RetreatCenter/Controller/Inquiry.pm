@@ -7,12 +7,16 @@ use lib '../..';
 use Util qw/
     model
     stash
+    housing_types
 /;
 use Date::Simple qw/
     date
 /;
 use Time::Simple qw/
     get_time
+/;
+use Global qw/
+    %string
 /;
 
 sub index : Private {
@@ -49,7 +53,8 @@ sub view : Local {
 sub notes : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
-    my $nrows = ($inq->notes() =~ tr/\n//);
+    my $notes = $inq->notes();
+    my $nrows = $notes? $notes =~ tr/\n//: 0;
     stash($c,
         inquiry  => $inq,
         nrows    => $nrows + 3,
@@ -112,6 +117,48 @@ sub export : Local {
     }
     close $out;
     $c->response->redirect($c->uri_for("/report/show_report_file/inquiry.csv"));
+}
+
+#
+# copied/modified from Proposal->approve
+#
+sub mkrental : Local {
+    my ($self, $c, $id) = @_;
+
+    my $inquiry = model($c, 'Inquiry')->find($id);
+
+    # fill in the stash in preparation for
+    # the creation of a rental.  code copied from Rental->create().
+    stash($c,
+        dup_message => " - <span style='color: red'>From Inquiry</span>",
+            # see comment in Program.pm
+        check_linked    => "",
+        check_tentative => "checked",
+        housecost_opts  =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+        rental => {     # double faked object
+            housecost => { name => "Default" },
+            name           => $inquiry->group_name(),
+            coordinator_id => $inquiry->person_id,
+            cs_person_id   => $inquiry->person_id,
+                # not sure how the following works...
+            start_hour_obj => get_time("4:00 pm"),  # ???
+            end_hour_obj   => get_time("12:00 pm"),
+            title          => $inquiry->group_name,
+            badge_title    => $inquiry->group_name,
+            balance        => 0,
+        },
+        check_mp_deposit     => 'checked',
+        check_new_contract   => 'checked',
+        h_types     => [ housing_types(1) ],
+        string      => \%string,
+        section     => 1,   # web
+        template    => "rental/create_edit.tt2",
+        form_action => "create_from_inquiry/$id",
+    );
 }
 
 sub access_denied : Private {

@@ -1,5 +1,13 @@
 <br><br>
 <a href=/inquiry/list>List</a>
+&nbsp;
+&nbsp;
+&nbsp;
+[% IF inquiry.rental_id %]
+<a target=_blank href=/rental/view/$inquiry.rental_id>To Rental</a>
+[% ELSE %]
+<a target=_blank href=/inquiry/mkrental/$inquiry.id>Make Rental</a>
+[% END %]
 <p class=p2>
 <style>
 th {

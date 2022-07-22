@@ -434,7 +434,6 @@ sub del_image : Local {
     $c->response->redirect($c->uri_for("/rental/view/$id/4"));
 }
 
-
 sub create_from_proposal : Local {
     my ($self, $c, $proposal_id) = @_;
 
@@ -507,6 +506,86 @@ sub create_from_proposal : Local {
     # update the proposal with the rental_id
     #
     $proposal->update({
+        rental_id => $rental_id,
+    });
+
+    # are we done yet?
+    #
+    if ($P{mmc_does_reg}) {
+        # no, make the parallel program
+        #
+        $c->response->redirect($c->uri_for("/program/parallel/$rental_id"));
+    }
+    else {
+        # yes, so show the newly created rental
+        #
+        $c->response->redirect($c->uri_for("/rental/view/$rental_id/$section"));
+    }
+}
+
+sub create_from_inquiry : Local {
+    my ($self, $c, $inquiry_id) = @_;
+
+    my $inquiry = model($c, 'Inquiry')->find($inquiry_id);
+
+    _get_data($c);
+    return if @mess;
+
+    # remove parameters that are not Rental attributes
+    delete $P{file_name};
+    delete $P{file_desc};
+
+    my $section = $P{section};
+    delete $P{section};
+
+    $P{lunches} = "";
+    $P{refresh_days} = "";
+
+    $P{glnum} = compute_glnum($c, $P{sdate});
+
+    if ($P{contract_sent}) {
+        $P{sent_by} = $c->user->obj->id;
+    }
+    if ($P{contract_received}) {
+        $P{received_by} = $c->user->obj->id;
+    }
+    my $sum = model($c, 'Summary')->create({
+        date_updated   => tt_today($c)->as_d8(),
+        who_updated    => $c->user->obj->id,
+        time_updated   => get_time()->t24(),
+
+        # perhaps utilise other attributes from the inquiry
+        # in the creation of the Summary???
+    });
+    $P{summary_id}     = $sum->id();
+    $P{coordinator_id} = $inquiry->person_id();
+    $P{cs_person_id}   = $inquiry->person_id();
+    $P{status}         = 'tentative';       # it is new.
+    $P{program_id} = 0;                     # so it isn't NULL
+
+    $P{grid_code} = rand6($c);
+    my $rental_nnights = date($P{edate}) - date($P{sdate});
+    $P{counts} = join ' ', (0) x ($rental_nnights + 1);
+    $P{grid_max} = 0;
+    $P{housing_charge} = 0;
+    $P{cancelled} = '';
+
+    my $r = model($c, 'Rental')->create(\%P);
+    my $rental_id = $r->id();
+
+    # send an email alert about this new rental
+    # TODDO JON
+    #new_event_alert(
+    #    $c,
+    #    1, 'Rental',
+    #    $P{name},
+    #    $c->uri_for("/rental/view/$rental_id"),
+    #);
+
+    #
+    # update the proposal with the rental_id
+    #
+    $inquiry->update({
         rental_id => $rental_id,
     });
 

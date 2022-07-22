@@ -476,6 +476,9 @@ sub seminar_house {
 sub balance_disp {
     my ($self) = @_;
     my $bal = $self->balance();
+    if (!$bal) {
+        return '0';
+    }
     my $cbal = commify($bal);
     if ($bal < 0) {
         return "<span style='color: red'>$cbal</span>";
