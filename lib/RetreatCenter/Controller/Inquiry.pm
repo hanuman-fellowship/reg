@@ -105,7 +105,7 @@ sub export : Local {
     print {$out} "\n";
     for my $inq (model($c, 'Inquiry')->search(
                      {},
-                     { order_by => 'the_date asc the_time asc' },
+                     { order_by => 'the_date, the_time' },
                  )
     ) {
         print {$out} $inq->csv, "\n";
