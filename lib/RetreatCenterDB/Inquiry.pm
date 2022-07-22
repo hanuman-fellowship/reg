@@ -79,6 +79,7 @@ sub csv {
         learn what_else
     /) {
         my $s = $self->$f;
+        $s =~ s{}{}xmsg;
         $s =~ s{[|]}{ OR }xmsg; # just in case...
         $csv .= "$s|";
     }
