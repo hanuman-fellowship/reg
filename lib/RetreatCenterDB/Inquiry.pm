@@ -79,12 +79,10 @@ sub csv {
         learn what_else
     /) {
         my $s = $self->$f;
-        if ($s =~ m{,}xms) {
-            $s = qq{"$s"};
-        }
-        $csv .= "$s, ";
+        $s =~ s{[|]}{ OR }xmsg; # just in case...
+        $csv .= "$s|";
     }
-    $csv =~ s{,\s\z}{\n}xms;
+    chop $csv;      # the final |
     return $csv;
 }
 
