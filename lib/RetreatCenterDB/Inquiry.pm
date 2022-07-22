@@ -80,7 +80,7 @@ sub csv {
         learn what_else
     /) {
         my $s = $self->$f;
-        $s =~ s{}{}xmsg;
+        $s =~ s{\cM}{}xmsg;
         $csv .= "$s\t";
     }
     chop $csv;      # the final tab
