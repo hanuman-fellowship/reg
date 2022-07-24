@@ -8,6 +8,7 @@
 <th>Date</th>
 <th align=left>Leader</th>
 <th align=left>Status</th>
+<th align=left>How Many?</th>
 <th align=left>Group Name</th>
 </tr>
 [% FOR i IN inquiries %]
@@ -15,6 +16,7 @@
 <td>${i.the_date_obj.format("%D")}</td>
 <td><a href=/inquiry/view/$i.id>$i.leader_name</a></td>
 <td>$i.status_disp</td>
+<td>$i.how_many</td>
 <td>$i.group_name</td>
 </tr>
 [% END %]
