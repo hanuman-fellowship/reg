@@ -41,7 +41,7 @@ sub index : Private {
 }
 
 my @format_desc = (
-    '',
+    '',     # so it is 1 based
     'To CMS',
     'Name, Address, Email',
     'Name, Home, Work, Cell',
@@ -55,6 +55,7 @@ my @format_desc = (
     'Email, Code for DDUP',
     'To CMS - Address, Code for DDUP',
     'CSV',
+    'Name, Address, Email, Affiliations',
 );
 
 use constant {
@@ -71,6 +72,7 @@ use constant {
     EMAIL_CODE          => 11,
     ADDR_CODE           => 12,
     CSV                 => 13,
+    NAME_EMAIL_AFFIL    => 14,
 };
 
 my $exp = "expiry_date.txt";
@@ -138,6 +140,7 @@ sub view : Local {
                      NAME_ADDR_LINK,
                      RAW,
                      CSV,
+                     NAME_EMAIL_AFFIL,
                      )),
         format_verbose => $format_desc[$fmt],
         affils => [
@@ -457,6 +460,10 @@ sub run : Local {
         $order = "last";
         $fields = "last, first, email";
     }
+    elsif ($format == NAME_EMAIL_AFFIL) {
+        # we only want non-blank emails
+        $just_email = "email != '' and ";
+    }
 
     my $range_ref = parse_zips($report->zip_range);
     # cannot return a scalar... else the edit would have failed...
@@ -485,7 +492,7 @@ sub run : Local {
 
 # ??? without the distinct below???
 # we get a row for each person and each affil that matches
-# i need an sql expert to explain this to me.
+# I need an sql expert to explain this to me.
 
     my $sql = <<"EOS";
 
@@ -505,6 +512,7 @@ EOS
         close $out;
     }
     my @people = @{ Person->search($sql) };
+        # see DBH->finis(); below
     for my $p (@people) {
         if ($format == FIRST_SANS_CMS) {
             $p->{name} = $p->{first} . " "
@@ -656,7 +664,7 @@ EOS
 
     my $fname = "report$format";
     # what suffix?  a hack breakfix:
-    my $suf = $format == CSV? 'csv': "txt";
+    my $suf = $format == CSV || $format == NAME_EMAIL_AFFIL? 'csv': "txt";
     if (open my $in, "<", "root/src/report/$fname.tt2") {
         my $line = <$in>;
         if ($line =~ m{^<}) {
@@ -692,6 +700,7 @@ EOS
             return;
         }
     }
+    DBH->finis();       # to end the dbh handle used in the search
     $c->response->redirect($c->uri_for("/report/show_report_file/$fname.$suf"));
 }
 

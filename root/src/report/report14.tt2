@@ -1,0 +1,2 @@
+Last	First	Addr1	Addr2	City	State/Province	Zip/Post	Country	Email	Affiliations
+[% FOREACH p IN people %]$p.name_email_affils[% END %]

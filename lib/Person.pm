@@ -2,7 +2,13 @@ use strict;
 use warnings;
 package Person;
 
+use lib '.';
 use DBH;
+use Util qw/
+    JON
+/;
+
+my $sth_affils;
 
 sub new {
     my ($class, $h_ref) = @_;
@@ -22,6 +28,21 @@ sub search {
     my ($class, $sql) = @_;
 
     DBH->init();
+    # which affiliation ids are we searching for, if any?
+    # remember them for the sub name_email_affils below.
+    # look for "ap.a_id in ($affils)"
+    #
+    if (my ($a_ids) = $sql =~ m{ap[.]a_id[ ]in[ ][(]([^)]*)[)]}xms) {
+        my @affil_ids = $a_ids =~ m{(\d+)}xmsg;
+        my $affil_ids = join ', ', @affil_ids;
+        $sth_affils = $dbh->prepare(<<"EOS");
+            SELECT a.descrip
+              FROM affil_people ap, affils a
+             WHERE ap.p_id = ?
+               AND ap.a_id in ($affil_ids)
+               AND ap.a_id = a.id
+EOS
+    }
     my $sth = $dbh->prepare($sql) or die "cannot prepare $sql: $DBI::errstr";
     $sth->execute() or die "cannot execute $DBI::errstr\n";
     my $a_ref = $sth->fetchall_arrayref({});
@@ -30,7 +51,6 @@ sub search {
     }
     $sth->finish();
     undef $sth;
-    DBH->finis();
     return $a_ref;
 }
 
@@ -118,6 +138,33 @@ sub csv {
     }
     chop $s;
     $s .= "\n";
+    return $s;
+}
+
+#
+# this is similar to the above sub csv
+# but we do another search for matching affiliations from
+# the most recent search - and put them in a final field
+# comma separated.  the whole record is tab separated.
+#
+sub name_email_affils {
+    my ($self) = @_;
+    $sth_affils->execute($self->id);
+    my $aref = $sth_affils->fetchall_arrayref;
+    my @names;
+    for my $a (@$aref) {
+        push @names, $a->[0];
+    }
+    my $matching_affils = join ',', @names;
+    my $s = "";
+    for my $f (qw/
+        last first addr1 addr2 city st_prov zip_post country
+        email
+    /) {
+        my $fld = $self->$f() || '';
+        $s .= "$fld\t";
+    }
+    $s .= "$matching_affils\n";
     return $s;
 }
 
