@@ -569,12 +569,13 @@ sub create_from_inquiry : Local {
     $P{grid_max} = 0;
     $P{housing_charge} = 0;
     $P{cancelled} = '';
+    $P{grid_stale} = '';
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
 
     # send an email alert about this new rental
-    # TODDO JON
+    # TODO JON??
     #new_event_alert(
     #    $c,
     #    1, 'Rental',
@@ -583,10 +584,11 @@ sub create_from_inquiry : Local {
     #);
 
     #
-    # update the proposal with the rental_id
+    # update the inquiry with the rental_id
     #
     $inquiry->update({
         rental_id => $rental_id,
+        status    => 4,
     });
 
     # are we done yet?
