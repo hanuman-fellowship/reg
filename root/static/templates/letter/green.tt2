@@ -1,6 +1,6 @@
-Dear [% first %],
+Dear ${first},
 <p>
-Thank you for your recent gift of $$green_amount. Your generosity makes an important difference in sustaining our community and in helping to maintain the beauty of the Mount Madonna Center environment.
+Thank you for your recent gift of $${amount}. Your generosity makes an important difference in sustaining our community and in helping to maintain the beauty of the Mount Madonna Center environment.
 <p>
 For over 40 years, Mount Madonna Center has served as a gathering place for learning, positive self-development, and the exploration of spiritual practices. Your support helps to ensure that our shared spiritual home and values can thrive today and in the future.
 <p>
@@ -8,5 +8,5 @@ If you have any questions or comments, please contact us at <a mailto:donations@
 <p>
 With gratitude,
 <p>
-$green_name<br>
+${green_name}<br>
 Donations Secretary

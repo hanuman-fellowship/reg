@@ -1495,6 +1495,7 @@ sub create_do : Local {
             my $html = "";
             my $tt = Template->new({
                 INCLUDE_PATH => "root/static/templates/letter",
+                INTERPOLATE  => 1,
                 EVAL_PERL    => 0,
             });
             $tt->process(
