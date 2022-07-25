@@ -588,7 +588,7 @@ sub create_from_inquiry : Local {
     #
     $inquiry->update({
         rental_id => $rental_id,
-        status    => 4,
+        status    => 4,         # the index for 'Rental' - TODO?
     });
 
     # are we done yet?
