@@ -1,28 +1,12 @@
-<p>
 Dear [% first %],
 <p>
-Thank you for your contribution of $[% amount %] to the
-Mount Madonna Center Green Scene Fund! 
-Donations will be put towards our many &ldquo;green&rdquo;
-endeavors including: 
-<ul>
-<li>MMC's certification for 
-The Monterey Bay Area Green Business Program &mdash; a free program,
-though funds are needed for necessary improvements
-<li>Chlorine-alternative filtration for our hot tub
-<li>Community awareness events- Alternative Commuter Week,
-Solarbration, The Great Light Bulb Exchange
-<li>Improving our systems- timers for outlets and light switches,
-counter top water filters, and more
-<li>Ongoing energy monitoring displays and information kiosk
-<li>Sponsored speakers and day workshops
-</ul>
-We anticipate an ongoing webpage to keep you informed of upcoming events
-and our green status. Until this comes online we are happy to provide
-you with a general email which will include future events or opportunities.
-Please reply with "green mailing list" in the subject line if you wish
-to be added. 
+Thank you for your recent gift of $$green_amount. Your generosity makes an important difference in sustaining our community and in helping to maintain the beauty of the Mount Madonna Center environment.
 <p>
-With much appreciation and gratitude, 
+For over 40 years, Mount Madonna Center has served as a gathering place for learning, positive self-development, and the exploration of spiritual practices. Your support helps to ensure that our shared spiritual home and values can thrive today and in the future.
 <p>
-MMC Sustainability Council
+If you have any questions or comments, please contact us at <a mailto:donations@mountmadonna.org>donations@mountmadonna.org</a> or call us at 408-847-0406.
+<p>
+With gratitude,
+<p>
+$green_name<br>
+Donations Secretary

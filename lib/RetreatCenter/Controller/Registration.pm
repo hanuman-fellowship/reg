@@ -1445,6 +1445,15 @@ sub create_do : Local {
         }
     }
     # was there an online donation to the green fund?
+    # 7/24/22 - this now goes to the MMC General Fund
+    # for simplicity and to minimize risk
+    # we leave the word 'green' as it doesn't really matter...
+    #
+    # We change these 5 Strings:
+    # green_glnum, green_glnum_mmi
+    # green_name, green_from, green_subj
+    #
+    # and the template in 'templates/letter/green.tt2'
     #
     if ($P{green_amount}) {
         # which XAccount id?
@@ -1452,6 +1461,10 @@ sub create_do : Local {
         if ($pr->school->mmi()) {
             $key .= "_mmi";
         }
+        # both Strings 'green_glnum' and 'green_glnum_mmi' now
+        # are a GL Number that points to the
+        # XAccount with a description of 'Donation--MMC General'
+        #
         my ($xa) = model($c, 'XAccount')->search({
             glnum => $string{$key},
         });
@@ -1461,7 +1474,7 @@ sub create_do : Local {
                 person_id   => $P{person_id},
                 amount      => $P{green_amount},
                 type        => 'O',     # online credit
-                what        => '',
+                what        => 'Donation',
                 @who_now[0..5],     # not reg_id => $reg_id
 
                 the_date => $P{date_postmark},      # override 'now'
@@ -1477,7 +1490,6 @@ sub create_do : Local {
             my $stash = {
                 amount     => $P{green_amount},
                 first      => $per->first(),
-                last       => $per->last(),
                 green_name => $string{green_name},
             };
             my $html = "";
@@ -1493,14 +1505,14 @@ sub create_do : Local {
                      . $tt->error();
             email_letter($c,
                 to      => $reg->person->name_email(),
-                from    => "$string{green_name} <$string{green_from}>",
+                from    => $string{green_from},
                 subject => $string{green_subj},
                 html    => $html,
             );
         }
         else {
             error($c,
-                  "Sorry, cannot find Green Scene extra account!",
+                  "Sorry, cannot find the 'Donation--MMC General' Extra Account!",
                   'gen_error.tt2');
             return;
         }

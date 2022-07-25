@@ -233,12 +233,12 @@ ftp_transactions - FTP info for mountmadonna.org - for online registrations for 
 gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
 gate_code_email - who to email when sending the Tuesday morning gate code email reminder
 grid_url - the URL for opening up the Web Grid with the rental $code
-green_from - when someone makes a donation to the Green Fund - who is the 
+green_from - when someone makes a donation - who is the 
     acknowledgment letter from?
 green_glnum - the GL Number for Green Fund donations
-green_glnum_mmi - the GL Number for Green Fund donations from MMI registrations
-green_name - the name of the person acknowledging Green Fund donations
-green_subj - the subject of the Green Fun acknowledgment letter
+green_glnum_mmi - the GL Number for Donations from MMI registrations
+green_name - the name of the person acknowledging Donations
+green_subj - the subject of the Donation acknowledgment letter
 heading - obsolete - can be removed
 house_alert - used to alert someone that a person was housed in a specific room
     For example: ~SH1=amita~101=jayanti~
