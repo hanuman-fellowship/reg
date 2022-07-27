@@ -1128,10 +1128,10 @@ sub create_do : Local {
     }
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} == $dates{date_end}
-        && $P{h_type} ne 'commuting')
+        && ($P{h_type} ne 'commuting' && $P{h_type} ne 'not_needed'))
     {
         error($c,
-            "Housing type must be Commuting when"
+            "Housing type must be Commuting or Not Needed when"
                 . " start date = end date.",
             "registration/error.tt2",
         );
@@ -3467,10 +3467,10 @@ sub update_do : Local {
 
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} == $dates{date_end}
-        && $P{h_type} ne 'commuting')
+        && ($P{h_type} ne 'commuting' || $P{h_type} ne 'not_needed'))
     {
         error($c,
-            "Housing type must be Commuting when"
+            "Housing type must be Commuting or Not Needed when"
                 . " start date = end date.",
             "registration/error.tt2",
         );

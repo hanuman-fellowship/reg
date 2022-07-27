@@ -316,6 +316,7 @@ mmi_discount - percentage discount for MMI programs - must be requested via an A
 mmi_email - who should be notified when an MMI mailing list request comes in?
 mmi_event_alert - who should be notified by email of a new MMI Program?
 mmi_reconciling - who is doing an MMI reconciliation?
+mountain_experience_cost - cost for the day visit including 1 or 2 meals
 not_needed - for housing type descriptions
 num_pass_fails - how many times in a row can a wrong password be entered?
 nyears_forgiven - how many years before an outstanding balance is forgiven?
