@@ -190,6 +190,13 @@ From $program.sdate_obj <span class=dow>${program.sdate_obj.format("%a")}</span>
 </td>
 </tr>
 
+[% IF reg.mountain_experience %]
+<tr>
+<th>Mountain Experience</th>
+<td>$reg.mountain_experience</td>
+</tr>
+[% END %]
+
 [% type = reg.h_type_disp %]
 <tr>
 <th align=right valign=center rowspan=3>Housing</th>

@@ -70,6 +70,7 @@ __PACKAGE__->add_columns(qw/
     transaction_id
     from_where
     badge_printed
+    mountain_experience
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -349,6 +350,8 @@ leader_assistant - is this person a leader or assistant?
 letter_sent - was the confirmation letter sent?  old record have a date.
     it is now a boolean field.
 manual - should the finances not be done automatically?
+mountain_experience - what meals do they want? Lunch and/or Dinner
+    if empty - not a mountain experience
 nights_taken - How many member benefit nights were taken?
 person_id - foreign key to person
 pref1 - housing preference #1 - see h_type

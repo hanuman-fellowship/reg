@@ -1,0 +1,1 @@
+alter table registration add column mountain_experience varchar(32) not null default '';

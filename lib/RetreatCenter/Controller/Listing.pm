@@ -24,6 +24,7 @@ use Util qw/
     rand6
     time_travel_class
     kid_badge_names
+    JON
 /;
 use Badge;
 use Date::Simple qw/
@@ -654,6 +655,11 @@ sub detail_disp {
 #
 # see if there are any 'meal requests' (consult the meal_requests table)
 #
+# Mountain Experience guests will have lunch and/or dinner
+#     the 'mountain_experience' attribute of the registration
+#     will have the words 'Lunch' and/or 'Dinner'
+#     Saturday Lunch is actually Breakfast (aka Brunch)
+#
 # finally, we look at Meal objects within the date range
 #   and add the breakfast, lunch, and dinner counts.
 #
@@ -776,7 +782,8 @@ sub meal_list : Local {
                 }
                 $name .= ")";
             }
-            $info = [ $name, $r->program->name ];
+            $info = [ $name, $r->mountain_experience? 'Mountain Experience'
+                            :                         $r->program->name ];
         }
         my $prog = $r->program();
         if ($prog->rental_id()) {
@@ -797,6 +804,12 @@ sub meal_list : Local {
 
         my $prog_end_dinner = $prog->prog_end() >= 1700;
         my $PR = $prog->PR() || $prog->SG();
+
+        my $ME_breakfast = $r_start->day_of_week() == 6
+                           && $r->mountain_experience =~ /Lunch/;
+        my $ME_lunch = $r->mountain_experience =~ /Lunch/;
+        my $ME_dinner = $r->mountain_experience =~ /Dinner/;
+
         #
         # optimizations???
         # have a $n = day number?  so $d++; $n++; and then 'if lunch($n)'
@@ -804,13 +817,15 @@ sub meal_list : Local {
 
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            add('breakfast', $np) if $d != $r_start
+            add('breakfast', $np) if $ME_breakfast
+                                     || $d != $r_start
                                      || ($d == $prog->sdate_obj()
                                          && $prog->prog_start() < $breakfast_end)
                                      ;
             add('lunch', $np)     if $d->day_of_week() != 6
                                      &&
-                                     ($d != $r_start
+                                     ($ME_lunch
+                                      || $d != $r_start
                                       || $prog->prog_start() < $lunch_end)
                                      &&
                                      ($PR
@@ -819,7 +834,9 @@ sub meal_list : Local {
                                       ||
                                       lunch($d))
                                      ;
-            add('dinner', $np)    if $d != $r_end || $prog_end_dinner;
+            add('dinner', $np)    if $ME_dinner
+                                     || $d != $r_end
+                                     || $prog_end_dinner;
         }
     }
     # BLOCKS ---------------

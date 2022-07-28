@@ -136,8 +136,9 @@ sub list_online : Local {
         open my $in, "<", $f
             or die "cannot open $f: $!\n";
         my ($date, $time, $first, $last, $pid, $synthesized,
-            $sdate, $edate, $comment);
+            $sdate, $edate, $comment, $mountain_experience);
         $synthesized = 0;
+        $mountain_experience = 0;
         while (<$in>) {
             if (m{x_date => (.*)}) {
                 $date = date($1);
@@ -160,6 +161,9 @@ sub list_online : Local {
             elsif (m{x_lname => (.*)}) {
                 $last = normalize($1);
             }
+            elsif (m{x_mountain_experience\s+=>\s+1}xms) {
+                $mountain_experience = 1;
+            }
             elsif (m{x_pid => (.*)}) {
                 $pid = $1;
             }
@@ -179,7 +183,8 @@ sub list_online : Local {
 
         my $pname;
         if ($pid == 0) {
-            $pname = "Personal Retreat";
+            $pname = $mountain_experience? "Mountain Experience"
+                    :                      "Personal Retreat";
         }
         else {
             my $pr = model($c, 'Program')->find($pid);
@@ -193,7 +198,10 @@ sub list_online : Local {
         my $arr_lv = "";
         if ($sdate && $edate) {
             # don't worry about the year, okay?
-            if ($sdate->month == $edate->month) {
+            if ($sdate == $edate) {
+                $arr_lv = $sdate->format("%b %e");
+            }
+            elsif ($sdate->month == $edate->month) {
                 # Jul 4-8
                 $arr_lv = $sdate->format("%b %e") . "-" . $edate->day;
             }
@@ -562,8 +570,18 @@ EOF
     # the database.
     #
 
+    # Mountain Experience tweaks
+    if ($href->{mountain_experience}) {
+        $href->{house1} = 'not_needed';
+        $href->{house2} = 'not_needed';
+        $href->{yoga_class} =~ s{You}{They}xms;
+        $href->{request} .= ($href->{request}? '<br>': '')
+                         .  $href->{yoga_class},
+    }
+
     my $fw = $href->{from_where};
     stash($c,
+        mountain_experience => $href->{mountain_experience}? $href->{meals}: '',
         comment         => $href->{request},
         share_first     => normalize($href->{withwhom_first}),
         share_last      => normalize($href->{withwhom_last}),
@@ -596,6 +614,7 @@ EOF
 
         ceu_license     => $href->{ceu_license},
         "$href->{howHeard}_checked" => "selected",
+        mountain_experience => $href->{meals},
     );
 
     my $today = tt_today($c);
@@ -1192,6 +1211,7 @@ sub create_do : Local {
         transaction_id => $P{fname} || '',
         rental_before => $P{rental_before},
         rental_after  => $P{rental_after},
+        mountain_experience => $P{mountain_experience},
 
         %dates,         # optionally
     });
@@ -1551,6 +1571,8 @@ sub create_do : Local {
 # AND the housing costs for the Personal Retreat and the program
 # are different.
 #
+# now (7/28/22) Mountain Experience - fixed cost - from $string
+#
 sub _compute {
     my ($c, $reg, $dup, @who_now) = @_;
 
@@ -1665,7 +1687,12 @@ sub _compute {
         $h_cost = $string{lead_assist_daily_charge};
     }
     my ($tot_h_cost, $what);
-    if ($lead_assist || $housecost->type() eq "Per Day") {
+    if ($reg->mountain_experience) {
+        $tot_h_cost = $string{mountain_experience_cost};
+        $what = "Mountain Experience Cost";
+        $extra_days = 0;
+    }
+    elsif ($lead_assist || $housecost->type() eq "Per Day") {
         $tot_h_cost = $prog_days*$h_cost;
         my $plural = ($prog_days == 1)? "": "s";
         my $for_whom = $lead_assist? 'for a leader/assistant<br>': '';
@@ -3120,9 +3147,10 @@ EOH
         my $need_house = (defined $type)? $type !~ m{commut|van|unk|needed}i
                          :                0;
         my $hid = $reg->house_id;
-        my $house = ($reg->h_name)? "(" . $reg->h_name . ")"
-                   :($hid        )? $house_name_of{$hid}
-                   :                "";
+        my $house = $reg->mountain_experience? 'Mountain Experience'
+                   :             $reg->h_name? "(" . $reg->h_name . ")"
+                   :                    $hid ? $house_name_of{$hid}
+                   :                           "";
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark_obj();
         my $ht = 20;
@@ -3201,10 +3229,16 @@ EOH
         }
         my $early_late = "";
         if ($reg->early() || $reg->late()) {
-            $early_late = $reg->date_start_obj->format("%e")
-                        . "-"
-                        . $reg->date_end_obj->format("%e")
-                        ;
+            if ($reg->date_start eq $reg->date_end) {
+                # mountain experience
+                $early_late = $reg->date_start_obj->format("%e");    
+            }
+            else {
+                $early_late = $reg->date_start_obj->format("%e")
+                            . "-"
+                            . $reg->date_end_obj->format("%e")
+                            ;
+            }
         }
         my $status = "";
         if ($pr->extradays() && $reg->date_end() > $pr->edate()) {

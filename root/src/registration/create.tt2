@@ -38,6 +38,7 @@ function toggle_from_where() {
 <input type=hidden name=fname         value='$fname'>
 <input type=hidden name=status        value='$status'>
 <input type=hidden name=dup           value='$dup'>
+<input type=hidden name=mountain_experience value='$mountain_experience'>
 
 <table cellpadding=3 border=0>
 
@@ -53,6 +54,11 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <td><a class=larger href="/program/view/$program.id"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view the program ${program.name}?");'>$program.name</a></td>
 <td><b>From</b> $program.sdate_obj</td><td><b>To</b> $program.edate_obj</td>
+</tr>
+
+<tr>
+<th align=right>Mountain Experience</th>
+<td>$mountain_experience</td>
 </tr>
 
 [% IF nights %]
