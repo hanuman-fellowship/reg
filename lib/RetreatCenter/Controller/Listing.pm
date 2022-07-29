@@ -782,7 +782,7 @@ sub meal_list : Local {
                 }
                 $name .= ")";
             }
-            $info = [ $name, $r->mountain_experience? 'Mountain Experience'
+            $info = [ $name, $r->mountain_experience? '<span class=mount_exp>Mountain Experience</span>'
                             :                         $r->program->name ];
         }
         my $prog = $r->program();

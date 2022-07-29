@@ -241,3 +241,6 @@ th a:hover {
     font-weight: bold;
     font-size: 20pt;
 }
+.mount_exp {
+    color: green;
+}

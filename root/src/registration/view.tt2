@@ -192,7 +192,7 @@ From $program.sdate_obj <span class=dow>${program.sdate_obj.format("%a")}</span>
 
 [% IF reg.mountain_experience %]
 <tr>
-<th>Mountain Experience</th>
+<th class=mount_exp>Mountain Experience</th>
 <td>$reg.mountain_experience</td>
 </tr>
 [% END %]

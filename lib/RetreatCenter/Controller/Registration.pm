@@ -183,7 +183,7 @@ sub list_online : Local {
 
         my $pname;
         if ($pid == 0) {
-            $pname = $mountain_experience? "Mountain Experience"
+            $pname = $mountain_experience? "<span class=mount_exp>Mountain Experience</span>"
                     :                      "Personal Retreat";
         }
         else {
@@ -3147,7 +3147,7 @@ EOH
         my $need_house = (defined $type)? $type !~ m{commut|van|unk|needed}i
                          :                0;
         my $hid = $reg->house_id;
-        my $house = $reg->mountain_experience? 'Mountain Experience'
+        my $house = $reg->mountain_experience? '<span class=mount_exp>Mountain Experience</span>'
                    :             $reg->h_name? "(" . $reg->h_name . ")"
                    :                    $hid ? $house_name_of{$hid}
                    :                           "";

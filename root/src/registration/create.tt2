@@ -56,10 +56,12 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <td><b>From</b> $program.sdate_obj</td><td><b>To</b> $program.edate_obj</td>
 </tr>
 
+[% IF mountain_experience %]
 <tr>
-<th align=right>Mountain Experience</th>
+<th align=right class=mount_exp>Mountain Experience</th>
 <td>$mountain_experience</td>
 </tr>
+[% END %]
 
 [% IF nights %]
 <tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2>&nbsp;&nbsp;($nights max)<input type=hidden name=max_nights value="$nights"</tr>

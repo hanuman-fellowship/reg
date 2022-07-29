@@ -29,7 +29,7 @@ p {
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">
 [% IF r.mountain_experience %]
-Mountain Experience
+<span class=mount_exp>Mountain Experience</span>
 [% ELSE %]
 $pr.name
 [% END %]
@@ -86,7 +86,7 @@ $pr.name
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">
 [% IF r.mountain_experience %]
-Mountain Experience
+<span class=mount_exp>Mountain Experience</span>
 [% ELSE %]
 $pr.name
 [% END %]

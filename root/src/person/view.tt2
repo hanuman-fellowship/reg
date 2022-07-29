@@ -256,7 +256,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
         [% IF ! r.program.school.mmi || Catalyst.check_user_roles('mmi_admin') %]
         <td class=pg><a href="/registration/view/$r.id">
         [% IF r.mountain_experience %]
-        Mountain Experience
+        <span class=mount_exp>Mountain Experience</span>
         [% ELSE %]
         $r.program.name
         [% END %]
