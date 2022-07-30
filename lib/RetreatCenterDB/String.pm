@@ -149,6 +149,8 @@ days_pass_grace - grace period for expiry
 dble - the display name for the housing type 'dble'
 dble_bath - the display name for the housing type 'dble_bath'
 dble_cabin - the display name for the housing type 'dble_cabin'
+dble_cottage1 - the display name for the housing type 'dble_cottage1'
+dble_cottage2 - the display name for the housing type 'dble_cottage2'
 default_date_format - the format used when doing $dt->format() or when
     a $dt is stringified in a template.
 default_num_prog_days - when choosing 'Program' how many days
@@ -382,6 +384,8 @@ seen_lodge_opts - what is the size of the &gt;select&lt; list for housing option
 single - the display name for the housing type 'single'
 single_bath - the display name for the housing type 'single_bath'
 single_cabin - the display name for the housing type 'single_cabin'
+single_cottage1 - the display name for the housing type 'single_cottage1'
+single_cottage2 - the display name for the housing type 'single_cottage2'
 smtp_auth - the 'auth' field for the SMTP server
 smtp_pass - the 'password' field for the SMTP server
 smtp_port - the 'port' field for the SMTP server

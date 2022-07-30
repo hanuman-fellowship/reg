@@ -1,0 +1,8 @@
+alter table house drop column cottage;
+delete from house where name = 'Ram 1 Cottage';
+delete from string where the_key like '%Cottage%';
+alter table housecost drop column whole_cottage;
+alter table housecost drop column single_cottage1;
+alter table housecost drop column single_cottage2;
+alter table housecost drop column dble_cottage1;
+alter table housecost drop column dble_cottage2;

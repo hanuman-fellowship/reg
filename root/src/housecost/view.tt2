@@ -14,6 +14,31 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 <table cellpadding=5 border=1>
 
 <tr>
+<th align=right>Whole Cottage</th>
+<td align=right width=60>[% housecost.whole_cottage %]</td>
+</tr>
+
+<tr>
+<th align=right>Single Cottage 1</th>
+<td align=right width=60>[% housecost.single_cottage1 %]</td>
+</tr>
+
+<tr>
+<th align=right>Single Cottage 2</th>
+<td align=right width=60>[% housecost.single_cottage2 %]</td>
+</tr>
+
+<tr>
+<th align=right>Double Cottage 1</th>
+<td align=right width=60>[% housecost.dble_cottage1 %]</td>
+</tr>
+
+<tr>
+<th align=right>Double Cottage 2</th>
+<td align=right width=60>[% housecost.dble_cottage2 %]</td>
+</tr>
+
+<tr>
 <th align=right>Single Bath</th>
 <td align=right width=60>[% housecost.single_bath %]</td>
 </tr>

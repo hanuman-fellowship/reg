@@ -25,6 +25,7 @@ __PACKAGE__->add_columns(qw/
     cat_abode
     sq_foot
     key_card
+    cottage
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -59,6 +60,8 @@ center - center tent?
 cluster_id - foreign key to cluster
 cluster_order - where should this house be displayed in the ClusterView?
 comment - a longer description of the space
+cottage - is this one of the RAM Cottage rooms?  This is either 0, 1, 2, or 3:
+    0 - not a RAM cottage, 1 - Ram 1 rooms, 2 - Ram 2 rooms, 3 - all of Ram 1
 disp_code - A above, B below, L left, or R right
     with an optional t to truncate the name,
     OR X which means this house will not be displayed on the DailyPic.

@@ -23,6 +23,11 @@ __PACKAGE__->add_columns(qw/
     inactive
     single_cabin
     dble_cabin
+    whole_cottage
+    single_cottage1
+    single_cottage2
+    dble_cottage1
+    dble_cottage2
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -44,6 +49,8 @@ commuting - $ for commuting
 dble - $ for doubles
 dble_bath - $ for doubles with bath
 dble_cabin - $ for doubles in a cabin
+dble_cottage1 - $ for doubles in Ram 1
+dble_cottage2 - $ for doubles in Ram 2
 dormitory - $ for dormitories
 economy - $ for economy housing
 id - unique id
@@ -54,5 +61,8 @@ own_van - $ for people sleeping in their vehicle
 single - $ for singles
 single_bath - $ for singles with bath
 single_cabin - $ for singles in a cabin
+single_cottage1 - $ for single in Ram 1
+single_cottage2 - $ for single in Ram 2
 triple - $ for triples
 type - Per Day or Total
+whole_cottage - $ for whole Ram 1 cottage

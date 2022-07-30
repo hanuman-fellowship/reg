@@ -411,50 +411,50 @@ sub slurp {
 # is needed elsewhere - like in a web address.
 #
 sub expand {
-	my ($v) = @_;
+    my ($v) = @_;
     $v =~ s{\r?\n}{\n}g;
-	$v =~ s{(^|\W)_([^_]*?)\_}{$1<u>$2</u>}smg;
-	$v =~ s{\*([^*]*?)\*}{<b>$1</b>}mg;
-	$v =~ s{\+([^+]*?)\+}{<i>$1</i>}mg;
+    $v =~ s{(^|\W)_([^_]*?)\_}{$1<u>$2</u>}smg;
+    $v =~ s{\*([^*]*?)\*}{<b>$1</b>}mg;
+    $v =~ s{\+([^+]*?)\+}{<i>$1</i>}mg;
     $v =~ s{\^\^([^^]*)\^\^}{<span style="font-size: 20pt; font-weight: bold">$1</span>}mg;
     $v =~ s{\^([^^]*)\^}{<span style="font-size: 16pt;">$1</span>}mg;
     $v =~ s{\|([^|]*)\|:(#?\w+)}{<span style="background: $2;">$1</span>}mg;
     $v =~ s{\|([^|]*)\|}{<span style="background: yellow;">$1</span>}mg;
-	$v =~ s{%([^%]*?)%([^%]*?)%}
+    $v =~ s{%([^%]*?)%([^%]*?)%}
            {
                my ($clickpoint, $link) = (trim($1), trim($2));
                $link =~ s{http://}{};   # string http:// if any
                "<a href='http://$link' target=_blank>$clickpoint</a>";
            }esg;
-	$v =~ s{~\s*(\S+)\s*~}{<a href="mailto:$1">$1</a>}sg;
+    $v =~ s{~\s*(\S+)\s*~}{<a href="mailto:$1">$1</a>}sg;
     $v =~ s{/\s*$}{<br>}mg;
-	my $in_list = "";
-	my $out = "";
-	for (split /\n/, $v) {
-		unless (/\S/) {
-			if ($in_list) {
-				$out .= $in_list;
-				$in_list = "";
-			}
-			$out .= "<p>\n";
-			next;
-		}
-		if (s/^(#|-)/<li>/) {
-			unless ($in_list) {
-				if ($1 eq '#') {
-					$out .= "<ol>\n";
-					$in_list = "</ol>\n";
-				} else {
-					$out .= "<ul>\n";
-					$in_list = "</ul>\n";
-				}
-			}
-		}
-		$out .= "$_\n";
-	}
-	$out .= $in_list if $in_list;
+    my $in_list = "";
+    my $out = "";
+    for (split /\n/, $v) {
+        unless (/\S/) {
+            if ($in_list) {
+                $out .= $in_list;
+                $in_list = "";
+            }
+            $out .= "<p>\n";
+            next;
+        }
+        if (s/^(#|-)/<li>/) {
+            unless ($in_list) {
+                if ($1 eq '#') {
+                    $out .= "<ol>\n";
+                    $in_list = "</ol>\n";
+                } else {
+                    $out .= "<ul>\n";
+                    $in_list = "</ul>\n";
+                }
+            }
+        }
+        $out .= "$_\n";
+    }
+    $out .= $in_list if $in_list;
     $out =~ s{\n\n}{<p>\n}g;      # last to not mess with the ending of lists.
-	$out;
+    $out;
 }
 #
 # for the brochure
@@ -530,17 +530,22 @@ sub housing_types {
     # types for which the field staff
     # will need to tidy up after:
     return qw/
-		single_bath
-		single
+        whole_cottage
+        single_cottage1
+        single_cottage2
+        dble_cottage1
+        dble_cottage2
+        single_bath
+        single
         single_cabin
-		dble_bath
-		dble
+        dble_bath
+        dble
         dble_cabin
-		triple
-		dormitory
-		economy
-		center_tent
-		own_tent
+        triple
+        dormitory
+        economy
+        center_tent
+        own_tent
     /,
     # optionally, the other types
     (($extra >= 1)? qw/ own_van commuting  /: ()),
@@ -855,17 +860,22 @@ sub get_lunch {
 }
 
 my %tmax = qw/
-    single_bath  1
-    single       1
-    single_cabin 1
-    dble         2
-    dble_bath    2
-    dble_cabin   2
-    triple       3
-    dormitory    7
-    economy     20
-    center_tent  1
-    own_tent     1
+    whole_cottage   1
+    single_cottage1 1
+    single_cottage2 1
+    dble_cottage1   2
+    dble_cottage2   2
+    single_bath     1
+    single          1
+    single_cabin    1
+    dble            2
+    dble_bath       2
+    dble_cabin      2
+    triple          3
+    dormitory       7
+    economy        20
+    center_tent     1
+    own_tent        1
 /;
 sub type_max {
     my ($h_type) = @_;
@@ -1008,33 +1018,33 @@ sub ceu_license_stash {
     my $person = $reg->person;
     my $program = $reg->program;
     my $lic = uc $reg->ceu_license;
-	$lic =~ s{^\s*}{};
+    $lic =~ s{^\s*}{};
     my ($license, $has_completed, $provider);
-	if ($lic =~ /^RN/) {
-		$license  = "Registered Nurse License Number: $lic";
-		$has_completed = "Has completed the following course work<br>".
+    if ($lic =~ /^RN/) {
+        $license  = "Registered Nurse License Number: $lic";
+        $has_completed = "Has completed the following course work<br>".
                                "for Continuing Education Credit:";
-		$provider = "This Certificate must be retained by the ".
-						  "licensee for a period of four years after ".
-						  "the course ends.<br>".
-		                  "Board of Registered Nursing, Provider #05557";
-	}
-	elsif ($lic =~ /COMP/i) {
-		# extra space so it's the same size and spacing as the others
-		$license  = "&nbsp;";
-		$provider = "&nbsp;<br>&nbsp;";
-		$has_completed = "Has completed the following course work:<br>".
-							   "&nbsp;";
-	}
-	else {
-		$license  = "License Number: $lic";
-		$has_completed = "Has completed the following course work<br>".
+        $provider = "This Certificate must be retained by the ".
+                          "licensee for a period of four years after ".
+                          "the course ends.<br>".
+                          "Board of Registered Nursing, Provider #05557";
+    }
+    elsif ($lic =~ /COMP/i) {
+        # extra space so it's the same size and spacing as the others
+        $license  = "&nbsp;";
+        $provider = "&nbsp;<br>&nbsp;";
+        $has_completed = "Has completed the following course work:<br>".
+                               "&nbsp;";
+    }
+    else {
+        $license  = "License Number: $lic";
+        $has_completed = "Has completed the following course work<br>".
                                "for Continuing Education Credit:";
-		$provider = "This Certificate must be retained by the ".
-						  "licensee for a period of four years after ".
-						  "the course ends.<br>".
-		                  "Board of Behavioral Sciences, Provider #PCE632";
-	}
+        $provider = "This Certificate must be retained by the ".
+                          "licensee for a period of four years after ".
+                          "the course ends.<br>".
+                          "Board of Behavioral Sciences, Provider #PCE632";
+    }
     my $sdate = $reg->date_start_obj();
     my $ps = $program->sdate_obj();
     if ($sdate < $ps) {
@@ -1091,59 +1101,59 @@ sub ceu_license_stash {
 # < 1000, please.
 #
 sub _spell {
-	my ($x) = @_;
-	my %ones = (
-		1 => "One",
-		2 => "Two",
-		3 => "Three",
-		4 => "Four",
-		5 => "Five",
-		6 => "Six",
-		7 => "Seven",
-		8 => "Eight",
-		9 => "Nine",
-		10 => "Ten",
-		11 => "Eleven",
-		12 => "Twelve",
-		13 => "Thirteen",
-		14 => "Fourteen",
-		15 => "Fifteen",
-		16 => "Sixteen",
-		17 => "Seventeen",
-		18 => "Eighteen",
-		19 => "Nineteen",
-	);
-	my $sp = "";
-	if ($x >= 100) {
+    my ($x) = @_;
+    my %ones = (
+        1 => "One",
+        2 => "Two",
+        3 => "Three",
+        4 => "Four",
+        5 => "Five",
+        6 => "Six",
+        7 => "Seven",
+        8 => "Eight",
+        9 => "Nine",
+        10 => "Ten",
+        11 => "Eleven",
+        12 => "Twelve",
+        13 => "Thirteen",
+        14 => "Fourteen",
+        15 => "Fifteen",
+        16 => "Sixteen",
+        17 => "Seventeen",
+        18 => "Eighteen",
+        19 => "Nineteen",
+    );
+    my $sp = "";
+    if ($x >= 100) {
         my $h = 100*int($x/100);
-		$x -= $h;
-		$sp = "$ones{$h/100} Hundred";
-		if ($x > 0) {
-			$sp .= " and ";
-		}
-	}
-	if ($x > 19) {
-		my $tens = int($x/10)*10;
-		$x %= 10;
-		my %tens = (
-			20 => "Twenty",
-			30 => "Thirty",
-			40 => "Forty",
-			50 => "Fifty",
-			60 => "Sixty",
-			70 => "Seventy",
-			80 => "Eighty",
-			90 => "Ninety",
-		);
-		$sp .= "$tens{$tens}";
-		if ($x > 0) {
-			$sp .= q{ };
-		}
-	}
-	if ($x > 0) {
-		$sp .= $ones{$x}
-	}
-	return $sp;
+        $x -= $h;
+        $sp = "$ones{$h/100} Hundred";
+        if ($x > 0) {
+            $sp .= " and ";
+        }
+    }
+    if ($x > 19) {
+        my $tens = int($x/10)*10;
+        $x %= 10;
+        my %tens = (
+            20 => "Twenty",
+            30 => "Thirty",
+            40 => "Forty",
+            50 => "Fifty",
+            60 => "Sixty",
+            70 => "Seventy",
+            80 => "Eighty",
+            90 => "Ninety",
+        );
+        $sp .= "$tens{$tens}";
+        if ($x > 0) {
+            $sp .= q{ };
+        }
+    }
+    if ($x > 0) {
+        $sp .= $ones{$x}
+    }
+    return $sp;
 }
 
 sub commify {

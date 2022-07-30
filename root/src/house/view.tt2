@@ -22,6 +22,11 @@
 </tr>
 
 <tr>
+<th align=right>Cottage</th>
+<td>$house.cottage</td>
+</tr>
+
+<tr>
 <th align=right>Bath</th>
 <td>$house.bath</td>
 <th align=right>Resident</th>
