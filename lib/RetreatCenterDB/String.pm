@@ -296,6 +296,7 @@ max_kid_age - how old can a person be and still be considered a child?
 max_lodge_opts - the maximum number of rooms to offer when lodging a registrant
 max_rental_desc - the maximum number of characters in a rental web description
 max_tuit_disc - maximum tuition discount for Members - no longer used
+me_max - maximum number of Mountain Experience registrations per day
 mem_credit_hours - obsolete - can be removed
 mem_credit_phone - obsolete - can be removed
 mem_email - the email address of the membership secretary
@@ -337,11 +338,11 @@ personal_template - the template for a Personal Retreat program -
     it changes as the 'get_away' is offered or not.
 phone - the description of a telephone in the row for a rental online
 pr_children - are children welcome in a PR?  1 or 0
+pr_max - the maximum number of PR registrations on any given day
+pr_max_nights - the maximum number of nights for a PR registration
 pre_craft - the date before which Reg generated the program web pages
 prepay_link - the URL for prepayment requests for MMC
 prepay_mmi_link - the URL for prepayment requests for MMI
-pr_max - the maximum number of PR registrations on any given day
-pr_max_nights - the maximum number of nights for a PR registration
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
 program_director - the name of the Program Director - for the contract
