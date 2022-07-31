@@ -4063,7 +4063,11 @@ sub lodge : Local {
     my $tcabin  = ($h_type =~ m{cabin}  )? 'yes': '';
     my $tent    = ($h_type =~ m{tent}   )? 'yes': '';
     my $center  = ($h_type =~ m{center} )? 'yes': '';
-    my $cottage = ($h_type =~ m{cottage})? 'yes': '';
+    my $ht_cottage = $h_type !~ m{cottage} ? 0
+                    :$h_type =~ m{cottage1}? 1
+                    :$h_type =~ m{cottage2}? 2
+                    :                        3   # whole cottage
+                    ;
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
     my $low_max =  $max ==  7? 4
@@ -4113,8 +4117,8 @@ sub lodge : Local {
         my $cl_cottage = $cl_name =~ m{RAM};    # Only RAM is a cottage, yes?
         if (($tent && !$cl_tent) ||
             (!$tent && $cl_tent) ||
-            (!$cottage && $cl_cottage) ||
-            ($cottage && !$cl_cottage) ||
+            (!$ht_cottage && $cl_cottage) ||
+            ($ht_cottage && !$cl_cottage) ||
             (!$tent && $cl_tent) ||
             ($summer && (!$center && $cl_center_tent ||
                          $center && !$cl_center_tent   ))
@@ -4139,8 +4143,12 @@ sub lodge : Local {
                 || ($h->bath && !$bath)
                 || (!$h->bath && $bath)
 
+                || ( $h->cabin && !$tcabin)
                 || (!$h->cabin && $tcabin)
-                || (!$h->cabin && $tcabin)
+
+                # cottage?
+                || ($h->cottage != $ht_cottage)    # house cottage is 0, 1, 2, or 3
+                                                   # 
 
                 || (!$pr_resident && $h->resident())
                 # 9/4 Brajesh requests that all houses offered
