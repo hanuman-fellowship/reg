@@ -15,8 +15,8 @@ insert into string (the_key, value) values ('long_single_cottage1', 'Single Occu
 insert into string (the_key, value) values ('long_single_cottage2', 'Single Occupancy in a Cottage - Ram 2');
 insert into string (the_key, value) values ('long_dble_cottage1', 'Double Occupancy in a Cottage - Ram 1');
 insert into string (the_key, value) values ('long_dble_cottage2', 'Double Occupancy in a Cottage - Ram 2');
-alter table housecost add column whole_cottage int not null;
-alter table housecost add column single_cottage1 int not null;
-alter table housecost add column single_cottage2 int not null;
-alter table housecost add column dble_cottage1 int not null;
-alter table housecost add column dble_cottage2 int not null;
+alter table housecost add column whole_cottage int not null default 0;
+alter table housecost add column single_cottage1 int not null default 0;
+alter table housecost add column single_cottage2 int not null default 0;
+alter table housecost add column dble_cottage1 int not null default 0;
+alter table housecost add column dble_cottage2 int not null default 0;
