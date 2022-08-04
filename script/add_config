@@ -60,20 +60,29 @@ my $new_max_dt = $max_dt + 1;
 while ($new_max_dt->day != 1) {
     ++$new_max_dt;
 }
-my $arg = shift @ARGV;
-if ($arg) {
-    if ($arg =~ m{\A \d+ \z}xms) {
-        my $newmax = shift @ARGV;
-        add_for_house($arg, $newmax);
+# command line arguments??
+if (@ARGV) {
+    if ($ARGV[0] =~ m{\A \d+ \z}xms) {
+        my $house_id = shift;
+        if (@ARGV) {
+            # existing house with new max date value
+            my $newmax = shift;
+            add_for_house($house_id, $newmax);
+        }
+        else {
+            # brand new house
+            add_for_house($house_id, 0);
+        }
         $dbh->disconnect();
-        exit;       # all done
+        exit;
     }
-    my $dt = date($arg);
+    my $dt_arg = shift;
+    my $dt = date($dt_arg);
     if (! $dt) {
-        die "invalid date: $arg\n";
+        die "invalid date: $dt_arg\n";
     }
     if ($dt < $max_dt) {
-        die "arg date not greater than $max_dt\n";
+        die "$dt_arg is not greater than $max_dt\n";
     }
     while ($dt->day != 1) {
         ++$dt;

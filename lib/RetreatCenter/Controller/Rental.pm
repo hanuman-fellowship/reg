@@ -1379,6 +1379,11 @@ sub booking : Local {
     my $cabin  = ($h_type =~ m{cabin}) ? "yes": "";
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
+    my $ht_cottage = $h_type !~ m{cottage} ? 0
+                    :$h_type =~ m{cottage1}? 1
+                    :$h_type =~ m{cottage2}? 2
+                    :                        3   # whole cottage
+                    ;
     my $max    = type_max($h_type);
     my $low_max =  $max ==  7? 4
                   :$max == 20? 8
@@ -1407,6 +1412,7 @@ sub booking : Local {
                    cabin    => $cabin,
                    tent     => $tent,
                    center   => $center,
+                   cottage  => $ht_cottage,
                    max      => { '>=', $low_max },
                    resident => '',
                    @opt,

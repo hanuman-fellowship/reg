@@ -4574,6 +4574,7 @@ sub lodge_do : Local {
     my ($house_id) = $c->request->params->{house_id};
     if ($house_id =~ s{-(\d+)}{}xms) {
         # they have chosen a Block for this program
+        # by FORCING, I presume.
         my $block_id = $1;
         my $block = model($c, 'Block')->find($block_id);
         RetreatCenter::Controller::Block::_vacate($c, $block);
@@ -4621,6 +4622,7 @@ sub lodge_do : Local {
     my $psex = $person->sex;
 
     my $program = $reg->program();
+    my $program_id = $reg->program_id;
     my $note = $person->last()
                . ", " . $person->first()
                . " in " . $program->name()
@@ -4734,7 +4736,7 @@ sub lodge_do : Local {
                             # a female dormitory.  It's still
                             # female dorm, yes?  The force is
                             # required.  Oh, the complexity!
-            program_id => $reg->program_id(),
+            program_id => $program_id,
             rental_id  => 0,
         });
         if ($string{housing_log}) {
@@ -4742,9 +4744,95 @@ sub lodge_do : Local {
                  $house_name_of{$house_id}, $cf->the_date(),
                  "lodge",
                  $house_id, $cmax, $cf->cur(), $cf->sex(),
-                 $reg->program_id(), 0,
+                 $program_id, 0,
                  $note,
             );
+        }
+    }
+    # RAM 1 adventures
+    # for when someone is lodged in RAM 1 
+    #
+    my $cottage = $house->cottage();
+    if ($cottage == 1) {
+        # we chose RAM 1A or RAM 1B
+        # we need to block RAM 1 Cottage
+        # if it isn't blocked already, that is.
+        #
+        # it might already be blocked in this scenario:
+        # RAM 1A is chosen
+        # RAM 1 Cottage is blocked
+        # then RAM 1B is chosen
+        # or RAM 1A is chosen for a double
+        # then the other bed in RAM 1A is chosen
+        #
+        my ($whole_cottage) = model($c, 'House')->search({
+            cottage => 3,
+        });
+        my $whole_id = $whole_cottage->id();
+        my $need_block = 0;
+        CONF:
+        for my $cf (model($c, 'Config')->search({
+                        house_id => $whole_id,
+                        the_date => { -between => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            if ($cf->sex ne 'B') {
+                $need_block = 1;
+                last CONF;
+            }
+        }
+        if ($need_block) {
+            model($c, 'Block')->create({
+                house_id => $whole_id,
+                program_id => $program_id,
+                reason => 'Whole cottage not available',
+                sdate => $sdate,
+                edate => $edate1,
+            });
+            # and the config records
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $whole_id,
+                            the_date => { -between => [ $sdate, $edate1 ] },
+                        })
+            ) {
+                $cf->update({
+                    cur => $whole_cottage->max(),   # (1)
+                    program_id => $program_id,
+                    rental_id  => 0,
+                    sex => 'B',
+                });
+            }
+        }
+    }
+    elsif ($cottage == 3) {
+        # RAM 1 Cottage was chosen
+        # we need to block both RAM 1A and RAM 1B
+        #
+        for my $RAM1AB (model($c, 'House')->search({
+                          cottage => 3,
+                      })
+        ) {
+            my $RAM_id = $RAM1AB->id();
+            model($c, 'Block')->create({
+                house_id => $RAM_id,
+                program_id => $program_id,
+                reason => 'Whole cottage is occupied',
+                sdate => $sdate,
+                edate => $edate1,
+            });
+            # and the config records
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $RAM_id,
+                            the_date => { -between => [ $sdate, $edate1 ] },
+                        })
+            ) {
+                $cf->update({
+                    cur => $RAM1AB->max(),      # (2)
+                    program_id => $program_id,
+                    rental_id  => 0,
+                    sex => 'B',
+                });
+            }
         }
     }
     my ($alert, $who) = (0, '');
@@ -4785,8 +4873,9 @@ sub _vacate {
 
     my $sdate  = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
-    my $house_id = $reg->house_id;
-    my $hmax = $reg->house->max;
+    my $house = $reg->house;
+    my $house_id = $house->id;
+    my $hmax = $house->max;
     my $person = $reg->person();
     my $note = $person->last()
                . ", " . $person->first()
@@ -4869,6 +4958,59 @@ sub _vacate {
         house_id => 0,
     });
     _reg_hist($c, $reg->id(), "Vacated $house_name_of{$house_id}.");
+    
+    # RAM 1 adventures
+    #
+    if ($house->cottage == 1) {
+        # we vacated a RAM 1 single or double occupancy
+        # see if anyone else is in the two rooms
+        # if not, remove the block on the whole cottage
+        my $occupied = 0;
+        RAM_ROOMS:
+        for my $RAM1AB (model($c, 'House')->search({
+                             cottage => 1,
+                         })
+        ) {
+            CONF:
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $RAM1AB->id,
+                            the_date => { 'between' => [ $sdate, $edate1 ] }
+                        })
+            ) {
+                if ($cf->sex ne 'U') {
+                    $occupied = 1;
+                    last RAM_ROOMS;
+                }
+            }
+        }
+        if (! $occupied) {
+            # remove the block on RAM 1 Cottage
+            my ($whole_cottage) = model($c, 'House')->search({
+                                      cottage => 3,
+                                  });
+            my $whole_id = $whole_cottage->id;
+            my $whole_block = model($c, 'Block')->search({
+                                  house_id => $whole_id,
+                                  sdate => $sdate, 
+                                  edate => $edate1,
+                              });
+            if ($whole_block) {
+                $whole_block->delete();
+            }
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $whole_id,
+                            the_date     => { between => [$sdate, $edate1] },
+                        })
+            ) {
+                $cf->update({
+                    sex => 'U',
+                    curmax => 1,
+                    program_id => 0,
+                    rental_id => 0,
+                });
+            }
+        }
+    }
 
     check_makeup_vacate($c, $house_id, $sdate);
 }
