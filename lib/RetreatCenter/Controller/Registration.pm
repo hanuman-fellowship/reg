@@ -4769,26 +4769,12 @@ sub lodge_do : Local {
             cottage => 3,
         });
         my $whole_id = $whole_cottage->id();
-        my $need_block = 0;
-        CONF:
-        for my $cf (model($c, 'Config')->search({
-                        house_id => $whole_id,
-                        the_date => { -between => [ $sdate, $edate1 ] },
-                    })
-        ) {
-            if ($cf->sex ne 'B') {
-                $need_block = 1;
-                last CONF;
-            }
-        }
-        if ($need_block) {
-            model($c, 'Block')->create({
-                house_id => $whole_id,
-                program_id => $program_id,
-                reason => 'Whole cottage not available',
-                sdate => $sdate,
-                edate => $edate1,
-            });
+        my @cf = model($c, 'Config')->search({
+                     house_id => $whole_id,
+                     the_date => { -between => [ $sdate, $edate1 ] },
+                     sex => { '!=' => 'B' },
+                 });
+        if (@cf) {
             # and the config records
             for my $cf (model($c, 'Config')->search({
                             house_id => $whole_id,
@@ -4801,6 +4787,16 @@ sub lodge_do : Local {
                     rental_id  => 0,
                     sex => 'B',
                 });
+                my $cf_date = $cf->the_date;
+                model($c, 'Block')->create({
+                    house_id => $whole_id,
+                    program_id => $program_id,
+                    nbeds => 1,
+                    reason => 'Whole cottage not available',
+                    sdate => $cf_date,
+                    edate => $cf_date,
+                    allocated => 'yes',
+                });
             }
         }
     }
@@ -4809,16 +4805,18 @@ sub lodge_do : Local {
         # we need to block both RAM 1A and RAM 1B
         #
         for my $RAM1AB (model($c, 'House')->search({
-                          cottage => 3,
+                          cottage => 1,
                       })
         ) {
             my $RAM_id = $RAM1AB->id();
             model($c, 'Block')->create({
                 house_id => $RAM_id,
                 program_id => $program_id,
+                nbeds => 2,
                 reason => 'Whole cottage is occupied',
                 sdate => $sdate,
                 edate => $edate1,
+                allocated => 'yes',
             });
             # and the config records
             for my $cf (model($c, 'Config')->search({
@@ -4963,52 +4961,75 @@ sub _vacate {
     #
     if ($house->cottage == 1) {
         # we vacated a RAM 1 single or double occupancy
-        # see if anyone else is in the two rooms
-        # if not, remove the block on the whole cottage
-        my $occupied = 0;
-        RAM_ROOMS:
-        for my $RAM1AB (model($c, 'House')->search({
-                             cottage => 1,
-                         })
+        # see if both of the two rooms in RAM 1 are empty 
+        # for the dates in the date range
+        # if they are remove the blocks on the whole cottage for those dates.
+        my @RAM1_ids = map { $_-> id } 
+                       model($c, 'House')->search({
+                           cottage => 1,
+                       });
+        my %dt_is_occ = map { $_->the_date => 1 }
+                        model($c, 'Config')->search({
+                            house_id => { in => \@RAM1_ids },
+                            the_date => { 'between' => [ $sdate, $edate1 ] },
+                            sex      => { '!=' => 'U' },
+                        });
+        # for the unoccupied dates
+        # remove the blocks on RAM 1 Cottage
+        my ($whole_cottage) = model($c, 'House')->search({
+                                  cottage => 3,
+                              });
+        my $whole_id = $whole_cottage->id;
+        for my $bl (model($c, 'Block')->search({
+                        house_id => $whole_id,
+                        sdate => { between => [ $sdate, $edate1 ] },
+                    })
         ) {
-            CONF:
-            for my $cf (model($c, 'Config')->search({
-                            house_id => $RAM1AB->id,
-                            the_date => { 'between' => [ $sdate, $edate1 ] }
-                        })
-            ) {
-                if ($cf->sex ne 'U') {
-                    $occupied = 1;
-                    last RAM_ROOMS;
-                }
+            if (! $dt_is_occ{$bl->sdate}) {
+                $bl->delete();
             }
         }
-        if (! $occupied) {
-            # remove the block on RAM 1 Cottage
-            my ($whole_cottage) = model($c, 'House')->search({
-                                      cottage => 3,
-                                  });
-            my $whole_id = $whole_cottage->id;
-            my $whole_block = model($c, 'Block')->search({
-                                  house_id => $whole_id,
-                                  sdate => $sdate, 
-                                  edate => $edate1,
-                              });
-            if ($whole_block) {
-                $whole_block->delete();
-            }
-            for my $cf (model($c, 'Config')->search({
-                            house_id => $whole_id,
-                            the_date     => { between => [$sdate, $edate1] },
-                        })
-            ) {
+        for my $cf (model($c, 'Config')->search({
+                        house_id => $whole_id,
+                        the_date => { between => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            if (! $dt_is_occ{$cf->the_date}) {
                 $cf->update({
                     sex => 'U',
-                    curmax => 1,
+                    cur => 0,
                     program_id => 0,
                     rental_id => 0,
                 });
             }
+        }
+    }
+    elsif ($house->cottage == 3) {
+        # we vacated RAM 1 Cottage - the whole cottage
+        # we can remove the blocks on RAM 1A and RAM 1B
+        my @RAM1_ids = map { $_-> id } 
+                       model($c, 'House')->search({
+                           cottage => 1,
+                       });
+        for my $bl (model($c, 'Block')->search({
+                        house_id => { in => \@RAM1_ids },
+                        sdate    => $sdate,
+                        edate    => $edate1,
+                    })
+        ) {
+            $bl->delete();
+        }
+        # and the config records
+        for my $cf (model($c, 'Config')->search({
+                        house_id => { in => \@RAM1_ids },
+                        the_date => { between => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            $cf->update({
+                sex => 'U',
+                cur => 0,
+                program_id => 0,
+            });
         }
     }
 
@@ -5236,7 +5257,7 @@ sub who_is_there : Local {
     my @blocks = model($c, 'Block')->search({
         house_id   => $house_id,
         sdate => { '<=', $the_date },
-        edate => { '>',  $the_date },
+        edate => { '>=',  $the_date },
         allocated => 'yes',
     });
     if (! @regs && ! @blocks) {
