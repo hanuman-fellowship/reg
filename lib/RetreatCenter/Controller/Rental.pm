@@ -1432,8 +1432,9 @@ sub booking : Local {
         });
         next HOUSE if @cf;        # nope
 
-        my $s = "<input type=checkbox name=h$h_id value=$h_id> "
+        my $s = "<label><input type=checkbox name=h$h_id value=$h_id> "
               . $h->name()
+              . "</label>"
               ;
         if ($low_max <= $h->max() && $h->max() <= $max) {
             $checks .= "$s<br>";
@@ -1483,8 +1484,12 @@ sub booking_do : Local {
         $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
         return;
     }
+    my $cottage = 0;
     for my $h_id (@chosen_house_ids) {
         my $h = model($c, 'House')->find($h_id);
+        if ($h->cottage) {
+            $cottage = $h->cottage;
+        }
         model($c, 'RentalBooking')->create({
             rental_id  => $rental_id,
             date_start => $sdate,
@@ -1524,6 +1529,49 @@ sub booking_do : Local {
             }
         }
         check_makeup_new($c, $h_id, $sdate);
+    }
+    # RAM 1 adventures
+    #
+    if ($cottage == 1) {
+        # make sure that RAM 1 Cottage is blocked
+        # for this date range
+        my ($RAM1) = model($c, 'House')->search({
+                          cottage => 3,
+                      });
+        my $RAM1_id = $RAM1->id;
+        for my $cf (model($c, 'Config')->search({
+                        house_id => $RAM1_id,
+                        the_date => { between => [ $sdate, $edate1 ] },
+                        sex => { '!=' => 'B' },
+                    })
+        ) {
+            $cf->update({
+                sex => 'B',
+                cur => 1,
+                program_id => 0,
+                rental_id => $rental_id,
+            });
+        }
+    }
+    elsif ($cottage == 3) {
+        # make sure that RAM 1A and RAM 1B are blocked
+        # for this date range
+        my @RAM1_ids = map { $_->id }
+                       model($c, 'House')->search({
+                           cottage => 1,
+                       });
+        for my $cf (model($c, 'Config')->search({
+                        house_id => { in => \@RAM1_ids },
+                        the_date => { between => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            $cf->update({
+                sex => 'B',
+                cur => 2,
+                rental_id => $rental_id,
+                program_id => 0,
+            });
+        }
     }
     $r->set_grid_stale();
 
@@ -1601,6 +1649,59 @@ sub del_booking : Local {
         program_id => 0,
         rental_id  => 0,
     });
+    # if we have a house in RAM 1
+    # see if the whole cottage is now free
+    # in this case unblock the whole cottage
+    if ($h->cottage == 1) {
+        my @RAM1_ids = map { $_->id } 
+                       model($c, 'House')->search({
+                           cottage => 1,
+                       });
+        my @cf = model($c, 'Config')->search({
+                     house_id => { in => \@RAM1_ids },
+                     the_date => { between => [ $sdate, $edate1 ] },
+                     sex => { '!=' => 'U' },
+                 });
+        if (! @cf) {
+            # all RAM1 houses are unoccupied in this date range
+            my ($whole) = model($c, 'House')->search({
+                              cottage => 3,
+                          });
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $whole->id,
+                            the_date => { between => [ $sdate, $edate1 ] },
+                            sex => { '!=' => 'U' },
+                        })
+            ) {
+                $cf->update({
+                    sex => 'U',
+                    cur => 0,
+                    rental_id => 0,
+                    program_id => 0,
+                });
+            }
+        }
+    }
+    elsif ($h->cottage == 3) {
+        # we deleted RAM 1 Cottage
+        # remove the blocks on RAM 1A and RAM 1B
+        my @RAM1_ids = map { $_->id } 
+                       model($c, 'House')->search({
+                           cottage => 1,
+                       });
+        for my $cf (model($c, 'Config')->search({
+                        house_id => { in => \@RAM1_ids },
+                        the_date => { between => [ $sdate, $edate1 ] },
+                        sex => { '!=' => 'U' },
+                    })
+        ) {
+            $cf->update({
+                sex => 'U',
+                cur => 0,
+                rental_id => 0,
+            });
+        }
+    }
 
     if ($string{housing_log}) {
         my $hname = $house_name_of{$house_id};

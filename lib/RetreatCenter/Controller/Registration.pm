@@ -4775,27 +4775,12 @@ sub lodge_do : Local {
                      sex => { '!=' => 'B' },
                  });
         if (@cf) {
-            # and the config records
-            for my $cf (model($c, 'Config')->search({
-                            house_id => $whole_id,
-                            the_date => { -between => [ $sdate, $edate1 ] },
-                        })
-            ) {
+            for my $cf (@cf) {
                 $cf->update({
                     cur => $whole_cottage->max(),   # (1)
                     program_id => $program_id,
                     rental_id  => 0,
                     sex => 'B',
-                });
-                my $cf_date = $cf->the_date;
-                model($c, 'Block')->create({
-                    house_id => $whole_id,
-                    program_id => $program_id,
-                    nbeds => 1,
-                    reason => 'Whole cottage not available',
-                    sdate => $cf_date,
-                    edate => $cf_date,
-                    allocated => 'yes',
                 });
             }
         }
@@ -4809,16 +4794,7 @@ sub lodge_do : Local {
                       })
         ) {
             my $RAM_id = $RAM1AB->id();
-            model($c, 'Block')->create({
-                house_id => $RAM_id,
-                program_id => $program_id,
-                nbeds => 2,
-                reason => 'Whole cottage is occupied',
-                sdate => $sdate,
-                edate => $edate1,
-                allocated => 'yes',
-            });
-            # and the config records
+            # the config records
             for my $cf (model($c, 'Config')->search({
                             house_id => $RAM_id,
                             the_date => { -between => [ $sdate, $edate1 ] },
@@ -4980,15 +4956,6 @@ sub _vacate {
                                   cottage => 3,
                               });
         my $whole_id = $whole_cottage->id;
-        for my $bl (model($c, 'Block')->search({
-                        house_id => $whole_id,
-                        sdate => { between => [ $sdate, $edate1 ] },
-                    })
-        ) {
-            if (! $dt_is_occ{$bl->sdate}) {
-                $bl->delete();
-            }
-        }
         for my $cf (model($c, 'Config')->search({
                         house_id => $whole_id,
                         the_date => { between => [ $sdate, $edate1 ] },
@@ -5011,15 +4978,7 @@ sub _vacate {
                        model($c, 'House')->search({
                            cottage => 1,
                        });
-        for my $bl (model($c, 'Block')->search({
-                        house_id => { in => \@RAM1_ids },
-                        sdate    => $sdate,
-                        edate    => $edate1,
-                    })
-        ) {
-            $bl->delete();
-        }
-        # and the config records
+        # the config records
         for my $cf (model($c, 'Config')->search({
                         house_id => { in => \@RAM1_ids },
                         the_date => { between => [ $sdate, $edate1 ] },
@@ -5261,7 +5220,11 @@ sub who_is_there : Local {
         allocated => 'yes',
     });
     if (! @regs && ! @blocks) {
-        $c->res->output("Unknown");     # shouldn't happen
+        my ($house) = model($c, 'House')->find($house_id);
+        my $cottage = $house->cottage;
+            $c->res->output($cottage == 3? "Whole cottage is not available"
+                           :$cottage == 1? "Whole cottage is occupied"
+                           :               "Unknown");
         return;
     }
     my $reg_names = "";

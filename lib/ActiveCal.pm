@@ -194,10 +194,14 @@ sub add_pr {
     my $name = $per->last . ", " . $per->first;
     my $id = $pr->id;
     for my $d ($sday .. $eday) {
-        my $status = ($d == $start)? "arr"
-                    :($d == $end  )? "lv"
-                    :                "";
+        my $status = ($pr->mountain_experience)? ""
+                    :($d == $start            )? "arr"
+                    :($d == $end              )? "lv"
+                    :                            "";
         $name =~ s{'}{&rsquo;}xmsg;  # for Charles O'Neill
+        if ($pr->mountain_experience) {
+            $name = "<span class=me_back>$name</span>";
+        }
         push @{$self->{prs}[$d]}, "$name\t$id\t$status";
         $self->{counts}[$d]++;
     }

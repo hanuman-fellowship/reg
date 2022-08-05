@@ -1322,7 +1322,7 @@ EOH
                         $pr_links
                            .= "<td><a class=pr_links target=happening href="
                            . $c->uri_for("/registration/view/$id")
-                           . ">$name</a></td><td bgcolor=$bg>$status"
+                           . ">$name</a></td><td bgcolor=$bg>$status</td>"
                            ;
                     }
                     else {
