@@ -2741,7 +2741,6 @@ sub _get_cluster_groups {
     CLUSTER:
     for my $cl (@clusters) {
         my $cid = $cl->id();
-        next CLUSTER if $cl->name =~ /RAM/;
         next CLUSTER if exists $my_reserved_ids{$cid} || exists $cids{$cid};
         #
         # furthermore, are ALL houses in this cluster truely free?

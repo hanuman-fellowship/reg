@@ -780,7 +780,6 @@ sub _get_cluster_groups {
     CLUSTER:
     for my $cl (@clusters) {
         my $id = $cl->id();
-        next CLUSTER if $cl->name =~ /RAM/;
         next CLUSTER if exists $my_reserved_ids{$id} || exists $cids{$id};
         $UNreserved
             .= "<tr><td>"

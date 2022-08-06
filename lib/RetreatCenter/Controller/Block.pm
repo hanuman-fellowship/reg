@@ -300,7 +300,6 @@ sub create_many : Local {
               ) 
     ) {
         my $h_id = $h->id;
-        next HOUSE if $h->name =~ /RAM/;
         #
         # is this house _completely_ available from sdate to edate1?
         # needs a thorough testing!

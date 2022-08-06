@@ -9,6 +9,11 @@ use Util qw/
     model
     time_travel_class
     tt_today
+    slurp
+    JON
+/;
+use Date::Simple qw/
+    date
 /;
 use Time::Simple qw/
     get_time
@@ -200,6 +205,69 @@ sub documents_do : Local {
         }
         $c->flash->{files_uploaded} = join('<br>', sort keys %uploads);
     }
+    $c->response->redirect('/configuration/index');
+}
+
+sub date_ranges : Local {
+    my ($self, $c) = @_;
+
+    my $date_ranges = "";
+    if (-f "$words/date_ranges.txt") {
+        $date_ranges = slurp("$words/date_ranges.txt");
+    }
+    stash($c,
+        date_ranges => $date_ranges,
+        template => 'configuration/date_ranges.tt2',
+    );
+}
+
+sub date_ranges_do : Local {
+    my ($self, $c) = @_;
+
+    my @lines = grep { /\S/ }   # skip blank lines
+                split "\cM\n", $c->request->params->{date_ranges};
+    my $mess = "";
+    LINE:
+    for my $line (@lines) {
+        my ($type, $range, $max) = split ' ', $line;
+        if (! ($type && $range && $max)) {
+            $mess .= "Invalid format: $line<br>";
+            next LINE;
+        }
+        if ($range !~ m{\d{8}[-]\d{8}}xms) {
+            $mess .= "Illegal date range: $range<br>";
+            next LINE;
+        }
+        my ($start, $end) = split '-', $range;
+        if ($type !~ m{\A ME|PR \z}xms) {
+            $mess .= "Illegal type: $type<br>";
+        }
+        my $st = date($start);
+        if (! $st) {
+            $mess .= "Illegal date: $start<br>";
+        }
+        my $en = date($end);
+        if (! $en) {
+            $mess .= "Illegal date: $end<br>";
+        }
+        if ($st && $en && $st > $en) {
+            $mess .= "Start date $start is after the End date $end<br>";
+        }
+        if ($max !~ m{\A \d+ \z}xms) {
+            $mess .= "Max value is not numeric: $max";
+        }
+    }
+    if ($mess) {
+        stash($c,
+            mess     => $mess,
+            template => 'listing/error.tt2',
+        );
+        return;
+    }
+    open my $out, '>', "$words/date_ranges.txt";
+    print {$out} map { "$_\n" } @lines;
+    close $out;
+    # and send to mmc.org
     $c->response->redirect('/configuration/index');
 }
 

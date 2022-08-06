@@ -50,7 +50,8 @@ use RetreatCenter::Controller::MasterCal qw/
 use lib '../../';       # so you can do a perl -c here.
 
 my $no_PR_regex    = qr{\bno\b .* \bprs?\b}xmsi;
-my $no_meals_regex = qr{\bno\b .* \b(lunch|meals?)\b}xmsi;
+my $no_ME_regex    = qr{\bno\b .* \bmes?\b}xmsi;
+my $no_Meals_regex = qr{\bno\b .* \b(lunch|meals?)\b}xmsi;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -166,17 +167,20 @@ sub create_do : Local {
         $P{name}, 
         $c->uri_for("/event/view/$id"),
     );
-    check_no_PR_meals($c, $e);
+    check_no_PR_ME_Meals($c, $e);
     $c->response->redirect($c->uri_for("/event/view/$id"));
 }
 
-sub check_no_PR_meals {
+sub check_no_PR_ME_meals {
     my ($c, $e) = @_;
     if ($e->name() =~ $no_PR_regex) {
-        _send_no_prs($c);
+        _send_no_PRs($c);
     }
-    if ($e->name() =~ $no_meals_regex) {
-        _send_no_meals($c);
+    if ($e->name() =~ $no_ME_regex) {
+        _send_no_MEs($c);
+    }
+    if ($e->name() =~ $no_Meals_regex) {
+        _send_no_Meals($c);
     }
 }
 
@@ -330,7 +334,7 @@ sub update_do : Local {
         # ???
     }
     $e->update(\%P);
-    check_no_PR_meals($c, $e);
+    check_no_PR_ME_Meals($c, $e);
     if ($names) {
         stash($c,
             event    => $e,
@@ -382,7 +386,7 @@ sub delete : Local {
     my $name = $e->name();
     $e->delete();
     # $e the object still exists - the table row does not
-    check_no_PR_meals($c, $e);
+    check_no_PR_ME_Meals($c, $e);
     $c->response->redirect($c->uri_for('/event/list'));
 }
 
@@ -1804,7 +1808,7 @@ sub which_mp_do : Local {
         # the 2 above is the Misc tab - ignored for events
 }
 
-sub _send_no_prs {
+sub _send_no_PRs {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
@@ -1819,7 +1823,7 @@ sub _send_no_prs {
         or die "cannot write /tmp/noPR.txt: $!\n";
     for my $ev (@events) {
         print {$out} $ev->sdate() . "-" . $ev->edate()
-             . (($ev->name =~ m{\bindoors\b}xmsi)? " indoors": "")
+             . (($ev->name =~ m{\bindoors?\b}xmsi)? " indoors": "")
              . "\n";
     }
     close $out;
@@ -1841,9 +1845,49 @@ sub _send_no_prs {
         or return (my_die($c, 'cannot put noPR.txt ' . $ftp->message));
     $ftp->quit();
     add_activity($c, "No PRs sent to web");
+    unlink '/tmp/noPR.txt';
 }
 
-sub _send_no_meals {
+sub _send_no_MEs {
+    my ($c) = @_;
+    my (@events) = model($c, 'Event')->search(
+        {
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]MEs?[[:>:]]' },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    open my $out, ">", "/tmp/noME.txt"
+        or die "cannot write /tmp/noME.txt: $!\n";
+    for my $ev (@events) {
+        print {$out} $ev->sdate() . "-" . $ev->edate()
+             . "\n";
+    }
+    close $out;
+    #
+    # send it to mountmadonna.org/personal
+    #
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or return(my_die($c, "cannot connect to $string{ftp_site}"));
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return(my_die($c, "cannot login " . $ftp->message));
+    $ftp->cwd($string{ftp_pr_dir})
+        or return(my_die($c, "cannot cwd to $string{ftp_pr_dir} " . $ftp->message));
+    $ftp->ascii();
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
+    $ftp->put('/tmp/noME.txt', 'noME.txt')
+        or return (my_die($c, 'cannot put noME.txt ' . $ftp->message));
+    $ftp->quit();
+    add_activity($c, "No MEs sent to web");
+    unlink '/tmp/noME.txt';
+}
+
+sub _send_no_Meals {
     my ($c) = @_;
     my (@no_meal_events) = model($c, 'Event')->search(
         {

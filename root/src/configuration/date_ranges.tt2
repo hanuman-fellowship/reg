@@ -1,0 +1,29 @@
+<style>
+.fixed {
+    font-family: Courier;
+}
+</style>
+<h1>Date Ranges ME/PR</h1>
+<form name=form action=/configuration/date_ranges_do>
+<textarea name=date_ranges id=date_ranges rows=10 cols=30 class=fixed>
+$date_ranges
+</textarea>
+<br>
+<button type=submit style="background: lightgreen; font-size: 18pt;">Submit</button>
+</form>
+<p>
+Each line has this format:
+<ul>
+type yyyymmdd-yyyymmdd max
+<br><br>
+type is either <span class=fixed>ME</span> or <span class=fixed>PR</span>
+</ul>
+Like so:
+<ul>
+<div class=fixed>
+ME 20220801-20220810 20<br>
+PR 20221001-20221009 30
+</div>
+</ul>
+You can remove lines with expired date ranges.
+<script>document.getElementById('date_ranges').focus();</script>

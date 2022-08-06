@@ -48,6 +48,9 @@ p {
 [% IF super %]
     <a href=/configuration/counts>Counts</a><p>
 [% END %]
+[% IF web_des %]
+    <a href=/configuration/date_ranges>Date Ranges ME/PR</a><p>
+[% END %]
 [% IF prog_admin %]
     <a href=/configuration/documents>Documents</a><p>
 [% END %]
