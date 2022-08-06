@@ -518,7 +518,7 @@ sub send_grid_data {
             # see comment below about center_tent sites
             # being used during the winter.
         }
-        print {$gd} "$t " . $hc->$t() . "\n";
+        print {$gd} "$t " . $hc->$t() . " $string{$t}\n";
     }
     # quick hack for fixed cost houses
     #
@@ -534,6 +534,7 @@ sub send_grid_data {
             . "|" . ($house->bath()    eq 'yes'? 1: 0)
             . "|" . ($house->tent()    eq 'yes'? 1: 0)
             . "|" . ((!$winter && $house->center()  eq 'yes')? 0: 1)
+            . "|" . $house->cottage()
             . "\n"
             ;
             # the trickyness with $winter and center tents
@@ -546,6 +547,7 @@ sub send_grid_data {
             #
     }
     close $gd;
+    return if -f '/tmp/Reg_Dev';
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})
@@ -572,9 +574,6 @@ sub set_grid_stale {
 }
 
 sub send_rental_deposit {
-    if (-f '/tmp/Reg_Dev') {
-        return;
-    }
     my ($rental) = @_;
     my $code = $rental->grid_code();
     my $coord = $rental->coordinator() || $rental->contract_signer;
@@ -596,6 +595,7 @@ sub send_rental_deposit {
         email    => $coord->email(),
     });
     close $out;
+    return if -f '/tmp/Reg_Dev';
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})

@@ -31,7 +31,10 @@ you can add them back again after you have changed the dates.
 <div class=houses>
 <form action=/rental/mass_delete_do/$rental.id>
 [% FOR b IN rental.rental_bookings %]
-<p class=item><input type=checkbox name=$b.house.id value='yes' checked> $b.house.name
+    [% name = b.house.name %]
+    [% IF !name.match('RAM') %]
+        <p class=item><input type=checkbox name=$b.house.id value='yes' checked> $b.house.name
+    [% END %]
 [% END %]
 <p class=p2>
 </div>

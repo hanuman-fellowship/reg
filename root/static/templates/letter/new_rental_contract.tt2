@@ -126,37 +126,8 @@ local taxes, liability insurance, use of grounds, and recreational
 facilities. Charges are based on actual occupancy,
 not room capacity - e.g., a room with 3 beds occupied by 2 people
 is charged as a <i>double</i>.
-[% hc = rental.housecost %]
-<!-- should generate this section rather than all the IFs here -->
-<!-- true, not now -->
-<table cellpadding=2>
-[% IF hc.commuting %]
-<tr><td>Commuting</th><td align=right>$hc.commuting</td></tr>
-[% END %]
-[% IF hc.own_tent %]
-<tr><td>Own Tent</th><td align=right>$hc.own_tent</td></tr>
-[% END %]
-[% IF hc.own_van %]
-<tr><td>Own Van</th><td align=right>$hc.own_van</td></tr>
-[% END %]
-[% IF rental.summer && hc.center_tent %]
-<tr><td>Center Tent</th><td align=right>$hc.center_tent</td></tr>
-[% END %]
-[% IF hc.economy %]
-<tr><td>Economy</td><td align=right>$hc.economy</td></tr>
-[% END %]
-[% IF hc.dormitory %]
-<tr><td>Dormitory (4-7 to a room)</td><td align=right>$hc.dormitory</td></tr>
-[% END %]
-<tr><td>Triple</td><td align=right>$hc.triple</td></tr>
-<tr><td>Double Room</td><td align=right>$hc.dble</td></tr>
-<tr><td>Double Cabin</td><td align=right>$hc.dble_cabin</td></tr>
-<tr><td>Double with bath</td><td align=right>$hc.dble_bath</td></tr>
-<tr><td>Single Room</td><td align=right>$hc.single</td></tr>
-<tr><td>Single Cabin</td><td align=right>$hc.single_cabin</td></tr>
-<tr><td>Single with bath</td><td align=right>$hc.single_bath</td></tr>
-</table>
 <p>
+$fee_table
 [% IF rental.seminar_house %]
 <b>Presenter agrees to house a minimum of 11 guests in the Seminar House.</b>
 [% END %]

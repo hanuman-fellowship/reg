@@ -1955,9 +1955,11 @@ sub contract : Local {
     else {
         $deposit = $rental->deposit;
     }
-    $rental->send_rental_deposit() unless -f '/tmp/Reg_Dev';
+    $rental->send_rental_deposit();
+
 
     my %stash = (
+        fee_table => _fee_table($rental->housecost),
         today   => tt_today($c),
         email   => $email,
         signer  => ($rental->cs_person_id()? $rental->contract_signer()
@@ -2052,6 +2054,22 @@ sub contract : Local {
         status        => "sent",
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+}
+
+sub _fee_table {
+    my ($hc) = @_;
+    my $table = "<table cellpadding=5>";
+    for my $ht (reverse housing_types(1)) {
+        my $cost = $hc->$ht;
+        if ($cost != 0) {
+            $table .= "<tr>"
+                   .  "<td>$string{$ht}</td>"
+                   .  "<td align=right>$cost</td>"
+                   .  "</tr>";
+        }
+    }
+    $table .= "</table>";
+    return $table;
 }
 
 #
@@ -2723,6 +2741,7 @@ sub _get_cluster_groups {
     CLUSTER:
     for my $cl (@clusters) {
         my $cid = $cl->id();
+        next CLUSTER if $cl->name =~ /RAM/;
         next CLUSTER if exists $my_reserved_ids{$cid} || exists $cids{$cid};
         #
         # furthermore, are ALL houses in this cluster truely free?

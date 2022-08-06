@@ -753,6 +753,7 @@ sub _get_cluster_groups {
     my @reserved = reserved_clusters($c, $program_id, 'Program');
     my %my_reserved_ids;
     my $reserved = "<tr><th align=left>Reserved</th></tr>\n";
+    CLUSTER:
     for my $cl (@reserved) {
         my $cid = $cl->id();
         $my_reserved_ids{$cid} = 1;
@@ -779,6 +780,7 @@ sub _get_cluster_groups {
     CLUSTER:
     for my $cl (@clusters) {
         my $id = $cl->id();
+        next CLUSTER if $cl->name =~ /RAM/;
         next CLUSTER if exists $my_reserved_ids{$id} || exists $cids{$id};
         $UNreserved
             .= "<tr><td>"

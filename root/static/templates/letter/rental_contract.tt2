@@ -106,36 +106,8 @@ or a comparable facility, and lodging for up to $rental.max
 people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
 to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates:
 <h2>Rates</h2>
-[% hc = rental.housecost %]
-<!-- should generate this section rather than all the IFs here -->
-[% IF hc.type == 'Per Day' %]
-The costs below are dollars per person per night.
-[% END %]
-<table cellpadding=2>
-[% IF hc.commuting %]
-<tr><td>Commuting</th><td align=right>$hc.commuting</td></tr>
-[% END %]
-[% IF hc.own_tent %]
-<tr><td>Own Tent</th><td align=right>$hc.own_tent</td></tr>
-[% END %]
-[% IF hc.own_van %]
-<tr><td>Own Van</th><td align=right>$hc.own_van</td></tr>
-[% END %]
-[% IF rental.summer && hc.center_tent %]
-<tr><td>Center Tent</th><td align=right>$hc.center_tent</td></tr>
-[% END %]
-[% IF hc.economy %]
-<tr><td>Economy</td><td align=right>$hc.economy</td></tr>
-[% END %]
-[% IF hc.dormitory %]
-<tr><td>Dormitory (4-7 to a room)</td><td align=right>$hc.dormitory</td></tr>
-[% END %]
-<tr><td>Triple</td><td align=right>$hc.triple</td></tr>
-<tr><td>Double</td><td align=right>$hc.dble</td></tr>
-<tr><td>Double with bath</td><td align=right>$hc.dble_bath</td></tr>
-<tr><td>Single</td><td align=right>$hc.single</td></tr>
-<tr><td>Single with bath</td><td align=right>$hc.single_bath</td></tr>
-</table>
+$fee_table
+<p>
 Children aged 2 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
 <p>
