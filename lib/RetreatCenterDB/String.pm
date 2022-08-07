@@ -270,6 +270,8 @@ long_commuting - for housing type descriptions
 long_dble - for housing type descriptions
 long_dble_bath - for housing type descriptions
 long_dble_cabin - for housing type descriptions
+long_dble_cottage1 - for housing type descriptions
+long_dble_cottage2 - for housing type descriptions
 long_dormitory - for housing type descriptions
 long_economy - for housing type descriptions
 long_not_needed - for housing type descriptions
@@ -279,8 +281,11 @@ long_quad - for housing type descriptions
 long_single - for housing type descriptions
 long_single_bath - for housing type descriptions
 long_single_cabin - for housing type descriptions
+long_single_cottage1 - for housing type descriptions
+long_single_cottage2 - for housing type descriptions
 long_triple - for housing type descriptions
 long_unknown - for housing type descriptions
+long_whole_cottage - for housing type descriptions
 lunch_charge - obsolete - can be removed.
     rental_lunch_cost instead.  incorporated into housing cost.
 lunch_cost - cost of lunch - when reserving online
@@ -407,3 +412,4 @@ url_prefix - the prefix for all URLs in Reg - like https://akash.mountmadonna.or
 website - the title for a Rental's website in the online row for the rental
 weburl - the web address for a Rental's website in the online row for the rental
 while_here - The While You're Here section of the default confirmation letter
+whole_cottage - for housing type descriptions
