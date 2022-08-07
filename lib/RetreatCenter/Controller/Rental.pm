@@ -1530,6 +1530,13 @@ sub booking_do : Local {
         }
         check_makeup_new($c, $h_id, $sdate);
     }
+
+=comment
+
+# Not true - all this fiddling is not needed :(
+# The rooms are not actually booked.
+# That happens in the web grid.
+
     # RAM 1 adventures
     #
     if ($cottage == 1) {
@@ -1573,6 +1580,9 @@ sub booking_do : Local {
             });
         }
     }
+
+=cut
+
     $r->set_grid_stale();
 
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
@@ -2105,8 +2115,7 @@ sub reserve_cluster : Local {
     for my $h (@{$houses_in_cluster{$cluster_id}}) {
         my $h_id = $h->id();
         my $h_max = $h->max();
-        my $h_type = max_type($h_max, $h->bath(), $h->cabin(),
-                              $h->tent(), $h->center());
+        my $h_type = max_type($h);
         model($c, 'RentalBooking')->create({
             rental_id  => $rental_id,
             house_id   => $h_id,

@@ -884,24 +884,41 @@ sub type_max {
 }
 
 sub max_type {
-    my ($max, $bath, $cabin, $tent, $center) = @_;
-    if ($max == 1) {
-        if ($tent) {
-            return ($center)? "center_tent"
-                  :           "own_tent"
+    my ($house) = @_;
+    my $max = $house->max;
+    my $bath = $house->bath;
+    my $cabin = $house->cabin;
+    my $cottage= $house->cottage;
+    if ($cottage == 3) {
+        return 'whole_cottage';
+    }
+    elsif ($cottage == 2) {
+        return $max == 1? "single_cottage2"
+              :           "dble_cottage2"
+              ;
+    }
+    elsif ($cottage == 1) {
+        return $max == 1? "single_cottage1"
+              :           "dble_cottage1"
+              ;
+    }
+    elsif ($max == 1) {
+        if ($house->tent) {
+            return ($house->center)? "center_tent"
+                  :                  "own_tent"
                   ;
         }
         else {
-            return ($bath)? "single_bath"
-                  :($cabin)?"single_cabin"
-                  :         "single"
+            return ($bath )? "single_bath"
+                  :($cabin)? "single_cabin"
+                  :          "single"
                   ;
         }
     }
     elsif ($max == 2) {
-            return ($bath)? "dble_bath"
-                  :($cabin)?"dble_cabin"
-                  :         "dble"
+            return ($bath )? "dble_bath"
+                  :($cabin)? "dble_cabin"
+                  :          "dble"
                   ;
     }
     elsif ($max == 3) {
