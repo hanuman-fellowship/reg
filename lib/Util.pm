@@ -94,6 +94,7 @@ our @EXPORT_OK = qw/
     check_alt_packet
     check_file_upload
     add_br
+    put_pr_dir
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2596,5 +2597,37 @@ sub add_br {
     $s =~ s{$}{<br>}xmsg;
     return $s;
 }
+
+#
+# put the value in the file in the pr_dir on mountmadonna.org
+#
+sub put_pr_dir {
+    my ($value, $fname) = @_;
+    my $fn;
+    if (-f $value) {
+        $fn = $value;
+    }
+    else {
+        $fn = '/tmp/$fname.txt';
+        open my $out, ">", $fn or return;
+        print {$out} "$value\n";
+        close $out;
+    }
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive}) or return;
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
+    $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
+    $ftp->cwd($string{ftp_pr_dir}) or return;
+    $ftp->ascii() or return;
+    $ftp->put($fn, $fname) or return;
+    $ftp->quit();
+    if ($fn =~ m{\A /tmp/}xms && ! -f '/tmp/Reg_Dev') {
+        unlink $fn;
+    }
+}
+
 
 1;

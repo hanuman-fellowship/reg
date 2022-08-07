@@ -18,6 +18,7 @@ use Util qw/
     set_cache_timestamp
     get_string
     put_string
+    put_pr_dir
 /;
 use Date::Simple qw/
     date
@@ -104,20 +105,20 @@ sub update_do : Local {
         hlog_toggle($c, $value);
     }
     elsif ($the_key =~ m{^center_tent_}) {
-        _put_pr_dir("$string{center_tent_start}-$string{center_tent_end}",
+        put_pr_dir("$string{center_tent_start}-$string{center_tent_end}",
                     'CT.txt');
     }
     elsif ($the_key eq 'pr_max_nights') {
-        _put_pr_dir($string{pr_max_nights}, 'max_nights.txt');
+        put_pr_dir($string{pr_max_nights}, 'max_nights.txt');
     }
     elsif ($the_key eq 'mountain_experience_cost') {
-        _put_pr_dir($string{mountain_experience_cost}, 'ME_cost.txt');
+        put_pr_dir($string{mountain_experience_cost}, 'ME_cost.txt');
     }
     elsif ($the_key eq 'pr_max') {
-        _put_pr_dir($string{pr_max}, 'pr_max.txt');
+        put_pr_dir($string{pr_max}, 'pr_max.txt');
     }
     elsif ($the_key eq 'me_max') {
-        _put_pr_dir($string{me_max}, 'me_max.txt');
+        put_pr_dir($string{me_max}, 'me_max.txt');
     }
     elsif ($the_key eq 'online_notify') {
         # need to send this string up to mountmadonna.org
@@ -168,29 +169,6 @@ sub update_do : Local {
     else {
         $c->response->redirect($c->uri_for("/string/list#$the_key"));
     }
-}
-
-#
-# put the value in the file in the pr_dir on mountmadonna.org
-#
-sub _put_pr_dir {
-    my ($value, $fname) = @_;
-    my $fn = '/tmp/$fname.txt';
-    open my $out, ">", $fn or return;
-    print {$out} "$value\n";
-    close $out;
-    my $ftp = Net::FTP->new($string{ftp_site},
-                            Passive => $string{ftp_passive}) or return;
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
-    $ftp->cwd($string{ftp_pr_dir}) or return;
-    $ftp->ascii() or return;
-    $ftp->put($fn, $fname) or return;
-    $ftp->quit();
-    unlink $fn;
 }
 
 sub access_denied : Private {

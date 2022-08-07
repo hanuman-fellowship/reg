@@ -11,6 +11,7 @@ use Util qw/
     tt_today
     slurp
     JON
+    put_pr_dir
 /;
 use Date::Simple qw/
     date
@@ -208,12 +209,13 @@ sub documents_do : Local {
     $c->response->redirect('/configuration/index');
 }
 
+my $dr_file = "$words/date_ranges.txt";
 sub date_ranges : Local {
     my ($self, $c) = @_;
 
     my $date_ranges = "";
-    if (-f "$words/date_ranges.txt") {
-        $date_ranges = slurp("$words/date_ranges.txt");
+    if (-f $dr_file) {
+        $date_ranges = slurp($dr_file);
     }
     stash($c,
         date_ranges => $date_ranges,
@@ -264,10 +266,10 @@ sub date_ranges_do : Local {
         );
         return;
     }
-    open my $out, '>', "$words/date_ranges.txt";
+    open my $out, '>', $dr_file;
     print {$out} map { "$_\n" } @lines;
     close $out;
-    # and send to mmc.org
+    put_pr_dir($dr_file, "date_ranges.txt");
     $c->response->redirect('/configuration/index');
 }
 
