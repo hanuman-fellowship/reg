@@ -171,7 +171,7 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for("/event/view/$id"));
 }
 
-sub check_no_PR_ME_meals {
+sub check_no_PR_ME_Meals {
     my ($c, $e) = @_;
     if ($e->name() =~ $no_PR_regex) {
         _send_no_PRs($c);
