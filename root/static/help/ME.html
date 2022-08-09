@@ -1,0 +1,82 @@
+<head>
+<link rel="stylesheet" type="text/css" href="help.css" />
+</head>
+<body>
+There will be a nicely formatted page that describes the entire Mountain Experience.
+The fun things to do, what is allowed, what is not...
+On it there's a link to do the registration.
+<p>
+This is the registration link:
+https://mountmadonna.org/cgi-bin/regME
+<p>
+It says meals are:
+Lunch on Wednesday 12:30-1:30, Brunch on Saturday 10:00-11:00
+Dinner 5:15-6:15<br>
+Choose a date (Wed or Sat, See the excluded dates for ME), <br>
+what meals do you want, yoga class?<br>
+Then pay.<br>
+This page is plain, not 'styled' like other pages but ... it works.<br>
+Perhaps Jamal or Shantam can help style it to be similar to other pages on mountmadonna.org<br>
+Or not.  The site IS being redone.
+RetreatGuru (see esalen) does do a redirect to their RG site ...
+and just have a logo to make it look 'official'
+<p>
+TODO: make the date selectable from a little calendar image
+like it is done when registering for a PR.   This will
+take some research.
+<p>
+Configuration > Strings<br>
+mountain_experience_cost - 75<br>
+This is a fixed cost regardless of which meals they want.<br>
+There is also me_max - currently 20 - a maximum # of Mountain Experience
+registrations per day.   This can be changed as the need
+arises.   This is separate from pr_max - to limit the number
+of PRs on a day.
+<p>
+?When are they 'allowed' to arrive?  And depart?<br>
+This will be in the page before the registration
+and in the confirmation letter...
+<p>
+?The documents 'Guest Packet' and 'Info Sheet' (sent in Arrangements letter)
+disagree about dinner time on Saturday - Info Sheet says 5:00-6:00
+<p>
+These registrations 'live' in Personal Retreats
+In AllRegs you see just ONE date and house type is 'Not Needed'
+and House says 'Mountain Experience' - in green
+<p>
+Meals - Lunch (Brunch) and/or Dinner - this is a field in the Registration
+shown when viewing - just below Program line<br>
+it is consulted when generating the Meal List
+<p>
+On Saturday 'Lunch' means Brunch
+<p>
+In the Meal list with details it shows 'Mountain Experience' - in green
+<p>
+On the Calendar - the blue line at the bottom of each month
+shows the PRs and MEs.  Clicking on it shows the people's names.
+Mountain Experience registration names are shown with a green background
+<p>
+?Should the confirmation letter be adapted for these registrations?
+Yes.  I await instructions from Lara.
+<p>
+Yoga Class? - it is put in the Comment field - after any special request they made.<br>
+"They wish to attend a yoga class."<br>
+or<br>
+"They are not interested in a yoga class."
+<p>
+The listing 'Comings and Goings'
+shows 'Mountain Experience' (in green)
+and the comment (yoga class or not?)
+<p>
+Configuration > Date Ranges ME/PR<br>
+a primitive interface because it is rarely used and only by trained experts
+this syntax is checked:
+<p>
+ME 20220901-20220904 30<br>
+PR 20221101-20221120 10
+<p>
+these supercede pr_max and me_max
+to make a 'user-friendly' interface would take hours and hours
+and be more fragile
+</body>
+</html>

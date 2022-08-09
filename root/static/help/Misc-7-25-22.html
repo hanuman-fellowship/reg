@@ -1,0 +1,105 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="help.css" />
+</head>
+<body>
+Programs
+There are 2 new fields in the Misc tab: 
+<p>
+Discount Code<br>
+Discount Percentage
+<p>
+If these fields are not empty then when someone registers online
+for the program (or a PR) they can:
+<p>
+- enter the Discount Code (for the specific program) (which they've been given by some secret means)<br>
+- in the payment description see the % discount is noted
+<p>
+After paying at authorize.net and after the registration is 'brought in'
+there will be a note in the History about the discount
+and there will be a negative Charge to reflect the discount.
+<p>
+Configuration > Affiliations<br>
+There is now a new affiliation named 'Website Subscriber'.
+This is added when a mailing list request is received.
+This affiliation is REMOVED when the person registers for any program.
+This was also done retroactively...
+Of the 80k people in the database, 
+40k had no registrations - 20k of these were Only Temple.
+Note that we have not collected temple reservation people
+for quite a while.   Shantam's reservation system has
+the complete very large set if we wish to communicate with them.
+<p>
+Rentals > Inquiries<br>
+a LOT have come in - some very interesting ones.
+where are we advertising? :)<br>
+what Google search terms?<br>
+I added How Many? as a heading on the list of inquiries so we have an
+easy view of the sense of size<br>
+I added a field - Status<br>
+It currently has 5 values:<p>
+- New <br>
+- Contacted<br>
+- Denied<br>
+- Tentative<br>
+- Rental<p>
+I just made these 5 up.   Let me know what you would like.
+You modify the Status by clicking on it.<br>
+You update the Notes by clicking on the word 'Notes'.
+When an Inquiry is received, a Person record is created (or updated).
+You can go to that Person screen by clicking on the Person's name
+when viewing the Inquiry.
+<p>
+Export - you can export all Inquiries to a tab separated file (named inquiry.csv).
+The date time format is yyyy-mm-dd hhdd
+The delimiter is a tab 
+even though the suffix is csv (comma separated values)<br>
+You can import this file into Excel/Google Sheets/Numbers (on OSX)<br>
+<p>
+Make Rental link<br>
+This creates a rental from the Inquiry.
+Group Name from the Inquiry goes to rental name, title, and badge title
+Contact person is set to the leader name from the Inquiry
+New Contract and Meeting Place Deposit are checked.
+Other fields need to be set - dates, maximum, deposit, etc
+Once the rental for the inquiry is created
+the 'Make Rental' link changes to 'To Rental'  
+and the Status is changed to Rental.
+<p>
+If you'd like to enter other Inquiries that we previously received by way of
+the Google form (' to keep them all in one place ')
+you can put the words 'no email' in the What Else?
+section and no email will be sent
+(and the words 'no email' will be removed).
+<p>
+There is also the Proposal mechanism that has been in Reg
+for quite a while.   It is documented here:<p>
+Help > Rentals from Cradle to Grave<p>
+This is for purely internal use.  People in the wide world
+cannot create a Proposal.   Brajesh wanted it to fill in when
+he received a phone call inquiry about a rental.
+<p>
+Listings > People > General Reports<br>
+A new format - 'Name, Address, Email, Affiliations'
+This is a tab separated report that downloads into report14.csv
+It is similar to Name, Address, Email 
+but there is one more field which has the affiliations that matched.
+these are comma separated in the one field
+these matching affiliations will vary from person to person.
+<p>
+Green Scene Donations now go to MMC General Donations
+for all online registrations (including PRs)<br>
+Text on the registration form is from from Lara
+there's an MMC logo there as well.
+<p>
+The thank you email with Subject 'MMC General Fund Donation'
+is from donations@mountmadonna.org
+signed Cami Arndt, Donations Secretary
+this is the same as the email from making a donation
+via the DONATE button
+on the mountmadonna.org home page'
+Funds go into the Extra Account named 
+'Donation - MMC General' GL # 50301<p>
+These things are controlled by 5 Strings named green_*.
+</body>
+</html>
