@@ -369,7 +369,7 @@ sub _get_data {
             push @mess, "Discount Percentage must be a number";
     }
     if ($P{tuition} > 0 && $P{donation}) {
-        push @mess, "Cannot have both Tuition > 0 and Payment by Donation = 'yes'";
+        push @mess, "Cannot have both Tuition > 0 and Sliding Scale Tuition";
     }
     # check format of donation_tiers
     if (! empty($P{donation_tiers})) {
