@@ -2174,7 +2174,7 @@ sub del_file : Local {
 #
 sub mmc_reg : Local {
     my ($self, $c, $prog_id) = @_;
-    _do_export();
+    _do_export($c);
     $c->response->redirect($c->uri_for("https://mountmadonna.org/cgi-bin/reg1?id=$prog_id"));
 }
 
