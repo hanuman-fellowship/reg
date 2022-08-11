@@ -2110,6 +2110,7 @@ sub _do_export {
 }
 
 sub export : Local {
+    my ($self, $c) = @_;
     _do_export();
     stash($c,
         ftp_export_site => $string{ftp_export_site},
