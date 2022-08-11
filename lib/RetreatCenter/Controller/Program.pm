@@ -2175,7 +2175,15 @@ sub del_file : Local {
 sub mmc_reg : Local {
     my ($self, $c, $prog_id) = @_;
     _do_export($c);
-    $c->response->redirect("https://mountmadonna.org/cgi-bin/reg1?id=$prog_id");
+    if ($prog_id eq 'pr') {
+        $c->response->redirect("https://mountmadonna.org/cgi-bin/regPR");
+    }
+    elsif ($prog_id eq 'me') {
+        $c->response->redirect("https://mountmadonna.org/cgi-bin/regME");
+    }
+    else {
+        $c->response->redirect("https://mountmadonna.org/cgi-bin/reg1?id=$prog_id");
+    }
 }
 
 1;
