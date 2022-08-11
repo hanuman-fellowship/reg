@@ -547,28 +547,28 @@ $leaders_house
 </tr>
 
 <tr>
-<th align=right>Payment by Donation</th>
+<th align=right>Tuition Sliding Scale</th>
 <td>$program.donation</td>
 </tr>
 
 <tr>
-<th align=right valign=top>Donation Message</th>
+<th align=right valign=top>Sliding Scale Message</th>
 <td colspan=2 valign=top>$program.donation_msg</td>
 </tr>
 
 
 <tr>
-<th align=right>Donation Minimum</th>
+<th align=right>Sliding Scale Minimum</th>
 <td>$program.donation_minimum</td>
 </tr>
 
 <tr>
-<th align=right>Donation Tiers</th>
+<th align=right>Sliding Scale Tiers</th>
 <td>$program.donation_tiers</td>
 </tr>
 
 <tr>
-<th align=right valign=top>Donation Zero Message</th>
+<th align=right valign=top>Sliding Scale Zero Message</th>
 <td colspan=2 valign=top>$program.donation_zero_msg</td>
 </tr>
 
