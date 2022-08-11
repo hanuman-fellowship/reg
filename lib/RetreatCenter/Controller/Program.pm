@@ -1941,7 +1941,7 @@ sub _do_export {
                 "Program " . $pr->name . " has no affiliations!",
                 "program/error.tt2",
             );
-            return;
+            return 0;
         }
     }
     gen_progtable(\@programs);      # writes to $export_dir/progtable
@@ -2110,11 +2110,14 @@ sub _do_export {
     #_send_export($c, 'mmi');        # not needed any more???  nope.
 
     add_activity($c, "Programs and Rentals exported");
+    return 1;
 }
 
 sub export : Local {
     my ($self, $c) = @_;
-    _do_export($c);
+    if (!_do_export($c)) {
+        return;
+    }
     stash($c,
         ftp_export_site => $string{ftp_export_site},
         template    => "program/exported.tt2",
@@ -2177,7 +2180,9 @@ sub del_file : Local {
 #
 sub mmc_reg : Local {
     my ($self, $c, $prog_id) = @_;
-    _do_export($c);
+    if (!_do_export($c)) {
+        return;
+    }
     if ($prog_id eq 'pr') {
         $c->response->redirect("https://mountmadonna.org/cgi-bin/regPR");
     }
