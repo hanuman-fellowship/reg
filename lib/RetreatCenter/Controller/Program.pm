@@ -368,6 +368,9 @@ sub _get_data {
     if (!empty($P{discount_code}) && $P{discount_pct} !~ m{\A \s*\d+\s*\z}xms) {
             push @mess, "Discount Percentage must be a number";
     }
+    if ($P{tuition} > 0 && $P{donation}) {
+        push @mess, "Cannot have both Tuition > 0 and Payment by Donation = 'yes'";
+    }
     # check format of donation_tiers
     if (! empty($P{donation_tiers})) {
         my $s = $P{donation_tiers};
