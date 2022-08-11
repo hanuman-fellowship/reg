@@ -88,7 +88,7 @@ function UNreserve_cluster(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <span id=nextlink><a href=/program/view_adj/$id/next accesskey='N'><span class=keyed>N</span>ext</a></span>
 &nbsp;&nbsp;&nbsp;
-[% IF program.web_ready %]
+[% IF program.webready %]
     [% name = program.name %]
     [% IF name.match('(?i)personal.*retreat') %]
     <a target=mmc_reg href=/program/mmc_reg/pr>PR Reg</a>
