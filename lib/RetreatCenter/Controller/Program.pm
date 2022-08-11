@@ -1913,7 +1913,7 @@ sub cancel : Local {
 # happens in another way.
 #
 sub _do_export {
-    my ($self, $c) = @_;
+    my ($c) = @_;
 
     # clear the arena
     system("/bin/rm -rf $export_dir/*");
@@ -2111,7 +2111,7 @@ sub _do_export {
 
 sub export : Local {
     my ($self, $c) = @_;
-    _do_export();
+    _do_export($c);
     stash($c,
         ftp_export_site => $string{ftp_export_site},
         template    => "program/exported.tt2",
