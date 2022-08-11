@@ -1912,7 +1912,7 @@ sub cancel : Local {
 # for the new web site where the generation of the program pages
 # happens in another way.
 #
-sub export : Local {
+sub _do_export {
     my ($self, $c) = @_;
 
     # clear the arena
@@ -2104,10 +2104,13 @@ sub export : Local {
 
     # send it off
     _send_export($c, 'mmc');
-    #_send_export($c, 'mmi');        # not needed any more???
+    #_send_export($c, 'mmi');        # not needed any more???  nope.
 
     add_activity($c, "Programs and Rentals exported");
+}
 
+sub export : Local {
+    _do_export();
     stash($c,
         ftp_export_site => $string{ftp_export_site},
         template    => "program/exported.tt2",
@@ -2163,6 +2166,15 @@ sub del_file : Local {
     else {
         $c->response->redirect($c->uri_for("/rental/view/$rental_id/4"));
     }
+}
+
+# export all
+# then redirect in to registration (reg1) for this program
+#
+sub mmc_reg : Local {
+    my ($self, $c, $prog_id) = @_;
+    _do_export();
+    $c->response->redirect($c->uri_for("https://mountmadonna.org/cgi-bin/reg1?id=$prog_id"));
 }
 
 1;

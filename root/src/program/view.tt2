@@ -87,6 +87,8 @@ function UNreserve_cluster(cluster_id) {
 <span id=backlink><a href=/program/view_adj/$id/back accesskey='B'><span class=keyed>B</span>ack</a></span>
 &nbsp;&nbsp;&nbsp;
 <span id=nextlink><a href=/program/view_adj/$id/next accesskey='N'><span class=keyed>N</span>ext</a></span>
+&nbsp;&nbsp;&nbsp;
+<a target=mmc_reg href=/program/mmc_reg/$id>MMC Reg</a>
 <p class=p2>
 [% IF program.ceu_issued %]
 <a href=/program/ceu/$id>CEUs</a>
