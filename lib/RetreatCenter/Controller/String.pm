@@ -120,6 +120,9 @@ sub update_do : Local {
     elsif ($the_key eq 'me_max') {
         put_pr_dir($string{me_max}, 'me_max.txt');
     }
+    elsif ($the_key eq 'me_dow') {
+        put_pr_dir($string{me_dow}, 'me_dow.txt');
+    }
     elsif ($the_key eq 'online_notify') {
         # need to send this string up to mountmadonna.org
         BLOCK: {
