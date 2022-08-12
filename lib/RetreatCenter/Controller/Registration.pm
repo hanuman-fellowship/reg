@@ -574,14 +574,12 @@ EOF
     if ($href->{mountain_experience}) {
         $href->{house1} = 'not_needed';
         $href->{house2} = 'not_needed';
-        $href->{yoga_class} =~ s{You}{They}xms;
         $href->{request} .= ($href->{request}? '<br>': '')
-                         .  $href->{yoga_class},
+                         .  $href->{activities},
     }
 
     my $fw = $href->{from_where};
     stash($c,
-        mountain_experience => $href->{mountain_experience}? $href->{meals}: '',
         comment         => $href->{request},
         share_first     => normalize($href->{withwhom_first}),
         share_last      => normalize($href->{withwhom_last}),
