@@ -1,0 +1,154 @@
+<style>
+body {
+    margin: .5in;
+    font-size: 16pt;
+}
+</style>
+<h1>Online Registration Finance Testing</h1>
+<pre>
+Personal Retreats (PR)
+    These 'programs' are created automatically a year in advance
+    To limit PRs you can create Events with a name and a date range:
+        - No PR
+        - No PR Indoors
+        These show up on the top of each Calendar month
+    pr_max
+        String that limits the number of simultaneous PRs on any given day
+    PR date ranges for max
+        set in Configuration > Date Ranges ME/PR
+        format:
+            PR 20220901-20220920 40
+            date range in yyyymmdd format
+        these maximums supersede pr_max
+        to help with testing I could add, say, 
+            5 PR registrations on a day in 2023
+    possible discounts for weekday stays Mon-Thu
+        this was last used in 2016
+        it is configured with these Strings:
+        - disc_pr - the percentage discount
+        - disc_pr_start - a date
+        - disc_pr_end - a date
+    pr_max_nights
+        String to limit how many days *in a row* someone can stay in a PR
+
+Mountain Experience (ME)
+    me_cost
+        String for the cost (currently 75)
+    me_dow
+        String to set which days of the week MEs are allowed
+        comma separated list of digits 0-6 (Sun 0 through Sat 6)
+    Activities: Yoga class, Guided hike in forest
+    MEs have a custom confirmation letter - still need this from Lara
+    No ME
+        Events similar to No PR
+        These do *not* show on the top of calendar months.
+    me_max
+        similar to pr_max
+    ME date ranges for max
+        similar to PR date ranges for max
+        supersede me_max
+    to help with testing I could add, say, 
+        5 ME registrations on a day in 2023
+    ME registrations appear specially in
+        Comings and Goings
+        Meal List
+        The PR popup in the Calendar
+        AllRegs
+        On a registration page
+    The meals choice shows on the line below the person's name
+    The activities choice shows in the Comment.
+        
+    TODO - Badges for ME - printed on different colored paper
+    TODO - an Affiliation (system) for ME registrations
+    TODO - guest packet for ME
+    TODO - mark the days on the calendar when MEs are allowed?
+    TODO - bringing children?   Ages?   Paying for kids?
+    TODO - styling - the whole page in craft style
+           and adjusting the CSS for the datepicker.
+
+Online programs
+    Check the 'No Housing Needed' program attribute on the Meals/Lodging tab.
+    the lodging options will not appear when registering
+
+Housing Costs types with zero cost - this means to not include this type
+
+New RAM 1/2 cottage housing types
+    The new costs need to be entered into the various Housing Costs.
+        Configuration > Housing Costs
+    They're already in 'FY 23 Rental w/Lunches 2022-23'
+    Verify that RAM 1 Cottage is blocked whenever a single or double
+        is booked in RAM 1A or RAM 1B
+    Verify that RAM 1A and RAM 1B singles and doubles are blocked
+        whenever some is housed in RAM 1 Cottage
+
+Discount Code and Percentage - two new program attributes
+    if wrong code - error message
+
+Gift Cards
+    create them with:
+        https://mountmadonna.org/gift_card
+    Email is sent to the recipient with the code and a link to check status
+
+    For testing there is gift card with $200 available - the code is 'xrdzs'
+    Configuration > Gift Cards
+        lists all cards and history
+
+    when the gift card is used
+        if they give unknown code? error message
+    use the whole card, or partial (there's a remaining balance)
+
+How much to collect now?
+    3 program attributes:
+    - Collect Total
+        - the default these days - we used to just collect the Deposit
+    - % of Tuition - in the program
+    - the Deposit attribute in the program
+    - or if the above is zero - $100
+
+    If we don't collect the total there will be a pre-payment link
+        in the confirmation letter.
+
+    The cancellation policy (for each program) is listed on the registration page
+        and in the confirmation letter.   It can vary from program to program.
+        Refunds may be given.
+
+Tuition
+    there are two ways of charging for tuition.
+    can't do both.
+
+    1 - fixed (the Tuition program attribute)
+      Or 
+    2 - Sliding Scale Tuition (introduced during Covid time for online retreats)
+        5 items:
+        - a checkbox to say yes sliding scale
+        - message
+        - tiers - with a special syntax
+        - minimum
+        - zero message
+    
+        If the tiers field is blank then there is just a single
+        text field for the person to enter a dollar amount.
+        It's value is checked against the minimum.
+
+The 'Web Ready' attribute on the Web/Files tab
+    it needs to be checked before online registration can happen
+    if checked there is a little green w in front of the program
+        in the program list
+    There are now new links when viewing a program:
+        'MMC Reg' for non Personal Retreat programs
+        'ME Reg' and 'PR Reg' for PRs
+    With these links the Export is done for you automatically (nice!)
+        and you go directly to the registration page for the program.
+    This makes testing easy.   You can modify a program attribute
+        and/or Strings and then directly go to test the registration process.
+    There is no need to always go to *actually* pay
+        but sometimes it's good to go all the way.
+    authorize.net voiding of Unsettled Transaction charges during testing
+        who has a login to do this?
+
+Registrations 'come in' every 15 minutes on the quarter hour.
+When viewing the list of Programs the new registrations
+    are listed in the 'Online' link.
+    Quincy 'brings them' in by clicking on the person's name.
+        and then does Housing and sending of confirmation letter.
+</pre>
