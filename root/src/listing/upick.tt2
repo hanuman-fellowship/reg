@@ -6,7 +6,10 @@ Pick the people whose badge you want to print:
 <h3>Registrations</h3>
 [% END %]
 [% FOR reg IN regs %]
-    <input type=checkbox name=upicked value=$reg.id> $reg.person.name - $reg.program.name<br>
+    <input type=checkbox name=upicked id='reg_$reg.id' value=$reg.id>
+    <label for='reg_$reg.id'>
+    $reg.person.name - [% IF reg.mountain_experience %]Mountain Experience[%ELSE %]$reg.program.name[% END %] - $reg.date_start_obj
+    </label><p class=p2>
 [% END %]
 [% IF rentals.0 %]
 <h3>Rentals</h3>

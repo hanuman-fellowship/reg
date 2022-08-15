@@ -19,15 +19,37 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit id=sub value="
 </form>
 <p class=p2>
 <form action="/listing/badges_in_date_range" target=_blank>
-Badges -
-<input type=text size=10 name=badge_from value=$badge_from>
+<table cellpadding=5>
+<tr><td colspan=2><hr><h3 style="margin: 0;">Badges</h3></td></tr>
+<tr><td>From <input type=text size=10 name=badge_from value=$badge_from>
 To <input type=text size=10 name=badge_to value=$badge_to>
-&nbsp;
-Only UnBadged Registrations <input type=checkbox name=only_unbadged checked>
-&nbsp;
-UPick <input type=checkbox name=upick checked>
-&nbsp;
-<input type=submit id=sub value="Go">
+<p class=p2>
+<input style="margin-left: .5in" type=submit id=sub value="Go">
+</td>
+<td>
+
+<table cellpadding=5>
+
+<tr><td>
+<input type=checkbox name=only_unbadged checked>
+Only UnBadged Registrations
+</td></tr>
+
+<tr><td>
+<input type=checkbox name=upick checked>
+UPick
+</td></tr>
+
+<tr><td>
+<input type=checkbox name=ME>
+Mountain Experience
+</td></tr>
+</table>
+
+</td>
+</tr>
+<tr><td colspan=2><hr></td></tr>
+</table>
 </form>
 <p class=p2>
 <form action="/listing/gate_codes">

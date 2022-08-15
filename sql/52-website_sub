@@ -1,0 +1,1 @@
+insert into affils (descrip, system, selectable) values ('Website Subscriber', 'yes', 'yes');

@@ -66,6 +66,9 @@ sub badges_in_date_range : Local {
     my $from = trim($c->request->params->{badge_from}) || '';
     my $to   = trim($c->request->params->{badge_to}) || '';
     my $only_unbadged  = $c->request->params->{only_unbadged} || '';
+    my $ME  = $c->request->params->{ME} || '';
+        # Only Mountain Experience registrations
+        # no rentals
     my $upick  = $c->request->params->{upick} || '';
     my @mess;
     my $from_dt = date($from);
@@ -91,22 +94,28 @@ sub badges_in_date_range : Local {
                    {
                        date_start => { between => [ $from, $to ] },
                        $only_unbadged? (badge_printed => ''): (),
+                       $ME? (mountain_experience => { '!=' => '' }): (),
                        'me.cancelled'  => '',
                    },
                    {
                        join     => [qw/ program /],
                        prefetch => [qw/ program /],
+                       order_by => 'date_start',
                    }
                );
     # check reg programs for code, badge title
-    my @rentals = model($c, 'Rental')->search(
-                      {
-                          sdate => { between => [ $from, $to ] },
-                          #'cancelled'  => '',
-                          status => { -not_like => '%cancel%' },
-                          program_id => 0,  # non-hybrids
-                      }
-                  );
+
+    my @rentals;
+    if (! $ME) {
+        @rentals = model($c, 'Rental')->search(
+                       {
+                           sdate => { between => [ $from, $to ] },
+                           #'cancelled'  => '',
+                           status => { -not_like => '%cancel%' },
+                           program_id => 0,  # non-hybrids
+                       }
+                   );
+    }
     if (! @regs && ! @rentals) {
         my $mess = "No badges to print.<p class=p2>Close this window.";
         stash($c,
@@ -134,7 +143,7 @@ sub badges_in_date_range : Local {
         };
     }
     my @all_data;
-    my $rc = _regs_to_badge_data($c, \@regs);
+    my $rc = _regs_to_badge_data($c, \@regs, $upick);
     if (! ref $rc) {
         # missing gate code or badge title too long
         return;
@@ -167,7 +176,7 @@ sub badges_in_date_range : Local {
 }
 
 sub _regs_to_badge_data {
-    my ($c, $regs_aref) = @_;
+    my ($c, $regs_aref, $upick) = @_;
     my $all_mess = '';
     my @data;
     my %seen;       # so we don't give the same error multiple times
@@ -176,6 +185,9 @@ sub _regs_to_badge_data {
         # we will likely keep getting the title and code for the
         # same program over and over.
         my ($mess, $title, $code) = Badge->get_title_code($reg->program);
+        if ($reg->mountain_experience) {
+            $title = 'Mountain Experience';
+        }
         if ($mess && ! $seen{$mess}) {
             $all_mess .= $mess;
             $seen{$mess} = 1;
@@ -208,12 +220,14 @@ sub _regs_to_badge_data {
         );
         return 1;
     }
-    # now that we know we WILL be printing badges
-    # mark everyone's badge as having been printed.
-    for my $r (@$regs_aref) {
-        $r->update({
-            badge_printed => 'yes',
-        });
+    if (! $upick) {
+        # now that we know we WILL be printing badges
+        # mark everyone's badge as having been printed.
+        for my $r (@$regs_aref) {
+            $r->update({
+                badge_printed => 'yes',
+            });
+        }
     }
     @data = sort {
                 $a->{program}    cmp $b->{program}
@@ -248,8 +262,13 @@ sub upick : Local {
                        prefetch => [qw/ program /],
                    }
                );
+    for my $r (@regs) {
+        $r->update({
+            badge_printed => 'yes',
+        });
+    }
     my @all_data;
-    my $rc = _regs_to_badge_data($c, \@regs);
+    my $rc = _regs_to_badge_data($c, \@regs, 0);
     if (! ref $rc) {
         return;
     }

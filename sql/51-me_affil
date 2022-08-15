@@ -1,0 +1,1 @@
+insert into affils (descrip, system, selectable) values ('Mountain Experience', 'yes', 'yes');

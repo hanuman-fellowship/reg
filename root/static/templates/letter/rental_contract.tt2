@@ -113,15 +113,6 @@ with a guest will pay 1/2 of the above rates.
 <p>
 <b>Please note all guest rooms must be vacated by 12:00 noon UNLESS OTHERWISE CONTRACTED.</b>
 Room rates include accommodations,
-<!-- lunch is now (3/27/22) ALWAYS provided 
-[% lunch = rental.any_lunches %]
-[% IF lunch %]
-three meals
-[% ELSE %]
-two meals and a snack
-[% END %]
-per day,
--->
 applicable state and local taxes, insurance, meeting space,
 and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity - e.g.,

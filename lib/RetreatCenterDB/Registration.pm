@@ -249,9 +249,14 @@ sub att_prog_dates {
 
 sub dates {
     my ($self) = @_; 
-    return $self->date_start_obj->format("%b %e")
+    my $sdate = $self->date_start_obj;
+    my $edate = $self->date_end_obj;
+    if ($sdate == $edate) {
+        return $sdate->format("%b %e");
+    }
+    return $sdate->format("%b %e")
          . ' - '
-         . $self->date_end_obj->format("%b %e")
+         . $edate->format("%b %e")
          ;
 }
 

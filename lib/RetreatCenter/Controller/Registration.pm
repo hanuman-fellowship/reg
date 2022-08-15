@@ -56,6 +56,7 @@ use Util qw/
     slurp
     time_travel_class
     kid_badge_names
+    JON
 /;
 use POSIX qw/
     ceil
@@ -1229,12 +1230,24 @@ sub create_do : Local {
     }
 
     # remove a Website Subscriber affiliation, if any
-    my $ap = model($c, 'AffilPerson')->search({
-                 p_id => $P{person_id},
-                 a_id => $system_affil_id_for{'Website Subscriber'},
-             });
-    if ($ap) {
-        $ap->delete();
+    my ($ws_ap) = model($c, 'AffilPerson')->search({
+                      p_id => $P{person_id},
+                      a_id => $system_affil_id_for{'Website Subscriber'},
+                  });
+    if ($ws_ap) {
+        $ws_ap->delete();
+    }
+    # Mountain Experience affil if needed
+    my ($me_ap) = model($c, 'AffilPerson')->search({
+                      p_id => $P{person_id},
+                      a_id => $system_affil_id_for{'Mountain Experience'},
+                  });
+    if (! $me_ap) {
+JON "no me ap";
+        model($c, 'AffilPerson')->create({
+            p_id => $P{person_id},
+            a_id => $system_affil_id_for{'Mountain Experience'},
+        });
     }
 
     my $reg_id = $reg->id();
@@ -3499,7 +3512,7 @@ sub update_do : Local {
 
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} == $dates{date_end}
-        && ($P{h_type} ne 'commuting' || $P{h_type} ne 'not_needed'))
+        && ($P{h_type} ne 'commuting' && $P{h_type} ne 'not_needed'))
     {
         error($c,
             "Housing type must be Commuting or Not Needed when"

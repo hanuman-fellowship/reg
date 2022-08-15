@@ -117,9 +117,9 @@ and lodging for up to $rental.max
 people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
 to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates below:
 <h2>Rates</h2>
-The Accommodation Costs below are per person, per night.
+The Accommodation Costs below are the total cost per person.
 Children aged 2 to 12 staying in the room with a guest will pay 1/2
-of the above rates. <b>Please note all guest rooms must be vacated
+of the rates. <b>Please note all guest rooms must be vacated
 by 12:00 noon UNLESS OTHERWISE CONTRACTED.</b>
 Room rates include accommodations, all meals, applicable state and
 local taxes, liability insurance, use of grounds, and recreational

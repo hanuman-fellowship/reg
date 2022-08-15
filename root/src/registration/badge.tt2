@@ -40,12 +40,15 @@ After Hours Contact
 <div class=emergency_txt>
 408-475-0095
 </div>
+[% housing = (data.$i.room != 'No Housing') %]
+[% IF housing %]
 <div class=room_lab>
 Room #:
 <span class=room_txt>
 [% data.$i.room %]
 </span>
 </div>
+[% END %]
 <div class=main_lab>
 Main Gate Code:
 </div>
@@ -60,8 +63,7 @@ Oaks Gate Code:
 </div>
 <div class=return>
 <span class=lan>RETURN LANYARDS</span>
-and keys to the Programs
-Office or leave in your room.
+and keys to the Programs Office[% IF housing %] or leave in your room[% END %].
 </div>
 </div>
 </td>
