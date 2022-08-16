@@ -39,6 +39,8 @@ Personal Retreats (PR)
         - disc_pr_end - a date
     pr_max_nights
         String to limit how many days *in a row* someone can stay in a PR
+    TODO - rework the datepicker range function
+           add disabled dates
 
 Mountain Experience (ME)
     mountain_experience_cost
@@ -72,15 +74,22 @@ Mountain Experience (ME)
     an Affiliation (system) for ME registrations
         added if not present when an ME reg is brought in
 
-    TODO - guest packet for ME
-    TODO - mark the days on the calendar when MEs are allowed?
+    TODO - custom confirmation letter - from Lara
+    TODO - guest packet for ME - from Lara
+    TODO - on the Calendar - somehow show days when
+           MEs are allowed - at the top? at the bottom?
     TODO - bringing children?   Ages?   Paying for kids?
-    TODO - styling - the whole page in craft style
+    TODO - maybe - styling - the whole page in craft style
            and adjusting the CSS for the datepicker.
+           will need Shantam's help.
 
 Online programs
     Check the 'No Housing Needed' program attribute on the Meals/Lodging tab.
     the lodging options will not appear when registering
+
+    TODO - When collecting required demographic info
+           use javascript (a la the Inquiry form) to
+           catch missing things as early as possible.
 
 Housing Costs types with zero cost - this means to not include this type
 
@@ -159,8 +168,17 @@ The 'Web Ready' attribute on the Web/Files tab
         who has a login to do this?
 
 Registrations 'come in' every 15 minutes on the quarter hour.
-When viewing the list of Programs the new registrations
+    When viewing the list of Programs the new registrations
     are listed in the 'Online' link.
     Quincy 'brings them' in by clicking on the person's name.
         and then does Housing and sending of confirmation letter.
+    TODO - grab now link - sudo -u reg ./grab 
+
+LONG TERM MAYBE TODO
+    move all mmc.org cgi-bin scripts to akash
+    then no ftp back and forth
+    use Stripe for payments
+ONGOING TODO
+    research how we might transition to Retreat Guru
+    excruciating but necessary long term
 </pre>
