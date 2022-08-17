@@ -43,7 +43,7 @@ __END__
 overview - Gift Cards - for lodging for PRs and other programs
     either transaction_id or reg_id will be non-zero
 id - Primary key
-person_id - foreign key to Person
+person_id - foreign key to Person who gifted the card
 code - the 5 character code of the card
 amount - the initial dollar value of the card OR the amount used
 rec_fname - first name of the recipient

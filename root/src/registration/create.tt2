@@ -30,6 +30,7 @@ function toggle_from_where() {
 <input type=hidden name=time_postmark value='$time_postmark'>
 <input type=hidden name=deposit       value='$deposit'>
 <input type=hidden name=green_amount  value='$green_amount'>
+<input type=hidden name=slide_tuition value='$slide_tuition'>
 <input type=hidden name=gc_code       value='$gc_code'>
 <input type=hidden name=gc_used       value='$gc_used'>
 <input type=hidden name=gc_balance    value='$gc_balance'>

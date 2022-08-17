@@ -606,6 +606,7 @@ EOF
             # later we will add a RegPayment for the deposit
             # that is calculated here
         deposit         => int($href->{amount} - $href->{green_amount}),
+        slide_tuition   => $href->{slide_tuition},
         deposit_type    => 'O',
 
         # discount code?
@@ -1243,7 +1244,6 @@ sub create_do : Local {
                       a_id => $system_affil_id_for{'Mountain Experience'},
                   });
     if (! $me_ap) {
-JON "no me ap";
         model($c, 'AffilPerson')->create({
             p_id => $P{person_id},
             a_id => $system_affil_id_for{'Mountain Experience'},
@@ -1385,18 +1385,19 @@ JON "no me ap";
             note      => 'Deposit',
         });
     }
-    # IF the program has 'donation' and there is an amount
-    # that was paid, put it as a charge with the note 'Donation'.
+    # IF the program has 'donation' it is really sliding scale tuition
+    # put it as a charge with the note 'Tuition'.
     # this is done so the balance will be zero.
     # This was done for ONLINE programs in Virus Time.
+    # AND :( later as an alternative to a fixed tuition.
     #
-    if ($pr->donation() && $P{deposit} > 0) {
+    if ($pr->donation() && $P{slide_tuition} > 0) {
         model($c, 'RegCharge')->create({
             @who_now,
-            automatic => '',
-            amount    => $P{deposit},
+            automatic => '',            # right, not automatic
+            amount    => $P{slide_tuition},
             type      => $TYPE_OTHER,
-            what      => "Donation",
+            what      => "Tuition",
         });
     }
     # else IF the program has manual_reg_finance and there is
