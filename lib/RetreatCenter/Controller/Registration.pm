@@ -454,7 +454,8 @@ EOH
     #
     # find or create a person object.
     #
-    my ($person_id, $person, $status) = add_or_update_deduping($c, $href);
+    my ($person_id, $person, $update_status)
+        = add_or_update_deduping($c, $href);
 
     #
     # if there is a COVID vaccination file attach it to the Person record
