@@ -1368,7 +1368,7 @@ sub create_do : Local {
                     # WAS made at the postmark date/time
             amount  => $P{deposit},
             type    => $P{deposit_type},
-            what    => ($pr->donation()? 'Donation': 'Deposit'),
+            what    => 'Payment',
         });
     }
     else {
@@ -1396,8 +1396,8 @@ sub create_do : Local {
             @who_now,
             automatic => '',            # right, not automatic
             amount    => $P{slide_tuition},
-            type      => $TYPE_OTHER,
-            what      => "Tuition",
+            type      => $TYPE_TUITION,
+            what      => "Sliding Scale",
         });
     }
     # else IF the program has manual_reg_finance and there is
