@@ -2114,9 +2114,12 @@ sub send_conf : Local {
     my ($self, $c, $reg_id, $preview) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
+    my $ME = $reg->mountain_experience;
     my $today = tt_today($c);
     my $pr = $reg->program;
-    my $fname = "root/static/templates/letter/" . $pr->cl_template() . ".tt2";
+    my $fname = "root/static/templates/letter/"
+              . ($ME? 'me_conf': $pr->cl_template())
+              . '.tt2';
     if (! -r $fname) {
         error($c,
               "Sorry, cannot open confirmation letter template.",
@@ -2214,6 +2217,15 @@ sub send_conf : Local {
     if (lc $cp->name ne 'default') {
         $cancel_policy = $cp->policy();
     }
+    my @me_opts = ();
+    if ($ME) {
+        my ($me_cancel) = model($c, 'CanPol')->search({
+                              name => 'Mountain Experience',
+                          });
+            # it will be there...
+        push @me_opts, 'me_cancellation_policy', $me_cancel->policy;
+        push @me_opts, 'me_coordinator', $string{me_coordinator};
+    }
     my $stash = {
         user     => $c->user,
         person   => $reg->person,
@@ -2235,6 +2247,7 @@ sub send_conf : Local {
         cancel_policy => $cancel_policy,
         covid_vax => $pr->covid_vax && ! $reg->person->covid_vax,
         while_here => get_string($c, 'while_here'),
+        @me_opts,
     };
     my $html = "";
     my $tt = Template->new({

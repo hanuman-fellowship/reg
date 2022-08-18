@@ -1,1 +1,1 @@
-insert into affils (descrip, system, selectable) values ('Mountain Experience', 'yes', 'yes');
+insert into affils (descrip, system, selectable) values ('MMC Mountain Experience', 'yes', 'yes');

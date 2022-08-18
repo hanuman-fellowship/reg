@@ -303,6 +303,7 @@ max_kid_age - how old can a person be and still be considered a child?
 max_lodge_opts - the maximum number of rooms to offer when lodging a registrant
 max_rental_desc - the maximum number of characters in a rental web description
 max_tuit_disc - maximum tuition discount for Members - no longer used
+me_coordinator - the person who coordinates the Mountain Experience
 me_dow - days of week for Mountain Experience, comma separated 0-6 Sun-Sat
 me_max - maximum number of Mountain Experience registrations per day
 mem_credit_hours - obsolete - can be removed

@@ -1,0 +1,1 @@
+insert into string (the_key, value) values ('me_coordinator', 'Rashmi Cole');
