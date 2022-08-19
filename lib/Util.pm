@@ -2504,8 +2504,7 @@ sub kid_badge_names {
     if ($reg->kids()) {
         # kids aged 2-12 deserve their own badge!
         my $parent_name = $reg->person->badge_name(1);  # no sanskrit, please
-        my @kids = split /\s*,\s*/, $reg->kids();
-        for my $k (@kids) {
+        for my $k (split /\s*,\s*/, $reg->kids()) {
             $k =~ s{\s*(\d+)\s*}{}xms;   # chop the age
             my $age = $1;
             my $name = $k;  # the rest (if any) is the name

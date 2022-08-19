@@ -1,0 +1,45 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="help.css" />
+</head>
+<body>
+<h1>Children in Reg</h1>
+When registering online there is a multi-line text field "Additional Requests" and (if the Program's Misc/Children Welcome field is 'yes') there is a note that says: 
+<p>
+- The ages and names of children you are bringing, if any. Children under 2 are free; between the ages of 2 and 12 are half-price; age 13 and older, please register him/her separately, as an adult.
+<p>
+There are two Strings: min_kid_age (currently 2) and max_kid_age (currently 12)
+<p>
+If a child is < min_kid_age they are not charged any lodging fees<br>
+If a child is > max_kid_age they must register as adults
+<p>
+Children whose age is >= min_kid_age and <= max_kid_age are charged
+    1/2 the lodging cost of an adult
+<p>
+When the registrar (Quincy) 'brings in' a registration they check the Additional Requests (it is put in the Comment field) to see if children will be coming with the parent.   They re-enter this information in the 'Ages of Kids' field of the Registration.
+<p>
+The 'Ages of Kids' field has this format:
+<ul>
+    3 Mary, 11 Joseph
+</ul>
+Or:
+<ul>
+    Mary 3, Joseph 11
+</ul>
+Or just:
+<ul>
+    3, 11
+</ul>
+i.e. a comma separated list of numbers with optional names
+<p>
+The act of updating the Age of Kids field will recompute the automatic lodging costs.
+There is a String 'kid_disc' currently set to 50 (50% = 1/2 cost).
+If the registration is a Mountain Experience the cost will be taken from the String 'me_cost'.
+<h2>Lodging</h2>
+When a parent is lodged the Age of Kids field is consulted.
+Anyone with children will be lodged in a room by themselves - not with a stranger/non-family member. A mother with two children lodged in a 3-bed room will be charged how much?? The triple rate or the single rate?  I'm not sure yet.  It probably depends on what the housing type is that the registrar chose.
+
+<h2>Badges</h2>
+When badges are printed for a parent's registration the 'Age of Kids' field is consulted. Children whose age is > min_kid_age will get their own badge. If there is no name in the Age of Kids field the name on the badge will be 'Kid(<age>)'.  On the child's badge their name will be suffixed with an asterisk '*' and the parent's first and last name will be put on the next line.
+</body>
+</html>
