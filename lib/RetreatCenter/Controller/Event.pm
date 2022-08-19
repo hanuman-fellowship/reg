@@ -51,6 +51,7 @@ use lib '../../';       # so you can do a perl -c here.
 
 my $no_PR_regex    = qr{\bno\b .* \bprs?\b}xmsi;
 my $no_ME_regex    = qr{\bno\b .* \bmes?\b}xmsi;
+my $yes_ME_regex   = qr{\byes\b .* \bmes?\b}xmsi;
 my $no_Meals_regex = qr{\bno\b .* \b(lunch|meals?)\b}xmsi;
 
 sub index : Private {
@@ -181,6 +182,9 @@ sub check_no_PR_ME_Meals {
     }
     if ($e->name() =~ $no_Meals_regex) {
         _send_no_Meals($c);
+    }
+    if ($e->name() =~ $yes_ME_regex) {
+        _send_yes_MEs($c);
     }
 }
 
@@ -1827,8 +1831,17 @@ sub _send_no_PRs {
              . "\n";
     }
     close $out;
+    _put_pr_dir($c, '/tmp/noPR.txt');
+    add_activity($c, "No PRs sent to web");
+}
+
+sub _put_pr_dir {
+    my ($c, $tmp_fname) = @_;
+    my $fname = $tmp_fname;
+    $fname =~ s{/tmp/}{}xms;
+
     #
-    # send it to mountmadonna.org/personal
+    # send the file to mountmadonna.org in the pr directory
     #
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or return(my_die($c, "cannot connect to $string{ftp_site}"));
@@ -1841,11 +1854,10 @@ sub _send_no_PRs {
     # a nice HACK to force Extended Passive Mode:
     no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->put('/tmp/noPR.txt', 'noPR.txt')
-        or return (my_die($c, 'cannot put noPR.txt ' . $ftp->message));
+    $ftp->put($tmp_fname, $fname)
+        or return (my_die($c, "cannot put $fname " . $ftp->message));
     $ftp->quit();
-    add_activity($c, "No PRs sent to web");
-    unlink '/tmp/noPR.txt';
+    unlink $tmp_fname unless -f '/tmp/Reg_Dev';
 }
 
 sub _send_no_MEs {
@@ -1866,25 +1878,30 @@ sub _send_no_MEs {
              . "\n";
     }
     close $out;
-    #
-    # send it to mountmadonna.org/personal
-    #
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return(my_die($c, "cannot connect to $string{ftp_site}"));
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return(my_die($c, "cannot login " . $ftp->message));
-    $ftp->cwd($string{ftp_pr_dir})
-        or return(my_die($c, "cannot cwd to $string{ftp_pr_dir} " . $ftp->message));
-    $ftp->ascii();
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->put('/tmp/noME.txt', 'noME.txt')
-        or return (my_die($c, 'cannot put noME.txt ' . $ftp->message));
-    $ftp->quit();
+    _put_pr_dir($c, '/tmp/noME.txt');
     add_activity($c, "No MEs sent to web");
-    unlink '/tmp/noME.txt';
+}
+
+sub _send_yes_MEs {
+    my ($c) = @_;
+    my (@events) = model($c, 'Event')->search(
+        {
+            name  => { 'regexp' => '[[:<:]]Yes[[:>:]].*[[:<:]]MEs?[[:>:]]' },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    open my $out, ">", "/tmp/yesME.txt"
+        or die "cannot write /tmp/yesME.txt: $!\n";
+    for my $ev (@events) {
+        print {$out} $ev->sdate() . "-" . $ev->edate()
+             . "\n";
+    }
+    close $out;
+    _put_pr_dir($c, '/tmp/yesME.txt');
+    add_activity($c, "Yes MEs sent to web");
 }
 
 sub _send_no_Meals {
@@ -1919,24 +1936,7 @@ sub _send_no_Meals {
                    . "\n";
     }
     close $out;
-    #
-    # send it to mountmadonna.org/meal_requests
-    #
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return(my_die($c, "cannot connect to $string{ftp_site}"));
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return(my_die($c, "cannot login " . $ftp->message));
-    $ftp->cwd('meal_request')
-        or return(my_die($c, "cannot cwd to meal_request " . $ftp->message));
-    $ftp->ascii();
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->put("/tmp/$nm", $nm)
-        or return (my_die($c, 'cannot put $nm ' . $ftp->message));
-    $ftp->quit();
-    unlink "/tmp/$nm";
+    _put_pr_dir($c, '/tmp/noMeals.txt');
     add_activity($c, "No Meals sent to web");
 }
 

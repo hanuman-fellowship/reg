@@ -2291,6 +2291,7 @@ sub cf_expand {
 #
 # generate a progtable for personal retreats
 # write it to the given file.
+# include the cancellation policy for Mountain Experience
 #
 # return currHC and nextHC and change_date
 #
@@ -2346,12 +2347,16 @@ sub PR_progtable {
             last PR;
         }
     }
+    my ($me_canpol) = model($c, 'CanPol')->search({
+                          name => 'Mountain Experience',
+                      });
     my $href = {
         title         => 'Personal Retreat',
         dates         => '',
         leader_names  => '',
         name          => 'Personal Retreat',
         canpol        => $currPR->cancellation_policy(),
+        me_canpol     => $me_canpol->policy(),
         covid_vax     => $currPR->covid_vax(),
         plink         => 'http://www.mountmadonna.org/personal',
         image1        => '',

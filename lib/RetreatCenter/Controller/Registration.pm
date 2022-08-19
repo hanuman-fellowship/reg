@@ -2299,7 +2299,7 @@ sub send_conf : Local {
     my $to = $reg->person->name_email();
     my $name = $reg->person->name;
     my $attached_file_aref
-        = $pr->housing_not_needed()?
+        = $pr->housing_not_needed() || $reg->mountain_experience()?
             []
          :  [
             '/var/Reg/documents/MMC Guest Packet.pdf',
