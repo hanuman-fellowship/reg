@@ -49,10 +49,13 @@ Mountain Experience (ME)
         String to set which days of the week MEs are allowed
         comma separated list of digits 0-6 (Sun 0 through Sat 6)
     Activities: Yoga class, Guided hike in forest
-    MEs have a custom confirmation letter - still need this from Lara
+    MEs have a custom confirmation letter
     No ME
         Events similar to No PR
         These do *not* show on the top of calendar months.
+    Yes ME
+        days when MEs are allowed even if not in me_dow
+        Yes MEs override No MEs in case there is overlap
     me_max
         similar to pr_max
     ME date ranges for max
@@ -74,8 +77,6 @@ Mountain Experience (ME)
     an Affiliation (system) for ME registrations
         added if not present when an ME reg is brought in
 
-    TODO - custom confirmation letter - from Lara
-    TODO - guest packet for ME - from Lara
     TODO - on the Calendar - somehow show days when
            MEs are allowed - at the top? at the bottom?
     TODO - bringing children?   Ages?   Paying for kids?
