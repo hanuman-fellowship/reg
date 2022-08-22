@@ -1,0 +1,1 @@
+insert into string (the_key, value) values ('ftp_rental_invoice_dir_paid', '/for_reg/rental_invoice/paid');
