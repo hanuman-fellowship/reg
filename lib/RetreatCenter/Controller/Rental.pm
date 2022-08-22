@@ -2327,9 +2327,9 @@ sub invoice : Local {
         subject => "MMC Program Invoice for $rental_name",
         html    => $html,
         activity_msg => 'Invoice sent for'
-                      . " <a href='/rental/view/$rental_id'>$rental_name</a>",
+                      . " <a href='/rental/view/$id'>$rental_name</a>",
     );
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
 sub link_proposal : Local {
