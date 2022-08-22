@@ -268,7 +268,12 @@ $rental.contract_exception
 </tr>
 
 <tr>
-<th align=right>Cancelation Date</th>
+<th align=right>Invoice Sent</th>
+<td><input type=text name=invoice_sent value='${rental.invoice_sent_obj.format("%D")}' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Cancellation Date</th>
 <td><input type=text name=rental_canceled value='${rental.rental_canceled_obj.format("%D")}' size=10></td>
 </tr>
 

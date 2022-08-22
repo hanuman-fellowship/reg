@@ -489,7 +489,12 @@ none
 </tr>
 
 <tr>
-<th align=right>Cancelation Date</th>
+<th align=right>Invoice Sent</th>
+<td>$rental.invoice_sent_obj</td>
+</tr>
+
+<tr>
+<th align=right>Cancellation Date</th>
 <td>$rental.rental_canceled_obj</td>
 </tr>
 

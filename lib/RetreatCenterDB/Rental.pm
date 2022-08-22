@@ -233,6 +233,10 @@ sub rental_created_obj {
     my ($self) = @_;
     return date($self->rental_created) || "";
 }
+sub invoice_sent_obj {
+    my ($self) = @_;
+    return date($self->invoice_sent) || "";
+}
 sub link {
     my ($self) = @_;
     return "/rental/view/" . $self->id();
