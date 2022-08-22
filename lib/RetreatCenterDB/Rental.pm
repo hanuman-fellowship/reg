@@ -922,7 +922,7 @@ sub name_trimmed {
     if ($for_filename) {
         # if a name has a slash it makes for trouble
         # when using name_trimmed for a filename.
-        $name =~ s{\W}{-}xmsg;
+        $name =~ s{/}{-}xmsg;
     }
     $name;
 }

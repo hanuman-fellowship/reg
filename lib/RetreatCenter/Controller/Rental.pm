@@ -2317,7 +2317,7 @@ sub invoice : Local {
         return;
     }
     my $user = $c->user->obj();
-    my $rental_name = $rental->name_trimmed(1);
+    my $rental_name = $rental->name_trimmed();
     email_letter($c,
         from    =>        $user->first
                  . ' '  . $user->last
