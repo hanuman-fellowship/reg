@@ -195,4 +195,6 @@ Check or Credit Card Payment to:<br>
 Mount Madonna Center<br>
 445 Summit Road<br>
 Watsonville, CA 9076
+<p>
+Or you can pay the balance online <a target=_blank href='$rental_invoice_url?code=$rental.grid_code'>here</a>.
 </ul>

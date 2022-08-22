@@ -61,16 +61,18 @@ th a:hover {
 <a target=_blank href="/rental/grid_emails/$id">Grid Emails</a>
 <p class=p2>
 <a target=_blank href="/rental/contract/$id">Contract</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/rental/email_contract/$id">Email Contract</a>
+:
+<a href="/rental/email_contract/$id">Email</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/received/$id">Received</a>
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/rental/arrangements/$id">Arrangements</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/rental/email_arrangements/$id">Email Arrangements</a>
+:
+<a href="/rental/email_arrangements/$id">Email</a>
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/rental/invoice/$id">Invoice</a>
+:
+<a href="/rental/email_invoice/$id">Email</a>
 <p class=p2>
 [% END %]
 

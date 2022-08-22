@@ -1,6 +1,6 @@
-<h2>Emailing the Contract for [% rental.name %]</h2>
+<h2>Emailing the Invoice for [% rental.name %]</h2>
 
-<form action=/rental/contract/[% rental.id %]/1>
+<form action=/rental/invoice/[% rental.id %]/1>
 <table cellpadding=5>
 [% coord = rental.coordinator %]
 [% cs    = rental.contract_signer %]

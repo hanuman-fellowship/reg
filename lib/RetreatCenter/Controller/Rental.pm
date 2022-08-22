@@ -1766,7 +1766,7 @@ sub email_arrangements : Local {
     }
     stash($c,
         rental   => $rental,
-        subject  => "MMC Program Arrangements for '" . $rental->name_trimmed() . "'",
+        subject  => "MMC Program Arrangements for " . $rental->name_trimmed(),
         template => "rental/email_arrangements.tt2",
     );
 }
@@ -1873,7 +1873,20 @@ sub email_contract : Local {
     stash($c,
         rental   => $rental,
         CC       => $c->user->email,
+        subject  => "MMC Program Contract for " . $rental->name_trimmed(),
         template => "rental/email_contract.tt2",
+    );
+}
+
+sub email_invoice : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    stash($c,
+        rental   => $rental,
+        CC       => $c->user->email,
+        subject  => "MMC Program Invoice for " . $rental->name_trimmed(),
+        template => "rental/email_invoice.tt2",
     );
 }
 
@@ -2266,10 +2279,57 @@ sub view_summary : Local {
 }
 
 sub invoice : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $email) = @_;
     my $rental = model($c, 'Rental')->find($id);
-    my $html = $rental->compute_balance(1);
-    $c->res->output($html);
+    my ($html, $balance) = $rental->compute_balance(1);
+    if (! $email) {
+        $c->res->output($html);
+        return;
+    }
+    # send balance and info to mmc.org
+    #
+    $rental->send_invoice_balance($balance);
+    $rental->update({
+        invoice_sent => today()->as_d8(),
+    });
+
+    my @to = ();
+    my @cc = ();
+    my $em;
+    if ($em = $c->request->params->{coord_email}) {
+        push @to, $em;
+    }
+    if ($em = $c->request->params->{cs_email}) {
+        push @to, $em;
+    }
+    if ($c->request->params->{cc}) {
+        @cc = split m{[\s,]+}, $c->request->params->{cc};
+    }
+    if (! @to && @cc) {
+        @to = @cc;
+        @cc = ();
+    }
+    if (! @to) {
+        error($c,
+            'Need at least one email address.',
+            "rental/error.tt2",
+        );
+        return;
+    }
+    my $user = $c->user->obj();
+    my $rental_name = $rental->name_trimmed(1);
+    email_letter($c,
+        from    =>        $user->first
+                 . ' '  . $user->last
+                 . ' <' . $user->email . '>',
+        to      => \@to,
+        cc      => \@cc,
+        subject => "MMC Program Invoice for $rental_name",
+        html    => $html,
+        activity_msg => 'Invoice sent for'
+                      . " <a href='/rental/view/$rental_id'>$rental_name</a>",
+    );
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
 sub link_proposal : Local {

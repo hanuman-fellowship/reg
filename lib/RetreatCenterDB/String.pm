@@ -229,6 +229,7 @@ ftp_password - FTP info for mountmadonna.org
 ftp_pr_dir - where to put NoPR.txt data
 ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes
 ftp_rental_deposit_dir - FTP info for mountmadonna.org - for rental deposit payment
+ftp_rental_invoice_dir - FTP info for mountmadonna.org - for rental invoice balance payment
 ftp_rental_deposit_dir_paid - FTP info for mountmadonna.org - for rental deposit payments that were paid
 ftp_site - FTP info for mountmadonna.org
 ftp_transactions - FTP info for mountmadonna.org - for online registrations for MMC programs.
@@ -374,6 +375,7 @@ rental_done_color - the color in the calendar of a Done rental
 rental_due - description for a rental status of Due
 rental_due_color - the color in the calendar of a Due rental
 rental_end_hour - the time of day that rentals normally end
+rental_invoice_url - the URL for paying the rental invoice balance
 rental_lunch_cost - how much do rentals pay for a lunch?
 rental_received - description for a rental status
 rental_received_color - the color in the calendar of a Received rental

@@ -102,6 +102,7 @@ __PACKAGE__->add_columns(qw/
     new_contract
     mp_deposit
     day_retreat
+    invoice_sent
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -611,6 +612,44 @@ sub send_rental_deposit {
     unlink "/tmp/$code";
 }
 
+sub send_invoice_balance {
+    my ($rental, $balance) = @_;
+    my $code = $rental->grid_code();
+    my $coord = $rental->coordinator() || $rental->contract_signer;
+    open my $out, '>', "/tmp/$code";
+    print {$out} Dumper({
+        first    => $coord->first(),
+        last     => $coord->last(),
+        addr     => $coord->addr1() . " " . $coord->addr2,
+        city     => $coord->city(),
+        state    => $coord->st_prov(),
+        zip      => $coord->zip_post(),
+        country  => $coord->country() || 'USA',
+        id       => $rental->id(),
+        name     => $rental->name_trimmed(),
+        amount   => $balance,
+        sdate    => $rental->sdate(),
+        edate    => $rental->edate(),
+        phone    => $coord->tel_home() || $coord->tel_cell(),
+        email    => $coord->email(),
+    });
+    close $out;
+    return if -f '/tmp/Reg_Dev';
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
+    $ftp->cwd($string{ftp_rental_invoice_dir}) or die "cwd";
+    $ftp->ascii() or die "ascii";
+    $ftp->put("/tmp/$code", $code) or die "put " . $ftp->message;
+    $ftp->quit();
+    unlink "/tmp/$code";
+}
+
 sub image_path {
     my ($self) = @_;
     return "/var/Reg/rental_images/r-" . $self->id . ".jpg";
@@ -695,7 +734,7 @@ sub compute_balance {
             },
             \$html,
         );
-        return $html;
+        return ($html, $balance);
     }
     my $tot_housing = $hybrid? $rental->program->tot_reg_payments()
                               :         $rental->housing_charge();
@@ -863,13 +902,14 @@ sub compute_balance {
             tot2_charges   => $tot2_charges,
             tot_payments   => $tot_payments,
             balance        => $balance,
+            rental_invoice_url => $string{rental_invoice_url},
         };
         $tt->process(
             'invoice.tt2',
             $stash,
             \$html,
         );
-        return $html;
+        return ($html, $balance);
     }
 }
 
@@ -997,6 +1037,7 @@ housing_request - special housing request
 housing_request_cost - cost of special housing request
 id - unique id
 image - does this rental have an image?
+invoice_sent - date the invoice was sent by email
 in_group_name - contract is in the group name instead of contract signer
 linked - should this rental be included on the online Event calendar?
 lunches - an encoded (essentially binary) field for when lunches are requested.
