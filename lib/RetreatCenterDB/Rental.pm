@@ -841,8 +841,6 @@ sub compute_balance {
                      + $start_charge
                      + $end_charge
                      + $sr_cost
-                     + ($rental->new_contract? 
-                           $n_nights * $mp_cost_per_day: 0)
                      ;
     my $tot_payments = 0;
     for my $p ($rental->payments()) {
