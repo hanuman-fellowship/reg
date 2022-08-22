@@ -733,6 +733,7 @@ sub get_rental_deposit {
         the_date    => $today_d8,
         time        => $now_t24,
     });
+    $rental->compute_balance();
     # notify the rental coordinator(s)
     my $rlink = "$string{url_prefix}/rental/view/$hash{id}/3";
     email_letter($c,
@@ -768,6 +769,7 @@ sub get_rental_invoice {
         the_date    => $today_d8,
         time        => $now_t24,
     });
+    $rental->compute_balance();
     # notify the rental coordinator(s)
     my $rlink = "$string{url_prefix}/rental/view/$hash{id}/3";
     email_letter($c,
