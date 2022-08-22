@@ -229,8 +229,9 @@ ftp_password - FTP info for mountmadonna.org
 ftp_pr_dir - where to put NoPR.txt data
 ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes
 ftp_rental_deposit_dir - FTP info for mountmadonna.org - for rental deposit payment
-ftp_rental_invoice_dir - FTP info for mountmadonna.org - for rental invoice balance payment
 ftp_rental_deposit_dir_paid - FTP info for mountmadonna.org - for rental deposit payments that were paid
+ftp_rental_invoice_dir - FTP info for mountmadonna.org - for rental invoice balance payment
+ftp_rental_invoice_dir_paid - FTP info for mountmadonna.org - for rental invoice balance payments that were paid
 ftp_site - FTP info for mountmadonna.org
 ftp_transactions - FTP info for mountmadonna.org - for online registrations for MMC programs.
 gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
