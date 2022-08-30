@@ -1,5 +1,5 @@
 <h1>Future Mountain Experience Registrations</h1>
 [% FOR r IN me %]
     [% p = r.person %]
-    $r.date_start.format("%b %e") $p.first $p.last $r.mountain_experience, $r.activity<br>
+    ${r.date_start_obj.format("%b %e")} $p.first $p.last $r.mountain_experience, $r.activity<br>
 [% END %]

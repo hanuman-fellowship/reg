@@ -308,7 +308,7 @@ sub activity {
     my ($self) = @_;
     my $s = $self->comment();
     my ($yc) = $s =~ m{(Yoga\s+Class)}xmsi;
-    my ($gw) = $s =~ m{Guided\s+Walk}xmsi;
+    my ($gw) = $s =~ m{(Guided\s+Walk)}xmsi;
     return join ', ', $yc, $gw;
 }
 
