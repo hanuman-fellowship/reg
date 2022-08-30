@@ -184,7 +184,7 @@ sub list_online : Local {
 
         my $pname;
         if ($pid == 0) {
-            $pname = $mountain_experience? "<span class=mount_exp>Mountain Experience</span>"
+            $pname = $mountain_experience? "Mountain Experience"
                     :                      "Personal Retreat";
         }
         else {
@@ -233,6 +233,11 @@ sub list_online : Local {
                   $a->{time}  <=> $b->{time}
               }
               @online;
+    for my $o (@online) {
+        if ($o->{pname} eq 'Mountain Experience') {
+            $o->{pname} = "<span class=mount_exp>$o->{pname}</span";
+        }
+    }
     stash($c,
         online   => \@online,
         template => "registration/list_online.tt2",
