@@ -1,4 +1,9 @@
 <h1>Future Mountain Experience Registrations</h1>
+<style>
+.tally {
+    color: blue;
+    text-indent: .4in;
+}
 <table cellpadding=5>
 [% FOR row IN rows %]
 $row
