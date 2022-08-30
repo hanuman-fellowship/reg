@@ -1,5 +1,12 @@
 <h1>Future Mountain Experience Registrations</h1>
+<table cellpadding=5>
 [% FOR r IN me %]
     [% p = r.person %]
-    ${r.date_start_obj.format("%b %e")} $p.first $p.last $r.mountain_experience, $r.activity<br>
+    <tr>
+    <td>${r.date_start_obj.format("%b %e")}</td>
+    <td>$p.first $p.last</td>
+    <td>$r.mountain_experience</td>
+    <td>$r.activity</td>
+    </tr>
 [% END %]
+</table>
