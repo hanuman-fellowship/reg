@@ -2958,5 +2958,22 @@ sub contact_email : Local {
         $c->uri_for("/report/show_report_file/contact_emails.csv"));
 }
 
+sub mountain_experience : Local {
+    my ($self, $c) = @_;
+    my @me = model($c, 'Registration')->search(
+                 {
+                     date_start => { '>=' => today->as_d8() },
+                     mountain_experience => { '!=' => '' },
+                 },
+                 {
+                     join     => [qw/ person /],
+                     prefetch => [qw/ person /],
+                     order_by => 'me.date_start, person.first',                   
+                 });
+    stash($c,
+        me => \@me,
+        template   => "listing/mountain_experience.tt2",
+    );
+}
 
 1;

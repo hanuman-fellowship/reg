@@ -1,0 +1,5 @@
+<h1>Future Mountain Experience Registrations</h1>
+[% FOR r IN me %]
+    [% p = me.person %]
+    $p.first, $p.last, $r.date_start, $r.mountain_experience, $r.comment<br>
+[% END %]
