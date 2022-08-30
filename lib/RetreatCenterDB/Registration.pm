@@ -313,6 +313,18 @@ sub activity {
     return join ', ', @act;
 }
 
+sub heard {
+    my ($self) = @_;
+    my $s = $self->referral;
+    if ($s eq 'ad') {
+        $s = $self->adsource;
+    }
+    if (empty($s)) {
+        $s = '?';
+    }
+    return ucfirst $s;
+}
+
 1;
 __END__
 overview - A registration is created when a Person signs up for a Program.

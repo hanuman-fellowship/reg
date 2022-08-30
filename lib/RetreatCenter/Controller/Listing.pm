@@ -2987,6 +2987,7 @@ sub mountain_experience : Local {
                  td($r->person->name),
                  td($r->mountain_experience),
                  td($act),
+                 td($r->heard),
              );
         ++$tot;
         ++$class if $act =~ /class/i;
