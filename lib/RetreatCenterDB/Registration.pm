@@ -302,6 +302,16 @@ sub house_name {
     return $h_name;
 }
 
+# extract the Yoga Class, Guided Walk from the HTML comment
+# which may have other things in it
+sub activity {
+    my ($self) = @_;
+    my $s = $self->comment();
+    my ($yc) = $s =~ m{(Yoga\s+Class)}xmsi;
+    my ($gw) = $s =~ m{Guided\s+Walk}xmsi;
+    return join ', ', $yc, $gw;
+}
+
 1;
 __END__
 overview - A registration is created when a Person signs up for a Program.
