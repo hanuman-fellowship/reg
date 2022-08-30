@@ -581,23 +581,23 @@ sub set_grid_stale {
 sub send_rental_deposit {
     my ($rental) = @_;
     my $code = $rental->grid_code();
-    my $coord = $rental->coordinator() || $rental->contract_signer;
+    my $person = $rental->contract_signer || $rental->coordinator();
     open my $out, '>', "/tmp/$code";
     print {$out} Dumper({
-        first    => $coord->first(),
-        last     => $coord->last(),
-        addr     => $coord->addr1() . " " . $coord->addr2,
-        city     => $coord->city(),
-        state    => $coord->st_prov(),
-        zip      => $coord->zip_post(),
-        country  => $coord->country() || 'USA',
+        first    => $person->first(),
+        last     => $person->last(),
+        addr     => $person->addr1() . " " . $person->addr2,
+        city     => $person->city(),
+        state    => $person->st_prov(),
+        zip      => $person->zip_post(),
+        country  => $person->country() || 'USA',
         id       => $rental->id(),
         name     => $rental->name_trimmed(),
         amount   => $rental->deposit(),
         sdate    => $rental->sdate(),
         edate    => $rental->edate(),
-        phone    => $coord->tel_home() || $coord->tel_cell(),
-        email    => $coord->email(),
+        phone    => $person->tel_home() || $person->tel_cell(),
+        email    => $person->email(),
     });
     close $out;
     return if -f '/tmp/Reg_Dev';

@@ -6,7 +6,7 @@ body {
     margin-bottom: .5in;
 }
 </style>
-Greetings ${rental.coordinator.first},
+Greetings ${rental.contract_signer.first},
 <p>
 Mount Madonna Center is most pleased to be able to host your group, '$rental.name_trimmed'.
 Attached you will find:
