@@ -41,6 +41,7 @@ use List::Util qw/
     uniq
 /;
 use Template;
+use CGI qw/:html/;      # for Tr, td
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -2970,8 +2971,31 @@ sub mountain_experience : Local {
                      prefetch => [qw/ person /],
                      order_by => 'me.date_start, person.first',                   
                  });
+    my ($prev, $tot, $class, $walk) = (0 x 4);
+    my @me_rows;
+    for my $r (@me) {
+        if ($prev && $prev ne $r->date_start) {
+            push @me_rows, Tr(td({ colspan => 3 },
+                                 "$tot people, $class class, $walk walk"));
+            $tot = $class = $walk = 0;
+        }
+        my $act = $r->activity;
+        push @me_rows,
+             Tr(
+                 td($r->date_start_obj->format("%b %e")),
+                 td($r->person->name),
+                 td($r->mountain_experience),
+                 td($act),
+             );
+        ++$tot;
+        ++$class if $act =~ /class/i;
+        ++$walk  if $act =~ /walk/i;
+        $prev = $r->date_start;
+    }
+    push @me_rows, Tr(td({ colspan => 3 },
+                         "$tot people, $class class, $walk walk"));
     stash($c,
-        me => \@me,
+        rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",
     );
 }
