@@ -2975,8 +2975,9 @@ sub mountain_experience : Local {
     my @me_rows;
     for my $r (@me) {
         if ($prev && $prev ne $r->date_start) {
+            my $peeple = $tot == 1? 'person': 'people';
             push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                                 "$tot people, $class class, $walk walk"));
+                                 "$tot $peeple, $class class, $walk walk"));
             $tot = $class = $walk = 0;
         }
         my $act = $r->activity;
@@ -2992,8 +2993,9 @@ sub mountain_experience : Local {
         ++$walk  if $act =~ /walk/i;
         $prev = $r->date_start;
     }
+    my $peeple = $tot == 1? 'person': 'people';
     push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                         "$tot people, $class class, $walk walk"));
+                         "$tot peeple, $class class, $walk walk"));
     stash($c,
         rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",
