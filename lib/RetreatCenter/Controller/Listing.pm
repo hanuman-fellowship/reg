@@ -2995,7 +2995,7 @@ sub mountain_experience : Local {
     }
     my $peeple = $tot == 1? 'person': 'people';
     push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                         "$tot peeple, $class class, $walk walk"));
+                         "$tot $peeple, $class class, $walk walk"));
     stash($c,
         rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",

@@ -1,7 +1,7 @@
 <h1>Future Mountain Experience Registrations</h1>
 <style>
 .tally {
-    color: blue;
+    color: green;
     text-indent: .4in;
 }
 </style>
