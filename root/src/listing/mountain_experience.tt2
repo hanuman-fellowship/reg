@@ -4,6 +4,7 @@
     color: blue;
     text-indent: .4in;
 }
+</style>
 <table cellpadding=5>
 [% FOR row IN rows %]
 $row
