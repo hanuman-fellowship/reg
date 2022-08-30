@@ -307,9 +307,10 @@ sub house_name {
 sub activity {
     my ($self) = @_;
     my $s = $self->comment();
-    my ($yc) = $s =~ m{(Yoga\s+Class)}xmsi;
-    my ($gw) = $s =~ m{(Guided\s+Walk)}xmsi;
-    return join ', ', $yc, $gw;
+    my @act;
+    push @act, $s =~ m{(Yoga\s+Class)}xmsi;
+    push @act, $s =~ m{(Guided\s+Walk)}xmsi;
+    return join ', ', @act;
 }
 
 1;
