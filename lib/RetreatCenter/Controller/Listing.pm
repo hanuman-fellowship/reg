@@ -2984,7 +2984,11 @@ sub mountain_experience : Local {
         push @me_rows,
              Tr(
                  td($r->date_start_obj->format("%b %e")),
-                 td($r->person->name),
+                 td("<a href='/registration/view/"
+                    . $r->id
+                    . "'>"
+                    . $r->person->name
+                    . "</a>"),
                  td($r->mountain_experience),
                  td($act),
                  td($r->heard),
