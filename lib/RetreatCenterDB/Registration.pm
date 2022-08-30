@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenterDB::Registration;
 use base qw/DBIx::Class/;
 
+use lib '..';
+
 use Date::Simple qw/
     date
 /;
