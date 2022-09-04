@@ -1165,7 +1165,8 @@ sub kayakalpa {
             $dates = fmt_dates($p_sdate, $p_edate);
         }
         else {
-            $program = "Personal Retreat";
+            $program = $href->{mountain_experience}? 'Mountain Experience'
+                      :                              'Personal Retreat;
             $dates = fmt_dates(date($href->{sdate}), date($href->{edate}));
         }
         my $html;

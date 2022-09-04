@@ -2969,38 +2969,54 @@ sub mountain_experience : Local {
                  {
                      join     => [qw/ person /],
                      prefetch => [qw/ person /],
-                     order_by => 'me.date_start, person.first',                   
+                     order_by => 'me.date_start, person.last, person.first',                   
                  });
-    my ($prev, $tot, $class, $walk);
+    my ($prev, $tot, $class, $walk, $children);
     my @me_rows;
+    push @me_rows, Tr(th('Date'),
+                      th('Name'),
+                      th('Meals'),
+                      th('Activities'),
+                      th('Kids'),
+                      th('Referral'),
+                   );
     for my $r (@me) {
         if ($prev && $prev ne $r->date_start) {
             my $peeple = $tot == 1? 'person': 'people';
-            push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                                 "$tot $peeple, $class class, $walk walk"));
-            $tot = $class = $walk = 0;
+            my $child = $children == 1? 'child': 'children';
+            push @me_rows, Tr(td({ colspan => 4, class => 'tally' },
+                                 "$tot $peeple, $children $child, $class class, $walk walk"));
+            $tot = $children = $class = $walk = 0;
         }
         my $act = $r->activity;
+        ++$tot;
+        ++$class if $act =~ /class/i;
+        ++$walk  if $act =~ /walk/i;
+        my $kids = '';
+        if (my $k = $r->kids) {
+            my @kids = split ',', $k;
+            $children += @kids;
+            $kids = @kids;
+        }
         push @me_rows,
              Tr(
                  td($r->date_start_obj->format("%b %e")),
                  td("<a target='_blank' href='/registration/view/"
                     . $r->id
                     . "'>"
-                    . $r->person->name
+                    . $r->person->last . ', ' . $r->person->first
                     . "</a>"),
                  td($r->mountain_experience),
                  td($act),
+                 td($kids),
                  td($r->heard),
              );
-        ++$tot;
-        ++$class if $act =~ /class/i;
-        ++$walk  if $act =~ /walk/i;
         $prev = $r->date_start;
     }
     my $peeple = $tot == 1? 'person': 'people';
+    my $child = $children == 1? 'child': 'children';
     push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                         "$tot $peeple, $class class, $walk walk"));
+                         "$tot $peeple, $children $child, $class class, $walk walk"));
     stash($c,
         rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",
