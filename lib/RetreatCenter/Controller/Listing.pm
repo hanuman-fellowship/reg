@@ -2976,7 +2976,7 @@ sub mountain_experience : Local {
     my @me_rows;
     my $left  = { align => 'left' };
     my $right = { align => 'right' };
-    my $cost = $string{me_cost};
+    my $cost = $string{mountain_experience_cost};
     push @me_rows, Tr(th($left, 'Date'),
                       th($left, 'Name'),
                       th($left, 'Meals'),
