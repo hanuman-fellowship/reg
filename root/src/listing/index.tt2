@@ -18,7 +18,7 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit id=sub value="
 <p class=p2>
 <form action="/listing/mountain_experience" method=POST>
 <span class=mount_exp>Mountain Experience</span> Registrations since
-<input type=text size=10 name=me_date>&nbsp;<input type=submit id=sub value="Go">
+<input type=text size=10 name=me_date value=$badge_from>&nbsp;<input type=submit id=sub value="Go">
 </form>
 <p class=p2>
 <form action="/listing/badges_in_date_range" target=_blank>

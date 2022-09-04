@@ -3045,6 +3045,7 @@ sub mountain_experience : Local {
     push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
                          "$tot $peeple, $children $child, $class class, $walk walk, \$$dollars" . _email_all(@bcc_emails)));
     stash($c,
+        today => $today,
         start => $start,
         rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",
