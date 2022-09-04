@@ -2962,9 +2962,9 @@ sub contact_email : Local {
 sub _email_all {
     my @emails = @_;
     return ('&nbsp;' x 4)
-         . '<a href=mailto:?bcc='
+         . "<a href='mailto:?bcc="
          . join(',', @emails)
-         . 'email all</a>';
+         . "'>email all</a>";
 }
 
 sub mountain_experience : Local {
