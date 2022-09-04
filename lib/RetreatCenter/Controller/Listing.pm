@@ -2959,6 +2959,14 @@ sub contact_email : Local {
         $c->uri_for("/report/show_report_file/contact_emails.csv"));
 }
 
+sub _email_all {
+    my @emails = @_;
+    return ('&nbsp;' x 4)
+         . '<a href=mailto:?bcc='
+         . join(',', @emails)
+         . 'email all</a>';
+}
+
 sub mountain_experience : Local {
     my ($self, $c) = @_;
     my @me = model($c, 'Registration')->search(
@@ -2973,6 +2981,7 @@ sub mountain_experience : Local {
                  });
     my ($prev, $tot, $class, $walk, $children);
     my $dollars;
+    my @bcc_emails;
     my @me_rows;
     my $left  = { align => 'left' };
     my $right = { align => 'right' };
@@ -2989,8 +2998,9 @@ sub mountain_experience : Local {
             my $peeple = $tot == 1? 'person': 'people';
             my $child = $children == 1? 'child': 'children';
             push @me_rows, Tr(td({ colspan => 4, class => 'tally' },
-                                 "$tot $peeple, $children $child, $class class, $walk walk, \$$dollars"));
+                                 "$tot $peeple, $children $child, $class class, $walk walk, \$$dollars" . _email_all(@bcc_emails)));
             $tot = $children = $class = $walk = $dollars = 0;
+            @bcc_emails = ();
         }
         my $act = $r->activity;
         ++$tot;
@@ -3004,6 +3014,7 @@ sub mountain_experience : Local {
         }
         $dollars += $cost + ($nkids*$cost/2);
             # tds are aligned left by default
+        push @bcc_emails, $r->person->email;
         push @me_rows,
              Tr(
                  td($r->date_start_obj->format("%b %e")),
@@ -3022,7 +3033,7 @@ sub mountain_experience : Local {
     my $peeple = $tot == 1? 'person': 'people';
     my $child = $children == 1? 'child': 'children';
     push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                         "$tot $peeple, $children $child, $class class, $walk walk, \$dollars"));
+                         "$tot $peeple, $children $child, $class class, $walk walk, \$$dollars" . _email_all(@bcc_emails)));
     stash($c,
         rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",
