@@ -1,4 +1,4 @@
-<h1><span class=mount_exp>Mountain Experience</span> Registrations since ${start.format("%B %e")}</h1>
+<h1><span class=mount_exp>Mountain Experience</span> Registrations <span style="font-weight: normal; font-size: 16pt;">since ${start.format("%D")}</span></h1>
 <style>
 .tally {
     color: green;
