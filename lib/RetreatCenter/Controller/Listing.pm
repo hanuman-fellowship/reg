@@ -2972,32 +2972,38 @@ sub mountain_experience : Local {
                      order_by => 'me.date_start, person.last, person.first',                   
                  });
     my ($prev, $tot, $class, $walk, $children);
+    my $dollars;
     my @me_rows;
-    push @me_rows, Tr(th('Date'),
-                      th('Name'),
-                      th('Meals'),
-                      th('Activities'),
-                      th('Kids'),
-                      th('Referral'),
+    my $left  = { align => 'left' };
+    my $right = { align => 'right' };
+    my $cost = $string{me_cost};
+    push @me_rows, Tr(th($left, 'Date'),
+                      th($left, 'Name'),
+                      th($left, 'Meals'),
+                      th($left, 'Activities'),
+                      th($right, 'Kids'),
+                      th($left, 'Referral'),
                    );
     for my $r (@me) {
         if ($prev && $prev ne $r->date_start) {
             my $peeple = $tot == 1? 'person': 'people';
             my $child = $children == 1? 'child': 'children';
             push @me_rows, Tr(td({ colspan => 4, class => 'tally' },
-                                 "$tot $peeple, $children $child, $class class, $walk walk"));
-            $tot = $children = $class = $walk = 0;
+                                 "$tot $peeple, $children $child, $class class, $walk walk, \$$dollars"));
+            $tot = $children = $class = $walk = $dollars = 0;
         }
         my $act = $r->activity;
         ++$tot;
         ++$class if $act =~ /class/i;
         ++$walk  if $act =~ /walk/i;
-        my $kids = '';
+        my $nkids = '';
         if (my $k = $r->kids) {
             my @kids = split ',', $k;
             $children += @kids;
-            $kids = @kids;
+            $nkids = @kids;
         }
+        $dollars += $cost + ($nkids*$cost/2);
+            # tds are aligned left by default
         push @me_rows,
              Tr(
                  td($r->date_start_obj->format("%b %e")),
@@ -3008,7 +3014,7 @@ sub mountain_experience : Local {
                     . "</a>"),
                  td($r->mountain_experience),
                  td($act),
-                 td($kids),
+                 td($right, $nkids),
                  td($r->heard),
              );
         $prev = $r->date_start;
@@ -3016,7 +3022,7 @@ sub mountain_experience : Local {
     my $peeple = $tot == 1? 'person': 'people';
     my $child = $children == 1? 'child': 'children';
     push @me_rows, Tr(td({ colspan => 3, class => 'tally' },
-                         "$tot $peeple, $children $child, $class class, $walk walk"));
+                         "$tot $peeple, $children $child, $class class, $walk walk, \$dollars"));
     stash($c,
         rows => \@me_rows,
         template   => "listing/mountain_experience.tt2",
