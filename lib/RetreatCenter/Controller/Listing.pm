@@ -2970,7 +2970,8 @@ sub _email_all {
 sub mountain_experience : Local {
     my ($self, $c) = @_;
     my $me_date = trim($c->request->params->{me_date});
-    my $start = today();
+    my $today = today();
+    my $start = $today;
     if ($me_date) {
         $start = date($me_date);
         if (! $start) {
