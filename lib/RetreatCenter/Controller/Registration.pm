@@ -1986,14 +1986,14 @@ sub _compute {
         my @ages = $kids =~ m{(\d+)}g;
         @ages = grep { $min_age <= $_ && $_ <= $max_age } @ages;
         my $nkids = @ages;
-        my $plural = ($nkids == 1)? "": "s";
+        my $kid_plural = ($nkids == 1)? "child": "children";
         if ($nkids && $tot_h_cost) {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
                 amount    => int($nkids*(($string{kid_disc}/100)*$tot_h_cost)),
                 type      => $TYPE_MEALS_AND_LODGING,
-                what      => "$nkids kid$plural aged $min_age-$max_age"
+                what      => "$nkids $kid_plural aged $min_age-$max_age"
                             ." - $string{kid_disc}% for lodging",
             });
         }

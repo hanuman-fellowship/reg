@@ -3023,7 +3023,7 @@ sub mountain_experience : Local {
             $children += @kids;
             $nkids = @kids;
         }
-        $dollars += $cost + ($nkids*int($cost/2));
+        $dollars += $cost + int($nkids*($cost/2));
             # tds are aligned left by default
         push @bcc_emails, $r->person->email;
         push @me_rows,
