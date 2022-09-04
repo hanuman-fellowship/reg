@@ -2969,9 +2969,19 @@ sub _email_all {
 
 sub mountain_experience : Local {
     my ($self, $c) = @_;
+    my $me_date = trim($c->request->params->{me_date});
+    my $start = today();
+    if ($me_date) {
+        $start = date($me_date);
+        if (! $start) {
+            $c->stash->{mess} = "Illegal date: $me_date";
+            $c->stash->{template} = "gen_error.tt2";
+            return;
+        }
+    }
     my @me = model($c, 'Registration')->search(
                  {
-                     date_start => { '>=' => today->as_d8() },
+                     date_start => { '>=' => $start->as_d8() },
                      mountain_experience => { '!=' => '' },
                  },
                  {

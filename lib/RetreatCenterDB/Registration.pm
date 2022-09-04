@@ -322,7 +322,7 @@ sub heard {
         $s = $self->adsource;
     }
     if (empty($s)) {
-        $s = '?';
+        $s = '';        # ? doesn't look good - so blank
     }
     return ucfirst $s;
 }
