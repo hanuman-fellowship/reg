@@ -563,6 +563,9 @@ EOF
         stash($c, date_end => date($href->{edate}));
     }
 
+    # mountain experience children
+    $stash{kids} = $href->{children_name_age};
+
     # the postmark timestamp
     my $date = date($href->{date});
     $href->{time} =~ s{:}{}xms;      # so it is interpreted as 24 hour time
