@@ -564,7 +564,7 @@ EOF
     }
 
     # mountain experience children
-    $stash{kids} = $href->{children_name_age};
+    stash($c, kids => $href->{children_name_age});
 
     # the postmark timestamp
     my $date = date($href->{date});
