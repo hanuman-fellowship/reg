@@ -46,14 +46,21 @@ sub the_time_obj {
 }
 
 my @status = (
-    'New',
-    'Contacted',
-    'Engaged',
-    'Denied by Host',
-    'Denied by MMC',
-    'Tentative',
-    'Rental',
+    'New',              # 0
+    'Contacted',        # 1
+    'Engaged',          # 2
+    'Denied by Host',   # 3
+    'Denied by MMC',    # 4
+    'Tentative',        # 5
+    'Rental',           # 6
 );
+# old statuses:
+# 0  'New',             # 0 => 0 
+# 1  'Contacted'        # 1 => 1
+# 2  'Denied',          # 2 => 4
+# 3  'Tentative',       # 3 => 5
+# 4  'Rental',          # 4 => 6
+
 sub status_disp {
     my ($self) = @_;
     return $status[$self->status];
