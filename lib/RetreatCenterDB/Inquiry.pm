@@ -45,15 +45,15 @@ sub the_time_obj {
     return get_time($self->the_time) || "";
 }
 
-my @status = qw/
-    New
-    Contacted
-    Engaged
-    Denied by Host
-    Denied by MMC
-    Tentative
-    Rental
-/;
+my @status = (
+    'New',
+    'Contacted',
+    'Engaged',
+    'Denied by Host',
+    'Denied by MMC',
+    'Tentative',
+    'Rental',
+);
 sub status_disp {
     my ($self) = @_;
     return $status[$self->status];
