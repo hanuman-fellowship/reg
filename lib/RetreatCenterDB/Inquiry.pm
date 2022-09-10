@@ -48,7 +48,9 @@ sub the_time_obj {
 my @status = qw/
     New
     Contacted
-    Denied
+    Engaged
+    Denied by Host
+    Denied by MMC
     Tentative
     Rental
 /;
@@ -106,7 +108,7 @@ phone - phone number of the leader
 rental_id - if converted - the id of the rental
 retreat_type - type of retreat - possibly more than one
 status - integer index into status array
-    New, Contacted, Denied, Tentative, Rental
+    New, Contacted, Engaged, Denied by Host, Denied by MMC, Tentative, Rental
 the_date - the date the inquiry came in
 the_time - the time the inquiry came in
 vegetarian - boolean yes/'' - must be 'yes'
