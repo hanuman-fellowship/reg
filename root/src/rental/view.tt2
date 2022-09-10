@@ -232,6 +232,7 @@ Web/Files
     <a target=_blank 
        href=${string.grid_url}?code=$rental.grid_code>Web Grid</a>
        &nbsp;&nbsp;
+       <a target=_blank
        href=${string.grid_url}_ne?code=$rental.grid_code>Web Grid <b>No Email</b></a>
     [% IF rental.grid_stale %]
         &nbsp;&nbsp;
