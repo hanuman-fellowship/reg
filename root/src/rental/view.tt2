@@ -231,6 +231,8 @@ Web/Files
     <td colspan=2>
     <a target=_blank 
        href=${string.grid_url}?code=$rental.grid_code>Web Grid</a>
+       &nbsp;&nbsp;
+       href=${string.grid_url}_ne?code=$rental.grid_code>Web Grid <b>No Email</b></a>
     [% IF rental.grid_stale %]
         &nbsp;&nbsp;
         <a class=bold_red href=/rental/send_grid/$id>Send To Web</a>
