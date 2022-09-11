@@ -37,7 +37,7 @@ sub list : Local {
         @inq = sort { $a->leader_name cmp $b->leader_name } @inq;
     }
     elsif ($order eq 'date') {
-        @inq = sort { $a->date <=> $b->date } @inq;
+        @inq = sort { $b->the_date <=> $a->the_date } @inq;
     }
     elsif ($order eq 'how_many') {
         @inq = map {
