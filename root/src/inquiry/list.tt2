@@ -6,11 +6,11 @@
 <ul>
 <table cellpadding=5 width=1300>
 <tr>
-<th width=6%><a href=/inquiry/list/date>Date</a></th>
-<th width=15% align=left><a href=/inquiry/list/leader>Leader</a></th>
-<th width=10% align=left><a href=/inquiry/list/status>Status</a></th>
-<th width=8% align=left><a href=/inquiry/list/how_many>How Many?</a></th>
-<th width=52% align=left>Group Name</th>
+<td width=6%><a href=/inquiry/list/date>Date</a></th>
+<td width=15% align=left><a href=/inquiry/list/leader>Leader</a></th>
+<td width=10% align=left><a href=/inquiry/list/status>Status</a></th>
+<td width=8% align=left><a href=/inquiry/list/how_many>How Many?</a></th>
+<td width=52% align=left>Group Name</th>
 </tr>
 [% FOR i IN inquiries %]
 <tr>
