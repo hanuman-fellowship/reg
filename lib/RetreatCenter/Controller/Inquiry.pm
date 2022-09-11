@@ -33,13 +33,47 @@ sub list : Local {
     $order ||= 'date';
 
     my @inq = model($c, 'Inquiry')->all();
-    my $sub_ref
-        = $order eq 'leader'  ? sub { $a->leader_name cmp $b->leader_name }
-         :$order eq 'status'  ? sub { $a->status cmp $b->status }
-         :$order eq 'how_many'? sub { $a->how_many cmp $b->how_many }
-         :                      sub { $a->date <=> $b->date }
-         ;
-    @inq = sort $sub_ref @inq;
+    if ($order eq 'leader' || $order eq 'date') {
+        my $sub_ref
+            = $order eq 'leader'  ? sub { $a->leader_name cmp $b->leader_name }
+             :                      sub { $b->date <=> $a->date }
+             ;
+        @inq = sort $sub_ref @inq;
+    }
+    elsif ($order eq 'how_many') {
+        @inq = map {
+                   $_->[1]
+               }
+               sort {
+                   $b->[0] <=> $a->[0];
+               }
+               map {
+                   [ m{\A (\d+)}xms, $_ ] 
+               }
+               @inq
+               ;
+    }
+    elsif ($order eq 'status') {
+        my %status_order = qw/
+            0 2 
+            1 1
+            2 6
+            3 4 
+            4 5
+            5 0
+            6 3
+        /;
+        @inq = map {
+                   $_->[1]
+               }
+               sort {
+                   $a->[0] <=> $b->[0]
+               }
+               map {
+                   [ $status_order{$_}, $_ ]
+               }
+               @inq;
+    }
     $c->stash->{inquiries} = \@inq;
     $c->stash->{template} = "inquiry/list.tt2";
 }
