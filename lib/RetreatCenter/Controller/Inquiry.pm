@@ -54,13 +54,13 @@ sub list : Local {
     }
     elsif ($order eq 'status') {
         my %status_order = qw/
-            0 4   # new
+            0 6   # new
             1 1   # contacted
             2 0   # engaged
-            3 2   # tentative
-            4 3   # rental
-            5 5   # denied by MMC
-            6 6   # denied by Host
+            3 4   # denied by Host
+            4 5   # denied by MMC
+            5 2   # tentative
+            6 3   # rental
         /;
         @inq = map {
                    $_->[1]
