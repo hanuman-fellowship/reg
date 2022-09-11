@@ -33,12 +33,11 @@ sub list : Local {
     $order ||= 'date';
 
     my @inq = model($c, 'Inquiry')->all();
-    if ($order eq 'leader' || $order eq 'date') {
-        my $sub_ref
-            = $order eq 'leader'  ? sub { $a->leader_name cmp $b->leader_name }
-             :                      sub { $b->date <=> $a->date }
-             ;
-        @inq = sort $sub_ref @inq;
+    if ($order eq 'leader') {
+        @inq = sort { $a->leader_name cmp $b->leader_name } @inq;
+    }
+    elsif ($order eq 'date') {
+        @inq = sort { $b->date <=> $a->date } @inq;
     }
     elsif ($order eq 'how_many') {
         @inq = map {
@@ -48,7 +47,7 @@ sub list : Local {
                    $b->[0] <=> $a->[0];
                }
                map {
-                   [ m{\A (\d+)}xms, $_ ] 
+                   [ $_->how_many =~ m{\A (\d+)}xms, $_ ] 
                }
                @inq
                ;
@@ -70,7 +69,7 @@ sub list : Local {
                    $a->[0] <=> $b->[0]
                }
                map {
-                   [ $status_order{$_}, $_ ]
+                   [ $status_order{$_->status}, $_ ]
                }
                @inq;
     }
