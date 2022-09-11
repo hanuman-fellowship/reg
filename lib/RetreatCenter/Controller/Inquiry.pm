@@ -32,7 +32,7 @@ sub list : Local {
     my ($self, $c, $order) = @_;
     $order ||= 'date';
 
-    my @inq = $c->stash->{inquiries} = model($c, 'Inquiry')->all();
+    my @inq = model($c, 'Inquiry')->all();
     my $sub_ref
         = $order eq 'leader'  ? sub { $a->leader_name cmp $b->leader_name }
          :$order eq 'status'  ? sub { $a->status cmp $b->status }
