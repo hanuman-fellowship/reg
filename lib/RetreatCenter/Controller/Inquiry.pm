@@ -25,13 +25,22 @@ sub index : Private {
     $c->forward('list');
 }
 
+#
+# order is date (default), leader, status, how_many
+#
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $order) = @_;
+    $order ||= 'date';
 
-    $c->stash->{inquiries} = [ model($c, 'Inquiry')->search(
-        undef,
-        { order_by => 'the_date desc, the_time desc' }
-    ) ];
+    my @inq = $c->stash->{inquiries} = model($c, 'Inquiry')->all();
+    my $sub_ref
+        = $order eq 'leader'  ? sub { $a->leader_name cmp $b->leader_name }
+         :$order eq 'status'  ? sub { $a->status cmp $b->status }
+         :$order eq 'how_many'? sub { $a->how_many cmp $b->how_many }
+         :                      sub { $a->date <=> $b->date }
+         ;
+    @inq = sort $sub_ref @inq;
+    $c->stash->{inquiries} = \@inq;
     $c->stash->{template} = "inquiry/list.tt2";
 }
 
