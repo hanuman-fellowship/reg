@@ -2991,7 +2991,7 @@ sub mountain_experience : Local {
                      order_by => 'me.date_start, person.last, person.first',                   
                  });
     my ($prev, $tot);
-    my ($class, $walk, $children) = (0 x 3);
+    my ($class, $walk, $children) = (0, 0, 0);
     my $dollars;
     my @bcc_emails;
     my @me_rows;
