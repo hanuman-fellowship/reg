@@ -2990,7 +2990,8 @@ sub mountain_experience : Local {
                      prefetch => [qw/ person /],
                      order_by => 'me.date_start, person.last, person.first',                   
                  });
-    my ($prev, $tot, $class, $walk, $children);
+    my ($prev, $tot);
+    my ($class, $walk, $children) = (0 x 3);
     my $dollars;
     my @bcc_emails;
     my @me_rows;
