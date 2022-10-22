@@ -53,6 +53,7 @@ sub list : Local {
                ;
     }
     elsif ($order eq 'status') {
+        no warnings;
         my %status_order = qw/
             0 0   # new
             1 4   # contacted
@@ -64,16 +65,24 @@ sub list : Local {
             7 1   # priority
         /;
         @inq = map {
-                   $_->[1]
+                   $_->[0]
                }
                sort {
-                   $a->[0] <=> $b->[0]
+                   $a->[1] <=> $b->[1]
+                   ||
+                   $b->[2] <=> $a->[2]
                }
                map {
-                   [ $status_order{$_->status}, $_ ]
+                   [ $_, $status_order{$_->status}, $_->the_date ]
                }
                @inq;
     }
+    stash($c,
+        st        => { $order => "style='color: green'" },
+        order     => $order,
+        inquiries => \@inq,
+        template  => "inquiry/list.tt2",
+    );
     $c->stash->{inquiries} = \@inq;
     $c->stash->{template} = "inquiry/list.tt2";
 }
