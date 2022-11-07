@@ -680,6 +680,9 @@ sub detail_disp {
 #     will have the words 'Lunch' and/or 'Dinner'
 #     Saturday Lunch is actually Breakfast (aka Brunch)
 #
+# MMS Parent Package registrants will pay separately for their meals.
+#   A Meal object will be created with comment MMS Parent.
+#
 # finally, we look at Meal objects within the date range
 #   and add the breakfast, lunch, and dinner counts.
 #
@@ -738,6 +741,7 @@ sub meal_list : Local {
                             # do program.category.name => 'Normal'
                             # but not now ...
                        'me.cancelled'  => '',
+
                    },
                    {
                        join     => [qw/ program /],
@@ -745,7 +749,11 @@ sub meal_list : Local {
                    }
                );
     # can't put this in the where clause above???  why?
-    @regs = grep { ! $_->program->level->long_term() } @regs;
+    @regs = grep {
+        ! $_->program->level->long_term()
+        &&
+        $_->program->name !~ m{online|parent\s*package}xmsi
+    } @regs;
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
