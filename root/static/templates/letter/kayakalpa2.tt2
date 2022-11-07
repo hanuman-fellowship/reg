@@ -1,0 +1,17 @@
+<html>
+<head>
+<style>
+body {
+    font-size: 18pt;
+}
+</style>
+</head>
+<body>
+$first $last has requested information about body work.
+<p>
+Email: <a href="mailto:$email?subject=Massage/Bodywork Request during '$program' from $dates'">$email</a><br>
+Phone: $cell<br>
+Program: $program<br>
+Dates: $dates
+</body>
+</html>

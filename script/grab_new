@@ -1186,11 +1186,32 @@ sub kayakalpa {
         ) or quit("template error: " . $tt->error());
         email_letter($c,
             to       => $href->{email},
-            cc       => "Kaya Kalpa <$string{kayakalpa_email}>",
             from     => "Kaya Kalpa <$string{kayakalpa_email}>",
             subject  => "Massage/Bodywork Request during '$program' from $dates",
             html     => $html,
-            activity_msg => "Email kayakalpa to $href->{first} $href->{last}",
+            activity_msg => "Email $href->{first} $href->{last} about Kaya Kalpa",
+        );
+        # and a separate shorter letter to Kaya Kalpa
+        # about this person
+        # including their email address and phone number
+        $tt->process(
+            'kayakalpa2.tt2',
+            {
+                first   => $href->{first},
+                last    => $href->{last},
+                email   => $href->{email},
+                cell    => $href->{cell},
+                program => $program,
+                dates   => $dates,
+            },
+            \$html,
+        ) or quit("template error: " . $tt->error());
+        email_letter($c,
+            to       => "Kaya Kalpa <$string{kayakalpa_email}>",
+            from     => "Kaya Kalpa <$string{kayakalpa_email}>",
+            subject  => "$href->{first} $href->{last} - '$program' from $dates",
+            html     => $html,
+            activity_msg => "Email Kaya Kalpa about $href->{first} $href->{last}",
         );
     }
 }
