@@ -1194,6 +1194,7 @@ sub kayakalpa {
         # and a separate shorter letter to Kaya Kalpa
         # about this person
         # including their email address and phone number
+        $html = '';
         $tt->process(
             'kayakalpa2.tt2',
             {
