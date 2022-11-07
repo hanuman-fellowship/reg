@@ -327,6 +327,15 @@ sub main_meeting_place {
     :          "";
 }
 
+sub parent_package_name {
+    my ($self) = @_;
+    return "MMS Parent Package "
+         . $self->sdate_obj->format("%b %e")
+         . ' - '
+         . $self->edate_obj->format("%b %e")
+         ;
+}
+
 sub title_trimmed {
     my ($self) = @_;
     my $title = $self->title();
