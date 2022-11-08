@@ -1,0 +1,13 @@
+<h2>Mountain Experience Revenue for $month</h2>
+Total: \$$total<p class=p2>
+[% IF outstanding.0 %]
+    Outstanding balances:<p class=p2>
+    <table cellpadding=10 border=0>
+    [% FOR p IN outstanding %]
+        <tr>
+        <td>$p.name</td>
+        <td align=right>\$$p.balance</td>
+        </tr>
+    [% END %]
+    </table>
+[% END %]

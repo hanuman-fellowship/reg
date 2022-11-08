@@ -6024,6 +6024,43 @@ sub mmi_import_do : Local {
     );
 }
 
+sub me_finance : Local {
+    my ($self, $c, $program_id) = @_;
+    my $prog = model($c, 'Program')->find($program_id);
+    my $month = $prog->sdate_obj->format("%B %Y");
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => $program_id,
+            cancelled  => { '!=' => 'yes' },
+            mountain_experience => { '!=' => '' },
+        },
+        {
+            join     => [qw/ person /],
+            prefetch => [qw/ person /],   
+            order_by => [qw/ person.last /],
+        }
+    );
+    my $total = 0;
+    my @outstanding;
+    for my $r (@regs) {
+        for my $p ($r->payments) {
+            $total += $p->amount;
+        }
+        if ($r->balance != 0) {
+            push @outstanding, {
+                name => $r->person->last_first_name,
+                balance => $r->balance,
+            };
+        }
+    }
+    stash($c,
+        month       => $month,
+        total       => $total,
+        outstanding => \@outstanding,
+        template    => 'registration/me_finance.tt2',
+    );
+}
+
 sub nonzero : Local {
     my ($self, $c, $program_id) = @_;
 

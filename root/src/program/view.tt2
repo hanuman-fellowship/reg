@@ -110,6 +110,8 @@ function UNreserve_cluster(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/tally/$id>Tally</a>
 &nbsp;&nbsp;&nbsp;
+<a href=/registration/me_finance/$id>ME\$</a>
+&nbsp;&nbsp;&nbsp;
 <a href=/registration/nonzero/$id>NonZero\$</a>
 &nbsp;&nbsp;&nbsp;
 [% IF program.school.mmi && ! program.level.long_term && mmi_admin %]

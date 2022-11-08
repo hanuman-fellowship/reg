@@ -2992,6 +2992,7 @@ sub mountain_experience : Local {
                  {
                      date_start => { '>=' => $start->as_d8() },
                      mountain_experience => { '!=' => '' },
+                     cancelled => { '!=' => 'yes' },
                  },
                  {
                      join     => [qw/ person /],
