@@ -6,6 +6,8 @@
 <a href=/registration/work_study/$program.id>Work Study</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/non_members/$program.id>Non-Members</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/registration/diet/$program.id>Diet</a>
 <h4>Participant List</h4>
 <form action="/registration/name_addr_do/$program.id">
 <table cellpadding=5 border=0>

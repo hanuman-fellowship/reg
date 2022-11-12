@@ -196,6 +196,7 @@ sub _regs_to_badge_data {
         else {
             my $dates = $reg->dates();
             my $room  = $reg->house_name();
+            my $pronouns = $reg->person->pronouns(),
             my $date_start = $reg->date_start();
                 # date_start is used for when sorting the
                 # people in PRs and Special Guests - perhaps across months
@@ -203,6 +204,7 @@ sub _regs_to_badge_data {
                  map {
                     +{  # href
                         name       => $_,
+                        pronouns   => $pronouns,
                         date_start => $date_start,
                         dates      => $dates,
                         room       => $room,

@@ -2220,9 +2220,13 @@ sub x_file_to_href {
     $hash{st_prov} = delete $hash{state};
     $hash{zip_post} = delete $hash{zip};
     $hash{sex} = delete $hash{gender};
-    $hash{sex} =   $hash{sex} eq       'Male'? 'M'
-                 : $hash{sex} eq     'Female'? 'F'
-                 : $hash{sex} eq 'Non-Binary'? 'X'  # mixed gender
+    $hash{sex} =   $hash{sex} eq      'Woman'? 'F'
+                 : $hash{sex} eq        'Man'? 'M'
+                 : $hash{sex} eq       'Male'? 'M'  # backwards compatible
+                 : $hash{sex} eq     'Female'? 'F'  # ditto
+                 : $hash{sex} =~    /binary/i? 'X'
+                 : $hash{sex} =~     /trans/i? 'T'
+                 : $hash{sex} =~    /prefer/i? 'N'
                  :                             ''
                  ;
     if ($hash{phone} && ! exists $hash{tel_cell}) {

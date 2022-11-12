@@ -1,0 +1,2 @@
+alter table people add column diet varchar(256) null default '';
+alter table people add column pronouns varchar(256) null default '';

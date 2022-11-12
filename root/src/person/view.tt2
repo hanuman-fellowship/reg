@@ -100,7 +100,15 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 </tr>
 
 <tr>
-<th align=right valign=top>Gender</th><td>$sex</td>
+<th align=right valign=top>Gender Identity</th><td>$person.sex_disp</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Preferred Pronouns</th><td>$person.pronouns</td>
+</tr>
+
+<tr>
+<th align=right>Dietary Restrictions:</th><td>$person.diet</td>
 </tr>
 
 <tr><th align=right valign=top>Address</th><td>$person.addr1[% IF person.addr2 %]<br>$person.addr2[% END %]</td>

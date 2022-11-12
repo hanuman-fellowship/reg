@@ -333,6 +333,11 @@ sub show : Local {
         if (exists $config{$hid}) {
             my $cf = $config{$hid};
             $sex    = $cf->sex();
+            if ($sex eq 'N' || $sex eq 'T') {
+                # X is for mixed or other gender
+                # including Transgender and Prefer not to respond
+                $sex = 'X';
+            }
             $cur    = $cf->cur();
             $curmax = $cf->curmax();
 
@@ -505,7 +510,7 @@ $dp_form
 <tr><td>$string{dp_empty_bed_char}</td><td>empty bed</td></tr>
 <tr><td>F</td><td>female</td></tr>
 <tr><td>M</td><td>male</td></tr>
-<tr><td>X</td><td>mixed gender</td></tr>
+<tr><td>X</td><td>mixed or other gender</td></tr>
 <tr><td>R</td><td>rental</td></tr>
 <tr><td>S</td><td>meeting space</td></tr>
 <tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>

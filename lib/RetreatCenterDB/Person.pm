@@ -46,6 +46,8 @@ __PACKAGE__->add_columns(qw/
     only_temple
     covid_vax
     vax_okay
+    pronouns
+    diet
 /);
 # didn't work??? - check_doc complains as well...
 #__PACKAGE__->add_columns(
@@ -139,9 +141,11 @@ sub sex_disp {
     my ($self) = @_;
 
     my $sex = $self->sex || '';
-    return ($sex eq 'M')? "Male"
-          :($sex eq 'F')? "Female"
-          :($sex eq 'X')? "Non-Binary"
+    return ($sex eq 'M')? "Man"
+          :($sex eq 'F')? "Woman"
+          :($sex eq 'X')? "Non-binary/non-conforming"
+          :($sex eq 'T')? "Transgender"
+          :($sex eq 'N')? "Prefer not to respond"
           :               "Person of Unreported Gender"
           ;
 }
@@ -257,6 +261,7 @@ covid_vax - Is there a COVID vaccination card uploaded?
 country - country
 date_entrd - date this person's record was first entered
 date_updat - last date the record was updated
+diet - dietary restrictions - vegan, gluten free, allergies, etc
 deceased - the person has passed
 e_mailings - I want MMC emailings
 email - email address
@@ -267,6 +272,7 @@ inactive - This record is no longer active - for whatever reason.
     Do not include it in any mailings.
 last - last name
 only_temple - Is this person ONLY a Temple Guest?
+pronouns - preferred pronouns - will appear on the badge
 safety_form - this person has filled out a safety form
 sanskrit - Sanskrit name - if any.
     one can search for a person by their Sanskrit name

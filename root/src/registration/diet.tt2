@@ -1,0 +1,8 @@
+<h2>People with Dietary Restrictions in<br>
+$prog.name $prog.dates</h2>
+<p class=p2>
+<table cellpadding=5>
+[% FOR r IN regs %]
+<tr><td>$r.person.name</td><td>$r.person.diet</td></tr>
+[% END %]
+</table>

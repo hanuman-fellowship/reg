@@ -22,7 +22,7 @@ table, td {
 }
 .image {
     margin-bottom: 3mm;
-    width: 150px;
+    width: 130px;
 }
 .name {
     font-weight: bold;
@@ -37,7 +37,7 @@ table, td {
 .last {
     font-size: ${last_font_size}pt;
     margin-top: 0in;
-    margin-bottom: .1in;
+    margin-bottom: 0in;
 }
 .long_name {
     font-size: ${last_font_size}pt;
@@ -83,6 +83,11 @@ table, td {
     color: black;
     font-weight: bold;
     text-decoration: underline;
+}
+.pronouns {
+    font-family: Calibri;
+    font-size: 13pt;
+    margin-bottom: .1in;
 }
 </style>
 </head>

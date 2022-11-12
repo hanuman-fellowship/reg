@@ -344,11 +344,6 @@ sub view : Local {
         time_travel_class($c),
         person   => $p,
         pg_title => $p->name(),
-        sex      => (!defined $sex || !$sex)? "Not Reported"
-                   :($sex eq "M"           )? "Male"
-                   :($sex eq "F"           )? "Female"
-                   :($sex eq "X"           )? "Non-Binary"
-                   :                          "Not Reported",
         template => "person/view.tt2",
     );
 }
@@ -573,9 +568,11 @@ sub update : Local {
     my $sex = $p->sex() || "";
     stash($c,
         person         => $p,
-        sex_female     => ($sex eq "F")? "checked": "",
-        sex_male       => ($sex eq "M")? "checked": "",
+        sex_woman      => ($sex eq "F")? "checked": "",
+        sex_man        => ($sex eq "M")? "checked": "",
         sex_non_binary => ($sex eq "X")? "checked": "",
+        sex_trans      => ($sex eq "T")? "checked": "",
+        sex_no_resp    => ($sex eq "N")? "checked": "",
         inactive       => (      $p->inactive())? "checked": "",
         deceased       => (      $p->deceased())? "checked": "",
         e_mailings     => (    $p->e_mailings())? "checked": "",

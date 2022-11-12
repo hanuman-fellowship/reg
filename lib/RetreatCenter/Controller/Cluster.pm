@@ -509,6 +509,11 @@ EOH
             my $room_color = $white;
             if (my $cf = $config{$hid}{$cur_dt8}) {
                 $sex    = $cf->sex();
+                if ($sex eq 'N' || $sex eq 'T') {
+                    # X is for mixed or other gender
+                    # including Transgender and Prefer not to respond
+                    $sex = 'X';
+                }
                 $cur    = $cf->cur();
                 $curmax = $cf->curmax();
                 #
@@ -671,7 +676,7 @@ EOH
 <tr><td>M</td><td>male</td></tr>
 <tr><td>R</td><td>rental</td></tr>
 <tr><td>S</td><td>meeting space</td></tr>
-<tr><td>X</td><td>mixed gender</td></tr>
+<tr><td>X</td><td>mixed or other gender</td></tr>
 <tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
 <tr><td>B</td><td>block</td></tr>
 <tr><td>$string{dp_resize_block_char}</td><td>resize block</td></tr>

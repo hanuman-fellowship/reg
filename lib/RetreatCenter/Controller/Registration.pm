@@ -496,6 +496,12 @@ EOH
         });
     }
 
+    # add any pronouns and diet to the person
+    $person->update({
+        pronouns => $href->{pronouns},
+        diet     => $href->{diet},
+    });
+
     #
     # various fields from the online file make their way
     # into the stash...
@@ -3078,6 +3084,7 @@ sub badge : Local {
     Badge->initialize($c);
     my $dates = $reg->dates();
     my $room  = $reg->house_name();
+    my $pronouns = $reg->person->pronouns;
     Badge->add_group(
         $title,
         $code,
@@ -3085,6 +3092,7 @@ sub badge : Local {
             map { 
                 +{      # hashref
                     name  => $_,
+                    pronouns => $pronouns,
                     dates => $dates,
                     room  => $room,
                 }
@@ -4228,7 +4236,7 @@ sub lodge : Local {
                     -and => [                   # can't mix genders
                         sex => { '!=', $psex }, #   or put someone unsuspecting
                         sex => { '!=', 'U'   }, #   in an X room
-                        sex => { '!=', 'B'   }, #   in an X room
+                        sex => { '!=', 'B'   }, #
                     ],
                     curmax => { '<', $low_max },    # too small
                     -and => [                   # can't resize - someone there
@@ -6852,6 +6860,29 @@ sub move_dup_reg : Local {
     rename "$rst/online/$fname",
            "$dir/$fname";
     $c->response->redirect($c->uri_for("/registration/list_online"));
+}
+
+sub diet : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id         => $prog_id,
+            'person.diet' => { '!=' => '' },
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.first person.last /],
+            prefetch => [qw/ person /],
+        }
+    );
+    #@regs = grep { $_->person->diet =~ /\S/ } @regs;
+    stash($c,
+        prog     => $prog,
+        regs     => \@regs,
+        template => 'registration/diet.tt2',
+    );
 }
 
 1;

@@ -70,12 +70,26 @@ function get_gender() {
 </tr>
 
 <tr>
-<th align=right><span class=red>*</span> Gender</th>
+<th align=right><span class=red>*</span> Gender Identity</th>
 <td>
-<input tabindex=4 type=radio name=sex value="F" $sex_female >Female<br>
-<input tabindex=4 type=radio name=sex value="M" $sex_male>Male<br>
-<input tabindex=4 type=radio name=sex value="X" $sex_non_binary>Non-Binary
+<input tabindex=4 type=radio name=sex value="F" $sex_woman >Woman<br>
+<input tabindex=4 type=radio name=sex value="M" $sex_man>Man<br>
+<input tabindex=4 type=radio name=sex value="X" $sex_non_binary>Non-binary/non-conforming<br>
+<input tabindex=4 type=radio name=sex value="T" $sex_trans>Transgender<br>
+<input tabindex=4 type=radio name=sex value="N" $sex_no_resp>Prefer not to respond
 </td>
+</tr>
+
+<tr>
+<th align=right>Preferred Pronouns</th>
+<td colspan=3><input type=text
+    name=pronouns value="$person.pronouns" size=50></td>
+</tr>
+
+<tr>
+<th align=right>Dietary Restrictions</th>
+<td colspan=3><input type=text
+    name=diet value="$person.diet" size=50></td>
 </tr>
 
 <tr>

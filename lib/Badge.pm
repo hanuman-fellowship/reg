@@ -156,15 +156,18 @@ sub get_badge_data_from_program {
     for my $reg (@regs) {
         my $dates = $reg->dates();
         my $room  = $reg->house_name();
+        my $pronouns = $reg->person->pronouns;
         push @data, 
              map {
                 +{  # href
                     name  => $_,
+                    pronouns => $pronouns,
                     dates => $dates,
                     room  => $room,
                 }
             }
             $reg->person->badge_name(), kid_badge_names($reg);
+            # kids pronouns??
         $reg->update({
             badge_printed => 'yes',
         });
