@@ -815,12 +815,36 @@ sub list : Local {
     $cutoff = $cutoff->as_d8();
     $end_date = $end_date->as_d8();
     my @cond = ();
-    if ($type eq 'long_term') {
+    if ($type eq 'long_term') {     # obsolete
         @cond = (
             'category.name' => 'Normal',
             'level.long_term' => 'yes',
             edate => { '>=', 19890101 },       # all programs not just current.
                                 # this overrides the cutoff one below
+        );
+    }
+    elsif ($type eq 'monthly') {
+        @cond = (
+            -or => [
+                'me.name' => { -like => 'Personal Retreats%' },
+                'me.name' => { -like => 'Special Guests%' },
+                'me.name' => { -like => 'MMS Parent%' },
+            ],
+        );
+    }
+    elsif ($type eq 'mmi') {
+        @cond = (
+            'me.name' => { -like => '%MMI%' },
+        );
+    }
+    elsif ($type eq 'other') {
+        @cond = (
+            -and => [
+                'me.name' => { -not_like => 'Personal Retreats%' },
+                'me.name' => { -not_like => 'Special Guests%' },
+                'me.name' => { -not_like => 'MMS Parent%' },
+                'me.name' => { -not_like => '%MMI%' },
+            ],
         );
     }
     else {

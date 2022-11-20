@@ -11,10 +11,12 @@
     &nbsp;&nbsp;&nbsp;
     <a href="/program/export">Export<a>
 [% END %]
-[% IF mmi_admin %]
-    &nbsp;&nbsp;&nbsp;
-    <a href="/program/list/long_term">Credentialed<a>
-[% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/program/list/monthly">Monthly<a>
+&nbsp;&nbsp;&nbsp;
+<a href="/program/list/mmi">MMI<a>
+&nbsp;&nbsp;&nbsp;
+<a href="/program/list/other">Other<a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ($online)</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value='[% pr_pat %]'> <input type=submit value="Search"></form>
