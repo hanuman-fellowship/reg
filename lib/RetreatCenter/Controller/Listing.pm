@@ -3035,7 +3035,9 @@ sub mountain_experience : Local {
             $children += @kids;
             $nkids = @kids;
         }
-        $dollars += $cost + int($nkids*($cost/2));
+        for my $p ($r->payments()) {
+            $dollars += $p->amount();
+        }
             # tds are aligned left by default
         push @bcc_emails, $r->person->email;
         push @me_rows,

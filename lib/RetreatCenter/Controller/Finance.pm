@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Finance;
 use base 'Catalyst::Controller';
 
+use lib '../..';
+
 use Util qw/
     model
     commify
@@ -1157,6 +1159,72 @@ sub summary : Local {
     my $email = $c->user->obj->email();
     system("./finance_summary $sdate $edate $email");
     $c->res->output("Processing your request.  It may take a minute or two.  See your email");
+}
+
+sub me : Local {
+    my ($self, $c) = @_; 
+
+    my $sdate = $c->request->params->{sdate};
+    my $edate = $c->request->params->{edate};
+
+    # validation
+    my $start = $sdate? date($sdate): "";
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    Date::Simple->relative_date($start);
+    my $end = $edate? date($edate): "";
+    Date::Simple->relative_date();
+
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $edate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    if ($end < $start) {
+        $c->stash->{mess} = "End date must be after Start date.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    my $start_d8 = $start->as_d8();
+    my $end_d8   = $end->as_d8();
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       date_start => {
+                           between => [ $start->as_d8(), $end->as_d8() ]
+                       },
+                       mountain_experience => { '!=' => '' },
+                       cancelled => { '!=' => 'yes' },
+                   },
+                   {
+                       join     => [qw/ person /],
+                       prefetch => [qw/ person /],
+                       order_by => 'me.date_start, person.last, person.first',
+                   },
+               );
+    my $total = 0;
+    my @payments;
+    for my $r (@regs) {
+        for my $p ($r->payments()) {
+            push @payments, {
+                date   => $r->date_start_obj,
+                name   => $r->person->last_first_name,
+                amount => int($p->amount),
+            };
+            $total += $p->amount;
+        }
+    }
+    stash($c,
+        start => $start,
+        end   => $end,
+        payments => \@payments,
+        total => commify($total),
+        template => 'finance/me_revenue.tt2',
+    );
 }
 
 1;

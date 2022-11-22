@@ -1,0 +1,7 @@
+<h2><span class=mount_exp>Mountain Experience</span> Revenue from $start to $end</h2>
+<table cellpadding=5>
+[% FOR p IN payments %]
+<tr><td>$p.date</td><td>$p.name</td><td align=right>$p.amount</td></tr>
+[% END %]
+<tr><td></td><td>Total Revenue</td><td align=right>\$$total</td></tr>
+</table>
