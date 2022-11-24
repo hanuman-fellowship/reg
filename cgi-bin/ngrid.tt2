@@ -1,0 +1,112 @@
+<html>
+<head>
+<script type="text/javascript">
+var newwin;
+function popup(url, height) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=' + height + ',width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
+<style type="text/css">
+body {
+    margin-left: .5in;
+    margin-top: .5in;
+    margin-bottom: .5in;
+    font-family: Lucida Grande, Verdana, Helvetica;
+}
+.dow {
+    color: red;
+}
+.special {
+    font-weight: bold;
+    color: red;
+}
+.normal {
+    /* nothing */
+}
+.fixed {
+    color: green;
+}
+</style>
+</head>
+<body>
+<h2>
+$hash.name
+<p>
+<span style="font-size: 15pt">$sdate <span class=dow>${sdate.format("%a")}</span>
+<b>To</b>
+$edate <span class=dow>${edate.format("%a")}</span>
+</span>
+<span style="margin-left: .5in; font-size: 15pt;">$hash.first $hash.last
+<p>
+Housing Assignment Grid
+<span style="margin-left: 1in; font-size: 12pt;"><a href=/cgi-bin/$action?code=$code>ReEdit</a></span>
+</h2>
+<p>
+<table cellpadding=5 border=1>
+<tr>
+<th align=left>&nbsp;&nbsp;Name</th>
+<th align=left>Room</th>
+<th align=right>Cost</th>
+<th align=right>Dates</th>
+<th align=left>Notes</th>
+</tr>
+[% FOR p IN people %]
+    <tr>
+    <td align=left>&nbsp;&nbsp;$p.name</td>
+    <td align=left>&nbsp;&nbsp;$p.house</td>
+    <td align=right>$p.cost</td>
+    <td align=right>$p.dates</td>
+    <td>$p.note</td>
+    </tr>
+[% END %]
+<tr>
+<td>&nbsp;&nbsp;Total</td>
+<td>&nbsp;</td>
+<td>\$$total</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<p>
+<table cellpadding=5>
+<tr><td valign=top>
+<table cellpadding=3>
+<tr><th colspan=2 align=left>Codes</th></tr>
+<tr><td>b</td><td> - bath</td></tr>
+<tr><td>c</td><td> - center tent</td></tr>
+<tr><td>o</td><td> - own tent</td></tr>
+</table>
+</td><td>
+
+<table cellpadding=3>
+<tr>
+<th align=left>Type</th><th align=right>Cost</th>
+</tr>
+[% FOR ht IN htypes %]
+<tr>
+<td>$ht.desc</td>
+<td align=right>$ht.cost</td>
+[% END %]
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td>House Cost Type: $hash.housecost_type</td>
+</tr>
+</table>
+
+[% IF hash.fixed_cost_houses %]
+<tr>
+<th>Fixed Cost Houses</th>
+<td>$hash.fixed_cost_houses</td>
+</tr>
+[% END %]
+
+</table>
+</body>
+</html>

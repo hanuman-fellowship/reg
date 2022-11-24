@@ -1,0 +1,245 @@
+<html>
+<head>
+<script type='text/javascript'>
+function check(h_id, bed, nnights) {
+    var x = 'p' + h_id + '_' + bed;
+    var s = document.getElementById(x).value;
+    s = s.trim();
+    var l = s.length;
+    if (l > 1) {
+        return true;
+    }
+    var chk = (l == 1);
+    for (n = 1; n <= nnights; ++n) {
+        var y = 'n' + h_id + '_' + bed + '_' + n;
+        document.getElementById(y).checked = chk;
+    }
+    return true;
+}
+var newwin;
+function popup(url, height) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=' + height + ',width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+
+var the_max = new Array();
+function set_max(i, v) {
+    the_max[i] = v;
+}
+
+function add_more(id) {
+    var ind = id - 1000;
+    var m = the_max[ind];
+
+    var tbl = document.getElementById('t'+id).getElementsByTagName('tbody')[0];
+    for (i = m + 1; i <= m + 3; ++i) {
+        var name = 'p' + id + '_' + i;
+        var tr = tbl.appendChild(document.createElement('tr'));
+        var td1 = tr.appendChild(document.createElement('td'));
+        td1.setAttribute('align', 'right');
+        td1.innerHTML = i;
+
+        var td2 = tr.appendChild(document.createElement('td'));
+        var s = "<input class=name type=text size=30 name=" + name 
+              + " id=" + name
+              + " value='' onkeyup='check(" + id
+              + "," + i 
+              + ", $nnights)'>";
+        td2.innerHTML = s;
+
+        name = 'x' + id + '_' + i;
+        var td3 = tr.appendChild(document.createElement('td'));
+        var s = "<input class=notes type=text size=30 name=" + name 
+              + " id=" + name
+              + " value=''>"
+              ;
+        td3.innerHTML = s;
+
+        for (n = 1; n <= $nnights; ++n) {
+            var td4 = tr.appendChild(document.createElement('td'));
+            var name = 'n' + id + '_' + i + '_' + n;
+            var s = "<input type=checkbox name=" + name
+                  + " id=" + name
+                  + " value=1>";
+            td4.innerHTML = s;
+        }
+    }
+    the_max[ind] += 3;
+}
+</script>
+<style type="text/css">
+body {
+    margin-left: .5in;
+    margin-top: .5in;
+    margin-bottom: .5in;
+    font-family: Lucida Grande, Verdana, Helvetica;
+}
+.red {
+    color: red;
+    font-size: 17pt;
+}
+.dow {
+    color: red;
+}
+.name, .notes {
+    font-size: 13pt;
+}
+.submit {
+    font-size: 13pt;
+    background: lightgreen;
+}
+h2 {
+    margin-bottom: 0mm;
+}
+.normal {
+    /* nothing */
+}
+.fixed {
+    color: green;
+}
+.only {
+    font-weight: normal;
+    color: green;
+}
+</style>
+</head>
+<body>
+<form method=post name=form action='/cgi-bin/$action?code=$code'>
+<h2>
+$hash.name
+<span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
+<b>To</b>
+$edate <span class=dow>${edate.format("%a")}</span>
+</span>
+<span style="margin-left: .5in; font-size: 15pt;">$hash.first $hash.last
+<p>
+Housing Assignment Grid
+<span style="margin-left: 1in;"><input class=submit type=submit value="Submit" name=process></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="/cgi-bin/$action?code=$code&by_name=1">By Name</a></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://www.mountmadonna.org/rental/hints.html',750)">Helpful Hints</a></span>
+</h2>
+<input type=hidden name=code value=$code>
+<table cellpadding=5 border=1>
+<tr>
+<th>Room/Site</th>
+<th align=right>Bed</th>
+<th align=left>Name <span class=only>(only names, please)</span></th>
+<th align=left>Email<span class=red>*</span> and Notes</th>
+$days
+</tr>
+[% FOR h IN houses %]
+    [% IF h.id > 1000 %]
+
+        [% IF h.id == 1001 %]</table>[% END %]   <! -- end the house table -->
+
+        <script type="text/javascript">
+        set_max([% h.id - 1000 %], $h.max)
+        </script>
+
+
+        <p>
+        <table cellpadding=5 border=1 id=t$h.id>
+        <tr><th colspan=4>$h.name <a style="margin-left: 1in" href='#' onclick="add_more($h.id); return false;">more</a></th></tr>
+        <tr><th>#</th><th align=left>Name <span class=only>(only names, please)</span></th><th align=left>Notes</th>$days</tr>
+        [% max = h.max %]
+        [% bed = 1 %]
+        [% WHILE bed <= max %]
+            <tr>
+            <td align=right width=20>$bed</td>
+            [% v = 'p' _ h.id _ '_' _ bed %]
+            <td><input class=name type=text size=30 name=$v id=$v value="${data.$v}" onkeyup="check($h.id, $bed, $nnights)"></td>
+            [% v = 'x' _ h.id _ '_' _ bed %]
+            <td><input class=notes type=text size=30 name=$v id=$v value="${data.$v}"></td>
+            [% n = 1 %]
+            [% WHILE n <= nnights %]
+                [% v = 'n' _ h.id _ '_' _ bed _ '_' _ n %]
+                <td><input type=checkbox name=$v id=$v value=1 [% IF data.$v %]checked[% END %]></td>
+                [% n = n + 1 %]
+            [% END %]
+            </tr>
+            [% bed = bed + 1 %]
+        [% END %]
+        </table>
+        [% NEXT %]     <!-- done with special cases of Own Van and Commuting -->
+    [% END %]
+
+    [% max = h.max %]
+    [% bed = 1 %]
+    [% WHILE bed <= max %]
+        <tr>
+        [% IF bed == 1 %]
+            <th rowspan=$max align=left class=$h.class>&nbsp;&nbsp;$h.name
+                <span style="font-weight: normal">
+                [% IF h.bath %] - b
+                [% ELSIF h.tent && h.own %] - o
+                [% ELSIF h.tent %] - c
+                [% END %]
+                </span>
+            </th>
+        [% END %]
+        <td align=right>$bed</td>
+        [% v = 'p' _ h.id _ '_' _ bed %]
+        <td><input class=name type=text size=30 name=$v id=$v value="${data.$v}" onkeyup="check($h.id, $bed, $nnights)"></td>
+        [% v = 'x' _ h.id _ '_' _ bed %]
+        <td><input class=notes type=text size=30 name=$v id=$v value="${data.$v}"></td>
+        [% n = 1 %]
+        [% WHILE n <= nnights %]
+            [% v = 'n' _ h.id _ '_' _ bed _ '_' _ n %]
+            <td><input type=checkbox name=$v id=$v value=1 [% IF data.$v %]checked[% END %]></td>
+            [% n = n + 1 %]
+        [% END %]
+        </tr>
+        [% bed = bed + 1 %]
+    [% END %]
+[% END %]
+</table>
+<a name=end></a>
+<p>
+<input class=submit type=submit value="Submit" name=process>
+<p>
+</form>
+<table>
+<tr><td valign=top>
+
+<table>
+<tr><th align=left colspan=2>Codes</th></tr>
+<tr><td>b</td><td> - bath</td></tr>
+<tr><td>c</td><td> - center tent</td></tr>
+<tr><td>o</td><td> - own tent</td></tr>
+</table>
+
+</td><td valign=top>
+
+<table cellpadding=3>
+<tr>
+<th align=left>Type</th><th align=right>Cost</th>
+</tr>
+[% FOR ht IN htypes %]
+<tr>
+<td>$ht.desc</td>
+<td align=right>$ht.cost</td>
+[% END %]
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td>House Cost Type: $hash.housecost_type</td>
+</tr>
+</table>
+
+</td></td></tr>
+
+[% IF hash.fixed_cost_houses %]
+<tr>
+<th>Fixed Cost Houses</th>
+<td>$hash.fixed_cost_houses</td>
+</tr>
+[% END %]
+
+</table>
+</body>
+</html>
