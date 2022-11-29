@@ -1,0 +1,1 @@
+insert into string (the_key, value) values ('meal_req_notify', '');
