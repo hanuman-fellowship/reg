@@ -1,0 +1,81 @@
+login https://hanuman-fellowship.signin.aws.amazon.com/console
+account id: hanuman-fellowship
+IAM User name: sahadev
+Password: *
+search EC2
+    region US West 1 Northern California
+    instances
+    click on retreat center
+    choose instance state - reboot
+    actions - create image
+        then create instance from image
+    or right click, reboot
+search S3
+search SES
+    Oregon region
+
+CPAN Net::Stripe
+test mode
+web hooks
+
+Yasodhara - RG, Reg?
+People to help:
+    Devendra
+    Shantam
+    Achyuta
+    Sean Lazar
+    Luke 
+    John
+    Shankar
+    Temple people
+    Other HFS people
+Shantam tried to gather a team
+    to support Scheduler, Reservations
+        the group suggested other commercial projects
+        would Ticketmaster/Eventbrite work?
+        other management scheduler?:
+    Is MMC really that unique?
+    Are Prabha and Mohan also worried about
+    Shantam's software support?
+
+Today we all are so dependent on computer technology
+    it is expected to be easy
+And therefore we are dependent on those who
+can wrangle that technology
+ALWAYS something more and new to do
+Brajesh in 90s - Jayant Gitomer 2 brochures a year
+    snail mailed, fill out form, send in a check for
+    deposit, registrar enters manually into reg.
+    No credit cards.
+
+11/28 conversation with Savita
+Changes to reg1.tt2 and reg1 and reg2
+
+no center tent verbiage
+no "and include x nights lodging and all meals".
+
+More text above housing table - from Savita at some point.
+
+If Program doesn't allow strangers in double
+then if someone chooses Double they must
+have a shared person as well - otherwise ERROR
+and explain it.
+
+MMC does reg, Day Retreat - shift to left on edit
+
+
+**Meal Requests mealsF - Meals for HFS Members/Affilates
+**              mealsG - Meals for Resident Guests and Offland Staff
+**change explanatory text/title
+**
+**No Meal(s) event - didn't work :(
+
+Meals Information link
+    Text from Savita
+
+Email didn't come?
+
+Notify meals@mountmadonna.org of the request
+    a new String
+
+Kitchen Meal List - lunch alone - table off?

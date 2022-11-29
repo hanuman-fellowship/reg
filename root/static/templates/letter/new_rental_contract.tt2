@@ -129,7 +129,7 @@ is charged as a <i>double</i>.
 <p>
 $fee_table
 [% IF rental.seminar_house %]
-<b>Presenter agrees to house a minimum of 11 guests in the Seminar House.</b>
+<b>Presenter agrees to house a minimum of 10 guests in the Seminar House.</b>
 [% END %]
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>

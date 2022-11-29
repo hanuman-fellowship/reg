@@ -79,6 +79,10 @@ input {
 </tr>
 
 </table>
+
+<br>
+<br>
+<b>Notification of Meal Requests are sent to</b>: <input type=text name=meal_req_notify value='$S.meal_req_notify' size=45>
 <p class=p2 style="margin-left: 2in; margin-top: 10mm;">
 <input type=submit id=sub>
 </form>

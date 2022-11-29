@@ -308,6 +308,7 @@ max_tuit_disc - maximum tuition discount for Members - no longer used
 me_coordinator - the person who coordinates the Mountain Experience
 me_dow - days of week for Mountain Experience, comma separated 0-6 Sun-Sat
 me_max - maximum number of Mountain Experience registrations per day
+meal_req_notify - who to notify if a meal request was made
 mem_credit_hours - obsolete - can be removed
 mem_credit_phone - obsolete - can be removed
 mem_email - the email address of the membership secretary

@@ -15,37 +15,42 @@ use Util qw/
     trim
 /;
 my $c = db_init();
+use Global qw/
+    %string
+/;
 use Date::Simple qw/
     date
 /;
 Date::Simple->default_format("%B %e '%q");
 use File::Copy;
+my $dir = '/var/Reg/grid';
 
 my $grid_cgi = $0;
 $grid_cgi =~ s{.*/}{}xms;
 
 my $email_check = $grid_cgi eq 'grid';
 
-my $dir = '/home/reg/for_reg/rental';
-
 my $code = param('code');
 $code = 'dnrade';
-my ($rental) = model($c, 'Rental')->search({
-                   #grid_code => $code,
-                   id => 1856,
+my $rental = model($c, 'Rental')->search({
+                   grid_code => $code,
                });
 if (! $rental) {
-    print "Sorry, no rental for code $code.";    
+    print "Sorry, there is no rental for code $code.";    
     exit;
 }
-my $fname = "$dir/$code.txt";
 my $dname = "$dir/$code-data.txt";
-if (! -f $fname) {
-    print "Sorry, Could not find a rental for the code $code.";
-    # send an alert to the authorities!
-    exit;
-}
+
 my (%hash, @houses, @htypes, %fixed_cost_for_house);
+
+=begin
+
+This information used to be in a file that was ftp'ed
+to mountmadonna.org from the Reg machine.  The file was
+prepared by extracting information from the rental.
+Now we can get it from the rental directly.
+Let's dispense with the hash.
+
 open my $in, "<", $fname
     or die "cannot open $fname: $!";
 while (my $line = <$in>) {
@@ -105,6 +110,35 @@ while (my $line = <$in>) {
     }
 }
 close $in;
+
+=cut
+
+# fixed costs houses
+for my $line (split /\|/, $rental->fixed_cost_encoded()) {
+    my ($cost, @house_ids) = split ' ', $line;
+    for my $hid (@house_ids) {
+        $fixed_cost_for_house{$hid} = $cost;
+    }
+}
+
+# housing types and cost
+my $hc = $rental->housecost();
+my $sd = substr($rental->sdate(), 4, 4);        # MMDD
+my $winter = ! (   $string{center_tent_start} <= $sd
+                && $sd                        <= $string{center_tent_end});
+HTYPE:
+for my $t (housing_types(1)) {
+    if ($winter && $t eq 'center_tent') {
+        next HTYPE;
+        # see comment below about center_tent sites
+        # being used during the winter.
+    }
+    push @htypes, {
+        name => $t,
+        cost => $hc->$t,
+        desc => $string{$t},
+    };
+}
 @htypes = sort { $a->{cost} <=> $b->{cost} } @htypes;
 
 #
@@ -288,6 +322,10 @@ if (param('process')) {
                 ++$bed;
             }
             --$bed;     # we went one beyond
+
+=comment 
+
+???
             #
             # we have $bed 'beds' in this category
             # this may be different from what is in $fname
@@ -320,8 +358,12 @@ if (param('process')) {
                 chmod 0666, $fname;
                 $h->{max} = $bed;       # don't forget this!
             }
+
+=cut
+
             next HOUSE;
         }
+
         my $bath = ($h->{bath})? "_bath"
                   :              ""
                   ;
@@ -547,21 +589,30 @@ if (open my $in, "<", $dname) {
     }
     close $in;
 }
+my $coord = $rental->coordinator() || $rental->contract_signer();
+
 my $html = "";
 my $tt = Template->new({
     INTERPOLATE => 1,
     EVAL_PERL    => 0,
 });
 my $stash = {
-    code    => $code,
-    sdate   => $sdate,
-    edate   => $edate,
+    # from the rental object:
+    sdate   => $rental->sdate_obj,
+    edate   => $rental->edate_obj,
+    name    => $rental->name,
+    first   => $coord->first,
+    last    => $coord->last,
+    fixed_cost_houses => $rental->fixed_cost_houses,
+    house_cost_type => $hc->type,
+
+    # from the data file:
     data    => \%data,
-    hash    => \%hash,
     houses  => \@houses,
     nnights => $nnights,
     days    => $days,
     htypes  => \@htypes,
+    code    => $code,
     action  => $grid_cgi,
 };
 $tt->process(

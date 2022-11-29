@@ -314,6 +314,7 @@ sub meal_requests_update_do : Local {
                 }
             }
         }
+        $hash{meal_req_notify} = $string{meal_req_notify};
         BLOCK: {
         my $mrs = "meal_request_strings.txt";
         open my $out, '>', "/tmp/$mrs"

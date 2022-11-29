@@ -112,12 +112,12 @@ h2 {
 <body>
 <form method=post name=form action='/cgi-bin/$action?code=$code'>
 <h2>
-$hash.name
+$name
 <span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
 <b>To</b>
 $edate <span class=dow>${edate.format("%a")}</span>
 </span>
-<span style="margin-left: .5in; font-size: 15pt;">$hash.first $hash.last
+<span style="margin-left: .5in; font-size: 15pt;">$first $last
 <p>
 Housing Assignment Grid
 <span style="margin-left: 1in;"><input class=submit type=submit value="Submit" name=process></span>
@@ -227,16 +227,16 @@ $days
 [% END %]
 <tr><td>&nbsp;</td></tr>
 <tr>
-<td>House Cost Type: $hash.housecost_type</td>
+<td>House Cost Type: $housecost_type</td>
 </tr>
 </table>
 
 </td></td></tr>
 
-[% IF hash.fixed_cost_houses %]
+[% IF fixed_cost_houses %]
 <tr>
 <th>Fixed Cost Houses</th>
-<td>$hash.fixed_cost_houses</td>
+<td>$fixed_cost_houses</td>
 </tr>
 [% END %]
 

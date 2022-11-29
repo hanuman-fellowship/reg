@@ -74,12 +74,16 @@ td.x {
 </tr>
 
 </table>
-<p class=p2 style="margin-left: 2in; margin-top: 10mm;">
-<a href=/string/meal_requests_update>Edit</a>
+
+<br>
+<br>
+<b>Notification of Meal Requests is sent to</b>: $S.meal_req_notify
+<p class=p2 style="margin-left: 2in; margin-top: 5mm;">
+<a href=/string/meal_requests_update>Edit These Values</a>
 
 <p class=p2>
-Family - HFS Members, and the family of MMC/MMI/MMS Staff. <br>
-Guest - Guests of MMC Residents.
+<b>Family</b> - Meals for HFS Members/Affilates<br>
+<b>Guest</b> - Meals for Resident Guests and Offland Staff
 <p class=p2>
 If meal requests are not allowed on certain days <a href='/event/create'>add an Event</a> with the name 'No Meal'.
 <br>
