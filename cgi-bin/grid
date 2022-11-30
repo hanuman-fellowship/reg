@@ -138,27 +138,26 @@ my $days = join '',
            map { "<th align=center>" . ($sdate + $_)->format("%s") . "</th>" }
            0 .. $nnights-1;
 
-=comment
-
 if ($P{by_name}) {
-    # 12|1|Janet Smith ~~ single|1|1|1|1|1|1|984
-    # 12|2| ~~ |0|0|0|0|0|0|0
     my %house_name_for;
     for my $href (@houses) {
         $house_name_for{$href->{id}} = $href->{name};
     }
     my @people;
     my $gtotal = 0;
-    open my $in, "<", $dname
-        or die "cannot open $dname: $!";
-    LINE:
-    while (my $line = <$in>) {
-        my ($id, $bed, $name_note, @days) = split m{[|]}xms, $line;
-        my $cost = pop @days;
+    for my $g (model($c, 'Grid')->search({
+                   rental_id => $rental_id,
+               })
+    ) {
+        my $house_id = $g->house_id; 
+        my $name = $g->name;
+        my $note = $g->note;
+        my @days = $g->occupancy =~ m{(\d)}xmsg;
+        my $cost = $g->cost;
         if (! int($cost)) {
+            # maybe not have zero cost rows???
             next LINE;
         }
-        my ($name, $note) = split m{\s* ~~ \s* }xms, $name_note;
         # check for late arrivals and early departures
         # we won't worry about missing days in the middle.
         my $ds = $sdate;
@@ -176,23 +175,26 @@ if ($P{by_name}) {
         my $dates = ($i != 0 || $j != -1)? $ds->day . '-' . $de->day: '';
         push @people, {
             name => $name,
-            house => $house_name_for{$id},
+            house => $house_name_for{$house_id},
             cost => $cost,
             dates => $dates,
             note => $note,
         };
         $gtotal += $cost;
     }
-    close $in;
     @people = sort {
                   lc $a->{name} cmp lc $b->{name}
               }
               @people;
     my $stash = {
+        first   => $coord->first,
+        last    => $coord->last,
+        name    => $rental->name,
+        housecost_type => $hc->type,
+        fixed_cost_houses => $rental->fixed_cost_houses,
         sdate   => $sdate,
         edate   => $edate,
         people  => \@people,
-        hash    => \%hash,
         houses  => \@houses,
         nnights => $nnights,
         days    => $days,
@@ -214,8 +216,6 @@ if ($P{by_name}) {
     print $html;
     exit;
 }
-
-=cut
 
 if ($P{process}) {
     # get the input data
