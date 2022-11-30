@@ -550,7 +550,7 @@ for my $g (model($c, 'Grid')->search({
            })
 ) {
     my $id     = $g->house_id;
-    my $bed    = $g->bed;
+    my $bed    = $g->bed_num;
     my $name   = $g->name;
     my $notes  = $g->notes;
     my @nights = split //, $g->occupancy;
