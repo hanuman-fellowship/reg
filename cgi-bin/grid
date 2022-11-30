@@ -282,6 +282,7 @@ if ($P{process}) {
 
                 push @fields, cost => $cost;
                 if (! $cost) {
+                    ++$bed;     # otherwise infinite loop!
                     next BED;
                 }
                 $P{"c$id\_$bed"} = $cost || "";
