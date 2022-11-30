@@ -110,7 +110,9 @@ h2 {
 </style>
 </head>
 <body>
-<form method=post name=form action='/cgi-bin/$action?code=$code'>
+<form method=post
+      name=form
+      action='https://akash.mountmadonna.org/cgi-bin/$action?code=$code'>
 <h2>
 $name
 <span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
@@ -225,13 +227,14 @@ $days
 <td>$ht.desc</td>
 <td align=right>$ht.cost</td>
 [% END %]
-<tr><td>&nbsp;</td></tr>
 <tr>
+<tr><td>&nbsp;</td></tr>
 <td>House Cost Type: $housecost_type</td>
 </tr>
 </table>
 
 </td></td></tr>
+<tr><td>&nbsp;</td></tr>
 
 [% IF fixed_cost_houses %]
 <tr>

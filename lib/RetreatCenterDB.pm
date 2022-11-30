@@ -93,6 +93,8 @@ my @classes = qw/
 
     File
     Inquiry
+
+    Grid
 /;
 
 __PACKAGE__->load_classes({

@@ -1,0 +1,9 @@
+create table grid (
+    rental_id int(11) not null,
+    house_id int(11) not null,
+    bed_num tinyint not null,
+    name varchar(256),
+    notes varchar(256),
+    occupancy varchar(128),
+    cost decimal(8, 2)
+);

@@ -13,17 +13,17 @@ use Util qw/
     model
     commify
     trim
+    housing_types
 /;
 my $c = db_init();
 use Global qw/
     %string
 /;
+Global->init($c, 1, 1);     # to get %strings:
 use Date::Simple qw/
     date
 /;
 Date::Simple->default_format("%B %e '%q");
-use File::Copy;
-my $dir = '/var/Reg/grid';
 
 my $grid_cgi = $0;
 $grid_cgi =~ s{.*/}{}xms;
@@ -32,89 +32,20 @@ my $email_check = $grid_cgi eq 'grid';
 
 my $code = param('code');
 $code = 'dnrade';
-my $rental = model($c, 'Rental')->search({
+my ($rental) = model($c, 'Rental')->search({
                    grid_code => $code,
                });
 if (! $rental) {
     print "Sorry, there is no rental for code $code.";    
     exit;
 }
-my $dname = "$dir/$code-data.txt";
+my $rental_id = $rental->id;
+my $coord = $rental->coordinator() || $rental->contract_signer();
 
-my (%hash, @houses, @htypes, %fixed_cost_for_house);
+my (@houses, @htypes, %fixed_cost_for_house);
 
-=begin
-
-This information used to be in a file that was ftp'ed
-to mountmadonna.org from the Reg machine.  The file was
-prepared by extracting information from the rental.
-Now we can get it from the rental directly.
-Let's dispense with the hash.
-
-open my $in, "<", $fname
-    or die "cannot open $fname: $!";
-while (my $line = <$in>) {
-    chomp $line;
-    $line =~ s{\s*\z}{}xms;     # DOS line ending?
-    if (my ($fch) = $line =~ m{ \A fch_encoded \s* (.*) \z }xms) {
-        #
-        # sorry, a quick hack for fixed cost houses
-        #
-        for my $line (split /\|/, $fch) {
-            my ($cost, @house_ids) = split ' ', $line;
-            for my $hid (@house_ids) {
-                $fixed_cost_for_house{$hid} = $cost;
-            }
-        }
-    }
-    elsif ($line =~ m{ \A fixed_cost_houses \s* (.*) \z }xms) {
-        $hash{fixed_cost_houses} = $1;
-    }
-    elsif ($line =~ m{\|}) {
-        # housing that has been assigned
-        #
-        my ($id, $name, $max, $bath, $tent, $own, $cottage)
-            = split m{\|}, $line;
-        push @houses, {
-            id    => $id,
-            name  => $name,
-            max   => $max,
-            bath  => $bath,
-            tent  => $tent, own   => $own,
-            cottage => $cottage,
-            class => ($fixed_cost_for_house{$id}? 'fixed': 'normal'),
-        };
-    }
-    else {
-        # two types of other lines:
-        #
-        # 1) 'housetype cost description'
-        #
-        # 2) 'key value'
-        #   key is name, id, first, last, sdate, edate
-        #
-        if (my ($htype, $cost, $desc)
-            = $line =~ m{\A (\S+) \s+ (\d+) \s+ (\S.*) \z}xms
-        ) {
-            push @htypes, {             # for the cost table
-                name => $htype,
-                cost => $cost,
-                desc => $desc,
-            };
-            $hash{$htype} = $cost;      # for lookup
-        }
-        else {
-            my ($k, $v) = $line =~ m{^(\S+)\s+(.*)$};
-            $hash{$k} = $v;
-        }
-    }
-}
-close $in;
-
-=cut
-
-# fixed costs houses
-for my $line (split /\|/, $rental->fixed_cost_encoded()) {
+# fixed cost houses
+for my $line (split /\|/, $rental->fch_encoded()) {
     my ($cost, @house_ids) = split ' ', $line;
     for my $hid (@house_ids) {
         $fixed_cost_for_house{$hid} = $cost;
@@ -123,6 +54,7 @@ for my $line (split /\|/, $rental->fixed_cost_encoded()) {
 
 # housing types and cost
 my $hc = $rental->housecost();
+my %hc;
 my $sd = substr($rental->sdate(), 4, 4);        # MMDD
 my $winter = ! (   $string{center_tent_start} <= $sd
                 && $sd                        <= $string{center_tent_end});
@@ -133,35 +65,53 @@ for my $t (housing_types(1)) {
         # see comment below about center_tent sites
         # being used during the winter.
     }
+    my $cost = $hc->$t;
+    $hc{$t} = $cost;     # for reference below
     push @htypes, {
         name => $t,
-        cost => $hc->$t,
+        cost => $cost,
         desc => $string{$t},
     };
 }
 @htypes = sort { $a->{cost} <=> $b->{cost} } @htypes;
 
+# houses that have been assigned to this rental
+for my $b ($rental->rental_bookings()) {
+    my $house = $b->house;
+    push @houses, {
+        id    => $house->id,
+        name  => $house->name_disp,
+        max   => $house->max,
+        bath  => $house->bath,
+        tent  => $house->tent,
+        own   => 1,
+        cottage => $house->cottage,
+        class => ($fixed_cost_for_house{$house->id}? 'fixed': 'normal'),
+    };
+}
+
 #
 # pay attention... this is bizarre and tricky.
 #
-# Own Van and Commuting is not kept track of in $fname
+# Own Van and Commuting is not kept track of in the rental
 # since the maximum # of beds is dynamic - and it is controlled by the user
-# not Reg which writes $fname.   If the user has changed
-# the maximum # of beds they will appear in $dname.
+# not Reg.   If the user has changed
+# the maximum # of beds they will appear in the grid table.
 # So look there (if it exists) for the max and append to @houses.
 #
 my %max = ();
 $max{1001} = 5;
 $max{1002} = 5;
-if (-f $dname) {
-    open my $in, "<", $dname
-        or die "cannot open $dname: $!\n";
-    while (my $line = <$in>) {
-        if ($line =~ m{^(100[12])\|(\d+)}) {
-            $max{$1} = $2;
-        }
+my @grid = model($c, 'Grid')->search({
+    rental_id => $rental_id,
+    house_id => { -in => [ 1001, 1002 ] },
+});
+for my $g (@grid) {
+    my $h_id = $g->house_id;
+    my $bed_num = $g->bed_num;
+    if ($max{$h_id} < $bed_num) {
+        $max{$h_id} = $bed_num;
     }
-    close $in;
 }
 for my $k (1001, 1002) {
     push @houses,
@@ -175,14 +125,18 @@ for my $k (1001, 1002) {
         own  => 0,
     };
 }
-my $sdate = date($hash{sdate});
-my $edate = date($hash{edate});
+
+my $sdate = $rental->sdate_obj;
+my $edate = $rental->edate_obj;
 my $nnights = ($edate - $sdate) || 1;
     # || 1 for one day rentals where everyone is commuting
 my @days;
 my $days = join '',
            map { "<th align=center>" . ($sdate + $_)->format("%s") . "</th>" }
            0 .. $nnights-1;
+
+=comment
+
 if (param('by_name')) {
     # 12|1|Janet Smith ~~ single|1|1|1|1|1|1|984
     # 12|2| ~~ |0|0|0|0|0|0|0
@@ -257,30 +211,32 @@ if (param('by_name')) {
     print $html;
     exit;
 }
+
+=cut
+
 if (param('process')) {
     # get the input data
+    # and add rows to the grid table
     #
     my %P;
     for my $p (param()) {
         $P{$p} = param($p);
     }
-    # put it in a file while computing the costs
-    #
-    open my $out, ">", $dname
-        or die "cannot create $dname: $!";
     my @need_email;
     my ($cot1, $cot3) = (0, 0);
     my $cot3_name;
     my $gtotal = 0;
+    my @fields;
     HOUSE:
     for my $h (@houses) {
         my $id = $h->{id};
         if ($id >= 1001) {      # own van/commuting
-            my $per_night = $hash{$id == 1001? "own_van": "commuting"};
+            my $per_night = $hc{$id == 1001? "own_van": "commuting"};
             my $bed = 1;
             BED:
             while (exists $P{"p$id\_$bed"}) {
-                print {$out} "$id|$bed|";
+                push @fields, house_id => $id;
+                push @fields, bed_num => $bed;
                 my $name = trim($P{"p$id\_$bed"} || "");
                 my $notes = trim($P{"x$id\_$bed"} || "");
                 my $no_email;
@@ -294,31 +250,39 @@ if (param('process')) {
                     # $name has no email address (or 'no email')
                     $no_email = 1;
                 }
-                print {$out} "$name ~~ $notes|";
+                push @fields, name => $name;
+                push @fields, notes => $notes;
                 # how many people?
                 my @peeps = split m{\&|\band\b}i, $name;
                 my $npeeps = @peeps;
                 my $totn = 0;
+                my $occupancy = '';
                 for my $n (1 .. $nnights) {
                     my $occ = $P{"n$id\_$bed\_$n"} || 0;
-                    print {$out} "$occ|";
+                    $occupancy .= "$occ ";
                     $totn += $occ;
                 }
+                push @fields, occupancy => $occupancy;
                 my $cost = $totn * $per_night * $npeeps;
 
                 # very special handling of a housing cost of type Total
-                #
-                if ($npeeps && $hash{housecost_type} eq 'Total') {
-                    $cost = $hash{single};
-                }
+                # ???
+                #if ($npeeps && $hash{housecost_type} eq 'Total') {
+                #    $cost = $hash{single};
+                #}
 
-                print {$out} "$cost\n";
+                push @fields, cost => $cost;
                 $P{"c$id\_$bed"} = $cost || "";
                 $gtotal += $cost;
                 if ($cost && $no_email) {
                     push @need_email,
                          ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                 }
+                # delete prior one??
+                model($c, 'Grid')->create(
+                    rental_id => $rental_id,
+                    @fields,
+                );
                 ++$bed;
             }
             --$bed;     # we went one beyond
@@ -372,9 +336,13 @@ if (param('process')) {
             if ($P{"p$id\_$bed"} =~ m{-\s*([12347])\s*$}) {
                 $override_np = $1;
             }
-            print {$out} "$id|$bed|";
+            push @fields, house_id => $id;
+            push @fields, bed_num => $bed;
             my $name = trim($P{"p$id\_$bed"} || "");
             my $notes = trim($P{"x$id\_$bed"} || "");
+            push @fields, name => $name;
+            push @fields, notes => $notes;
+
             my $no_email;
             if ($email_check
                 &&
@@ -386,12 +354,12 @@ if (param('process')) {
                 # $name has no email address (or 'no email')
                 $no_email = 1;
             }
-            print {$out} "$name ~~ $notes|";
             my $cost = 0;
+            my $occupancy = '';
             NIGHT:
             for my $n (1 .. $nnights) {
                 my $occ = $P{"n$id\_$bed\_$n"} || 0;
-                print {$out} "$occ|";
+                $occupancy .= "$occ ";
                 if ($occ) {
                     # quick hack for fixed cost house
                     #
@@ -400,8 +368,8 @@ if (param('process')) {
                         next NIGHT;
                     }
                     if ($h->{tent}) {
-                        $cost += ($h->{own})? $hash{own_tent}
-                                :             $hash{center_tent}
+                        $cost += ($h->{own})? $hc{own_tent}
+                                :             $hc{center_tent}
                                 ;
                         next NIGHT;
                     }
@@ -419,28 +387,30 @@ if (param('process')) {
                     if (my $cot = $h->{cottage}) {
                         if ($cot == 1) {
                             $cot1 = 1;
-                            $cost += ($np == 1)? $hash{single_cottage1}
-                                    :            $hash{dble_cottage1};
+                            $cost += ($np == 1)? $hc{single_cottage1}
+                                    :            $hc{dble_cottage1}
+                                    ;
                         }
                         elsif ($cot == 2) {
-                            $cost += ($np == 1)? $hash{single_cottage2}
-                                    :            $hash{dble_cottage2};
+                            $cost += ($np == 1)? $hc{single_cottage2}
+                                    :            $hc{dble_cottage2}
+                                    ;
                         }
                         elsif ($cot == 3) {
                             $cot3 = 1;
                             $cot3_name = $name;
-                            $cost += $hash{whole_cottage};
+                            $cost += $hc{whole_cottage};
                         }
                         else {
                             # ???
                         }
                     }
                     else {
-                        $cost += ($np == 1            )? $hash{"single$bath"}
-                                :($np == 2            )? $hash{"dble$bath"}
-                                :($np == 3            )? $hash{triple}
-                                :(4 <= $np && $np <= 7)? $hash{dormitory}
-                                :                        $hash{economy}
+                        $cost += ($np == 1            )? $hc{"single$bath"}
+                                :($np == 2            )? $hc{"dble$bath"}
+                                :($np == 3            )? $hc{triple}
+                                :(4 <= $np && $np <= 7)? $hc{dormitory}
+                                :                        $hc{economy}
                                 ;
                     }
                 }
@@ -466,12 +436,16 @@ if (param('process')) {
             }
 
             # very special handling of a housing cost of type Total
-            #
-            if ($cost && $hash{housecost_type} eq 'Total') {
-                $cost = $hash{single};
+            # ???
+            if ($cost && $hc->housecost_type eq 'Total') {
+                $cost = $hc{single};
             }
-
-            print {$out} "$cost\n";
+            push @fields, cost => $cost;
+            # delete prior one??
+            model($c, 'Grid')->create(
+                rental_id => $rental_id,
+                @fields,
+            );
 
             $gtotal += $cost;
             if ($name !~ m{\S} && ! $cost) {
@@ -494,7 +468,6 @@ if (param('process')) {
             }
         }
     }
-    close $out;
     if ($cot1 && $cot3) {
         my $html = "";
         my $tt = Template->new({
@@ -510,7 +483,6 @@ if (param('process')) {
         ) or die $tt->error;
         print $html;
         exit;
-                            $cot1 = 1;
     }
     if (@need_email) {
         my $html = "";
@@ -529,10 +501,6 @@ if (param('process')) {
         print $html;
         exit;
     }
-    #
-    # copy to the dir in which grab_new looks for changed data files
-    #
-    copy($dname, "$dir/ftp_dir/$code-data.txt");
 
     # display it with costs
     #
@@ -542,10 +510,15 @@ if (param('process')) {
         EVAL_PERL    => 0,
     });
     my $stash = {
+        first   => $coord->first,
+        last    => $coord->last,
+        name    => $rental->name,
+        housecost_type => $hc->type,
+        fixed_cost_houses => $rental->fixed_cost_houses,
         sdate   => $sdate,
         edate   => $edate,
+
         data    => \%P,
-        hash    => \%hash,
         houses  => \@houses,
         nnights => $nnights,
         days    => $days,
@@ -564,9 +537,12 @@ if (param('process')) {
 }
 
 #
-# present input form populated with the data file, if present
+# present the input form populated from the data file, if present
 #
 my %data = ();
+
+=comment
+
 if (open my $in, "<", $dname) {
     LINE:
     while (my $line = <$in>) {
@@ -589,7 +565,8 @@ if (open my $in, "<", $dname) {
     }
     close $in;
 }
-my $coord = $rental->coordinator() || $rental->contract_signer();
+
+=cut
 
 my $html = "";
 my $tt = Template->new({
@@ -604,7 +581,7 @@ my $stash = {
     first   => $coord->first,
     last    => $coord->last,
     fixed_cost_houses => $rental->fixed_cost_houses,
-    house_cost_type => $hc->type,
+    housecost_type => $hc->type,
 
     # from the data file:
     data    => \%data,

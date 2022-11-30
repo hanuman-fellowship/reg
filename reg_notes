@@ -70,12 +70,13 @@ MMC does reg, Day Retreat - shift to left on edit
 **
 **No Meal(s) event - didn't work :(
 
-Meals Information link
-    Text from Savita
+**Meals Information link
+**    Text from Savita - re-enabled
 
 Email didn't come?
 
-Notify meals@mountmadonna.org of the request
-    a new String
+**Notify meals@mountmadonna.org of the request
+**    a new String
+    modify relay to send
 
 Kitchen Meal List - lunch alone - table off?
