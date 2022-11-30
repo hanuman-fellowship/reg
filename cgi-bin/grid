@@ -2,8 +2,58 @@
 use strict;
 use warnings;
 
-# several use cases.
-# many edge cases to Test.
+=comment
+
+a test plan:
+
+filling in someone's name causes all nights to be selected
+    erasing the name removes the selections
+
+Ram 1 cottage rooms and whole Ram 1 - conflict detection
+    with name of person in whole Ram 1
+Amy & Dan in tent - both charged - red
+Amy / Dan - both charged
+Amy & Lola child - child half charge - red
+    if computed cost ends in .50 others DON'T have .00
+    child is 12 or under, right?
+    actually <= 4 year olds are free so don't put them in the field at all
+Fixed cost house - green
+    ignores the occupancy
+
+In a double room with only one person charged for single
+    w or w/o bath
+diff cost for the above in Ram 1 rooms
+
+In triple - have people come and go
+    so one is charged for single, double, and triple
+        for various nights
+
+email is required or 'no email' in field
+    otherwise get the error screen with everyone's name
+    or use grid_ne script instead of grid script.
+
+ReEdit
+
+By Name - sorted by name
+    with non standard dates shown
+
+Zero cost housecost types are not shown
+
+Bath - b
+Tent - o (own tent)
+No center tents - ever again?
+
+okay to have other things in the Notes field
+    aside from email
+
+House cost is per day.
+Total cost makes no sense for Rentals, right?
+
+Can suffix the name with -1 or -2 or -7
+    to force the number of people calculation
+    why would this be needed?  Not shown in Helpful Hints
+
+=cut
 
 use lib '../lib';
 use Util qw/
@@ -148,7 +198,11 @@ my $days = join '',
 if ($P{by_name}) {
     my %house_name_for;
     for my $href (@houses) {
-        $house_name_for{$href->{id}} = $href->{name};
+        my $s = $href->{name};
+        if ($href->{bath}) {
+            $s .= " - b";
+        }
+        $house_name_for{$href->{id}} = $s;
     }
     my @people;
     my $gtotal = 0;
