@@ -72,6 +72,9 @@ for my $t (housing_types(1)) {
         # being used during the winter.
     }
     my $cost = $hc->$t;
+    if (! $cost) {
+        next HTYPE;
+    }
     $hc{$t} = $cost;     # for reference below
     push @htypes, {
         name => $t,
@@ -310,7 +313,12 @@ if ($P{process}) {
             my $override_np = 0;
             if ($P{"p$id\_$bed"} =~ m{-\s*([12347])\s*$}) {
                 # what's this???
+                # a suffix of -\d
                 # more people in a room than expected??
+                # or less.   this forces the number of people.
+                # it ignores who is actually sharing the room.
+                # it applies to all nights regardless of
+                # people coming or going.
                 $override_np = $1;
             }
             @fields = ();
@@ -376,7 +384,7 @@ if ($P{process}) {
                         }
                         elsif ($cot == 3) {
                             $cot3 = 1;
-                            $cot3_name = $name;
+                            $cot3_name = $name; # the person's name
                             $cost += $hc{whole_cottage};
                         }
                         else {
