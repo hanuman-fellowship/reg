@@ -421,6 +421,7 @@ JON "fields @fields";
                     }
                 }
             }
+            push @fields, occupancy => $occupancy;
             #
             # handle more than one person in a tent
             # and children.
@@ -447,7 +448,7 @@ JON "fields @fields";
                 $cost = $hc{single};
             }
             push @fields, cost => $cost;
-            # delete prior one???
+JON "fields @fields";
             model($c, 'Grid')->create({
                 rental_id => $rental_id,
                 @fields,
