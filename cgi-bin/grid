@@ -9,15 +9,11 @@ use Util qw/
     commify
     trim
     housing_types
-    JON
 /;
 use Template;
 use CGI;
 my $q = CGI->new;
 my %P = %{ $q->Vars() };
-#???
-my @k = keys %P;
-JON "@k";
 
 use CGI::Carp qw/fatalsToBrowser/;
 print $q->header;
@@ -38,7 +34,6 @@ $grid_cgi =~ s{.*/}{}xms;
 my $email_check = $grid_cgi eq 'grid';
 
 my $code = $P{code};
-JON "code = $code";
 my ($rental) = model($c, 'Rental')->search({
                    grid_code => $code,
                });
@@ -221,16 +216,9 @@ if ($P{by_name}) {
 
 =cut
 
-JON 'before process';
 if ($P{process}) {
-JON 'in process';
     # get the input data
     # and add rows to the grid table
-    #
-    #for my $p ($q->param()) {
-    #    $P{$p} = $q->param($p);
-#JON "all param $P{$p}";
-#    }
     my @need_email;
     my ($cot1, $cot3) = (0, 0);
     my $cot3_name;
@@ -239,7 +227,6 @@ JON 'in process';
     HOUSE:
     for my $h (@houses) {
         my $id = $h->{id};
-JON "house id $id";
         if ($id >= 1001) {      # own van/commuting
             my $per_night = $hc{$id == 1001? "own_van": "commuting"};
             my $bed = 1;
@@ -453,12 +440,11 @@ JON "house id $id";
                 $cost = $hc{single};
             }
             push @fields, cost => $cost;
-            # delete prior one??
-JON "fields @fields";
-            model($c, 'Grid')->create(
+            # delete prior one???
+            model($c, 'Grid')->create({
                 rental_id => $rental_id,
                 @fields,
-            );
+            });
 
             $gtotal += $cost;
             if ($name !~ m{\S} && ! $cost) {
