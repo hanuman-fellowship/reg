@@ -3,9 +3,10 @@ use strict;
 use warnings;
 
 use Template;
-use CGI qw/:standard/;
+use CGI;
+my $q = CGI->new;
 use CGI::Carp qw/fatalsToBrowser/;
-print header;
+print $q->header;
 
 use lib '../lib';
 use Util qw/
@@ -31,7 +32,7 @@ $grid_cgi =~ s{.*/}{}xms;
 
 my $email_check = $grid_cgi eq 'grid';
 
-my $code = param('code');
+my $code = $q->param('code');
 JON "code = $code";
 my ($rental) = model($c, 'Rental')->search({
                    grid_code => $code,
@@ -138,7 +139,7 @@ my $days = join '',
 
 =comment
 
-if (param('by_name')) {
+if ($q->param('by_name')) {
     # 12|1|Janet Smith ~~ single|1|1|1|1|1|1|984
     # 12|2| ~~ |0|0|0|0|0|0|0
     my %house_name_for;
@@ -216,14 +217,15 @@ if (param('by_name')) {
 =cut
 
 JON 'before process';
-if (param('process')) {
+if ($q->param('process')) {
 JON 'in process';
     # get the input data
     # and add rows to the grid table
     #
     my %P;
-    for my $p (param()) {
-        $P{$p} = param($p);
+    for my $p ($q->param()) {
+        $P{$p} = $q->param($p);
+JON "all param $P{$p}";
     }
     my @need_email;
     my ($cot1, $cot3) = (0, 0);
