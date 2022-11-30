@@ -8,19 +8,21 @@ a test plan:
 
 filling in someone's name causes all nights to be selected
     erasing the name removes the selections
+    some hesitancy but it seems to work
 
 Ram 1 cottage rooms and whole Ram 1 - conflict detection
     with name of person in whole Ram 1
-Amy & Dan in tent - both charged - red
-Amy / Dan - both charged
+'Amy & Dan' in tent - both charged - red
+'Amy / Dan' - both charged - not on same days - both get badges
+                                                but their dates are unknown
 Amy & Lola child - child half charge - red
-    if computed cost ends in .50 others DON'T have .00
+    if total computed cost ends in .50 others DON'T have .00
     child is 12 or under, right?
     actually <= 4 year olds are free so don't put them in the field at all
 Fixed cost house - green
     ignores the occupancy
 
-In a double room with only one person charged for single
+Only one person in a double room - charged for single
     w or w/o bath
 diff cost for the above in Ram 1 rooms
 
@@ -35,6 +37,7 @@ email is required or 'no email' in field
 ReEdit
 
 By Name - sorted by name
+    -b suffix on rooms with bath
     with non standard dates shown
 
 Zero cost housecost types are not shown
@@ -46,12 +49,32 @@ No center tents - ever again?
 okay to have other things in the Notes field
     aside from email
 
-House cost is per day.
+House cost is Per Day.
 Total cost makes no sense for Rentals, right?
+    at one time this meant that all would be charged
+    the single rate - a rare thing - I removed this.
 
-Can suffix the name with -1 or -2 or -7
+Can suffix the name field with -1 or -2 or -7
     to force the number of people calculation
     why would this be needed?  Not shown in Helpful Hints
+
+error if unknown code
+
+
+how to transition away from ftp'ing files back/forth?
+    accessing the db directly is so much better
+    no stale grid, no send to web
+    no local grid? sure keep it - a read only grid
+
+TODO:
+    badges
+    invoice
+    number of people on land in calendar - see below
+    add activity message for editing the grid
+    what else??
+    after grid runs
+        update counts, grid_max, and housing_charge
+            in the Rental
 
 =cut
 
