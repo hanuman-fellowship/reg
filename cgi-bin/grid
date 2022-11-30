@@ -32,7 +32,7 @@ $grid_cgi =~ s{.*/}{}xms;
 my $email_check = $grid_cgi eq 'grid';
 
 my $code = param('code');
-$code = 'dnrade';
+JON "code = $code";
 my ($rental) = model($c, 'Rental')->search({
                    grid_code => $code,
                });
@@ -215,6 +215,7 @@ if (param('by_name')) {
 
 =cut
 
+JON 'before process';
 if (param('process')) {
 JON 'in process';
     # get the input data
