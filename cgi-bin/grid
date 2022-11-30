@@ -159,7 +159,7 @@ if ($P{by_name}) {
         my @days = $g->occupancy =~ m{(\d)}xmsg;
         my $cost = $g->cost;
         if (! int($cost)) {
-            # maybe not have zero cost rows???
+            # we don't want zero cost rows
             next GRID;
         }
         # check for late arrivals and early departures
@@ -278,18 +278,14 @@ if ($P{process}) {
                 push @fields, occupancy => $occupancy;
                 my $cost = $totn * $per_night * $npeeps;
 
-                # very special handling of a housing cost of type Total
-                # ???
-                #if ($npeeps && $hash{housecost_type} eq 'Total') {
-                #    $cost = $hash{single};
-                #}
-
                 if ($cost) {
                     push @fields, cost => $cost;
                     $P{"c$id\_$bed"} = $cost || "";
                     $gtotal += $cost;
                     if ($cost && $no_email) {
-                        # maybe don't add Grid records if any no email???
+                        # maybe don't add Grid records if any no email?
+                        # no, we need to add the records so
+                        # that the data is there in the database to edit.
                         push @need_email,
                              ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                     }
@@ -304,45 +300,8 @@ if ($P{process}) {
             next HOUSE;
         }
 
-=comment 
-
-???
-            #
-            # we have $bed 'beds' in this category
-            # this may be different from what is in $fname
-            # in case the user added 'more'.   so we need
-            # to update $fname appropriately. - actually, no.
-            #
-            if ($bed > $h->{max}) {
-                # is this even needed??? do we actually
-                # alter the file?  the -data file, yes,
-                # but not the other (what's it called?).
-                # it's called fname.  the dname is where
-                # the number of own tent/van is kept not in fname.
-                # come back here and study it more carefully.
-                # and then delete it.
-                open my $in, "<", $fname
-                    or die "cannot open $fname: $!\n";
-                open my $out, ">", "/tmp/grid"
-                    or die "cannot open /tmp/grid: $!\n";
-                while (my $line = <$in>) {
-                    if ($line =~ m{^$id\|}) {
-                        # this will not happen - 1001, 1002 will
-                        # not match!
-                        $line =~ s{^($id\|[^\|]*)\|\d+}{$1|$bed};
-                    }
-                    print {$out} $line;
-                }
-                close $in;
-                close $out;
-                rename "/tmp/grid", $fname;
-                chmod 0666, $fname;
-                $h->{max} = $bed;       # don't forget this!
-            }
-
-=cut
-
-        # Actual rooms - not own van or commuting
+        # Now we deal with actual rooms - not own van or commuting
+        #
         my $bath = ($h->{bath})? "_bath"
                   :              ""
                   ;
@@ -450,18 +409,11 @@ if ($P{process}) {
             if ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i) {
                 $tot = $tot/2;
             }
-            $cost = $tot;       # not int() ???
+            $cost = $tot;
             if ($cost && $no_email) {
-                # ??? no create Grid if no email?
-                # but then you lose the data, yes?
-                # cannot repopulate
+                # no create Grid if no email?
+                # no, you would lose the data to edit.
                 push @need_email, $h->{name} . " - $name";
-            }
-
-            # very special handling of a housing cost of type Total
-            # ???
-            if ($cost && $hc->type eq 'Total') {
-                $cost = $hc{single};
             }
             push @fields, cost => $cost;
             if (! $cost) {
@@ -585,26 +537,6 @@ for my $g (model($c, 'Grid')->search({
         $data{"n$id\_$bed\_$n"} = $nights[$n-1];
     }
 }
-
-#
-#    LINE:
-#
-#    while (my $line = <$in>) {
-#        chomp $line;
-# ????
-#        if ($line =~ m{^(own_van|commuting)\|(\d+)}) {
-#            $data{$1} = $2;
-#            next LINE;
-#        }
-# ????
-#        my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
-#        my $name = $name_notes;
-#        my $notes = "";
-#        if ($name =~ m{~~}xms) {
-#            ($name, $notes) = split m{\s* ~~ \s*}xms, $name_notes;
-#        }
-#
-#=cut
 
 my $html = "";
 my $tt = Template->new({
