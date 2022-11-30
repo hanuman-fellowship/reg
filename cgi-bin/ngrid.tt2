@@ -63,7 +63,7 @@ Housing Assignment Grid
     <td align=left>&nbsp;&nbsp;$p.house</td>
     <td align=right>$p.cost</td>
     <td align=right>$p.dates</td>
-    <td>$p.note</td>
+    <td>$p.notes</td>
     </tr>
 [% END %]
 <tr>

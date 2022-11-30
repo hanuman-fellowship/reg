@@ -151,7 +151,7 @@ if ($P{by_name}) {
     ) {
         my $house_id = $g->house_id; 
         my $name = $g->name;
-        my $note = $g->note;
+        my $notes = $g->notes;
         my @days = $g->occupancy =~ m{(\d)}xmsg;
         my $cost = $g->cost;
         if (! int($cost)) {
@@ -178,7 +178,7 @@ if ($P{by_name}) {
             house => $house_name_for{$house_id},
             cost => $cost,
             dates => $dates,
-            note => $note,
+            notes => $notes,
         };
         $gtotal += $cost;
     }
