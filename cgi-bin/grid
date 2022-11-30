@@ -9,6 +9,7 @@ use Util qw/
     commify
     trim
     housing_types
+    JON
 /;
 use Template;
 use CGI;
@@ -282,7 +283,7 @@ if ($P{process}) {
                     push @need_email,
                          ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                 }
-                # delete prior one??
+JON "fields @fields";
                 model($c, 'Grid')->create({
                     rental_id => $rental_id,
                     @fields,
