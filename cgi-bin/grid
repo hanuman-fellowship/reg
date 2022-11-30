@@ -219,6 +219,12 @@ if ($P{by_name}) {
 if ($P{process}) {
     # get the input data
     # and add rows to the grid table
+    #
+    # but first clear all rows for this rental
+    model($c, 'Grid')->search({
+        rental_id => $rental_id,
+    })->delete_all();
+
     my @need_email;
     my ($cot1, $cot3) = (0, 0);
     my $cot3_name;
