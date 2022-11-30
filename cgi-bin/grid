@@ -14,6 +14,7 @@ use Util qw/
     commify
     trim
     housing_types
+    JON
 /;
 my $c = db_init();
 use Global qw/
@@ -215,6 +216,7 @@ if (param('by_name')) {
 =cut
 
 if (param('process')) {
+JON 'in process';
     # get the input data
     # and add rows to the grid table
     #
@@ -230,11 +232,13 @@ if (param('process')) {
     HOUSE:
     for my $h (@houses) {
         my $id = $h->{id};
+JON "house id $id";
         if ($id >= 1001) {      # own van/commuting
             my $per_night = $hc{$id == 1001? "own_van": "commuting"};
             my $bed = 1;
             BED:
             while (exists $P{"p$id\_$bed"}) {
+                @fields = ();
                 push @fields, house_id => $id;
                 push @fields, bed_num => $bed;
                 my $name = trim($P{"p$id\_$bed"} || "");
@@ -336,6 +340,7 @@ if (param('process')) {
             if ($P{"p$id\_$bed"} =~ m{-\s*([12347])\s*$}) {
                 $override_np = $1;
             }
+            @fields = ();
             push @fields, house_id => $id;
             push @fields, bed_num => $bed;
             my $name = trim($P{"p$id\_$bed"} || "");
@@ -442,6 +447,7 @@ if (param('process')) {
             }
             push @fields, cost => $cost;
             # delete prior one??
+JON "fields @fields";
             model($c, 'Grid')->create(
                 rental_id => $rental_id,
                 @fields,
