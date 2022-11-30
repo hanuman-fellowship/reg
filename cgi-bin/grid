@@ -145,6 +145,7 @@ if ($P{by_name}) {
     }
     my @people;
     my $gtotal = 0;
+    GRID:
     for my $g (model($c, 'Grid')->search({
                    rental_id => $rental_id,
                })
@@ -156,7 +157,7 @@ if ($P{by_name}) {
         my $cost = $g->cost;
         if (! int($cost)) {
             # maybe not have zero cost rows???
-            next LINE;
+            next GRID;
         }
         # check for late arrivals and early departures
         # we won't worry about missing days in the middle.
