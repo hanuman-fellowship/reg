@@ -87,6 +87,10 @@ body {
 .dow {
     color: red;
 }
+a {
+    color: blue;
+    text-decoration: none;
+}
 .name, .notes {
     font-size: 13pt;
 }
