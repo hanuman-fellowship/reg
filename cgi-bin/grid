@@ -290,6 +290,8 @@ if ($P{process}) {
                 ++$bed;
             }
             --$bed;     # we went one beyond
+            next HOUSE;
+        }
 
 =comment 
 
@@ -328,10 +330,7 @@ if ($P{process}) {
             }
 
 =cut
-
-            next HOUSE;
-        }
-
+        # Non own van/commuting
         my $bath = ($h->{bath})? "_bath"
                   :              ""
                   ;
@@ -555,7 +554,6 @@ for my $g (model($c, 'Grid')->search({
     my $name   = $g->name;
     my $notes  = $g->notes;
     my @nights = $g->occupancy =~ m{(\d)}xmsg;
-JON "$name @nights";
     $data{"p$id\_$bed"} = $name;
     $data{"x$id\_$bed"} = $notes;
     for my $n (1 .. $nnights) {
