@@ -280,22 +280,20 @@ if ($P{process}) {
                 #    $cost = $hash{single};
                 #}
 
-                push @fields, cost => $cost;
-                if (! $cost) {
-                    ++$bed;     # otherwise infinite loop!
-                    next BED;
+                if ($cost) {
+                    push @fields, cost => $cost;
+                    $P{"c$id\_$bed"} = $cost || "";
+                    $gtotal += $cost;
+                    if ($cost && $no_email) {
+                        # maybe don't add Grid records if any no email???
+                        push @need_email,
+                             ($id == 1001? 'Own Van': 'Commuting') . " - $name";
+                    }
+                    model($c, 'Grid')->create({
+                        rental_id => $rental_id,
+                        @fields,
+                    });
                 }
-                $P{"c$id\_$bed"} = $cost || "";
-                $gtotal += $cost;
-                if ($cost && $no_email) {
-                    # maybe don't add Grid records if any no email???
-                    push @need_email,
-                         ($id == 1001? 'Own Van': 'Commuting') . " - $name";
-                }
-                model($c, 'Grid')->create({
-                    rental_id => $rental_id,
-                    @fields,
-                });
                 ++$bed;
             }
             --$bed;     # we went one beyond
@@ -448,11 +446,11 @@ if ($P{process}) {
             if ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i) {
                 $tot = $tot/2;
             }
-            $cost = $tot;       # not int()
-            if (! $cost) {
-                next BED;
-            }
+            $cost = $tot;       # not int() ???
             if ($cost && $no_email) {
+                # ??? no create Grid if no email?
+                # but then you lose the data, yes?
+                # cannot repopulate
                 push @need_email, $h->{name} . " - $name";
             }
 
@@ -462,6 +460,9 @@ if ($P{process}) {
                 $cost = $hc{single};
             }
             push @fields, cost => $cost;
+            if (! $cost) {
+                next BED;
+            }
             model($c, 'Grid')->create({
                 rental_id => $rental_id,
                 @fields,
