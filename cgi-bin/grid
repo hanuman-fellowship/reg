@@ -476,6 +476,10 @@ if ($P{process}) {
             if ($name !~ m{\S} && ! $cost) {
                 $cost = "";
             }
+            # we don't want .5 rather .50
+            if ($cost =~ m{[.]\d$}xms) {
+                $cost = sprintf("%.2", $cost);
+            }
             $P{"c$id\_$bed"} = $cost;
             if (($cost == 0 && $name)
                 || $override_np
