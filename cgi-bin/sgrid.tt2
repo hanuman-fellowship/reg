@@ -23,6 +23,10 @@ body {
 .dow {
     color: red;
 }
+a {
+    color: blue;
+    text-decoration: none;
+}
 .special {
     font-weight: bold;
     color: red;

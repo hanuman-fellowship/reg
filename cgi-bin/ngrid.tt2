@@ -20,6 +20,10 @@ body {
     margin-bottom: .5in;
     font-family: Lucida Grande, Verdana, Helvetica;
 }
+a {
+    color: blue;
+    text-decoration: none;
+}
 .dow {
     color: red;
 }
