@@ -186,18 +186,9 @@ if ($P{by_name}) {
         };
         $gtotal += $cost;
     }
-    # if there are no fractional dollars
     # trim off the .00
-    my $cents = 0;
     for my $p (@people) {
-        if ($p->{cost} !~ m{[.]00}xms) {
-            $cents = 1;
-        }
-    }
-    if (! $cents) {
-        for my $p (@people) {
-            $p->{cost} =~ s{[.]00$}{}xms;
-        }
+        $p->{cost} =~ s{[.]00}{}xms);
     }
     @people = sort {
                   lc $a->{name} cmp lc $b->{name}
