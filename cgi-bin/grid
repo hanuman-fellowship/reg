@@ -188,7 +188,7 @@ if ($P{by_name}) {
     }
     # trim off the .00
     for my $p (@people) {
-        $p->{cost} =~ s{[.]00}{}xms);
+        $p->{cost} =~ s{[.]00}{}xms;
     }
     @people = sort {
                   lc $a->{name} cmp lc $b->{name}
