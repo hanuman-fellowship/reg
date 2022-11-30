@@ -449,7 +449,7 @@ JON "house id $id";
 
             # very special handling of a housing cost of type Total
             # ???
-            if ($cost && $hc->housecost_type eq 'Total') {
+            if ($cost && $hc->type eq 'Total') {
                 $cost = $hc{single};
             }
             push @fields, cost => $cost;
