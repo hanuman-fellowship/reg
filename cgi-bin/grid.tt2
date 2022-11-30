@@ -112,7 +112,7 @@ h2 {
 <body>
 <form method=post
       name=form
-      action='https://akash.mountmadonna.org/cgi-bin/$action?code=$code'>
+      action='https://akash.mountmadonna.org/cgi-bin/$action'>
 <h2>
 $name
 <span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
