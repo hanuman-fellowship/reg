@@ -2,6 +2,15 @@
 use strict;
 use warnings;
 
+use lib '../lib';
+use Util qw/
+    db_init
+    model
+    commify
+    trim
+    housing_types
+    JON
+/;
 use Template;
 use CGI;
 my $q = CGI->new;
@@ -13,15 +22,6 @@ JON "@k";
 use CGI::Carp qw/fatalsToBrowser/;
 print $q->header;
 
-use lib '../lib';
-use Util qw/
-    db_init
-    model
-    commify
-    trim
-    housing_types
-    JON
-/;
 my $c = db_init();
 use Global qw/
     %string
