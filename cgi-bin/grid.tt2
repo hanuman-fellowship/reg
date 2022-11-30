@@ -110,7 +110,7 @@ h2 {
 </style>
 </head>
 <body>
-<form method=post
+<form method=GET
       name=form
       action='https://akash.mountmadonna.org/cgi-bin/$action'>
 <h2>
