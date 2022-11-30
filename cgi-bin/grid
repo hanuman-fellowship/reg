@@ -277,10 +277,10 @@ if ($P{process}) {
                          ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                 }
                 # delete prior one??
-                model($c, 'Grid')->create(
+                model($c, 'Grid')->create({
                     rental_id => $rental_id,
                     @fields,
-                );
+                });
                 ++$bed;
             }
             --$bed;     # we went one beyond
