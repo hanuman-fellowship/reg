@@ -9,7 +9,6 @@ use Util qw/
     commify
     trim
     housing_types
-    JON
 /;
 use Template;
 use CGI;
@@ -283,7 +282,6 @@ if ($P{process}) {
                     push @need_email,
                          ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                 }
-JON "fields @fields";
                 model($c, 'Grid')->create({
                     rental_id => $rental_id,
                     @fields,
@@ -448,7 +446,6 @@ JON "fields @fields";
                 $cost = $hc{single};
             }
             push @fields, cost => $cost;
-JON "fields @fields";
             model($c, 'Grid')->create({
                 rental_id => $rental_id,
                 @fields,
@@ -548,32 +545,41 @@ JON "fields @fields";
 #
 my %data = ();
 
-=comment
-
-if (open my $in, "<", $dname) {
-    LINE:
-    while (my $line = <$in>) {
-        chomp $line;
-        if ($line =~ m{^(own_van|commuting)\|(\d+)}) {
-            $data{$1} = $2;
-            next LINE;
-        }
-        my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
-        my $name = $name_notes;
-        my $notes = "";
-        if ($name =~ m{~~}xms) {
-            ($name, $notes) = split m{\s* ~~ \s*}xms, $name_notes;
-        }
-        $data{"p$id\_$bed"} = $name;
-        $data{"x$id\_$bed"} = $notes;
-        for my $n (1 .. $nnights) {
-            $data{"n$id\_$bed\_$n"} = $nights[$n-1];
-        }
+for my $g (model($c, 'Grid')->search({
+               rental_id => $rental_id,
+           })
+) {
+    my $id     = $g->house_id;
+    my $bed    = $g->bed;
+    my $name   = $g->name;
+    my $notes  = $g->notes;
+    my @nights = split //, $g->occupancy;
+    $data{"p$id\_$bed"} = $name;
+    $data{"x$id\_$bed"} = $notes;
+    for my $n (1 .. $nnights) {
+        $data{"n$id\_$bed\_$n"} = $nights[$n-1];
     }
-    close $in;
 }
 
-=cut
+#
+#    LINE:
+#
+#    while (my $line = <$in>) {
+#        chomp $line;
+# ????
+#        if ($line =~ m{^(own_van|commuting)\|(\d+)}) {
+#            $data{$1} = $2;
+#            next LINE;
+#        }
+# ????
+#        my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
+#        my $name = $name_notes;
+#        my $notes = "";
+#        if ($name =~ m{~~}xms) {
+#            ($name, $notes) = split m{\s* ~~ \s*}xms, $name_notes;
+#        }
+#
+#=cut
 
 my $html = "";
 my $tt = Template->new({
