@@ -2,6 +2,9 @@
 use strict;
 use warnings;
 
+# several use cases.
+# many edge cases to Test.
+
 use lib '../lib';
 use Util qw/
     db_init
@@ -278,9 +281,13 @@ if ($P{process}) {
                 #}
 
                 push @fields, cost => $cost;
+                if (! $cost) {
+                    next BED;
+                }
                 $P{"c$id\_$bed"} = $cost || "";
                 $gtotal += $cost;
                 if ($cost && $no_email) {
+                    # maybe don't add Grid records if any no email???
                     push @need_email,
                          ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                 }
@@ -331,13 +338,17 @@ if ($P{process}) {
             }
 
 =cut
-        # Non own van/commuting
+
+        # Actual rooms - not own van or commuting
         my $bath = ($h->{bath})? "_bath"
                   :              ""
                   ;
+        BED:
         for my $bed (1 .. $h->{max}) {
             my $override_np = 0;
             if ($P{"p$id\_$bed"} =~ m{-\s*([12347])\s*$}) {
+                # what's this???
+                # more people in a room than expected??
                 $override_np = $1;
             }
             @fields = ();
@@ -437,6 +448,9 @@ if ($P{process}) {
                 $tot = $tot/2;
             }
             $cost = $tot;       # not int()
+            if (! $cost) {
+                next BED;
+            }
             if ($cost && $no_email) {
                 push @need_email, $h->{name} . " - $name";
             }
