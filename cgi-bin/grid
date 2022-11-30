@@ -9,6 +9,7 @@ use Util qw/
     commify
     trim
     housing_types
+    JON
 /;
 use Template;
 use CGI;
@@ -553,7 +554,8 @@ for my $g (model($c, 'Grid')->search({
     my $bed    = $g->bed_num;
     my $name   = $g->name;
     my $notes  = $g->notes;
-    my @nights = split //, $g->occupancy;
+    my @nights = $g->occupancy =~ m{(\d)}xmsg;
+JON "$name @nights";
     $data{"p$id\_$bed"} = $name;
     $data{"x$id\_$bed"} = $notes;
     for my $n (1 .. $nnights) {
