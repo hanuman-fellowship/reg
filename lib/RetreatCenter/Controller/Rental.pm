@@ -2989,7 +2989,7 @@ sub grid2 : Local {
     GRID:
     for my $g (@grid) {
         my $id = $g->house_id;
-        my $bed = $g->bed;
+        my $bed = $g->bed_num;
         my $cost = $g->cost;
         my $name = $g->name;
         my $notes = $g->notes;
