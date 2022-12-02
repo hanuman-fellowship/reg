@@ -2957,6 +2957,22 @@ sub grid2 : Local {
     my ($self, $c, $rental_id, $by_name) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $hc = $rental->housecost;
+    my @htypes;
+    HTYPE:
+    for my $t (housing_types(1)) {
+        my $cost = $hc->$t;
+        if (! $cost) {
+            # don't display house cost if it's zero
+            next HTYPE;
+        }
+        push @htypes, {
+            cost => $cost,
+            desc => $string{$t},
+        };
+    }
+    @htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
+
     my $sdate = $rental->sdate_obj();
     my $edate = $rental->edate_obj();
     my $d = $sdate;
@@ -3061,6 +3077,7 @@ sub grid2 : Local {
         coord_name => $coord_name,
         total    => commify($total),
         people   => \@people,
+        htypes   => \@htypes,
         template => $by_name? 'rental/grid_by_name.tt2'
                    :          'rental/grid.tt2',
     );
@@ -3315,6 +3332,31 @@ sub grid_emails : Local {
             $c->res->output(join "<br>\n", sort @all_emails);
             return;
         }
+    }
+    $c->res->output("No emails :(");
+}
+
+sub grid_emails2 : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    if (! $rental) {
+        error($c,
+            "Rental not found.",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    my @all_emails;
+    for my $g (model($c, 'Grid')->search({
+                   rental_id => $rental_id,
+               })
+    ) {
+        push @all_emails, $g->notes =~ m{(\S+[@][a-zA-Z0-9.\-]+)}xmsg;
+    }
+    @all_emails = uniq @all_emails;
+    if (@all_emails) {
+        $c->res->output(join "<br>\n", sort @all_emails);
+        return;
     }
     $c->res->output("No emails :(");
 }

@@ -61,63 +61,20 @@ Housing Assignment Grid
 
 </td><td>
 
-<div style="margin-left: 1in;">
 <table cellpadding=3>
 <tr>
-<th align=left>Type</th><th align=center>Cost</th>
+<th align=left>Type</th><th align=right>Cost</th>
 </tr>
-[% hc = rental.housecost %]
+[% FOR ht IN htypes %]
 <tr>
-<td>Single w/ Bath</td>
-<td align=right>[% hc.single_bath %]</td>
-</tr>
+<td>$ht.desc</td>
+<td align=right>$ht.cost</td>
+[% END %]
 <tr>
-<td>Single</td>
-<td align=right>[% hc.single %]</td>
+<tr><td>&nbsp;</td></tr>
+<td>House Cost Type: $housecost_type</td>
 </tr>
-<tr>
-<td>Double w/ Bath</td>
-<td align=right>[% hc.dble_bath %]</td>
-</tr>
-<tr>
-<td>Double</td>
-<td align=right>[% hc.dble %]</td>
-</tr>
-<tr>
-<td>Triple</td>
-<td align=right>[% hc.triple %]</td>
-</tr>
-<tr>
-<td>Dormitory</td>
-<td align=right>[% hc.dormitory %]</td>
-</tr>
-<tr>
-<td>Economy</td>
-<td align=right>[% hc.economy %]</td>
-</tr>
-<tr>
-<td>Center Tent</td>
-<td align=right>[% hc.center_tent %]</td>
-</tr>
-<tr>
-<td>Own Tent</td>
-<td align=right>[% hc.own_tent %]</td>
-</tr>
-<tr>
-<td>Own Van</td>
-<td align=right>[% hc.own_van %]</td>
-</tr>
-<tr>
-<td>Commuting</td>
-<td align=right>[% hc.commuting %]</td>
-</tr>
-<tr>
-<td>House Cost Type</td>
-<td align=right>[% hc.type %]</td>
-</tr>
-<tr height=35></tr>
 </table>
-</div>
 
 </td></tr>
 
