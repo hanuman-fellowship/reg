@@ -94,3 +94,5 @@ redirect on mountmadonna.org to akash
 update grid url in arrangements and contract (new and old plus preface)
 string grid_url
 grab_new - check_grid
+Web Grid, Web Grid no email links in view.tt2
+no need for 'Send to Web'

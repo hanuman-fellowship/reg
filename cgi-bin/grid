@@ -160,7 +160,7 @@ for my $t (housing_types(1)) {
         desc => $string{$t},
     };
 }
-@htypes = sort { $a->{cost} <=> $b->{cost} } @htypes;
+@htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
 
 # houses that have been assigned to this rental
 for my $b ($rental->rental_bookings()) {

@@ -54,7 +54,7 @@ th a:hover {
 [% END %]
 
 [% IF prog_admin %]
-<a href="/rental/grid/$id">Local Grid</a>
+<a target=_blank href="/rental/grid/$id">Local Grid</a>
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/rental/badges/$id">Badges</a>
 &nbsp;&nbsp;&nbsp;
