@@ -176,6 +176,82 @@ sub get_badge_data_from_program {
     return ($mess, $title, $code, \@data);
 }
 
+sub get_badge_data_from_rental2 {
+    my ($class, $c, $rental) = @_;
+    my ($mess, $title, $code) = $class->get_title_code($rental);
+    if ($mess) {
+        # cannot proceed
+        return $mess;
+    }
+    my $d = $rental->sdate_obj();
+    my $ed = $rental->edate_obj();
+
+    my @data;
+    GRID:
+    for my $g (model($c, 'Grid')->search({
+                   rental_id => $rental->id,
+               })
+    ) {
+        my $cost = $g->cost;
+        my $house_id = $g->house_id;
+        if (!$cost) {
+            # no one is in that room
+            # shouldn't be a record...
+            next GRID;
+        }
+        my $room = ($house_id == 1001)? 'Own Van'
+                  :($house_id == 1002)? 'Commuting'
+                  :               $house_name_of{$house_id}
+                  ;
+        my $name = $g->name;
+        my @nights = $g->occupancy =~ m{(\d)}xmsg;
+
+        # for 'child', '&', and 'and', see below
+
+        # what nights?
+        my $this_d = $d;
+        my $this_ed = $ed;
+        while ($nights[0] == 0) {
+            shift @nights;
+            ++$this_d;
+        }
+        while ($nights[-1] == 0) {
+            pop @nights;
+            --$this_ed;
+        }
+        my $dates = $this_d->format("%b %e")
+                  . ' - '
+                  . $this_ed->format("%b %e")
+                  ;
+        my @names = split m{ \s*
+                             (?: [&] | \band\b | [/])    # and /
+                             \s*
+                           }xmsi, $name;
+        for my $n (@names) {
+            $n =~ s{ \b child \s* \z}{}xmsi;
+            if ($n =~ m{ [(] (.*) [)] }xms) {
+                # a parenthesized name is the nickname
+                # they want to be called by - perhaps
+                # an adopted Sanskrit name or a shortened name
+                # they prefer over their formal legal name.
+                $n = $1;
+            }
+            push @data, {
+                name  => normalize($n),
+                dates => $dates,
+                room  => $room,
+            };
+        }
+    }
+
+    # could use Schwartzian transform below
+    @data = sort {
+                lc $a->{name} cmp lc $b->{name}
+            }
+            @data;
+    return ($mess, $title, $code, \@data);
+}
+
 sub get_badge_data_from_rental {
     my ($class, $c, $rental) = @_;
         # $c is unused here - but we include it
@@ -218,7 +294,7 @@ sub get_badge_data_from_rental {
         $name =~ s{ ~~ .* }{}xms;
 
         # for 'child', '&', and 'and', see below
-        
+
         # what nights?
         my $this_d = $d;
         my $this_ed = $ed;

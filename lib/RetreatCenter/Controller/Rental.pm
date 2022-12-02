@@ -3106,6 +3106,29 @@ sub badges : Local {
     $c->res->output(Badge->finalize());
 }
 
+sub badges2 : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my ($mess, $title, $code, $data_aref) =
+        Badge->get_badge_data_from_rental2($c, $rental);
+    if ($mess) {
+        $mess .= "<p class=p2>Close this window.";
+        stash($c,
+            mess     => $mess,
+            template => "gen_message.tt2",
+        );
+        return;
+    }
+    Badge->initialize($c);
+    Badge->add_group(
+        $title,
+        $code,
+        $data_aref,
+    );
+    $c->res->output(Badge->finalize());
+}
+
 sub color : Local {
     my ($self, $c, $rental_id) = @_;
     my $rental = model($c, 'Rental')->find($rental_id);

@@ -84,3 +84,13 @@ Kitchen Meal List - lunch alone - table off?
 
 Cannot do a POST method with cgi-bin <form>
     ask John
+
+In Rental.pm
+grid_emails2
+grid2
+badges2
+    get_badge_data_from_rental2 in lib/Badge.pm
+redirect on mountmadonna.org to akash
+update grid url in arrangements and contract (new and old plus preface)
+string grid_url
+grab_new - check_grid
