@@ -155,12 +155,14 @@ for my $t (housing_types(1)) {
     }
     $hc{$t} = $cost;     # for reference below
     push @htypes, {
-        name => $t,
         cost => $cost,
         desc => $string{$t},
     };
 }
+use Data::Dumper;
+JON Dumper(\@htypes);
 @htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
+JON Dumper(\@htypes);
 
 # houses that have been assigned to this rental
 for my $b ($rental->rental_bookings()) {
