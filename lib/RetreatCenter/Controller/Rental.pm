@@ -2950,6 +2950,121 @@ sub grid : Local {
     );
 }
 
+#
+# get data from database instead of file
+#
+sub grid2 : Local {
+    my ($self, $c, $rental_id, $by_name) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate_obj();
+    my $edate = $rental->edate_obj();
+    my $d = $sdate;
+    my $days = "";
+    while ($d <= $edate-1) {
+        $days .= "<th align=center width=20>"
+              .  $d->format("%s")
+              .  "</th>"
+              ;
+        ++$d;
+    }
+    # prepare the class hash for fixed cost houses
+    # so they can be rendered in green.
+    my %class;
+    for my $line (split /\|/, $rental->fch_encoded) {
+        my @h_ids = split ' ', $line;
+        shift @h_ids;     # cost
+        for my $h_id (@h_ids) {
+            $class{$h_id} = 'fixed';
+        }
+    }
+
+    my (@grid) = model($c, 'Grid')->search({
+                     rental_id => $rental_id,
+                 });
+    my %data = ();
+    my $total = 0;
+    my @people;
+    my %max;
+    GRID:
+    for my $g (@grid) {
+        my $id = $g->house_id;
+        my $bed = $g->bed;
+        my $cost = $g->cost;
+        my $name = $g->name;
+        my $notes = $g->notes;
+        my @nights = $g->occupancy =~ m{(\d+)}xmsg;
+        if ($id >= 1000) {
+            # ??
+            $max{$id} = $bed;
+        }
+        if ($cost != 0) {
+            my $i = 0;
+            while ($nights[$i] == 0) {
+                ++$i;
+            }
+            my $j = -1;
+            while ($nights[$j] == 0) {
+                --$j;
+            }
+            my $dates = "";
+            if ($i != 0 || $j != -1) {
+                $dates = ($sdate+$i)->day() . '-' . ($edate+$j+1)->day();
+            }
+            push @people, {
+                name => $name,
+                notes => $notes,
+                cost => $cost,
+                room =>  $id == 1001? 'Commuting'
+                        :$id == 1002? 'Own Van'
+                        :             $house_name_of{$id},
+                dates => $dates,
+            };
+        }
+        $data{"p$id\_$bed"} = $name;
+        $data{"x$id\_$bed"} = $notes;
+        $data{"cl$id\_$bed"}
+            = ($name =~ m{\&|\band\b}i
+               || $name =~ m{\bchild\b}i
+               || $name =~ m{-\s*[12347]\s*$}
+               || ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i)
+               || $cost == 0
+              )? "class=special"
+              :                                 ""
+              ;
+        for my $n (1 .. @nights) {
+            $data{"n$id\_$bed\_$n"} = $nights[$n-1];
+        }
+        $data{"c$id\_$bed"} = $cost || "";
+        $total += $cost || 0;
+    }
+    my $coord = $rental->coordinator();
+    my $coord_name = "";
+    if ($coord) {
+        $coord_name = $coord->name();
+    }
+    else {
+        $coord_name = "";
+    }
+    @people = sort {
+                  lc $a->{name} cmp lc $b->{name}
+              }
+              @people;
+    stash($c,
+        class    => \%class,
+        days     => $days,
+        rental   => $rental,
+        nnights  => $edate - $sdate,
+        data     => \%data,
+        max      => \%max,      # for own van, commuting
+        coord_name => $coord_name,
+        total    => commify($total),
+        people   => \@people,
+        template => $by_name? 'rental/grid_by_name.tt2'
+                   :          'rental/grid.tt2',
+    );
+}
+
 sub badges : Local {
     my ($self, $c, $rental_id) = @_;
 
