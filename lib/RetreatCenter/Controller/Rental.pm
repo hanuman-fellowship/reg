@@ -2991,6 +2991,7 @@ sub grid2 : Local {
         my $id = $g->house_id;
         my $bed = $g->bed_num;
         my $cost = $g->cost;
+        $cost =~ s{[.]00$}{}xms;
         my $name = $g->name;
         my $notes = $g->notes;
         my @nights = $g->occupancy =~ m{(\d+)}xmsg;
