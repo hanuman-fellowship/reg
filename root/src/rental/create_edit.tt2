@@ -129,7 +129,7 @@ Web/Files
 <!-- Meals & Lodging div -->
 <div id="content1" class="tabcontent" style="display: none">
 
-<table border=0 cellpadding=5>
+<table cellpadding=5>
 
 <tr>
 <th align=right width=200><span class=red>*</span> Maximum</th>
@@ -164,7 +164,7 @@ $rental.housing_note
 Fixed Cost Houses
 </th>
 <td>
-<input name=fixed_cost_houses value="$rental.fixed_cost_houses" size=65>
+<input name=fixed_cost_houses value="$rental.fixed_cost_houses" size=50>
 </td>
 </tr>
 
@@ -187,12 +187,12 @@ These costs will apply for each day the person stays - regardless of how many ot
 <table cellpadding=5>
 
 <tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=tentative $check_tentative> Tentative</td>
+<th align=right>Tentative</th>
+<td><input type=checkbox value="yes" name=tentative $check_tentative></td>
 </tr>
 
 <tr>
-<th align=right>New Contract</th>
+<th style="text-align: right;">New Contract</th>
 <td><input type=checkbox name=new_contract value="yes" $check_new_contract></td>
 </tr>
 
@@ -217,18 +217,18 @@ These costs will apply for each day the person stays - regardless of how many ot
 </tr>
 
 <tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=day_retreat $check_day_retreat> <b>Day Retreat</b></td>
+<th align=right>Day Retreat</th>
+<td><input type=checkbox value="yes" name=day_retreat $check_day_retreat></td>
 </tr>
 
 <tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=mmc_does_reg $check_mmc_does_reg> <b>MMC Does Registration</b></td>
+<th align=right>MMC Does Registration</th>
+<td><input type=checkbox value="yes" name=mmc_does_reg $check_mmc_does_reg></td>
 </tr>
 
 <tr>
 <th align=right>Alternate Guest Packet</th>
-<td colspan=6>
+<td>
 <input type=file name=alt_packet>$rental.alt_packet
 </td>
 </tr>
@@ -241,13 +241,13 @@ These costs will apply for each day the person stays - regardless of how many ot
 -->
 
 <tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=rental_follows $check_rental_follows> <b>Rental Follows</b></td>
+<th align=right>Rental Follows</th>
+<td><input type=checkbox value="yes" name=rental_follows $check_rental_follows></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Contract Exceptions</th>
-<td colspan=2><textarea name=contract_exception cols=60 rows=5>
+<td><textarea name=contract_exception cols=50 rows=5>
 $rental.contract_exception
 </textarea>
 </tr>
@@ -279,7 +279,7 @@ $rental.contract_exception
 
 <tr>
 <th align=right>PR Alert</th>
-<td><input type=text name=pr_alert value='$rental.pr_alert' size=70></td>
+<td><input type=text name=pr_alert value='$rental.pr_alert' size=40></td>
 </tr>
 
 <tr><td height=30></td></tr>
@@ -289,39 +289,39 @@ $rental.contract_exception
 </tr>
 <tr>
 <tr>
-<th valign=top>Audio/Visual</th>
-<td><textarea name=av_request cols=60 rows=5>$rental.av_request</textarea></td>
+<th valign=top align=right>Audio/Visual</th>
+<td><textarea name=av_request cols=50 rows=5>$rental.av_request</textarea></td>
 </tr>
 <tr>
 <td></td>
 <td><b>Cost</b> <input type=text name=av_request_cost value='$rental.av_request_cost' size=5></td>
 </tr>
 <tr>
-<th valign=top>Housing</th>
-<td><textarea name=housing_request cols=60 rows=5>$rental.housing_request</textarea></td>
+<th valign=top align=right>Housing</th>
+<td><textarea name=housing_request cols=50 rows=5>$rental.housing_request</textarea></td>
 </tr>
 <tr>
 <td></td>
 <td><b>Cost</b> <input type=text name=housing_request_cost value='$rental.housing_request_cost' size=5></td>
 </tr>
 <tr>
-<th valign=top>Meals</th>
-<td><textarea name=meal_request cols=60 rows=5>$rental.meal_request</textarea></td>
+<th valign=top align=right>Meals</th>
+<td><textarea name=meal_request cols=50 rows=5>$rental.meal_request</textarea></td>
 </tr>
 <tr>
 <td></td>
 <td><b>Cost</b> <input type=text name=meal_request_cost value='$rental.meal_request_cost' size=5></td>
 </tr>
 <tr>
-<th valign=top>Meeting Place</th>
-<td><textarea name=meeting_request cols=60 rows=5>$rental.meeting_request</textarea></td>
+<th valign=top align=right>Meeting Place</th>
+<td><textarea name=meeting_request cols=50 rows=5>$rental.meeting_request</textarea></td>
 </tr>
 <tr>
 <td></td>
 <td><b>Cost</b> <input type=text name=meeting_request_cost value='$rental.meeting_request_cost' size=5></td>
 </tr>
-<th valign=top>Other</th>
-<td><textarea name=other_request cols=60 rows=5>$rental.other_request</textarea></td>
+<th valign=top align=right>Other</th>
+<td><textarea name=other_request cols=50 rows=5>$rental.other_request</textarea></td>
 </tr>
 <tr>
 <td></td>

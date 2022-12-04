@@ -106,10 +106,3 @@ grid.tt2 - akash not akash2
 grid_stale in Rental db is now obsolete
     remove references in db/Rental.pm and C/Rental.pm
     and trent/view.tt2
-
-Program Tally
-    why some payments have 'deposit' in what' - Lasater
-        still a non-zero total in tally
-    the Cancelled tally should not be zero both 3HO and Lasater
-        3HO cancelled money total is    1480 - should be 0
-
