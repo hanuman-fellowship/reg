@@ -50,7 +50,7 @@ $edate <span class=dow>${edate.format("%a")}</span>
 <span style="margin-left: .5in; font-size: 15pt;">$first $last
 <p>
 Housing Assignment Grid
-<span style="margin-left: 1in; font-size: 12pt;"><a href=/cgi-bin/$action?code=$code>ReEdit</a></span>
+<span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
 </h2>
 <p>
 <table cellpadding=5 border=1>

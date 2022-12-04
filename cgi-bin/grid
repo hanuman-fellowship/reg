@@ -89,6 +89,7 @@ use Util qw/
     commify
     trim
     housing_types
+    add_activity
     JON
 /;
 use Template;
@@ -110,9 +111,8 @@ use Date::Simple qw/
 Date::Simple->default_format("%B %e '%q");
 
 my $grid_cgi = $0;
-$grid_cgi =~ s{.*/}{}xms;
-
-my $email_check = $grid_cgi eq 'grid';
+my $email_check = $grid_cgi !~ m{grid_ne}xms;
+$grid_cgi =~ s{/var/www/src}{}xms;
 
 my $code = $P{code};
 my ($rental) = model($c, 'Rental')->search({
@@ -159,10 +159,7 @@ for my $t (housing_types(1)) {
         desc => $string{$t},
     };
 }
-use Data::Dumper;
-JON Dumper(\@htypes);
 @htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
-JON Dumper(\@htypes);
 
 # houses that have been assigned to this rental
 for my $b ($rental->rental_bookings()) {
@@ -316,6 +313,7 @@ if ($P{process}) {
     my @records;        # an array of arrayrefs
                         # records to add.
 
+    my @counts = (0) x $nnights;        # population each night
     my @need_email;
     my ($cot1, $cot3) = (0, 0);
     my $cot3_name;
@@ -354,6 +352,10 @@ if ($P{process}) {
                 my $occupancy = '';
                 for my $n (1 .. $nnights) {
                     my $occ = $P{"n$id\_$bed\_$n"} || 0;
+                    if ($occ) {
+                        # add to the counts on this night
+                        $counts[$n-1] += $npeeps;
+                    }
                     $occupancy .= "$occ ";
                     $totn += $occ;
                 }
@@ -365,9 +367,6 @@ if ($P{process}) {
                     $P{"c$id\_$bed"} = $cost || "";
                     $gtotal += $cost;
                     if ($cost && $no_email) {
-                        # maybe don't add Grid records if any no email?
-                        # no, we need to add the records so
-                        # that the data is there in the database to edit.
                         push @need_email,
                              ($id == 1001? 'Own Van': 'Commuting') . " - $name";
                     }
@@ -402,6 +401,9 @@ if ($P{process}) {
             push @fields, house_id => $id;
             push @fields, bed_num => $bed;
             my $name = trim($P{"p$id\_$bed"} || "");
+            my @peeps = split m{\&|\band\b}i, $name;
+            my $npeeps = @peeps;
+
             my $notes = trim($P{"x$id\_$bed"} || "");
             push @fields, name => $name;
             push @fields, notes => $notes;
@@ -417,13 +419,18 @@ if ($P{process}) {
                 # $name has no email address (or 'no email')
                 $no_email = 1;
             }
-            my $cost = 0;
+            my $cost = 0;       # this is the cost of the house itself
             my $occupancy = '';
             NIGHT:
             for my $n (1 .. $nnights) {
                 my $occ = $P{"n$id\_$bed\_$n"} || 0;
                 $occupancy .= "$occ ";
                 if ($occ) {
+                    #
+                    # bump the population for this night
+                    $counts[$n-1] += $npeeps;
+
+                    #
                     # quick hack for fixed cost house
                     #
                     if ($fixed_cost_for_house{$id}) {
@@ -484,38 +491,30 @@ if ($P{process}) {
             # and children.
             #
             my $tot = 0;
-            for my $p (split m{\&|\band\b}i, $name) {
+            for my $p (@peeps) {
                 $tot += ($p =~ m{\bchild\b}i)? $cost/2
                         :                      $cost
                         ;
             }
-            # the word child was put in the notes field instead
-            # AND there's only one person in the name field.
-            if ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i) {
-                $tot = $tot/2;
-            }
-            $cost = $tot;
-            if ($cost && $no_email) {
-                # no create Grid if no email?
-                # no, you would lose the data to edit.
+            if ($tot && $no_email) {
                 push @need_email, $h->{name} . " - $name";
             }
-            push @fields, cost => $cost;
-            if (! $cost) {
+            if (! $tot) {
                 next BED;
             }
+            push @fields, cost => $tot; # this 'cost' is the *total* cost
             push @records, [ @fields ];
 
-            $gtotal += $cost;
-            if ($name !~ m{\S} && ! $cost) {
-                $cost = "";
+            $gtotal += $tot;
+            if ($name !~ m{\S} && ! $tot) {
+                $tot = "";
             }
             # we don't want .5 rather .50
-            if ($cost =~ m{[.]\d$}xms) {
-                $cost = sprintf("%.2f", $cost);
+            if ($tot =~ m{[.]\d$}xms) {
+                $tot = sprintf("%.2f", $tot);
             }
-            $P{"c$id\_$bed"} = $cost;
-            if (($cost == 0 && $name)
+            $P{"c$id\_$bed"} = $tot;        # to be displayed
+            if (($tot == 0 && $name)
                 || $override_np
                 || $name =~ m{\&|\band\b}i
                 || $name =~ m{\b/\b}
@@ -576,6 +575,30 @@ if ($P{process}) {
             @$aref,
         });
     }
+
+    # now to update three fields in the Rental
+    #
+    # on the last day
+    # the people who slept the night before will have breakfast
+    # and maybe lunch.
+    #
+    push @counts, $counts[-1];
+
+    my $max = 0;
+    for my $c (@counts) {
+        if ($max < $c) {
+            $max = $c;
+        }
+    }
+    $rental->update({
+        counts         => (join ' ', @counts),
+        grid_max       => $max,
+        housing_charge => $gtotal,
+    });
+    $rental->compute_balance();     # complicated!
+
+    my $rname = $rental->name;
+    add_activity($c, "grid <a href='/rental/view/$rental_id'>$rname</a>");
 
     #
     # now display it along with the costs

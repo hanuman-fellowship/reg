@@ -114,9 +114,9 @@ h2 {
 </style>
 </head>
 <body>
-<form method=GET
+<form method=POST
       name=form
-      action='https://akash.mountmadonna.org/cgi-bin/$action'>
+      action='$action'>
 <h2>
 $name
 <span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
@@ -127,7 +127,7 @@ $edate <span class=dow>${edate.format("%a")}</span>
 <p>
 Housing Assignment Grid
 <span style="margin-left: 1in;"><input class=submit type=submit value="Submit" name=process></span>
-<span style="margin-left: 1in; font-size: 13pt;"><a href="/cgi-bin/$action?code=$code&by_name=1">By Name</a></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="$action?code=$code&by_name=1">By Name</a></span>
 <span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://www.mountmadonna.org/rental/hints.html',750)">Helpful Hints</a></span>
 </h2>
 <input type=hidden name=code value='$code'>

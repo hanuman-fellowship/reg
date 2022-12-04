@@ -81,18 +81,35 @@ Email didn't come?
 
 Kitchen Meal List - lunch alone - table off?
 
-
-Cannot do a POST method with cgi-bin <form>
-    ask John
-
+----GRID to akash................
+keep checking new grid activity
+    and call script/impgrid.pl with the code as parameter
+        that script on akash/script is temporary
+            no need to put in git
 In Rental.pm
 grid_emails2
 grid2
 badges2
-    get_badge_data_from_rental2 in lib/Badge.pm
+    it calls get_badge_data_from_rental2 in lib/Badge.pm
 redirect on mountmadonna.org to akash
-update grid url in arrangements and contract (new and old plus preface)
-string grid_url
-grab_new - check_grid
+update grid url in arrangements (new and old plus preface)
+String grid_url gets put in the above
+grab_new - sub check_grid
+    can remove it
 Web Grid, Web Grid no email links in view.tt2
+rental/view.tt2 - grid_url from String
 no need for 'Send to Web'
+ensure grid_ne is link not separate file
+TODO: functionality from check_grid from grab_new put into cgi-bin/grid
+    including adding activity message
+grid.tt2 - akash not akash2
+grid_stale in Rental db is now obsolete
+    remove references in db/Rental.pm and C/Rental.pm
+    and trent/view.tt2
+
+Program Tally
+    why some payments have 'deposit' in what' - Lasater
+        still a non-zero total in tally
+    the Cancelled tally should not be zero both 3HO and Lasater
+        3HO cancelled money total is    1480 - should be 0
+

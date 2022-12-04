@@ -5718,7 +5718,7 @@ sub tally : Local {
         }
     );
     my $registered = 0;
-    my $cancelled  = 0;
+    my $tot_cancelled  = 0;
     my $no_shows   = 0;
 
     my $males      = 0;
@@ -5784,7 +5784,6 @@ sub tally : Local {
         else {      # MMI
             for my $rp ($r->mmi_payments()) {
                 my $amount = $rp->amount();
-                my $cancelled = $r->cancelled();
                 if ($rp->note() =~ m{deposit}xmsi) {
                     if ($cancelled) {
                         $can_deposit += $amount;
@@ -5815,7 +5814,7 @@ sub tally : Local {
         # cancellations don't tally charges or the balance at all.
         # right?
         #
-        if (! $r->cancelled()) {
+        if (! $cancelled) {
             for my $rc ($r->charges()) {
                 $charges_for[$rc->type()] += $rc->amount();
             }
@@ -5830,8 +5829,8 @@ sub tally : Local {
             next REG;
         }
         ++$registered;
-        if ($r->cancelled()) {
-            ++$cancelled;
+        if ($cancelled) {
+            ++$tot_cancelled;
             next REG;
         }
         if (! $pr->donation() && ! $r->arrived) {
@@ -5863,7 +5862,7 @@ sub tally : Local {
         program     => $pr,
         id          => $prog_id,
         registered  => $registered,
-        cancelled   => $cancelled,
+        cancelled   => $tot_cancelled,
         no_shows    => $no_shows,
         males       => $males,
         females     => $females,
