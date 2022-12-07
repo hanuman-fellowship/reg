@@ -1,6 +1,6 @@
 <style>
 body {
-    width: 800px;
+    width: 80%;
     font-family: Georgia, Times;
     font-size: 12pt;
     margin-left: 6mm;
