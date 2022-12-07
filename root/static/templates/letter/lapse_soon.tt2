@@ -1,0 +1,64 @@
+[% INCLUDE style.tt2 %]
+Dear ${sanskrit},
+<p>
+Thank you for your on-going participation with the
+Hanuman Fellowship. Your annual HFS $type Membership is due to
+expire on December 31, ${end_year}.  We humbly ask that you renew your
+membership for another year.
+<p>
+The Hanuman Fellowship is "A thriving
+community of spiritual practice that honors our yogic roots and
+inspires peaceful transformation in ourselves and the world". Your
+continued support contributes to the long term sustainability of
+our mission and our ability to ensure the
+legacy of the teachings of Baba Hari Dass.
+Membership dues, along with general donations, all support
+the gap between program revenues and a wide variety of costs,
+including staff support, land and infrastructure maintenance and
+development, and Hanuman Fellowship offerings for the community.
+<p>
+As you may know, in August 2022, the Hanuman Fellowship Bylaws were
+revised creating two broad categories of membership: Statutory
+(voting) Members and Supporting (non-voting) Members. As a $type
+Member at the time of this change, your membership has been
+automatically rolled into the Statutory (voting) Membership category.
+[% IF type == 'General' %]
+To continue your Statutory Membership for another year, please
+submit your payment of \$${string.mem_gen_amt}.
+[% END %]
+<p>
+[% IF type == 'Sponsor' %]
+Your payment of dues in the amount of \$${string.mem_spons_year}
+by December 31, $end_year
+will assure that your benefits do not expire. Your payment will be
+applied toward a Life Membership goal of \$${string.mem_life_total}.
+Sponsor payments may also be paid at a semiannual rate of
+\$${string.mem_spons_semi_year} by December 31st and
+June 30th. If you wish to do so, please arrange with the Membership
+Secretary.
+<p>
+[% END %]
+You can securely pay your membership
+dues online by
+<a href=${string.omp_pay_url}?code=$secure_code>clicking here</a>.
+If you wish to pay with a personal
+check, please mail your payment to the address listed below.  In
+addition to membership dues, we gratefully accept all
+<a href='https://www.mountmadonna.org/donate'>donations</a> of any size.
+<p>
+Please note:
+<ul>
+<li>We communicate primarily by email, so
+please make sure that we have your current email address and other
+contact information.
+<li>To claim a tax deduction for this donation,
+you must deduct the value of any benefits you receive. Our federal
+tax identification number is 51-0174679. This organization is a
+501c (3) tax exempt organization, IRS Section 170(b (2)(iii) for
+both federal and state tax purposes.
+</ul>
+In Peace,<br>
+The Hanuman Fellowship<br>
+Membership Secretary<br>
+445 Summit Road, Watsonville, CA 95076<br>
+<a href='mailto:${string.mem_email}?subject=HFS Membership'>${string.mem_email}</a>

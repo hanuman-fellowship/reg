@@ -70,21 +70,22 @@ for my $m (@to_lapse_members) {
     my $type = $m->category;
     my $html = "";
     my $stash = {
+        type        => $type,
         sanskrit    => ($per->sanskrit || $per->first),
-        exp_year    => $year,
+        end_year    => $year,
+        exp_year    => $year+1,
         string      => \%string,
         secure_code => $per->secure_code,
-        has_email   => 1,
     };
     $tt->process(
-        "lapse_"
-            . ($type eq 'General'? 'gen': 'spons')
-            . "_soon.tt2", # template
+        'lapse_soon.tt2',
         $stash,           # variables
         \$html,           # output
     ) or die $tt->error;
     email_letter($c,
-        to      => $per->name_email(),
+        #to      => $per->name_email(),
+# JON
+        to => 'jon.bjornstad@gmail.com',
         from    => "HFS Membership <$string{mem_email}>",
         subject => "Hanuman Fellowship Membership Status",
         html    => $html,
@@ -93,6 +94,8 @@ for my $m (@to_lapse_members) {
                       . $per->name . "</a>",
     );
     ++$nsent;
+# JON
+    last;
 }
 
 print "sent $nsent email reminder letters\n";
