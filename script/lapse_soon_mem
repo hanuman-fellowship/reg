@@ -82,9 +82,7 @@ for my $m (@to_lapse_members) {
         \$html,           # output
     ) or die $tt->error;
     email_letter($c,
-        #to      => $per->name_email(),
-# JON
-        to => 'jon.bjornstad@gmail.com',
+        to      => $per->name_email(),
         from    => "HFS Membership <$string{mem_email}>",
         subject => "Hanuman Fellowship Membership Status",
         html    => $html,
@@ -93,8 +91,6 @@ for my $m (@to_lapse_members) {
                       . $per->name . "</a>",
     );
     ++$nsent;
-# JON
-    if ($nsent > 4) { last; }
 }
 
 print "sent $nsent email reminder letters\n";
