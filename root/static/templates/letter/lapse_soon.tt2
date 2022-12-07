@@ -1,4 +1,8 @@
 [% INCLUDE style.tt2 %]
+<img style="margin-left: 6in"
+     height=150
+     src="http://www.hanumanfellowship.org/files/hanuman.png">
+<br>
 Dear ${sanskrit},
 <p>
 Thank you for your on-going participation with the

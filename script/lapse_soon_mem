@@ -73,7 +73,6 @@ for my $m (@to_lapse_members) {
         type        => $type,
         sanskrit    => ($per->sanskrit || $per->first),
         end_year    => $year,
-        exp_year    => $year+1,
         string      => \%string,
         secure_code => $per->secure_code,
     };
@@ -95,7 +94,7 @@ for my $m (@to_lapse_members) {
     );
     ++$nsent;
 # JON
-    last;
+    if ($nsent > 4) { last; }
 }
 
 print "sent $nsent email reminder letters\n";
