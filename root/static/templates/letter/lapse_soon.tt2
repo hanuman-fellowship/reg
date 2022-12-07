@@ -1,5 +1,5 @@
 [% INCLUDE style.tt2 %]
-<img style="margin-left: 6in"
+<img style="margin-left: 5in"
      height=150
      src="http://www.hanumanfellowship.org/files/hanuman.png">
 <br>
