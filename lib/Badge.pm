@@ -45,7 +45,7 @@ sub add_group {
         unshift @$data_aref, {
             first   => '&nbsp;',
             last    => '&nbsp;',
-            name    => '&nbsp;',
+            name    => '',
             room    => '&nbsp;',
             dates   => '&nbsp;',
             code    => '&nbsp;',

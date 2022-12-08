@@ -31,6 +31,9 @@
 [% FOREACH i IN [ 3,2,1,0,7,6,5,4 ] %]
     [% IF ! data.$i.name %]
         <td>&nbsp;</td>
+        [% IF i == 0 %]
+            </tr><tr>
+        [% END %]
         [% NEXT %]
     [% END %]
 <td>
