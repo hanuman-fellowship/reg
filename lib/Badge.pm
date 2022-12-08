@@ -41,6 +41,17 @@ sub initialize {
 
 sub add_group {
     my ($class, $program, $code, $data_aref) = @_;
+    for (1 .. 8) {
+        unshift @$data_aref, {
+            first   => '&nbsp;',
+            last    => '&nbsp;',
+            name    => '&nbsp;',
+            room    => '&nbsp;',
+            dates   => '&nbsp;',
+            code    => '&nbsp;',
+            program => '&nbsp;',
+        };
+    }
     for my $d_href (@$data_aref) {
         # mess with the name
         my $name = $d_href->{name};
