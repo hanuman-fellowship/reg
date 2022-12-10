@@ -1,0 +1,585 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use Template;
+use CGI qw/:standard/;
+print header();
+use CGI::Carp qw/fatalsToBrowser/;
+
+use lib '.';
+use HousingNames;
+use Date::Simple qw/
+    date
+    today
+/;
+my $today = today();
+use Time::Simple qw/
+    get_time 
+/;
+use JSON 'decode_json';
+use Slurp;
+use DBI;
+use Util qw/
+    JON
+/;
+
+#
+# command line params
+#
+my $pid  = param('id');
+
+my %stash;
+$stash{pid}  = $pid;
+
+my $progpath = "/home/reg";
+
+sub oops {
+    my ($err) = @_;
+    Template->new(INTERPOLATE => 1)->process(
+        'err.tt2',
+        { err => $err },
+    );
+    exit;
+}
+
+my $mountain_experience = param('mountain_experience');
+$stash{mountain_experience} = $mountain_experience;
+my $only_outdoors = 0;
+my $no_center_tents = 1;
+$stash{no_center_tents} = 1;
+my $PR_ndays = 0;
+if ($pid == 0) {
+    # for PRs (and Mountain Experience) we need to check the dates
+    # arr_date and dep_date from the request
+    # and compare them to the dates in noPR.txt
+    # and maybe set a flag to exclude indoor housing below
+    #
+    # Mountain Experience dates are restricted in regME
+    # TODO - do the same for regPR!
+    #
+    #
+    my $arr_date = param('arr_date');       # for PRs and MEs
+    my $dep_date = $mountain_experience? $arr_date: param('dep_date');
+    my ($sdate, $edate);
+    eval {
+        $sdate = Date::Simple->new($arr_date);
+    };
+    if (!$sdate) {
+        oops "Illegal date format for arrival date: $arr_date";
+    }
+    eval {
+        $edate = Date::Simple->new($dep_date);
+    };
+    if (!$edate) {
+        oops "Illegal date for departure date: $dep_date";
+    }
+    if ($sdate && $edate) {
+        $PR_ndays = $edate-$sdate;
+        if ($PR_ndays < 0) {
+            oops "Departure date is not on or after the arrival date!";
+        }
+    }
+    if ($sdate < $today) {
+        oops "Arrival date is in the past!";
+    }
+
+    if (! $mountain_experience) {
+        my $no_date_file = "$progpath/pr/noPR.txt";
+        if (-r $no_date_file) {
+            open my $in, "<", $no_date_file;
+            DATES:
+            while (my $dateline = <$in>) {
+                chomp $dateline;
+                my ($sd, $ed) = $dateline =~ m{\A (\d{8})-(\d{8})}xms;
+                my ($indoors) = $dateline =~ m{indoors}xms;
+                $sd = date($sd);
+                $ed = date($ed);
+                --$ed;      # for PRs
+                # is there overlap?
+                if ($edate > $sd && $sdate <= $ed) {
+                    if ($indoors) {
+                        $only_outdoors = 1;
+                    }
+                    else {
+                        my $err .= "Sorry, you cannot stay the nights from ";
+                        if ($sd->month() == $ed->month()) {
+                            $err .= $sd->format("%B %e")
+                                 .  "-"
+                                 .  $ed->format("%e")
+                                 ;
+                        }
+                        else {
+                            $err .= $sd->format("%B %e")
+                                 .  "-"
+                                 .  $ed->format("%B %e")
+                                 ;
+                        }
+                        $err .= '.';
+                        oops $err;
+                    }
+                }
+            }
+            close $in;
+        }
+    }
+    # TODO - verify mountain experience date is okay
+    # dow, no ME, yes ME, 10:00 cutoff
+    # it might be entered manually...
+
+    my $ct_line = slurp("$progpath/pr/CT.txt");
+    chomp $ct_line;
+    # if center tents are not allowed on their start date 
+    # we have to exclude the center tent option from the
+    # housing choices.
+    #
+    my ($ct_smd, $ct_emd) = split m{-}, $ct_line;
+        # ct_smd = center tent start month day
+    my $pr_smd = $sdate->format("%m%d");
+    if ($ct_smd <= $pr_smd && $pr_smd <= $ct_emd) {
+        $no_center_tents = 0;
+        $stash{no_center_tents} = 0;
+    }
+
+    my $max_nights = slurp("$progpath/pr/max_nights.txt");
+    chomp $max_nights;
+    if ($PR_ndays > $max_nights) {
+        oops "Sorry, you can stay a maximum of $max_nights nights.";
+    }
+
+    if ($mountain_experience) {
+        # ME max
+        my $me_max = slurp("$progpath/pr/me_max.txt");
+        chomp $me_max;
+
+        #
+        # are there any date ranges for ME that span the date?
+        #
+        my @lines = slurp("$progpath/pr/date_ranges.txt");
+        chomp @lines;
+        LINE:
+        for my $l (@lines) {
+            my ($type, $range, $max) = split ' ', $l;
+            next LINE unless $type eq 'ME';
+            my ($start, $end) = split '-', $range;
+            $start = date($start);
+            $end = date($end);
+            if ($start <= $sdate && $sdate <= $end) {
+                $me_max = $max;
+            }
+        }
+
+        my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
+        my $db = $ref->{database};
+        my $dbh = DBI->connect("DBI:mysql:database=for_reg",
+                               $db->{user}, $db->{password},
+                               { RaiseError => 1, AutoCommit => 1 }
+                  ) or die "cannot connect to for_reg database\n";
+        my $sth = $dbh->prepare(<<'EOS');
+            SELECT COUNT(*)
+              FROM me_registrations
+             WHERE date = ?
+EOS
+        $sth->execute($sdate->as_d8());
+        my ($n) = $sth->fetchrow_array();
+        if ($n >= $me_max) {
+            oops "Sorry, we have reached the maximum capacity for Mountain Experience Retreats on $sdate.\n";
+        }
+    }
+    else {
+        # PR max
+        my $pr_max = slurp("$progpath/pr/pr_max.txt");
+        chomp $pr_max;
+
+        #
+        # are there any date ranges for PR that span the date?
+        # TODO - is this right?  spans overlapping??
+        #
+        my @lines = slurp("$progpath/pr/date_ranges.txt");
+        chomp @lines;
+        LINE:
+        for my $l (@lines) {
+            my ($type, $range, $max) = split ' ', $l;
+            next LINE unless $type eq 'PR';
+            my ($start, $end) = split '-', $range;
+            $start = date($start);
+            $end = date($end);
+            if ($start <= $sdate && $sdate <= $end) {
+                $pr_max = $max;
+            }
+        }
+        my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
+        my $db = $ref->{database};
+        my $dbh = DBI->connect("DBI:mysql:database=for_reg",
+                               $db->{user}, $db->{password},
+                               { RaiseError => 1, AutoCommit => 1 }
+                  ) or die "cannot connect to for_reg database\n";
+        my $sth = $dbh->prepare(<<'EOS');
+            SELECT COUNT(*)
+              FROM pr_registrations
+             WHERE date = ?
+EOS
+        # < $edate because they're leaving on that date
+        for (my $d = $sdate; $d < $edate; ++$d) {
+            $sth->execute($d->as_d8());
+            my ($n) = $sth->fetchrow_array();
+            if ($n >= $pr_max) {
+                oops "Sorry, we have reached the maximum capacity for Personal Retreats on $d.\n";
+            }
+        }
+    }
+
+    my $dates = "$PR_ndays day" . (($PR_ndays > 1)? "s": "");
+    $dates .= " from ";
+    $dates .= $sdate->format("%A %B %e, %Y");
+    $dates .= " to ";
+    $dates .= $edate->format("%A %B %e, %Y");
+    $stash{sdate} = $sdate;
+    $stash{edate} = $edate;
+    $stash{pr_dates} = $dates;
+    $stash{outdoors} = $only_outdoors;
+}
+
+# Mountain Experience
+if ($mountain_experience) {
+    my @meals; 
+    if (param('lunch')) {
+        push @meals, 'Lunch';
+    }
+    if (param('dinner')) {
+        push @meals, 'Dinner';
+    }
+    if (!@meals) {
+        oops 'Surely, you want to eat either lunch or dinner!';
+    }
+    my @activities;
+    if (param('yoga_class')) {
+        push @activities, "Yoga Class";
+    }
+    if (param('guided_hike')) {
+        push @activities, "Guided Walk";
+    }
+    $stash{meals} = join ' and ', @meals;
+    $stash{activities} = join ' and ', @activities;
+
+    # children's names and ages?
+    my $name_age = param('children_name_age');
+    if ($name_age) {
+        my @names = $name_age =~ m{([a-z]+)}xmsgi;
+        my @ages  = $name_age =~ m{(\d+)}xmsg;
+        if (@names != @ages) {
+            oops "Some problem with the names and ages of the children.";
+        }
+        my @children;
+        CHILD:
+        for my $i (0 .. $#ages) {
+            if ($ages[$i] > 12) {
+                oops "$names[$i] needs to register separately.";
+            }
+            if ($ages[$i] < 5) {
+                next CHILD;
+            }
+            push @children, ucfirst $names[$i] . " $ages[$i]";
+        }
+        $stash{children_name_age} = join ', ', @children;
+    }
+}
+
+=comment
+
+reg1 takes a program id on the command line.
+it looks it up in the file 'progtable' to get the 
+various attributes of a program with that id.
+it then fills in reg1.tt2 with
+these various attributes and presents
+it to the user.
+
+if there is cookie information, it will also be used.
+
+=cut
+
+my $href = do "$progpath/progtable";
+# get the PR progtable as well
+my $pr_href = do "$progpath/pr/progtable";
+$href->{0} = $pr_href->{0};
+if ($@) {
+    print "error in progtable: $@\n";
+    exit;
+}
+if (! exists $href->{$pid}) {
+    print "Sorry, program not found.\n";
+    exit;
+}
+my $data = $href->{$pid};
+my %cookie = cookie(-name => 'user_data');
+
+#
+# has the end registration date/time passed?
+#
+my $erdt = $data->{end_reg_date_time};
+if ($erdt =~ m{\S}xms) {
+    my ($end_date, $end_time)
+        = $erdt =~ m{(\d\d/\d\d/\d\d\d\d) \s+ (\d\d:\d\d)}xms;
+    # convert to Date, Time objects
+    $end_date = date($end_date);
+    $end_time = get_time($end_time);
+    my $now = get_time();
+    if ($end_date < $today
+        ||
+        ($end_date == $today && $end_time < $now)
+    ) {
+        print "Sorry, the registrations for <b>$data->{title}</b> are now closed.\n";
+        exit;
+    }
+}
+
+#
+# have we reached the maximum number of allowed registrations
+# for this program?
+#
+my $max = $data->{max};
+if ($max) {
+    my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
+    my $db = $ref->{database};
+    my $dbh = DBI->connect("DBI:mysql:database=for_reg",
+                           $db->{user}, $db->{password},
+                           { RaiseError => 1, AutoCommit => 1 }
+              ) or die "cannot connect to for_reg database\n";
+    my $sth = $dbh->prepare(<<'EOS');
+        SELECT COUNT(*)
+          FROM prog_registrations
+         WHERE prog_id = ?
+EOS
+    $sth->execute($pid);
+    my ($n) = $sth->fetchrow_array();
+    if ($n >= $max) {
+        print "Sorry, we have reached the maximum capacity for <b>$data->{title}</b>.\n";
+        exit;
+    }
+}
+
+# TODO: complain if you try to register for a program that has already happened.
+
+for my $w (qw/
+    title dates leader_names name
+    canpol do_not_compute_costs dncc_why
+    plink deposit kayakalpa children_welcome
+    collect_total donation donation_msg
+    covid_vax confnote strangers_share
+    reg_msg discount_code
+    type
+/) {
+    $stash{$w} = $data->{$w};
+}
+$stash{tuition} = ($data->{tuition} != 0)? ', tuition,': '';
+
+if ($mountain_experience) {
+    # MEs have a difference cancellation policy
+    # from PRs.
+    $stash{canpol} = $data->{me_canpol};
+}
+for my $w (qw/  confnote reg_msg  /) {
+    if ($stash{$w} eq '<p><br mce_bogus="1"></p>') {
+        $stash{$w} = '';
+    }
+}
+for my $t (qw/
+    reg_start
+    reg_end
+    prog_start
+    prog_end
+/) {
+    $stash{$t} = get_time($data->{$t})->ampm();
+}
+$stash{pr} = $data->{title} =~ m{personal\s+retreat}i;
+my $images = do "image_links/$pid";
+if ($images->{image1} && $images->{image2}) {
+    $stash{two_pics} = 1;
+    $stash{image1} = $images->{image1};
+    $stash{image2} = $images->{image2};
+}
+elsif ($images->{image1}) {
+    $stash{one_pic} = 1;
+    $stash{image1} = $images->{image1};
+}
+else {
+    $stash{zero_pics} = 1;
+}
+$stash{basicfull} = ($data->{ndays} != $data->{fulldays});
+$stash{bdays}     = $PR_ndays || $data->{ndays};
+$stash{bdays_pl}  = $stash{bdays} == 1? '': 's';
+$stash{fdays}     = $data->{fulldays};
+if ($stash{basicfull}) {
+    # muck with the dates
+    ($stash{bdates}, $stash{fdates}) = split m{,}, $data->{dates};
+    if ($stash{fdates} =~ m{^\s*\d}) {
+        my ($month) = $stash{bdates} =~ m{([a-z]+)}i;
+        $stash{fdates} = "$month " . $stash{fdates};
+    }
+}
+
+# Gender Identity
+for my $g (qw/ female male non_binary trans no_resp /) {
+    $stash{$g} = '';
+}
+$stash{$cookie{gender}} = 'checked';
+
+if ($cookie{cabin_room} eq 'cabin') {
+    $stash{cabin} = "checked";
+    $stash{room}  = "";
+}
+else {
+    $stash{cabin} = "";
+    $stash{room}  = "checked";
+}
+# Carpooling
+$stash{carpool}        = $cookie{carpool}? 'checked': '';
+$stash{hascar}         = $cookie{hascar}? 'checked': '';
+my $fw = $cookie{from_where};
+if ($fw eq 'SJC') {
+    $stash{sjc_checked} = 'checked';
+}
+elsif ($fw eq 'SFO') {
+    $stash{sfo_checked} = 'checked';
+}
+else {
+    $stash{home_checked} = 'checked';
+}
+$stash{from_where_display} = $stash{carpool}? 'block': 'none';
+
+$stash{e_mailings}     = $cookie{e_mailings}? 'checked': '';
+$stash{snail_mailings} = $cookie{snail_mailings}? 'checked': '';
+$stash{share_mailings} = $cookie{share_mailings}? 'checked': '';
+$stash{withwhom_first} = $cookie{withwhom_first} || "";
+$stash{withwhom_last}  = $cookie{withwhom_last}  || "";
+for my $w (qw/
+    fname lname aname street1 street2
+    city state zip country
+    cell
+    email1
+    car_license
+    pronouns
+    diet
+/) {
+    $stash{$w} = $cookie{$w} || "";
+}
+$stash{email2} = $cookie{email1} || "";
+
+$stash{mft} = $data->{footnotes} =~ m{[*][*]};
+$stash{ceu} = $data->{footnotes} =~ m{[*]};
+$stash{ceu_license} = $cookie{ceu_license};
+$stash{car_license} = $cookie{car_license};
+
+# housing
+#
+my @housekeys = grep { /^basic / } keys %$data;
+
+if (exists $data->{next_hc} && $data->{next_hc}) {
+    $stash{next_hc} = $data->{next_hc};
+    $stash{through_date} = date($data->{next_date})->prev->format("%b %e");
+    $stash{next_date} = date($data->{next_date})->format("%b %e");
+}
+$stash{housing_not_needed} = $mountain_experience? 1
+                            :                      $data->{housing_not_needed};
+my $housing_fees = "";
+HOUSING_TYPE:
+for my $k (sort { $data->{$b} <=> $data->{$a} } @housekeys) {
+    if ($data->{$k} == 0) {
+        # not available
+        next HOUSING_TYPE;
+    }
+    if ($pid == 0 && $k =~ m{commuting}xms) {
+        # per Savita 6/15/22
+        next HOUSING_TYPE;
+    }
+    if ($only_outdoors && $k =~ m{single|dble}xms) {
+        next HOUSING_TYPE;
+    }
+    if ($stash{pr} && $k =~ m{center}xms && $no_center_tents) {
+        next HOUSING_TYPE;
+    }
+    my $nk = $k;
+    $nk =~ s{basic }{};
+    my $full = $k;
+    $full =~ s{basic}{full};
+    my $next = $k;
+    $next =~ s{basic}{next};
+    my $select1 = $cookie{house1} eq $nk? 'checked': '';
+    my $select2 = $cookie{house2} eq $nk? 'checked': '';
+    $housing_fees .= <<"EOH";
+<tr>
+
+<td style="text-align: center">
+<input type=radio name=house1 value='$nk' $select1>
+</td>
+
+<td style="text-align: center">
+<input type=radio name=house2 value='$nk' $select2>
+</td>
+
+<td>$housing_name{$nk}</td>
+EOH
+    if (! $stash{do_not_compute_costs}) {
+        $housing_fees .= "<td align=right width=50>\$$data->{$k}</td>\n";
+        if ($stash{basicfull}) {
+            $housing_fees .= "<td align=right width=70>\$$data->{$full}</td>\n";
+        }
+        elsif ($data->{next_hc}) {
+            $housing_fees .= "<td align=right width=70>\$$data->{$next}</td>\n";
+        }
+    }
+    $housing_fees .= "</tr>\n";
+}
+$stash{housing_fees} = $housing_fees;
+
+# donation
+my $donation_input;
+if ((my $s = $data->{donation_tiers}) =~ m{\S}xms) {
+    my $other = index(lc $s, 'other') >= 0;
+    my @nums = $s =~ m{(\d+)}xmsg;
+    my ($default) = $s =~ m{(\d+)\s*[*]}xms;
+    for my $n (@nums) {
+        my $checked = $n == $default? 'checked': '';
+        $donation_input .= <<"EOH";
+<li>
+<input type=radio name=donation_tier id=donation_$n value=$n $checked>
+<label for="donation_$n"> \$$n</label>
+</li>
+EOH
+    }
+    if ($other) {
+        $donation_input .= <<'EOH';
+<li>
+<input type=radio
+       name=donation_tier
+       id=donation_other
+       value=other
+       onclick="document.getElementById('donation_tier_other_amount').focus();"
+>
+<label for="donation_other"> Other: &nbsp;&nbsp;
+<input type=text
+       name=donation_tier_other_amount
+       id=donation_tier_other_amount
+       style="width: 1in"
+       onfocus="document.getElementById('donation_other').checked = true;"
+>
+</label>
+</li>
+EOH
+    }
+    $donation_input = "<fieldset><ol>$donation_input</ol></fieldset>";
+}
+elsif ($data->{donation}) {
+    $donation_input = <<"EOH";
+<div style="margin-top: .4in">
+<input type=text name=donation id=donation class="input"> 
+<label for="donation">Donation Amount</label>
+</div>
+EOH
+}
+$stash{donation_input} = $donation_input;
+
+my $tt = Template->new(INTERPOLATE => 1);
+$tt->process(
+    'reg1.tt2',
+    \%stash,
+) or die $tt->error();

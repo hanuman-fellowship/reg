@@ -6,7 +6,6 @@ use Util qw/
     email_letter
     db_init
     model
-    get_grid_file
     commify
 /;
 use Date::Simple qw/
@@ -166,26 +165,18 @@ for my $rent (@rentals) {
     my $sdate = $rent->sdate_obj;
     my $edate = $rent->edate_obj;
     $RENT_days += $edate - $sdate;
-    my $fgrid = get_grid_file($rent->grid_code());
     my $error = "";
     my $tot_paid = 0;
     my $n_people = 0;
     my $n_people_days = 0;
-    if (open my $in, "<", $fgrid) {
-        while (my $line = <$in>) {
-            my @fields = split /\|/, $line;
-            my $name_note = $fields[2];
-            $name_note =~ s{\s+~~.*}{}xms;
-            if ($name_note =~ m{\S}xms) {
-                ++$n_people;
-                $tot_paid += pop @fields;
-                shift @fields;  # house id
-                shift @fields;  # bed
-                shift @fields;  # name/note
-                for my $f (@fields) {
-                    $n_people_days += $f;   # either 0 or 1
-                }
-            }
+    for my $g (model($c, 'Grid')->search({
+                   rental_id => rent->id,
+               })
+    ) {
+        ++$n_people;
+        $tot_paid += $g->cost;
+        for my $n ($g->occupancy =~ m{(\d+)}xmsg) {
+            $n_people_days += $n;   # either 0 or 1
         }
     }
     $RENT_paid += $tot_paid;

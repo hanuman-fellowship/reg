@@ -13,10 +13,12 @@ search EC2
 search S3
 search SES
     Oregon region
+-------
 
 CPAN Net::Stripe
 test mode
 web hooks
+-------
 
 Yasodhara - RG, Reg?
 People to help:
@@ -86,23 +88,52 @@ keep checking new grid activity
     and call script/impgrid.pl with the code as parameter
         that script on akash/script is temporary
             no need to put in git
+
 In Rental.pm
-grid_emails2
-grid2
-badges2
-    it calls get_badge_data_from_rental2 in lib/Badge.pm
+grid_emails
+grid
+badges
 redirect on mountmadonna.org to akash
 update grid url in arrangements (new and old plus preface)
-String grid_url gets put in the above
+String grid_url gets put in the above - ok
 grab_new - sub check_grid
     can remove it
 Web Grid, Web Grid no email links in view.tt2
 rental/view.tt2 - grid_url from String
-no need for 'Send to Web'
 ensure grid_ne is link not separate file
-TODO: functionality from check_grid from grab_new put into cgi-bin/grid
-    including adding activity message
 grid.tt2 - akash not akash2
-grid_stale in Rental db is now obsolete
-    remove references in db/Rental.pm and C/Rental.pm
-    and trent/view.tt2
+get_grid_file - gone
+
+ftp_* strings can be obsoleted at some point
+    called in script/finance_summary - a Listing > Finance
+    called in script/packet48 - not in reg_cron any more
+    in Rental.pm - delete booking, cancel cluster
+        they check if room is occupied
+mass_delete - okay
+
+TO PUT IN PLACE:
+    remove the grid backup from reg_cron
+        and apply it
+    check grid updates and do sc/impgrid.pl ...
+    search for akash2 with sc/gr
+    git commit all
+    git pull on akash
+    restart akash
+    String for grid_url - www => akash
+    redirect script on mmc.org
+        grid => grid.old
+        grid2 => grid
+        git both add to repo
+        git push, web
+    notify future rental coordinators?
+        cc Savita, Lara
+        only Somatic, Fragrance?
+        or all 8 with arrangements sent?
+        arrangement_sent and new_contracts have the url.
+            not old contracts (3 of the 8) 
+        contract received not entered... only 3 of future
+            deposit received does not imply contract received
+            several still tenative?
+
+https://dev-mountmadonna.pantheonsite.io/events/new-years-retreat/
+foodporn.com

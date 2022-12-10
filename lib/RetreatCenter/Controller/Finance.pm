@@ -19,7 +19,6 @@ use Util qw/
     no_comma
     get_string
     put_string
-    get_grid_file
 /;
 use Date::Simple qw/
     date

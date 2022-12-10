@@ -1,0 +1,568 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Template;
+use CGI qw/:standard/;
+use CGI::Carp qw/fatalsToBrowser/;
+print header;
+use lib '.';
+use Date::Simple qw/
+    date
+/;
+Date::Simple->default_format("%B %e '%q");
+use File::Copy;
+
+my $grid_cgi = $0;
+$grid_cgi =~ s{.*/}{}xms;
+
+my $email_check = $grid_cgi eq 'grid';
+
+sub commify {
+    my ($n) = @_;
+    $n = reverse $n;
+    $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+    return scalar reverse $n;
+}
+
+sub trim {
+    my ($s) = @_;
+    $s =~ s{\A \s* | \s* \z}{}xmsg;
+    return $s;
+}
+
+my $dir = '/home/reg/for_reg/rental';
+
+my $code = param('code');
+my $fname = "$dir/$code.txt";
+my $dname = "$dir/$code-data.txt";
+if (! -f $fname) {
+    print "Sorry, Could not find a rental for the code $code.";
+    # send an alert to the authorities!
+    exit;
+}
+my (%hash, @houses, @htypes, %fixed_cost_for_house);
+open my $in, "<", $fname
+    or die "cannot open $fname: $!";
+while (my $line = <$in>) {
+    chomp $line;
+    $line =~ s{\s*\z}{}xms;     # DOS line ending?
+    if (my ($fch) = $line =~ m{ \A fch_encoded \s* (.*) \z }xms) {
+        #
+        # sorry, a quick hack for fixed cost houses
+        #
+        for my $line (split /\|/, $fch) {
+            my ($cost, @house_ids) = split ' ', $line;
+            for my $hid (@house_ids) {
+                $fixed_cost_for_house{$hid} = $cost;
+            }
+        }
+    }
+    elsif ($line =~ m{ \A fixed_cost_houses \s* (.*) \z }xms) {
+        $hash{fixed_cost_houses} = $1;
+    }
+    elsif ($line =~ m{\|}) {
+        # housing that has been assigned
+        #
+        my ($id, $name, $max, $bath, $tent, $own, $cottage)
+            = split m{\|}, $line;
+        push @houses, {
+            id    => $id,
+            name  => $name,
+            max   => $max,
+            bath  => $bath,
+            tent  => $tent, own   => $own,
+            cottage => $cottage,
+            class => ($fixed_cost_for_house{$id}? 'fixed': 'normal'),
+        };
+    }
+    else {
+        # two types of other lines:
+        #
+        # 1) 'housetype cost description'
+        #
+        # 2) 'key value'
+        #   key is name, id, first, last, sdate, edate
+        #
+        if (my ($htype, $cost, $desc)
+            = $line =~ m{\A (\S+) \s+ (\d+) \s+ (\S.*) \z}xms
+        ) {
+            push @htypes, {             # for the cost table
+                name => $htype,
+                cost => $cost,
+                desc => $desc,
+            };
+            $hash{$htype} = $cost;      # for lookup
+        }
+        else {
+            my ($k, $v) = $line =~ m{^(\S+)\s+(.*)$};
+            $hash{$k} = $v;
+        }
+    }
+}
+close $in;
+@htypes = sort { $a->{cost} <=> $b->{cost} } @htypes;
+
+#
+# pay attention... this is bizarre and tricky.
+#
+# Own Van and Commuting is not kept track of in $fname
+# since the maximum # of beds is dynamic - and it is controlled by the user
+# not Reg which writes $fname.   If the user has changed
+# the maximum # of beds they will appear in $dname.
+# So look there (if it exists) for the max and append to @houses.
+#
+my %max = ();
+$max{1001} = 5;
+$max{1002} = 5;
+if (-f $dname) {
+    open my $in, "<", $dname
+        or die "cannot open $dname: $!\n";
+    while (my $line = <$in>) {
+        if ($line =~ m{^(100[12])\|(\d+)}) {
+            $max{$1} = $2;
+        }
+    }
+    close $in;
+}
+for my $k (1001, 1002) {
+    push @houses,
+    {
+        id   => $k,
+        name => $k == 1001? 'Own Van'
+                :           'Commuting',
+        max  => $max{$k},
+        bath => 0,
+        tent => 0,
+        own  => 0,
+    };
+}
+my $sdate = date($hash{sdate});
+my $edate = date($hash{edate});
+my $nnights = ($edate - $sdate) || 1;
+    # || 1 for one day rentals where everyone is commuting
+my @days;
+my $days = join '',
+           map { "<th align=center>" . ($sdate + $_)->format("%s") . "</th>" }
+           0 .. $nnights-1;
+if (param('by_name')) {
+    # 12|1|Janet Smith ~~ single|1|1|1|1|1|1|984
+    # 12|2| ~~ |0|0|0|0|0|0|0
+    my %house_name_for;
+    for my $href (@houses) {
+        $house_name_for{$href->{id}} = $href->{name};
+    }
+    my @people;
+    my $gtotal = 0;
+    open my $in, "<", $dname
+        or die "cannot open $dname: $!";
+    LINE:
+    while (my $line = <$in>) {
+        my ($id, $bed, $name_note, @days) = split m{[|]}xms, $line;
+        my $cost = pop @days;
+        if (! int($cost)) {
+            next LINE;
+        }
+        my ($name, $note) = split m{\s* ~~ \s* }xms, $name_note;
+        # check for late arrivals and early departures
+        # we won't worry about missing days in the middle.
+        my $ds = $sdate;
+        my $de = $edate;
+        my $i = 0;
+        while ($days[$i] == 0) {
+            ++$i;
+        }
+        $ds += $i;
+        my $j = -1;
+        while ($days[$j] == 0) {
+            --$j;
+        }
+        $de += $j+1;
+        my $dates = ($i != 0 || $j != -1)? $ds->day . '-' . $de->day: '';
+        push @people, {
+            name => $name,
+            house => $house_name_for{$id},
+            cost => $cost,
+            dates => $dates,
+            note => $note,
+        };
+        $gtotal += $cost;
+    }
+    close $in;
+    @people = sort {
+                  lc $a->{name} cmp lc $b->{name}
+              }
+              @people;
+    my $stash = {
+        sdate   => $sdate,
+        edate   => $edate,
+        people  => \@people,
+        hash    => \%hash,
+        houses  => \@houses,
+        nnights => $nnights,
+        days    => $days,
+        total   => commify($gtotal),
+        code    => $code,
+        htypes  => \@htypes,
+        action  => $grid_cgi,
+    };
+    my $html;
+    my $tt = Template->new({
+        INTERPOLATE => 1,
+        EVAL_PERL    => 0,
+    });
+    $tt->process(
+        "ngrid.tt2",  # template
+        $stash,       # variables
+        \$html,       # output
+    ) or die $tt->error;
+    print $html;
+    exit;
+}
+if (param('process')) {
+    # get the input data
+    #
+    my %P;
+    for my $p (param()) {
+        $P{$p} = param($p);
+    }
+    # put it in a file while computing the costs
+    #
+    open my $out, ">", $dname
+        or die "cannot create $dname: $!";
+    my @need_email;
+    my ($cot1, $cot3) = (0, 0);
+    my $cot3_name;
+    my $gtotal = 0;
+    HOUSE:
+    for my $h (@houses) {
+        my $id = $h->{id};
+        if ($id >= 1001) {      # own van/commuting
+            my $per_night = $hash{$id == 1001? "own_van": "commuting"};
+            my $bed = 1;
+            BED:
+            while (exists $P{"p$id\_$bed"}) {
+                print {$out} "$id|$bed|";
+                my $name = trim($P{"p$id\_$bed"} || "");
+                my $notes = trim($P{"x$id\_$bed"} || "");
+                my $no_email;
+                if ($email_check
+                    &&
+                    ! ($notes =~ m{no \s+ email}xmsi
+                       ||
+                       $notes =~ m{[\w_.-]+[@][\w+.]+}xms
+                )) {
+                    # what to do?
+                    # $name has no email address (or 'no email')
+                    $no_email = 1;
+                }
+                print {$out} "$name ~~ $notes|";
+                # how many people?
+                my @peeps = split m{\&|\band\b}i, $name;
+                my $npeeps = @peeps;
+                my $totn = 0;
+                for my $n (1 .. $nnights) {
+                    my $occ = $P{"n$id\_$bed\_$n"} || 0;
+                    print {$out} "$occ|";
+                    $totn += $occ;
+                }
+                my $cost = $totn * $per_night * $npeeps;
+
+                # very special handling of a housing cost of type Total
+                #
+                if ($npeeps && $hash{housecost_type} eq 'Total') {
+                    $cost = $hash{single};
+                }
+
+                print {$out} "$cost\n";
+                $P{"c$id\_$bed"} = $cost || "";
+                $gtotal += $cost;
+                if ($cost && $no_email) {
+                    push @need_email,
+                         ($id == 1001? 'Own Van': 'Commuting') . " - $name";
+                }
+                ++$bed;
+            }
+            --$bed;     # we went one beyond
+            #
+            # we have $bed 'beds' in this category
+            # this may be different from what is in $fname
+            # in case the user added 'more'.   so we need
+            # to update $fname appropriately. - actually, no.
+            #
+            if ($bed > $h->{max}) {
+                # is this even needed??? do we actually
+                # alter the file?  the -data file, yes,
+                # but not the other (what's it called?).
+                # it's called fname.  the dname is where
+                # the number of own tent/van is kept not in fname.
+                # come back here and study it more carefully.
+                # and then delete it.
+                open my $in, "<", $fname
+                    or die "cannot open $fname: $!\n";
+                open my $out, ">", "/tmp/grid"
+                    or die "cannot open /tmp/grid: $!\n";
+                while (my $line = <$in>) {
+                    if ($line =~ m{^$id\|}) {
+                        # this will not happen - 1001, 1002 will
+                        # not match!
+                        $line =~ s{^($id\|[^\|]*)\|\d+}{$1|$bed};
+                    }
+                    print {$out} $line;
+                }
+                close $in;
+                close $out;
+                rename "/tmp/grid", $fname;
+                chmod 0666, $fname;
+                $h->{max} = $bed;       # don't forget this!
+            }
+            next HOUSE;
+        }
+        my $bath = ($h->{bath})? "_bath"
+                  :              ""
+                  ;
+        for my $bed (1 .. $h->{max}) {
+            my $override_np = 0;
+            if ($P{"p$id\_$bed"} =~ m{-\s*([12347])\s*$}) {
+                $override_np = $1;
+            }
+            print {$out} "$id|$bed|";
+            my $name = trim($P{"p$id\_$bed"} || "");
+            my $notes = trim($P{"x$id\_$bed"} || "");
+            my $no_email;
+            if ($email_check
+                &&
+                ! ($notes =~ m{no \s+ email}xmsi
+                   ||
+                   $notes =~ m{[\w_.-]+[@][\w+.]+}xms
+            )) {
+                # what to do?
+                # $name has no email address (or 'no email')
+                $no_email = 1;
+            }
+            print {$out} "$name ~~ $notes|";
+            my $cost = 0;
+            NIGHT:
+            for my $n (1 .. $nnights) {
+                my $occ = $P{"n$id\_$bed\_$n"} || 0;
+                print {$out} "$occ|";
+                if ($occ) {
+                    # quick hack for fixed cost house
+                    #
+                    if ($fixed_cost_for_house{$id}) {
+                        $cost += $fixed_cost_for_house{$id};
+                        next NIGHT;
+                    }
+                    if ($h->{tent}) {
+                        $cost += ($h->{own})? $hash{own_tent}
+                                :             $hash{center_tent}
+                                ;
+                        next NIGHT;
+                    }
+                    # how many people in this room this night?
+                    #
+                    my $np = 0;
+                    for my $b (1 .. $h->{max}) {
+                        if ($P{"n$id\_$b\_$n"}) {
+                            ++$np;
+                        }
+                    }
+                    if ($override_np) {
+                        $np = $override_np;
+                    }
+                    if (my $cot = $h->{cottage}) {
+                        if ($cot == 1) {
+                            $cot1 = 1;
+                            $cost += ($np == 1)? $hash{single_cottage1}
+                                    :            $hash{dble_cottage1};
+                        }
+                        elsif ($cot == 2) {
+                            $cost += ($np == 1)? $hash{single_cottage2}
+                                    :            $hash{dble_cottage2};
+                        }
+                        elsif ($cot == 3) {
+                            $cot3 = 1;
+                            $cot3_name = $name;
+                            $cost += $hash{whole_cottage};
+                        }
+                        else {
+                            # ???
+                        }
+                    }
+                    else {
+                        $cost += ($np == 1            )? $hash{"single$bath"}
+                                :($np == 2            )? $hash{"dble$bath"}
+                                :($np == 3            )? $hash{triple}
+                                :(4 <= $np && $np <= 7)? $hash{dormitory}
+                                :                        $hash{economy}
+                                ;
+                    }
+                }
+            }
+            #
+            # handle more than one person in a tent
+            # and children.
+            #
+            my $tot = 0;
+            for my $p (split m{\&|\band\b}i, $name) {
+                $tot += ($p =~ m{\bchild\b}i)? $cost/2
+                        :                      $cost
+                        ;
+            }
+            # the word child was put in the notes field instead
+            # AND there's only one person in the name field.
+            if ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i) {
+                $tot = $tot/2;
+            }
+            $cost = $tot;       # not int()
+            if ($cost && $no_email) {
+                push @need_email, $h->{name} . " - $name";
+            }
+
+            # very special handling of a housing cost of type Total
+            #
+            if ($cost && $hash{housecost_type} eq 'Total') {
+                $cost = $hash{single};
+            }
+
+            print {$out} "$cost\n";
+
+            $gtotal += $cost;
+            if ($name !~ m{\S} && ! $cost) {
+                $cost = "";
+            }
+            $P{"c$id\_$bed"} = $cost;
+            if (($cost == 0 && $name)
+                || $override_np
+                || $name =~ m{\&|\band\b}i
+                || $name =~ m{\b/\b}
+                || $name =~ m{\bchild\b}i
+                || $notes =~ m{\bchild\b}i
+            ) {
+                # it will be shown in RED as a special case
+                # worthy of attention
+                $P{"cl$id\_$bed"} = 1;
+            }
+            else {
+                $P{"cl$id\_$bed"} = 0;
+            }
+        }
+    }
+    close $out;
+    if ($cot1 && $cot3) {
+        my $html = "";
+        my $tt = Template->new({
+            INTERPOLATE => 1,
+            EVAL_PERL   => 0,
+        });
+        $tt->process(
+            "ram_conflict.tt2",  # template
+            {
+                name => $cot3_name,
+            },
+            \$html,       # output
+        ) or die $tt->error;
+        print $html;
+        exit;
+                            $cot1 = 1;
+    }
+    if (@need_email) {
+        my $html = "";
+        my $tt = Template->new({
+            INTERPOLATE => 1,
+            EVAL_PERL    => 0,
+        });
+        my $stash = {
+            need_email => \@need_email,
+        };
+        $tt->process(
+            "need_email.tt2",  # template
+            $stash,       # variables
+            \$html,       # output
+        ) or die $tt->error;
+        print $html;
+        exit;
+    }
+    #
+    # copy to the dir in which grab_new looks for changed data files
+    #
+    copy($dname, "$dir/ftp_dir/$code-data.txt");
+
+    # display it with costs
+    #
+    my $html = "";
+    my $tt = Template->new({
+        INTERPOLATE => 1,
+        EVAL_PERL    => 0,
+    });
+    my $stash = {
+        sdate   => $sdate,
+        edate   => $edate,
+        data    => \%P,
+        hash    => \%hash,
+        houses  => \@houses,
+        nnights => $nnights,
+        days    => $days,
+        total   => commify($gtotal),
+        code    => $code,
+        htypes  => \@htypes,
+        action  => $grid_cgi,
+    };
+    $tt->process(
+        "sgrid.tt2",  # template
+        $stash,       # variables
+        \$html,       # output
+    ) or die $tt->error;
+    print $html;
+    exit;
+}
+
+#
+# present input form populated with the data file, if present
+#
+my %data = ();
+if (open my $in, "<", $dname) {
+    LINE:
+    while (my $line = <$in>) {
+        chomp $line;
+        if ($line =~ m{^(own_van|commuting)\|(\d+)}) {
+            $data{$1} = $2;
+            next LINE;
+        }
+        my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
+        my $name = $name_notes;
+        my $notes = "";
+        if ($name =~ m{~~}xms) {
+            ($name, $notes) = split m{\s* ~~ \s*}xms, $name_notes;
+        }
+        $data{"p$id\_$bed"} = $name;
+        $data{"x$id\_$bed"} = $notes;
+        for my $n (1 .. $nnights) {
+            $data{"n$id\_$bed\_$n"} = $nights[$n-1];
+        }
+    }
+    close $in;
+}
+my $html = "";
+my $tt = Template->new({
+    INTERPOLATE => 1,
+    EVAL_PERL    => 0,
+});
+my $stash = {
+    code    => $code,
+    sdate   => $sdate,
+    edate   => $edate,
+    data    => \%data,
+    hash    => \%hash,
+    houses  => \@houses,
+    nnights => $nnights,
+    days    => $days,
+    htypes  => \@htypes,
+    action  => $grid_cgi,
+};
+$tt->process(
+    "grid.tt2",   # template
+    $stash,       # variables
+    \$html,       # output
+) or die $tt->error;
+print $html;

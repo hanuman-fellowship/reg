@@ -23,8 +23,6 @@ it is a temple donation and requires special handling.
 Create a Payment record for the person to the 'Temple' Extra Account.
 Send a proper thank you letter???
 
-2) Get recently modified rental grid files into /var/Reg/grid.
-
 3) Get mailing list requests (from MMC and MMI) into 
 /var/Reg/mlist_done/$yyyy_mm and insert them into the people table.
 In one email (to each office) let them know
@@ -118,7 +116,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
                     # brochures for MMI/MMC.
 
 # directories
-my ($online, $grid, $temple, $mlist_done, $meal_requests_done,
+my ($online, $temple, $mlist_done, $meal_requests_done,
     $gift_cards_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
     $rental_invoice_dir,
@@ -219,7 +217,6 @@ sub initialize {
 
     my $dir = "/var/Reg";
     $online          = make_dir("$dir/online");
-    $grid            = make_dir("$dir/grid");
     $temple          = make_dir("$dir/temple_done/$year_mon_dir");
     $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
     $meal_requests_done = make_dir("$dir/meal_requests_done/$year_mon_dir");
@@ -238,9 +235,6 @@ sub finalities {
     unlink $run_file;
     # at what point do the req_mmi_payments/req_mmc_payments expire???
     # a cron job on the remote site to clear them after n days?
-    # also a cron job to clear the grid files after
-    # the rental is over - two week delays?
-    # ask/confirm with Rachel and Barnaby
 }
 
 sub ftp_connect {
@@ -330,71 +324,6 @@ sub check_transaction {
       . "$href->{first} $href->{last}</a>"
       . " for <a href='/program/view/$href->{pid}'>$href->{title}</a>"
       ;
-}
-
-sub check_grid {
-    my ($get_dir, $f) = @_;
-    my ($code) = $f =~ m{\A(.*)-}xms;
-    my ($rental) = model($c, 'Rental')->search({
-                       grid_code => $code,
-                   });
-    # look carefully at the file and update 3 columns in the Rental
-    my $in;
-    if (! open($in, "<", "$get_dir/$f")) {
-        msg "could not open grid file $get_dir/$f\n";
-        return;
-    }
-    #
-    # we take care of the final day below
-    # the web grid does not have a # for that last day
-    #
-    my $ndays = $rental->edate_obj() - $rental->sdate_obj();
-    my @counts = (0) x $ndays;
-    my $tot_cost = 0;
-    LINE:
-    while (my $line = <$in>) {
-        chomp $line;
-        if ($line =~ s{([\d.]*)$}{}) {
-            my $cost = $1;
-            if (! $cost) {
-                next LINE;
-            }
-            $tot_cost += $cost;
-        }
-        my $name = "";
-        # chop off the house id, the bed # and the name(s)
-        if ($line =~ s{^\d+\|\d+\|([^|]*)\|}{}) {
-            $name = $1;
-        }
-        my @peeps = split m{\&|\band\b}i, $name;
-        my $np = @peeps;
-        my @nights = split m{\|}, $line;
-        for my $i (0 .. $#counts) {
-            $counts[$i] += $np * $nights[$i];
-        }
-    }
-    close $in;
-    #
-    # on the last day
-    # the people who slept the night before will have breakfast
-    # and maybe lunch.
-    #
-    push @counts, $counts[-1];
-    my $max = 0;
-    for my $c (@counts) {
-        if ($max < $c) {
-            $max = $c;
-        }
-    }
-    $rental->update({
-        counts         => (join ' ', @counts),
-        grid_max       => $max,
-        housing_charge => $tot_cost,
-    });
-    $rental->compute_balance();
-    my $rname = $rental->name;
-    my $rid = $rental->id;
-    msg "grid <a href='/rental/view/$rid'>$rname</a>";
 }
 
 sub temple_donation {
@@ -1240,10 +1169,6 @@ sub main {
     # MMC Transactions
     get_files($ftp, $string{ftp_transactions},
               $online, \&check_transaction, 'MMC');
-
-    # Rental Grids
-    get_files($ftp, $string{ftp_rental_dir},
-              $grid, \&check_grid);
 
     # MList Requests
     get_files($ftp, $string{ftp_mlist_requests},

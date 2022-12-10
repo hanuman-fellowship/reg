@@ -26,6 +26,9 @@ Parenthesized name is the nickname - for badge.
 Like this:
     Jonathan Gruber (Jonny)
 
+Amy Smith
+Smith, Amy
+
 Only one person in a double room - charged for single
     w or w/o bath
 diff cost for the above in Ram 1 rooms
@@ -78,6 +81,7 @@ TODO:
     what else??
     after grid runs
         update counts, grid_max, and housing_charge
+        and balance (after refreshing)
             in the Rental
 
 =cut

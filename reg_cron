@@ -42,8 +42,8 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 # at 2:00 am ensure the only_temple boolean of the people table is correct
 0 2 * * * $REG/only_temple
 
-# at 11:40 pm back up all the rental grid data (and images and activity files)
-# and send it all offsite
+# at 11:40 pm back up all the rental images
+# and send it offsite
 40 23 * * * $REG/grid_backup
 
 # at noon and 6:00 pm republish the public version of the calendar

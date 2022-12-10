@@ -5,7 +5,6 @@ package Badge;
 use Util qw/
     empty
     model
-    get_grid_file
     normalize
     kid_badge_names
 /;
@@ -55,7 +54,12 @@ sub add_group {
     for my $d_href (@$data_aref) {
         # mess with the name
         my $name = $d_href->{name};
-        if (index($name, ' ') != -1) {
+        if ($name =~ m{,}xms) {
+            my ($last, $first) = split m{\s*,\s*}xms, $name;
+            $d_href->{first} = $first;
+            $d_href->{last}  = $last;
+        }
+        elsif (index($name, ' ') != -1) {
             my ($first, $last) = $name =~ m{\A (\S+) \s+ (.*) \z}xms;
             $d_href->{first} = $first;
             $d_href->{last} = $last;
@@ -187,7 +191,7 @@ sub get_badge_data_from_program {
     return ($mess, $title, $code, \@data);
 }
 
-sub get_badge_data_from_rental2 {
+sub get_badge_data_from_rental {
     my ($class, $c, $rental) = @_;
     my ($mess, $title, $code) = $class->get_title_code($rental);
     if ($mess) {
@@ -256,92 +260,6 @@ sub get_badge_data_from_rental2 {
     }
 
     # could use Schwartzian transform below
-    @data = sort {
-                lc $a->{name} cmp lc $b->{name}
-            }
-            @data;
-    return ($mess, $title, $code, \@data);
-}
-
-sub get_badge_data_from_rental {
-    my ($class, $c, $rental) = @_;
-        # $c is unused here - but we include it
-        # to keep symmetry with the above sub for programs...
-    my ($mess, $title, $code) = $class->get_title_code($rental);
-    if ($mess) {
-        # cannot proceed
-        return $mess;
-    }
-    my $d = $rental->sdate_obj();
-    my $ed = $rental->edate_obj();
-
-    # get the most recent edit from the global web
-    #
-    my $fgrid = get_grid_file($rental->grid_code());
-
-    my $in;
-    if (! open $in, "<", $fgrid) {
-        my $name = $rental->name();
-        $mess = "$name - Cannot get the current local grid!";
-        # cannot proceed
-        return $mess;
-    }
-    my @data;
-    LINE:
-    while (my $line = <$in>) {
-        chomp $line;
-        my ($id, $bed, $name, @nights) = split m{\|}, $line;
-        my $cost = pop @nights;
-        if (!$cost) {
-            # no one is in that room
-            next LINE;
-        }
-        my $room = ($id == 1001)? 'Own Van'
-                  :($id == 1002)? 'Commuting'
-                  :               $house_name_of{$id}
-                  ;
-
-        # trim any extra info after the delimiter ~~
-        $name =~ s{ ~~ .* }{}xms;
-
-        # for 'child', '&', and 'and', see below
-
-        # what nights?
-        my $this_d = $d;
-        my $this_ed = $ed;
-        while ($nights[0] == 0) {
-            shift @nights;
-            ++$this_d;
-        }
-        while ($nights[-1] == 0) {
-            pop @nights;
-            --$this_ed;
-        }
-        my $dates = $this_d->format("%b %e")
-                  . ' - '
-                  . $this_ed->format("%b %e")
-                  ;
-        my @names = split m{ \s*
-                             (?: [&] | \band\b | [/])    # and /
-                             \s*
-                           }xmsi, $name;
-        for my $n (@names) {
-            $n =~ s{ \b child \s* \z}{}xmsi;
-            if ($n =~ m{ [(] (.*) [)] }xms) {
-                # a parenthesized name is the nickname
-                # they want to be called by - perhaps
-                # an adopted Sanskrit name or a shortened name
-                # they prefer over their formal legal name.
-                $n = $1;
-            }
-            push @data, {
-                name  => normalize($n),
-                dates => $dates,
-                room  => $room,
-            };
-        }
-    }
-    close $in;
     @data = sort {
                 lc $a->{name} cmp lc $b->{name}
             }

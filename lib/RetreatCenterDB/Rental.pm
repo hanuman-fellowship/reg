@@ -10,7 +10,6 @@ use Util qw/
     tt_today
     places
     gptrim
-    get_grid_file
     commify
     d3_to_hex
     housing_types
@@ -254,13 +253,8 @@ sub rental_type {
         if ($self->program_id) {
             $type = 'Hybrid';
         }
-        else {
-            if ($self->grid_stale eq 'yes') {
-                $type = "<span style='color: red'>S</span>";
-            }
-            if ($self->linked) {
-                $type .= "<span style='color: green'>w</span>";
-            }
+        elsif ($self->linked) {
+            $type .= "<span style='color: green'>w</span>";
         }
     }
     return $type;
@@ -491,93 +485,6 @@ sub balance_disp {
     return $cbal;
 }
 
-sub send_grid_data {
-    my ($rental) = @_;
-    
-    my $code = $rental->grid_code() . ".txt";
-    open my $gd, ">", "/tmp/$code"
-        or die "cannot create /tmp/$code: $!\n";
-    print {$gd} "name " . $rental->name() . "\n";
-    print {$gd} "id " . $rental->id() . "\n";
-    # if no coordinator choose the contract signer
-    my $coord = $rental->coordinator() || $rental->contract_signer();
-    if ($coord) {
-        print {$gd} "first " . $coord->first() . "\n";
-        print {$gd} "last " . $coord->last() . "\n";
-    }
-    else {
-        print {$gd} "first \n";     # just leave them blank
-        print {$gd} "last \n";
-    }
-    print {$gd} "sdate " . $rental->sdate() . "\n";
-    print {$gd} "edate " . $rental->edate() . "\n";
-    my $sd = substr($rental->sdate(), 4, 4);        # MMDD
-    my $winter = ! (   $string{center_tent_start} <= $sd
-                    && $sd                        <= $string{center_tent_end});
-    my $hc = $rental->housecost();
-    print {$gd} "housecost_type " . $hc->type() . "\n";
-    HTYPE:
-    for my $t (housing_types(1)) {
-        if ($winter && $t eq 'center_tent') {
-            next HTYPE;
-            # see comment below about center_tent sites
-            # being used during the winter.
-        }
-        print {$gd} "$t " . $hc->$t() . " $string{$t}\n";
-    }
-    # quick hack for fixed cost houses
-    #
-    print {$gd} "fixed_cost_houses ", $rental->fixed_cost_houses(), "\n";
-    print {$gd} "fch_encoded ", $rental->fch_encoded(), "\n";
-
-    for my $b ($rental->rental_bookings()) {
-        my $house = $b->house;
-        print {$gd}
-                    $house->id()
-            . "|" . $house->name_disp()
-            . "|" . $house->max()
-            . "|" . ($house->bath()    eq 'yes'? 1: 0)
-            . "|" . ($house->tent()    eq 'yes'? 1: 0)
-            . "|" . ((!$winter && $house->center()  eq 'yes')? 0: 1)
-            . "|" . $house->cottage()
-            . "\n"
-            ;
-            # the trickyness with $winter and center tents
-            # was needed because of this:
-            # for a BIG rental in April we may want to use
-            # tent sites that are normally reserved for own tents.
-            # we permit this - and, when sending the grid to
-            # www.mountmadonna.org we morph center tent sites to own tent sites.
-            # clear?
-            #
-    }
-    close $gd;
-    return if -f '/tmp/Reg_Dev';
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->cwd($string{ftp_grid_dir}) or die "cwd";
-    $ftp->ascii() or die "ascii";
-    $ftp->put("/tmp/$code", $code) or die "put";
-    $ftp->quit();
-    unlink "/tmp/$code";
-    $rental->update({
-        grid_stale => '',
-    });
-}
-
-sub set_grid_stale {
-    my ($rental) = @_;
-    $rental->update({
-        grid_stale => 'yes',
-    });
-}
-
 sub send_rental_deposit {
     my ($rental) = @_;
     my $code = $rental->grid_code();
@@ -666,7 +573,6 @@ sub image_url {
 }
 
 #
-# make sure the local grid is current???
 # if the rental is cancelled do not include any lodging costs at all.
 # all that would be left is the deposit, yes?
 # if $invoice is set we present the invoice, otherwise no.
@@ -1031,7 +937,7 @@ fixed_cost_houses - lines describing houses with a fixed cost.
 glnum - a General Ledger number computed from the sdate
 grid_code - a hard to guess code for the grid URL
 grid_max - the maximum of the daily counts
-grid_stale - is the web grid in need of refreshing?
+grid_stale - is the web grid in need of refreshing? - OBSOLETE
 housecost_id - foreign key to housecost
 housing_charge - total cost from the housing grid
 housing_note - free text describing any issues with the rental housing

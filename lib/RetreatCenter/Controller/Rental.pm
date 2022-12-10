@@ -37,7 +37,6 @@ use Util qw/
     invalid_amount
     clear_lunch
     get_lunch
-    get_grid_file
     check_makeup_new
     check_makeup_vacate
     refresh_table
@@ -342,7 +341,6 @@ sub create_do : Local {
         %P,
         image => $upload? 'yes': '',
     });
-    $r->set_grid_stale();
     my $id = $r->id();
 
     # update any uploaded File with the rental id now that we have it
@@ -569,7 +567,6 @@ sub create_from_inquiry : Local {
     $P{grid_max} = 0;
     $P{housing_charge} = 0;
     $P{cancelled} = '';
-    $P{grid_stale} = '';
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
@@ -1032,7 +1029,6 @@ sub update_do : Local {
 
     $r->update(\%P);
     $r->compute_balance();       # the changes may have affected it
-    $r->set_grid_stale();        # relevant things may have changed
 
     if (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
         $c->response->redirect($c->uri_for("/program/parallel/$id"));
@@ -1232,7 +1228,6 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person[0]->id,
         });
-        $r->set_grid_stale();
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
@@ -1531,60 +1526,6 @@ sub booking_do : Local {
         check_makeup_new($c, $h_id, $sdate);
     }
 
-=comment
-
-# Not true - all this fiddling is not needed :(
-# The rooms are not actually booked.
-# That happens in the web grid.
-
-    # RAM 1 adventures
-    #
-    if ($cottage == 1) {
-        # make sure that RAM 1 Cottage is blocked
-        # for this date range
-        my ($RAM1) = model($c, 'House')->search({
-                          cottage => 3,
-                      });
-        my $RAM1_id = $RAM1->id;
-        for my $cf (model($c, 'Config')->search({
-                        house_id => $RAM1_id,
-                        the_date => { between => [ $sdate, $edate1 ] },
-                        sex => { '!=' => 'B' },
-                    })
-        ) {
-            $cf->update({
-                sex => 'B',
-                cur => 1,
-                program_id => 0,
-                rental_id => $rental_id,
-            });
-        }
-    }
-    elsif ($cottage == 3) {
-        # make sure that RAM 1A and RAM 1B are blocked
-        # for this date range
-        my @RAM1_ids = map { $_->id }
-                       model($c, 'House')->search({
-                           cottage => 1,
-                       });
-        for my $cf (model($c, 'Config')->search({
-                        house_id => { in => \@RAM1_ids },
-                        the_date => { between => [ $sdate, $edate1 ] },
-                    })
-        ) {
-            $cf->update({
-                sex => 'B',
-                cur => 2,
-                rental_id => $rental_id,
-                program_id => 0,
-            });
-        }
-    }
-
-=cut
-
-    $r->set_grid_stale();
-
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
@@ -1593,37 +1534,15 @@ sub del_booking : Local {
 
     my $r = model($c, 'Rental')->find($rental_id);
     my $h = model($c, 'House')->find($house_id);
-
-    # is there someone in the room?
-    # if so, you can't delete it!  they have to remove
-    # that person first.
-    #
-    system("/var/www/src/grab wait");   # make sure the local grids are current
-
-    my $fgrid = get_grid_file($r->grid_code());
-    my $error = "";
-    if (open my $in, "<", $fgrid) {
-        LINE:
-        while (my $line = <$in>) {
-            my ($h_id, $ignore, $person) = split /\|/, $line;
-            $person =~ s{\s* ~~.*}{}xms;    # trim any notes
-            if ($h_id == $house_id && $person) {
-                $error = "Because the rental coordinator has assigned"
-                       . " $person to "
-                       . $h->name
-                       . " it cannot be removed."
-                       ;
-                last LINE;
-            }
-        }
-    }
-    else {
-        # the rental grid has never been saved on the web.
-        # we can safely assume that no one is in this space.
-    }
-    if ($error) {
+    my ($grid) = model($c, 'Grid')->search({
+                     rental_id => $r->id,
+                     house_id  => $h->id,
+                 });
+    if ($grid) {
         error($c,
-            $error,
+            "Because the rental coordinator has assigned "
+          . $grid->name
+          . " to " . $h->name . " it cannot be removed.",
             'rental/error.tt2',
         );
         return;
@@ -1725,11 +1644,7 @@ sub del_booking : Local {
             );
         }
     }
-
-    $r->set_grid_stale();
-
     check_makeup_vacate($c, $house_id, $sdate);
-
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
@@ -1982,6 +1897,7 @@ sub contract : Local {
 
 
     my %stash = (
+        string => \%string,
         fee_table => _fee_table($rental->housecost),
         today   => tt_today($c),
         email   => $email,
@@ -1990,16 +1906,10 @@ sub contract : Local {
         rental  => $rental,
         nnights   => $nnights,
         pl_nights => ($nnights == 1? '': 's'),
-        min_per_day => $string{min_per_day},
         agreed  => commify($agreed),
         deposit => commify($deposit),
-        rental_lunch_cost => $string{rental_lunch_cost},
-        program_director => $string{program_director},
-        rental_late_in => $string{rental_late_in},
-        rental_late_out => $string{rental_late_out},
         contract_sent => $contract_sent,
         contract_expire => $contract_sent + 17,
-        rental_deposit_url => $string{rental_deposit_url},
         mp_table => $mp_table,                  # new contract only
         mp_cost_per_day => $mp_cost_per_day,    # new contract only
         user   => $c->user,
@@ -2159,7 +2069,6 @@ sub reserve_cluster : Local {
             }
         }
     }
-    $rental->set_grid_stale();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -2201,24 +2110,7 @@ sub cancel_cluster : Local {
     # if so, you can't delete it!  they have to remove
     # that person first.
     #
-    system("/var/www/src/grab wait");   # make sure the local grids are current
-    my $fgrid = get_grid_file($rental->grid_code());
     my %occupied;
-    if (open my $in, "<", $fgrid) {
-        LINE:
-        while (my $line = <$in>) {
-            my ($h_id, $ignore, $person) = split /\|/, $line;
-            $person =~ s{\s* ~~.*}{}xms;    # trim any notes
-            if (! empty($person)) {
-                $occupied{$h_id} = $person;
-            }
-        }
-        close $fgrid;
-    }
-    else {
-        # the rental grid has never been saved on the web.
-        # we can safely assume that no one is in this space.
-    }
     my $error = "";
     HOUSE:
     for my $h (@{$houses_in_cluster{$cluster_id}}) {
@@ -2233,8 +2125,15 @@ sub cancel_cluster : Local {
         next HOUSE if ! $rb;
 
         # is this house already occupied in the web grid?
-        if ($occupied{$h_id}) {
-            $error .= "House " . $h->name . " is occupied by $occupied{$h_id}";
+        my ($grid) = model($c, 'Grid')->search({
+                         rental_id => $rental_id,
+                         house_id  => $h_id,
+                     });
+        if ($grid) {
+            $error .= "Room " . $h->name . " is occupied by "
+                   .  $grid->name
+                   .  " so cannot be removed.<br>"
+                   ;
             next HOUSE;
         }
 
@@ -2264,7 +2163,6 @@ sub cancel_cluster : Local {
         }
     }
     $c->flash->{houses_occupied} = $error;
-    $rental->set_grid_stale();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -2503,7 +2401,6 @@ sub duplicate_do : Local {
         created_by     => $c->user->obj->id,
         cancelled      => '',
     });
-    $new_r->set_grid_stale();
     my $new_id = $new_r->id();
 
     # mess with the new image, if any.
@@ -2837,126 +2734,6 @@ sub grid : Local {
     my ($self, $c, $rental_id, $by_name) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
-    my $sdate = $rental->sdate_obj();
-    my $edate = $rental->edate_obj();
-    my $d = $sdate;
-    my $days = "";
-    while ($d <= $edate-1) {
-        $days .= "<th align=center width=20>"
-              .  $d->format("%s")
-              .  "</th>"
-              ;
-        ++$d;
-    }
-    # prepare the class hash for fixed cost houses
-    # so they can be rendered in green.
-    my %class;
-    for my $line (split /\|/, $rental->fch_encoded) {
-        my @h_ids = split ' ', $line;
-        shift @h_ids;     # cost
-        for my $h_id (@h_ids) {
-            $class{$h_id} = 'fixed';
-        }
-    }
-
-    # get the most recent edit from the global web
-    #
-    my $fgrid = get_grid_file($rental->grid_code());
-
-    my %data = ();
-    my $total = 0;
-    my @people;
-    my %max;
-    if (open my $in, "<", $fgrid) {
-        LINE:
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
-            if ($id >= 1000) {
-                $max{$id} = $bed;
-            }
-            my $cost = pop @nights;
-            my $name = $name_notes;
-            my $notes = "";
-            if ($name =~ m{~~}xms) {
-                ($name, $notes) = split m{ \s* ~~ \s* }xms, $name_notes;
-            }
-            if ($cost != 0) {
-                my $i = 0;
-                while ($nights[$i] == 0) {
-                    ++$i;
-                }
-                my $j = -1;
-                while ($nights[$j] == 0) {
-                    --$j;
-                }
-                my $dates = "";
-                if ($i != 0 || $j != -1) {
-                    $dates = ($sdate+$i)->day() . '-' . ($edate+$j+1)->day();
-                }
-                push @people, {
-                    name => $name,
-                    notes => $notes,
-                    cost => $cost,
-                    room => $id == 1001? 'Commuting'
-                            :$id == 1002? 'Own Van'
-                            :             $house_name_of{$id},
-                    dates => $dates,
-                };
-            }
-            $data{"p$id\_$bed"} = $name;
-            $data{"x$id\_$bed"} = $notes;
-            $data{"cl$id\_$bed"}
-                = ($name =~ m{\&|\band\b}i
-                   || $name =~ m{\bchild\b}i
-                   || $name =~ m{-\s*[12347]\s*$}
-                   || ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i)
-                   || $cost == 0
-                  )? "class=special"
-                  :                                 ""
-                  ;
-            for my $n (1 .. @nights) {
-                $data{"n$id\_$bed\_$n"} = $nights[$n-1];
-            }
-            $data{"c$id\_$bed"} = $cost || "";
-            $total += $cost || 0;
-        }
-        close $in;
-    }
-    my $coord = $rental->coordinator();
-    my $coord_name = "";
-    if ($coord) {
-        $coord_name = $coord->name();
-    }
-    else {
-        $coord_name = "";
-    }
-    @people = sort {
-                  lc $a->{name} cmp lc $b->{name}
-              }
-              @people;
-    stash($c,
-        class    => \%class,
-        days     => $days,
-        rental   => $rental,
-        nnights  => $edate - $sdate,
-        data     => \%data,
-        max      => \%max,      # for own van, commuting
-        coord_name => $coord_name,
-        total    => commify($total),
-        people   => \@people,
-        template => $by_name? 'rental/grid_by_name.tt2'
-                   :          'rental/grid.tt2',
-    );
-}
-
-#
-# get data from database instead of file
-#
-sub grid2 : Local {
-    my ($self, $c, $rental_id, $by_name) = @_;
-
-    my $rental = model($c, 'Rental')->find($rental_id);
     my $hc = $rental->housecost;
     my @htypes;
     HTYPE:
@@ -3106,29 +2883,6 @@ sub badges : Local {
     $c->res->output(Badge->finalize());
 }
 
-sub badges2 : Local {
-    my ($self, $c, $rental_id) = @_;
-
-    my $rental = model($c, 'Rental')->find($rental_id);
-    my ($mess, $title, $code, $data_aref) =
-        Badge->get_badge_data_from_rental2($c, $rental);
-    if ($mess) {
-        $mess .= "<p class=p2>Close this window.";
-        stash($c,
-            mess     => $mess,
-            template => "gen_message.tt2",
-        );
-        return;
-    }
-    Badge->initialize($c);
-    Badge->add_group(
-        $title,
-        $code,
-        $data_aref,
-    );
-    $c->res->output(Badge->finalize());
-}
-
 sub color : Local {
     my ($self, $c, $rental_id) = @_;
     my $rental = model($c, 'Rental')->find($rental_id);
@@ -3204,20 +2958,24 @@ sub grab_new : Local {
     $c->response->redirect($c->uri_for("/rental/grid/$rental_id"));
 }
 
-sub send_grid : Local {
-    my ($self, $c, $rental_id) = @_;
-    my $r = model($c, 'Rental')->find($rental_id);
-    $r->send_grid_data();
-    $r->update({
-        grid_stale => '',
-    });
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
-}
-
+#
+# show the rental bookings and the people in them
+#
 sub mass_delete : Local {
     my ($self, $c, $rental_id) = @_;
     my $rental = model($c, 'Rental')->find($rental_id);
+    my %occupant;
+    for my $rb ($rental->rental_bookings) {
+        my ($grid) = model($c, 'Grid')->search({
+                         rental_id => $rental_id,
+                         house_id  => $rb->house_id,
+                     });
+        if ($grid) {
+            $occupant{$rb->house->name} = $grid->name . ' - ' . $grid->notes;
+        }
+    }
     stash($c,
+        occupant => \%occupant,
         rental   => $rental,
         template => 'rental/mass_delete.tt2',
     );
@@ -3239,6 +2997,11 @@ sub mass_delete_do : Local {
             rental_id => $rental_id,
             house_id  => $house_id,
         })->delete();
+        # and a possible Grid entry
+        model($c, 'Grid')->search({
+            rental_id => $rental_id,
+            house_id  => $house_id,
+        })->delete();
 
         # adjust config
         my $h = model($c, 'House')->find($house_id);
@@ -3255,7 +3018,6 @@ sub mass_delete_do : Local {
         });
 
     }
-    $rental->set_grid_stale();
     # housing log?
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
@@ -3331,35 +3093,6 @@ sub badge_do : Local {
 }
 
 sub grid_emails : Local {
-    my ($self, $c, $rental_id) = @_;
-    my $rental = model($c, 'Rental')->find($rental_id);
-    if (! $rental) {
-        error($c,
-            "Rental not found.",
-            "gen_error.tt2",
-        );
-        return;
-    }
-    my $fgrid = get_grid_file($rental->grid_code());
-    if (open my $in, "<", $fgrid) {
-        my @all_emails;
-        LINE:
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($id, $bed, $name_notes) = split m{\|}, $line;
-            my @emails = $name_notes =~ m{(\S+[@][a-zA-Z0-9.\-]+)}xmsg;
-            push @all_emails, @emails;
-        }
-        @all_emails = uniq @all_emails;
-        if (@all_emails) {
-            $c->res->output(join "<br>\n", sort @all_emails);
-            return;
-        }
-    }
-    $c->res->output("No emails :(");
-}
-
-sub grid_emails2 : Local {
     my ($self, $c, $rental_id) = @_;
     my $rental = model($c, 'Rental')->find($rental_id);
     if (! $rental) {

@@ -18,8 +18,7 @@
 <h2>Rental Housing Mass Delete</h2>
 <h3>$rental.name - $rental.sdate_obj to $rental.edate_obj</h3>
 <p class="p2 help">
-<span class=attention>Attention!</span> - Make sure you have
-<i>already</i> printed the Meals/Lodging page.
+<span class=attention>Attention!</span>
 <p class="p2 help">
 This form is a very sharp knife.  It is primarily used when you need to change
 the dates of a rental after which rooms have already been assigned to people.
@@ -27,12 +26,25 @@ the dates of a rental after which rooms have already been assigned to people.
 <p class="p2 help">
 You will need to know which houses you have deleted so that
 you can add them back again after you have changed the dates.
+Also note that if a room is deleted the people occupying the rooms
+will be '<span class=red>evicted</span>'.  If you want to REhouse them please remember
+their names and email addresses!
 </p>
 <div class=houses>
 <form action=/rental/mass_delete_do/$rental.id>
+<table cellpadding=5>
+<tr>
+<th align=left>Room</th>
+<th align=left>Occupant</th>
+</tr>
 [% FOR b IN rental.rental_bookings %]
-    <p class=item><input type=checkbox name=$b.house.id value='yes' checked> $b.house.name
+    [% n = b.house.name %]
+    <tr>
+    <td><input type=checkbox name=$b.house.id value='yes' checked> $n</td>
+    <td>${occupant.$n}</td>
+    </tr>
 [% END %]
+</table>
 <p class=p2>
 </div>
 <input type=submit id=sub value="Delete All of the Checked Houses for this Rental">

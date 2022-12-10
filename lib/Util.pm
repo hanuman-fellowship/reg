@@ -55,7 +55,6 @@ our @EXPORT_OK = qw/
     palette
     esc_dquote
     invalid_amount
-    get_grid_file
     avail_mps
     get_now
     penny
@@ -1575,15 +1574,6 @@ sub invalid_amount {
     my ($amt) = @_;
     return 1 if ! defined $amt;
     return $amt !~ m{^-?\d+([.]\d+)?$};
-}
-
-#
-# any new changes are gotten by grab_new
-#
-sub get_grid_file {
-    my ($code) = @_;
-
-    return "/var/Reg/grid/$code-data.txt";
 }
 
 #

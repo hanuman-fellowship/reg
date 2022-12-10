@@ -8,7 +8,6 @@ use Util qw/
     model
     db_init
     email_letter
-    get_grid_file
     empty
 /;
 my $c = db_init();
@@ -100,57 +99,50 @@ for my $rental (@rentals) {
     my $rname = $rental->name_trimmed;
     my $packet = $rental->alt_packet || $default_packet;
     my $gate_code = $rental->summary->gate_code;
-    my $fgrid = get_grid_file($rental->grid_code());
-    if (open my $in, "<", $fgrid) {
-        LINE:
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($id, $bed, $name_notes) = split m{\|}, $line;
-            my ($name, $notes) = split /\s*~~\s*/, $name_notes;
-            if (empty($name)) {
-                next LINE;
-            }
-            my @emails = $notes =~ m{(\S+[@][a-zA-Z0-9.\-]+)}xmsg;
-            my $email = join ',', @emails;
-            if (empty($email)) {
-                next LINE;
-            }
-            my $first;
-            # either 'Smith, John' or 'John Smith'
-            if ($name =~ m{,\s*(\S+)}xms) {
-                $first = $1;
-            }
-            else {
-                ($first) = $name =~ m{\A \s* (\S+)}xms;
-            }
-            my $stash_href = {
-                today     => $today,
-                first     => $first,
-                gate_code => $gate_code,
-                balance   => 0,
-                program   => 0,
-            };
-            my $html;
-            $tt->process(
-                'guest_packet.tt2',
-                $stash_href,
-                \$html,
-            ) or die "error in processing template: " . $tt->error;
-            sleep 1;        # so we aren't blacklisted as spammers?
-            my $alt = $packet ne $default_packet? 'Alternate ': '';
-            email_letter($c,
-                from    => "$string{from_title} <$string{from}>",
-                to      => $email,
-                subject => 'Guest Packet for your visit to MMC',
-                html    => $html,
-                files_to_attach => [
-                    "/var/Reg/documents/$packet",
-                ],
-                activity_msg => "${alt}Packet sent to" 
-                              . " $name"
-                              . ' in '
-                              . "<a href='/rental/view/$rid'>$rname</a>",
-            );
+    for my $g (model($c, 'Grid')->search({
+                   rental_id => $rid,
+               })
+    ) {
+        my $name = $g->name;
+        my $email = join ', ', $g->notes =~ m{(\S+[@][a-zA-Z0-9.\-]+)}xmsg;
+        if (empty($email)) {
+            next LINE;
         }
+        my $first;
+        # either 'Smith, John' or 'John Smith'
+        if ($name =~ m{,\s*(\S+)}xms) {
+            $first = $1;
+        }
+        else {
+            ($first) = $name =~ m{\A \s* (\S+)}xms;
+        }
+        my $stash_href = {
+            today     => $today,
+            first     => $first,
+            gate_code => $gate_code,
+            balance   => 0,
+            program   => 0,
+        };
+        my $html;
+        $tt->process(
+            'guest_packet.tt2',
+            $stash_href,
+            \$html,
+        ) or die "error in processing template: " . $tt->error;
+        sleep 1;        # so we aren't blacklisted as spammers?
+        my $alt = $packet ne $default_packet? 'Alternate ': '';
+        email_letter($c,
+            from    => "$string{from_title} <$string{from}>",
+            to      => $email,
+            subject => 'Guest Packet for your visit to MMC',
+            html    => $html,
+            files_to_attach => [
+                "/var/Reg/documents/$packet",
+            ],
+            activity_msg => "${alt}Packet sent to" 
+                          . " $name"
+                          . ' in '
+                          . "<a href='/rental/view/$rid'>$rname</a>",
+        );
     }
 }

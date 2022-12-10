@@ -206,7 +206,7 @@ ftp_covid_vax_dir - the directory on mmc.org where the
 ftp_dir - FTP info for mountmadonna.org
 ftp_dir2 - FTP info for mountmadonna.org - staging directory
 ftp_export_site - text describing where things were exported
-ftp_grid_dir - where to put the rental grid data?
+ftp_grid_dir - where to put the rental grid data?   OBSOLETE
 ftp_hfs_dir - FTP info for hanumanfellowship.org - for temple reservations people
 ftp_hfs_password - FTP info for hanumanfellowship.org
 ftp_hfs_site - FTP info for hanumanfellowship.org
@@ -227,7 +227,7 @@ ftp_omp_dir - The directory on mountmadonna.org for online member payments
 ftp_passive - FTP info for mountmadonna.org
 ftp_password - FTP info for mountmadonna.org
 ftp_pr_dir - where to put NoPR.txt data
-ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes
+ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes OBSOLETE
 ftp_rental_deposit_dir - FTP info for mountmadonna.org - for rental deposit payment
 ftp_rental_deposit_dir_paid - FTP info for mountmadonna.org - for rental deposit payments that were paid
 ftp_rental_invoice_dir - FTP info for mountmadonna.org - for rental invoice balance payment
