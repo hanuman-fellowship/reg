@@ -1,0 +1,21 @@
+<style>
+body {
+    font-size: 16pt;
+    margin-top: 10mm;
+    margin-left: 10mm;
+    font-family: Helvetica;
+    width: 700px;
+}
+button {
+    font-size: 16pt;
+    font-family: Helvetica;
+}
+</style>
+Errors in the form:
+<ul>
+$err
+</ul>
+<form>
+Please go <button TYPE="button" id=back onclick="history.go(-1)">back</button> and correct this.
+</form>
+<script type='text/javascript'>document.getElementById('back').focus();</script>	

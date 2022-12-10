@@ -1,0 +1,132 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+print "Content-Type: text/html; charset=ISO-8859-1\n\n";
+use Template;
+use lib '../lib';
+use Date::Simple qw/
+    date
+    today
+/;
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
+use Global qw/
+    %string
+/;
+Global->init($c, 1, 1);     # to get %strings:
+
+my %stash;
+$stash{ME_cost} = $string{mountain_experience_cost};
+
+my $me_dow  = $string{me_dow};
+$me_dow =~ s{\D}{}xmsg;
+my $dow_disabled = "0123456";
+$dow_disabled =~ s{[$me_dow]}{}xmsg;
+my @day_name = qw/
+    Sunday
+    Monday
+    Tuesday
+    Wednesday
+    Thursday
+    Friday
+    Saturday
+/;
+my @weekdays;
+for my $d (split //, $me_dow) {
+    push @weekdays, $day_name[$d];
+}
+my $weekdays = join ', ', @weekdays;
+my $comma = @weekdays > 2? ',': '';
+$weekdays =~ s{,([^,]*)\z}{$comma or $1}xmsg;    # how fun is that? :)
+$stash{weekdays} = $weekdays;
+
+my $today = today();
+my $start = $today + 2;
+my $end   = $today + 90;
+$stash{startDate} = $start->format("%m/%d/%Y");
+$stash{endDate} = $end->format("%m/%d/%Y");
+
+my %disabled;
+#
+# set the disabled days of the week
+#
+my $d = $start;
+while ($d <= $end) {
+    if ($d->day_of_week =~ m{[$dow_disabled]}xms) {
+        # TODO: UNLESS it is in Yes ME...
+        $disabled{$d->format("%m/%d/%Y")} = 1;
+    }
+    ++$d;
+}
+#
+# set disabled noME date ranges
+#
+my @noME;
+for my $type (qw/ No Yes /) {
+    my (@events) = model($c, 'Event')->search(
+        {
+            name  => { 'regexp' => "${type}.*ME" },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    EVENT:
+    for my $e (@events) {
+        my ($sdate, $edate) = ($e->sdate_obj, $e->edate_obj);
+        my $d = $sdate;
+        while ($d <= $edate) {
+            my $sd = $d->format("%m/%d/%Y");
+            if ($type eq 'No') {
+                $disabled{$sd} = 1;
+            }
+            elsif ($disabled{$sd}) {
+                delete $disabled{$sd};
+            }
+            ++$d;
+        }
+        if ($type eq 'Yes') {
+            next EVENT;
+        }
+        my $s;
+        if ($sdate->month() == $edate->month()) {
+            if ($sdate->day() == $edate->day()) {
+                $s = $sdate->format("%B %e '%q");
+            }
+            else {
+                $s = $sdate->format("%B %e")
+                   . "-"
+                   . $edate->format("%e '%q")
+                   ;
+            }
+        }
+        else {
+            $s = $sdate->format("%B %e '%q")
+                 .  " - "
+                 . $edate->format("%B %e '%q")
+                 ;
+        }
+        push @noME, $s;
+    }
+}
+$stash{noME} = \@noME;
+
+# if after 10:00 am disable the date 2 days from now.
+# it may have already been disabled.
+if ((localtime())[2] >= 10) {
+    $disabled{($today + 2)->format("%m/%d/%Y")} = 1;
+}
+$stash{disabled} = join ', ', map { qq!'$_'! } keys %disabled;
+
+$stash{today} = $today->format("%m/%d/%Y");
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'regme.tt2',
+    \%stash,
+);

@@ -1,0 +1,64 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+print "Content-Type: text/html; charset=ISO-8859-1\n\n";
+use Template;
+use lib '../lib';
+use Date::Simple qw/
+    today
+/;
+my $today = today();
+
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
+my (@events) = model($c, 'Event')->search(
+    {
+        name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>:]]' },
+        edate => { '>='   => today()->as_d8() },
+    },
+    {
+        order_by => 'sdate',
+    }
+);
+my (@noPR, @noPRindoors);
+for my $ev (@events) {
+    my ($sdate, $edate) = ($ev->sdate_obj, $ev->edate_obj);
+    my ($indoors)       = $ev->name =~ m{indoors}xms;
+    my $s;
+    if ($sdate->month() == $edate->month()) {
+        if ($sdate->day() == $edate->day()) {
+            $s = $sdate->format("%B %e '%q");
+        }
+        else {
+            $s = $sdate->format("%B %e")
+               . "-"
+               . $edate->format("%e '%q")
+               ;
+        }
+    }
+    else {
+        $s = $sdate->format("%B %e '%q")
+             .  " - "
+             . $edate->format("%B %e '%q")
+             ;
+    }
+    if ($indoors) {
+        push @noPRindoors, $s;
+    }
+    else {
+        push @noPR, $s;
+    }
+}
+my %stash;
+$stash{noPR} = \@noPR;
+$stash{noPRindoors} = \@noPRindoors;
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'regpr.tt2',
+    \%stash,
+);

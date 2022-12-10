@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+my $html;
+{
+    local $/;
+    open my $in, '<', '/var/www/src/cgi-bin/hints.html';
+    $html = <$in>;
+    close $in;
+}
+my $header = "Content-Type: text/html; charset=ISO-8859-1\n\n";
+print $header, $html;

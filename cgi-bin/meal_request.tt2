@@ -1,0 +1,169 @@
+<html>
+<head>
+<script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+<script type='text/javascript'>
+\$(function(){
+    \$('.input-group.date').datepicker({
+        calendarWeeks: true,
+        todayHighlight: true,
+        autoclose: true,
+        daysOfWeekDisabled: '0',
+        datesDisabled: [ $disabled ]
+    });  
+});
+</script>
+<style>
+body {
+    margin: .5in;
+}
+body, table, tr, th, td, input, .button {
+    font-size: 16pt;
+    font-family: Helvetica;
+}
+.teal {
+    background: lightgreen;
+}
+.tbl {
+    /* text-transform: none; ??? */
+    text-align: center;
+}
+td {
+    text-align: center;
+}
+.num {
+    text-align: right;
+}
+</style>
+</head>
+<body>
+<h2>
+[% IF type == 'family' %]
+Meals for HFS Members/Affilates
+<br>
+[% ELSIF type == 'guest' %]
+Meals for Resident Guests and Offland Staff
+<br>
+[% END %]
+</h2>
+You must request meals at least 2 days in advance.
+<span style="margin-left: 1in"><a target=_blank href="https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center">Meal Information</a></span>
+<br>
+Enter dates and the number of meals you wish on those dates.<br>
+If the meals are for a child (ages 5-12) check the Child column checkbox.
+<p>
+[% dr = date_ranges.0 %]
+You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
+[% IF dr %]
+<br>nor meals on these dates:<p>
+    [% FOR dr IN date_ranges %]
+        [% one_day = dr.0 == dr.1 %]
+        [% IF one_day %]
+            $dr.0
+        [% ELSE %]
+            $dr.0 - $dr.1
+        [% END %]
+        [% IF dr.2 %]
+            (No Lunch on [% IF one_day %]this day[% ELSE %]these days[% END %])
+        [% END %]
+        <br>
+    [% END %]
+[% END %]
+<p>
+<form name=form 
+      action=/cgi-bin/meal_request
+      method=POST
+      name=form
+>
+<input type=hidden name=type value='$type'>
+<p>
+<table cellpadding=3 border=1 style="width: 60%">
+
+<tr>
+<th class=tbl>Date</th>
+<th class=tbl>Breakfast</th>
+<th class=tbl>Lunch</th>
+<th class=tbl>Dinner</th>
+<th class=tbl>Child</th>
+</tr>
+
+<tr>
+<td>
+<span class="input-group date">
+  <input type="text" class="form-control" name=date1>
+  <span class="input-group-addon">
+  <i class="glyphicon glyphicon-calendar"></i>
+  </span>
+</span>
+</td>
+<td><input type=text name=breakfast1 size=3></td>
+<td><input type=text name=lunch1 size=3></td>
+<td><input type=text name=dinner1 size=3></td>
+<td><input type=checkbox value=yes name=child1></td>
+</tr>
+
+<tr>
+<td>
+<span class="input-group date">
+  <input type="text" class="form-control" name=date2>
+  <span class="input-group-addon">
+  <i class="glyphicon glyphicon-calendar"></i>
+  </span>
+</span>
+</td>
+<td><input type=text name=breakfast2 size=3></td>
+<td><input type=text name=lunch2 size=3></td>
+<td><input type=text name=dinner2 size=3></td>
+<td><input type=checkbox value=yes name=child2></td>
+</tr>
+
+<tr>
+<td>
+<span class="input-group date">
+  <input type="text" class="form-control" name=date3>
+  <span class="input-group-addon">
+  <i class="glyphicon glyphicon-calendar"></i>
+  </span>
+</span>
+</td>
+<td><input type=text name=breakfast3 size=3></td>
+<td><input type=text name=lunch3 size=3></td>
+<td><input type=text name=dinner3 size=3></td>
+<td><input type=checkbox value=yes name=child3></td>
+</tr>
+</table>
+<p>
+<button class="button teal">Submit</button>
+<p>
+<h3>Prices</h3>
+<table cellpadding=5 border=1>
+<tr>
+<td></td>
+<td>Adult</td>
+<td>Child</td>
+</tr>
+<tr>
+<td>Breakfast</td>
+<td class=num>\$$breakfast_cost</td>
+<td class=num>\$$breakfast_cost_5_12</td>
+</tr>
+<tr>
+<td>Lunch</td>
+<td class=num>\$$lunch_cost</td>
+<td class=num>\$$lunch_cost_5_12</td>
+</tr>
+<tr>
+<td>Dinner</td>
+<td class=num>\$$dinner_cost</td>
+<td class=num>\$$dinner_cost_5_12</td>
+</tr>
+</table>
+</form>
+</body>
+</html>
+<script>
+document.getElementById('datepicker1').focus();
+</script>

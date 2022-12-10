@@ -1,0 +1,106 @@
+<html>
+<head>
+<script type='text/javascript'
+        src='//code.jquery.com/jquery-1.8.3.js'></script>
+<link rel="stylesheet"
+      href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+<script type='text/javascript'
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+<script type='text/javascript'>
+\$(function(){
+    \$('.input-group.date').datepicker({
+        calendarWeeks: true,
+        todayHighlight: true,
+        autoclose: true,
+        startDate: '$startDate',
+        endDate: '$endDate',
+        datesDisabled: [ $disabled ],
+    });
+});
+</script>
+<style>
+body {
+    margin: .5in;
+    width: 70%;
+}
+body, input, button, td, th {
+    font-size: 16pt;
+}
+button {
+    background: lightgreen;
+}
+</style>
+</head>
+<body>
+<!-- see this site:
+https://www.jquery-az.com/bootstrap-datepicker-set-up-guide-with-8-online-demos-and-code/ -->
+<img src='https://www.mountmadonna.org/assets/img/mmc-teal2.png' width=250>
+<p>
+<h1>Mountain Experience Registration</h1>
+The cost for the day is \$${ME_cost}.
+<br>
+Available only on ${weekdays} and some holidays.
+<br>
+Reservations must be made at least 48 hours in advance.
+<br>
+<form name=form action=reg1 method=get>
+<input type=hidden name=id value=0>
+<input type=hidden name=dir value=pr>
+<input type=hidden name=mountain_experience value=1>
+<p style="margin-top: .2in">
+<table cellpadding=5>
+<tr>
+<th>Date</th>
+<td>
+<span class="input-group date">
+  <input type="text" class="form-control" name=date>
+  <span class="input-group-addon">
+  <i class="glyphicon glyphicon-calendar"></i>
+  </span>
+</span>
+</td>
+</tr>
+</table>
+<p style="margin-top: .2in">
+Which meals would you like?
+<ul>
+<input type=checkbox id=lunch name=lunch value='yes'>
+<label for=lunch>Lunch (12:30-1:30 pm weekdays); Brunch (10:00-11:00 am) Saturdays</label><br>
+<input type=checkbox id=dinner name=dinner value='yes'>
+<label for=dinner>Dinner (5:15-6:15 pm)</label><br>
+</ul>
+<p>
+Which of these activities would you like?
+<ul>
+<input type=checkbox id=yoga_class name=yoga_class value='1'>
+<label for=yoga_class>Yoga Class (4:00-5:00 pm)</label><br>
+<input type=checkbox id=guided_hike name=guided_hike value='1'>
+<label for=guided_hike>Guided Walk (11:30 am-12:30 pm)</label><br>
+</ul>
+<p>
+If you are bringing children enter their names and ages here:<br>
+<input type=text size=30 name=children_name_age>
+<span style="color: #aaaaaa">For example: Nandini 5, Elliott 8</span><br>
+Children 4 years and under are welcome free of charge;<br>
+for 5-12 years old, fees are discounted 50%.<br>
+Older children should be registered separately.
+<p>
+<button type="submit">Submit</button>
+</form>
+Mountain Experience bookings cannot be made
+more than 90 days in advance.
+[% IF noME.0 %]
+    Due to other onsite programming, the following dates
+    are not available for Mountain Experience bookings:
+    <p>
+    <ul>
+    [% FOR d IN noME %]
+        <li>$d</li>
+    [% END %]
+    </ul>
+[% END %]
+</body>
+</html>
