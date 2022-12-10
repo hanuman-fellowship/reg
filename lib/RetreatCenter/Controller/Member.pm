@@ -496,7 +496,7 @@ sub update_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($c, $member, $amount, $pay_date, 0);
+    my $html = acknowledge($c, $member, $amount, $pay_date);
     my $pers = $member->person();
     if ($pers->email()) {
         email_letter($c,
@@ -554,7 +554,7 @@ sub js_print {
 }
 
 sub acknowledge {
-    my ($c, $member, $amount, $pay_date, $new_member) = @_;
+    my ($c, $member, $amount, $pay_date) = @_;
 
     my $person   = $member->person;
     my $category = $member->category;
@@ -585,18 +585,15 @@ $addr
 </div>
 EOA
     }
+    my $due_date = $category eq 'sponsor'? $P{date_sponsor}
+                  :                        $P{date_general}
+                  ;
     my $stash = {
-        new_member   => $new_member,
         sanskrit     => ($person->sanskrit || $person->first),
         amount       => $amount,
         pay_date     => date($pay_date),
-        due_date     => date($P{date_sponsor}),     # not needed for General
-        next         => $amount,
-        year         => $category eq 'General'? date($P{date_general})->year()
-                        :                       date($P{date_sponsor})->year(),
-        subtot       => $member->total_paid(),
+        due_date     => date($due_date),
         string       => \%string,
-        message      => $message,
         category     => $category,
     };
     my $html = "";
@@ -606,12 +603,8 @@ EOA
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     }) or $c->log->info("NO TEMPLATE NEW $Template::ERROR");
-    my $file = 
-        "ack_"
-            . ($category eq 'General'? 'gen': 'spons')
-            . ".tt2";
     $tt->process(
-        $file,          # template file
+        'ack.tt2',      # letter template
         $stash,         # variables
         \$html,         # output
     ) or $c->log->info("NO PROCESS $Template::ERROR");
@@ -788,7 +781,7 @@ sub create_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($c, $member, $amount, $mkpay_date, 1);
+    my $html = acknowledge($c, $member, $amount, $mkpay_date);
     
     my $pers = $member->person();
     if ($pers->email()) {

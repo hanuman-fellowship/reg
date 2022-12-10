@@ -1,0 +1,26 @@
+﻿<html>
+<head>
+[% INCLUDE style.tt2 %]
+</head>
+<body>
+Dear $sanskrit,
+<p>
+Thank you for your on-going and generous commitment to the
+Hanuman Fellowship as a $category Statutory (voting) Member and for
+being part of our supportive community.
+<p>
+We received your payment
+of dues in the amount of \$$amount on ${pay_date.format("%D")}. Your next membership payment
+of \$$amount will be due on ${due_date.format("%D")}.
+<p>
+To claim a Tax Deduction for this
+donation, you must deduct the value of any benefits you receive.
+<p>
+In Peace,
+<p>
+The Hanuman Fellowship<br>
+Membership Secretary<br>
+445 Summit Road, Watsonville, CA 95076<br>
+<a href='mailto:${string.mem_email}?subject=HFS Membership'>${string.mem_email}</a>
+</body>
+</html>
