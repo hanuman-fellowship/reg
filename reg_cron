@@ -13,7 +13,7 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 
 # at 1:00 am on December 20 send a reminder to
 # people whose membership has lapsed
-0 1 20 12 * $REG/lapsed_mem
+0 1 28 12 * $REG/lapsed_mem
 
 # at 1:00 am on February 11 send a reminder to
 # people whose membership has lapsed
