@@ -111,7 +111,7 @@
 							<img class=logo src='https://www.mountmadonna.org/assets/img/mmc-teal2.png'>
             </div>
 
-						<table width="280" class="hours column" align="right">
+						<table width="180" class="hours column" align="right">
 							<tr>
 									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
 							 </tr>
@@ -345,16 +345,7 @@
       <p>
          Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain.
       <h2>Cancellations</h2>
-For Personal Retreat or Program reservation cancellations received
-at least two weeks before your reservation date, you will receive a
-full refund to your credit card. For cancellations received from two
-weeks to 48 hours prior to the reservation date, you will be charged
-a processing fee of $50 and the remainder of your payment will be
-held as a credit for you to reserve a future Personal Retreat or
-Program within one year. Credits are not transferable to another
-person. If you cancel within 48 hours of your reservation date,
-if you do not show up, or if you leave early you will not receive
-a refund.
+      ${program.canpol.policy}
       <h2>Maps</h2>
       <p>
          Maps of the <a target=_bank href='https://www.mountmadonna.org/assets/img/Main_Area_Map_MMC.pdf'>Mount Madonna property</a> and <a target=_blank href='https://www.mountmadonna.org/assets/img/Trail_Map_MMC.pdf'>hiking trails</a> may help orient you to the center.

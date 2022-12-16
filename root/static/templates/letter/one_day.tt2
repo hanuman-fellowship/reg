@@ -1,0 +1,225 @@
+<html>
+   <head>
+   <meta name="viewport" content="width=device-width" />
+
+      <style>
+         a {
+            text-decoration: none;
+            color: blue;
+         }
+         .after {
+         margin-top: .5in;
+         }
+         body {
+         font-size: 14pt;
+         }
+         #container {
+         max-width: 660px;
+         margin: 0 auto;
+         }
+         .invoice {
+         margin-left: 20px;
+         }
+         .rt {
+         text-align: right;
+         }
+         /* I need to learn more about CSS so I don't have the repetition... */
+         .lt2 {
+         text-align: left;
+         font-size: 14pt;
+         }
+         .rt2 {
+         text-align: right;
+         font-size: 14pt;
+         }
+         img {
+         margin: 7px;
+         }
+         h2 {
+         font-size: 16pt;
+         margin-bottom: 5px;
+         }
+         h3 {
+         font-size: 14pt;
+         margin-bottom: 5px;
+         }
+         .indent {
+         margin-left: 0mm;
+         margin-bottom: 5mm;
+         }
+         p {
+         }
+         .hours {
+         font-size: 12pt;
+         text-align: right;
+         }
+         td {
+         font-size: 12pt;
+         }
+         .logo {
+         width: 280px;
+         }
+         .top {
+					padding-bottom: 40px;
+					width: 100%;
+					margin-bottom: 70px;
+					border-bottom: 1px solid rgb(178, 178, 178);
+         }
+         .column {
+        	display: inline-block;
+         }
+
+         .column img {
+         width: 100%;
+         max-width: 220px;
+         }
+         .name {
+         font-weight: bold;
+         margin-left: .25in;
+         }
+         .addr {
+         font-weight: normal;
+         margin-left: .25in;
+         color: red;
+         }
+         .contact {
+         font-weight: normal;
+         margin-left: .25in;
+         margin-bottom: .2in;
+         }
+
+				@media only screen and (max-width: 480px) {
+					#container {
+					margin: 20px;			
+					}
+					.column {
+					display: block !important;
+					width: 100% !important;
+					}
+				}
+      </style>
+
+
+   </head>
+   <body>
+      <div id="container">
+
+           [% mmi = program.school.mmi %]
+
+
+
+      <table class=top width="100%">
+         <tr>
+					 <td>
+            <div width="300" class="column" style="text-align: center;">
+							<img class=logo src='https://www.mountmadonna.org/assets/img/mmc-teal2.png'>
+            </div>
+
+						<table width="180" class="hours column" align="right">
+							<tr>
+									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
+							 </tr>
+							 <tr>
+									<td>Monday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Tuesday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Wednesday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Thursday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Friday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Saturday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Sunday</td>
+									<td class=rt>11:00 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td colspan=2 align=center><b>408-846-4090</b></td>
+							 </tr>
+							 <tr>
+									<td colspan=2 align=center><b><a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a></b></td>
+							 </tr>
+						</table>
+            </td>
+         </tr>
+      </table>
+</div>
+
+Dear ${person.first},
+<p>
+We look forward to your visit to Mount Madonna Center! 
+<p>
+Here are your reservation details:<p>
+      <table>
+         <tr>
+            <th class=rt2 valign=top>Program</th>
+            <td class=lt2>$program.title_trimmed<br>
+            ${program.sdate_obj.format("%B %e")}<br>
+            ${program.prog_start_obj.ampm} - ${program.prog_end_obj.ampm}
+            </td>
+         </tr>
+         <tr>
+            <th class=rt2>Amount Paid</th>
+            <td class=lt2>&nbsp;\$$reg.deposit_disp</td>
+         </tr>
+         <tr>
+            <th class=rt2>Balance remaining</th>
+            <td class=lt2>&nbsp;\$$reg.balance</td>
+         </tr>
+      </table>
+<p>
+<b>This email contains important information to help you prepare for your visit to beautiful Mount Madonna!</b>
+<p>
+<h2>Arrival and Departure</h2>
+You arrive on ${program.sdate_obj.format("%A, %B %e")} and
+depart on ${program.sdate_obj.format("%A, %B %e")}.
+Please plan to arrive and check in at 10:00 am. You will be greeted on arrival at the main gate at 445 Summit Road where you will be directed where to check in. Guest Services Staff will provide you with your information packet and can answer any additional questions. 
+Departure time is 7:00 pm. 
+<h2>Before You Come</h2>
+<i>Overnight Stay Option</i>: We invite you to stay overnight in association with your participation in the all-day Sunday program. You will receive a 20% discount on the room of your choice (depending on availability) for one or two nights.  Please make a note below and the programs office will contact you with more information. Alternatively, you may email 
+<a target=_blank href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>
+or call (408) 846-4090 to add an overnight stay.
+<p>
+<i>Spa Treatment</i>: You are invited to schedule a wellness appointment at our Ayurvedic Wellness Center. For information and to book an appointment for a variety of treatment options, including Massage, Reiki, Yoga Therapy, and more, phone 408-846-4078 or email 
+<a target=_blank href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>
+or visit 
+<a target=_blank href='https://www.mountmadonnainstitute.org/wellnesscenter'>Ayurvedia Wellness Center</a>
+. To take advantage of our full offerings, please book 48 hours in advance. 
+<h2>While You're Here</h2>
+Other offerings at Mount Madonna include arati (celebration of light) at the Sankat Mochan Hanuman Temple, refreshments at Anjaneya's World Cafe, browsing at Oceanview Books & Gifts, and more. For program schedule and more information, please <a target=_blank href='https://www.mountmadonna.org/day-guest-packet'>click here</a>.
+<h2>Packing</h2>
+We recommend that you bring a water bottle (can be refilled with filtered water), yoga mat and  props (these are also available onsite), walking or hiking shoes, a bathing suit and towel (if you plan to use the hot tub), a sun hat and clothing layers for variable weather.
+We ask that you leave the following at home: food, drugs, alcohol, pets, scented body products, and all fire hazards (candles, incense, kerosene lamps, etc.). 
+To help guide your packing decisions, go to 
+<a target=_blank href='https://ambientweather.net/'>ambientweather.net</a> and enter 'Mount Madonna School'.
+
+<h2>Getting Here</h2>
+Maps, directions, and shuttle listings are available at our 
+<a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a>
+page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable. You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain.
+<h2>Cancellations</h2>
+${program.canpol.policy}
+<h2>Questions?</h2>
+Our FAQ page has answers to many questions not answered here. If you have a question about your visit that is still not answered, please call the Guest Services Office at 408-846-4090 or email us at 
+<a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>.
+<p>
+We look forward to seeing you on the mountain!
+<p>
+Sincerely,<br>
+Guest Services Office team
+</body>
+</html>
