@@ -387,7 +387,7 @@ person_id - foreign key to person
 pref1 - housing preference #1 - see h_type
 pref2 - housing preference #2 - see h_type
 program_id - foreign key to program
-referral - advertisement, web, brochure, or flyer.
+referral - advertisement, web, brochure, or flyer, etc.
     if ad then the ad_source is also filled in.
 rental_after - is this person staying for a rental after this program?  (usually a personal retreat)
 rental_before - was this person here for a rental before this program?  (usually a personal retreat)
