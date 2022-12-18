@@ -138,11 +138,11 @@ The Presenter further agrees to pay at least the Minimum Amount Due
 which shall be equal to the number of
 people specified under "Facilities" above,
 multiplied by the number of nights of the program specified in the same place,
-multiplied by a nominal rate of \$${min_per_day}.
+multiplied by a nominal rate of \$${string.min_per_day}.
 <ul>
-    (People X Nights X \$${min_per_day} = Minimum Amount Due)
+    (People X Nights X \$${string.min_per_day} = Minimum Amount Due)
 </ul>
-The Minimum Amount Due is thus ${rental.max} X $nnights X \$${min_per_day} = \$${agreed}.
+The Minimum Amount Due is thus ${rental.max} X $nnights X \$${string.min_per_day} = \$${agreed}.
 <p>
 Depending on the rooms and amenities chosen the final obligation for payment will likely be higher but we will require at least the Minimum Amount Due agreed to in the contract.
 <p>
