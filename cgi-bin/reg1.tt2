@@ -1,688 +1,22 @@
-<!DOCTYPE html>
-<!-- 
-#####
-##### Do not directly edit this file.
-##### Use https://www.mountmadonna.org/admin/entries/regForms/3436-reg1
-#####
--->
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
+<html>
 <head>
-	<!--
-_________                       _____
-__  ____/___________________ ______(_)______
-_  /    _  __ \_  ___/_  __ `__ \_  /_  ___/
-/ /___  / /_/ /(__  )_  / / / / /  / / /__
-\____/  \____//____/ /_/ /_/ /_//_/  \___/
-
-Design by Cosmic, Inc.
-http://designbycosmic.com
-```````````````````````````````
-Mount Madonna Center - 2022
--->
-
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<meta name="HandheldFriendly" content="true">
-<meta name="MobileOptimized" content="320">
-
-<title>Registration - Step 1 - Mount Madonna Center</title><meta
-http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta
-name="referrer" content="no-referrer-when-downgrade" /><meta
-name="keywords" content="yoga ayurveda community" /><meta
-name="generator" content="SEOmatic" /><link
-rel="canonical" href="https://www.mountmadonna.org/reg-forms/reg1" /><link
-rel="alternate" href="https://www.mountmadonna.org/reg-forms/reg1" hreflang="x-default" /><meta
-name="geo.placename" content="Cosmic - Craft Starter" /><meta
-name="dcterms.Identifier" content="https://www.mountmadonna.org/reg-forms/reg1" /><meta
-name="dcterms.Format" content="text/html" /><meta
-name="dcterms.Relation" content="Mount Madonna Center" /><meta
-name="dcterms.Language" content="en" /><meta
-name="dcterms.Publisher" content="Mount Madonna Center" /><meta
-name="dcterms.Type" content="text/html" /><meta
-name="dcterms.Coverage" content="https://www.mountmadonna.org/" /><meta
-name="dcterms.Rights" content="Copyright &copy;2022 Cosmic - Craft Starter." /><meta
-name="dcterms.Title" content="Registration - Step 1" /><meta
-name="dcterms.Creator" content="Design by Cosmic, Inc." /><meta
-name="dcterms.Subject" content="yoga ayurveda community" /><meta
-name="dcterms.Contributor" content="Mount Madonna Center" /><meta
-name="dcterms.Date" content="2022-11-28" /><meta
-name="dcterms.Description" content="" /><meta
-property="og:type" content="website" /><meta
-property="og:locale" content="en_us" /><meta
-property="og:url" content="https://www.mountmadonna.org/reg-forms/reg1" /><meta
-property="og:title" content="Registration - Step 1 - Mount Madonna Center" /><meta
-property="og:image" content="https://cdn.mountmadonna.org/CB-hero.jpg" /><meta
-property="og:image:type" content="image/jpeg" /><meta
-property="og:image:width" content="1600" /><meta
-property="og:image:height" content="600" /><meta
-property="og:site_name" content="Mount Madonna Center" /><meta
-property="og:see_also" content="https://www.facebook.com/mountmadonnacenter" /><meta
-property="og:see_also" content="https://www.youtube.com/user/mountmadonnacenter" /><meta
-property="og:see_also" content="https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/" /><link
-type="text/plain" rel="author" href="/humans.txt" /><meta
-name="google-site-verification" content="meta name="google-site-verification"content="2i1wh--4u8QAB_j3izUZOivuA5RuVUb96qGgiomQGrY"" /> <script type="application/ld+json">{"@context":"http://schema.org","@type":"Corporation","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"location":{"@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}}</script>  <script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","name":"Mount Madonna Center","url":"https://www.mountmadonna.org","image":"https://cdn.mountmadonna.org/CB-hero.jpg","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"copyrightHolder":{"@type":"Corporation","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"location":{"@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}},"author":{"@type":"Corporation","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"location":{"@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}},"creator":{"@type":"LocalBusiness","name":"Design by Cosmic, Inc.","alternateName":"Cosmic","description":"Designers. Storytellers. Strategists. Cosmic creates strategically-focused brands, websites, and applications that are effective, intuitive, and engaging.","url":"https://designbycosmic.com","image":{"@type":"ImageObject","url":"https://cdn.mountmadonna.org/seo/design-by-cosmic.jpg","height":"844","width":"1500"},"telephone":"831.600.7780","email":"&#104;&#101;&#108;&#108;&#111;&#64;&#100;&#101;&#115;&#105;&#103;&#110;&#98;&#121;&#99;&#111;&#115;&#109;&#105;&#99;&#46;&#99;&#111;&#109;","address":{"@type":"PostalAddress","streetAddress":"115 Cooper St.","addressLocality":"Santa Cruz","addressRegion":"CA","postalCode":"95060","addressCountry":"US"}}}</script>  <script type="application/ld+json">{"@context":"http://schema.org","@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}</script>  <script type="application/ld+json">{"@context":"http://schema.org","@type":"WebPage","name":"Registration - Step 1","image":{"@type":"ImageObject","url":"https://cdn.mountmadonna.org/CB-hero.jpg","width":"1600","height":"600"},"url":"https://www.mountmadonna.org/reg-forms/reg1","mainEntityOfPage":"https://www.mountmadonna.org/reg-forms/reg1","inLanguage":"en_us","headline":"Registration - Step 1","keywords":"yoga ayurveda community","author":{"@type":"Corporation","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"location":{"@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}},"copyrightHolder":{"@type":"Corporation","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"location":{"@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}},"publisher":{"@type":"Organization","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"],"location":{"@type":"Place","name":"Cosmic - Craft Starter","url":"//craft-starter.dev","sameAs":["https://www.facebook.com/mountmadonnacenter","https://www.youtube.com/user/mountmadonnacenter","https://www.instagram.com/https://www.instagram.com/mountmadonnacenter/"]}},"breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://www.mountmadonna.org","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://www.mountmadonna.org/reg-forms/reg1","name":"Registration - Step 1"}}]}}</script>  <script type="application/ld+json">{"@context":"http://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":"1","item":{"@id":"https://www.mountmadonna.org","name":"Home"}},{"@type":"ListItem","position":"2","item":{"@id":"https://www.mountmadonna.org/reg-forms/reg1","name":"Registration - Step 1"}}]}</script> 
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-<link rel="manifest" href="/manifest.json">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-<meta name="theme-color" content="#ffffff">
-
-<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js"></script>
-<script>
-  WebFont.load({
-    google: {
-      families: [
-        'Cormorant Garamond:500,700:latin-ext',
-        'Josefin Sans:400,700'
-      ]
-    }
-  });
-</script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-303243-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-303243-2');
-</script>
-
-<link rel="stylesheet" href="https://www.mountmadonna.org/assets/css/mount-madonna.min.css?v=0.0.49">
-
-<!-- // Flipcause Integration Code v3.1 // Flipcause Integration Instructions: Install the following code block ONCE in the website Header (after <head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"> tag) // This code is designed to launch standard integration buttons, floating integrations buttons, and direct embeds  // This code block only needs to be installed once to activate all integrations site wide // Begin Flipcause Integration Code //-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<style>
-
-    #fc-direct-embed-loader-out{
-        position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: #eee;
-    z-index: 9;
-}
-
-#fc-direct-embed-loader-out .fc-direct-embed-loader{
-    top: 40%;
-}
-
-.fc-black_overlay{
-
-display:none; position: fixed; z-index:1000001; top: 0%;left: 0%;width: 100%;height: 100%;
-
-background-color: black; filter: alpha(opacity=50); cursor:pointer; opacity:0.5;
-
-}
-
-.fc-white_content {
-
-opacity:1; display:none; margin-top: -320px; margin-left: -485px; width:970px; height:640px;
-
-position:fixed; top:50%; left:50%; border: none;z-index:1000002;overflow: auto;
-
-}
-
-.fc-main-box{
-
-opacity:1; display:none; margin:15px auto 0 auto; width:930px; position:relative; z-index:1000003;
-
-}
-
-.fc-widget_close{
-
-opacity:1; background: url( https://www.flipcause.com/assets/close-icon.png);
-
-position:absolute; z-index:1000004; right:-16px; top:-16px; display:block; cursor:pointer; width:49px; height:49px;
-
-}
-
-.floating_button{
-
-display: block; margin-top: 0px; margin-left: 0px; width:auto ; height: auto;
-
-position:fixed; z-index:999999; overflow: auto;
-
-}
-
-@keyframes backfadesin {
-
-  from { opacity:0; }
-
-  to {opacity:.5;}
-
-}
-
-@-moz-keyframes backfadesin {
-
-   from { opacity:0; }
-
-   to {opacity:.5;}
-
-}
-
-@-webkit-keyframes backfadesin {
-
-   from { opacity:0; }
-
-   to {opacity:.5;}
-
-}
-
-@-o-keyframes backfadesin {
-
-   from { opacity:0; }
-
-   to {opacity:.5;}
-
-}
-
-@-ms-keyframes backfadesin {
-
-   from { opacity:0; }
-
-   to {opacity:.5;}
-
-}
-
-@keyframes fadesin {
-
-  0%{ opacity:0; }
-
-  50%{ opacity:0; }
-
-  75% {opacity: 0; transform: translateY(20px);}
-
-  100% {opacity: 1; transform: translateY(0);}
-
-}
-
-@-moz-keyframes fadesin {
-
-  0%{ opacity:0; }
-
-  50%{ opacity:0; }
-
-  75% {opacity: 0; -moz-transform: translateY(20px);}
-
-  100% {opacity: 1; -moz-transform: translateY(0);}
-
-}
-
-@-webkit-keyframes fadesin {
-
-  0%{ opacity:0; }
-
-  50%{ opacity:0; }
-
-  75% {opacity: 0; -webkit-transform: translateY(20px);}
-
-  100% {opacity: 1; -webkit-transform: translateY(0);}
-}
-
-@-o-keyframes fadesin {
-
-  0%{ opacity:0; }
-
-  50%{ opacity:0; }
-
-  75% {opacity: 0; -o-transform: translateY(20px);}
-
-  100% {opacity: 1; -o-transform: translateY(0);}
-
-}
-
-@-ms-keyframes fadesin {
-
-  0%{ opacity:0; }
-
-  50%{ opacity:0; }
-
-  75% {opacity: 0; -ms-transform: translateY(20px);}
-
-  100% {opacity: 1; -ms-transform: translateY(0);}
-
-}
-/*css for small size screns like Iphone 5s/SE */
-@media screen and (max-width: 414px) {
-    .overlay-card{
-        left: 0px !important;
-    }
-}
-@media screen and (max-width: 320px) {
-    .overlay-card{
-        left: 0px !important;
-    }
-    #fc-embed-frame{
-        width:270px !important;
-    }
-}
-
-</style>
-
-<style>
-
-.fc-lightbox-loader {
-
- color: #EEEEEE; font-size: 90px; text-indent: -9999em; overflow: hidden; width: 1em; height: 1em; border-radius: 50%; position:absolute; float: right; right: 45.5%; top: 35%;  transform: translateZ(0); -moz-transform: translateZ(0); -webkit-transform: translateZ(0); -o-transform: translateZ(0);-ms-transform: translateZ(0); animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; -moz-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; -webkit-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease;  -o-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; -ms-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease;
-
-}
-
-.fc-direct-embed-loader {
-
-color: #777777; font-size: 90px; text-indent: -9999em; overflow: hidden; width: 1em; height: 1em; border-radius: 50%; position:relative; margin: 0 auto 0 auto; transform: translateZ(0); -moz-transform: translateZ(0); -webkit-transform: translateZ(0); -o-transform: translateZ(0);-ms-transform: translateZ(0); animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; -moz-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; -webkit-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease;  -o-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; -ms-animation: fcload6 1.7s infinite ease, fcround 1.7s infinite ease; z-index: 1; display:none;
-
-}
-
-.fc-embed-main-box {
-
-opacity:1; display:none; margin: 0 auto 0 auto; width:100%; position:relative; z-index:2; top: 0px;
-
-}
-
-@keyframes fcload6 {
-
- 0% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 5%,95% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 10%,59% {box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;}
-
- 20% {box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;}
-
- 38% {box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em}
-
- 100% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
-}
-
-@-moz-keyframes fcload6 {
-
- 0% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 5%,95% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 10%,59% {box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;}
-
- 20% {box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;}
-
- 38% {box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em}
-
- 100% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
-}
-
-@-webkit-keyframes fcload6 {
-
- 0% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 5%,95% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 10%,59% {box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;}
-
- 20% {box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;}
-
- 38% {box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em}
-
- 100% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
-}
-
-@-o-keyframes fcload6 {
-
- 0% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 5%,95% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 10%,59% {box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;}
-
- 20% {box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;}
-
- 38% {box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em}
-
- 100% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
-}
-
-@-ms-keyframes fcload6 {
-
- 0% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 5%,95% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
- 10%,59% {box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;}
-
- 20% {box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;}
-
- 38% {box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em}
-
- 100% {box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;}
-
-}
-
-@keyframes fcround {
-
- 0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
-
- 100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}
-
-}
-
-@-moz-keyframes fcround {
-
- 0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
-
- 100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}
-
-}
-
-@-webkit-keyframes fcround {
-
- 0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
-
- 100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}
-
-}
-
-@-o-keyframes fcround {
-
- 0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
-
- 100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}
-
-}
-
-@-ms-keyframes fcround {
-
- 0% {-webkit-transform: rotate(0deg);transform: rotate(0deg);}
-
- 100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}
-
-}
-
-</style>
-<script>
-
-function open_window(cause_id,domain_link) {
-
-var  protocol=String(document.location.protocol);
-
-var new_url;
-
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-
-//new_url="https://www."+ domain_link +"/widget/"+cause_id
-new_url="https://"+ domain_link +"/widget/"+cause_id
-
-window.open(new_url);
-
-}
-
-else {
-
-document.getElementById("fc-lightbox-loader").style.display="block";
-
-document.getElementById("fc-fade").style.display="block";
-
-document.getElementById("fc-fade").style.webkitAnimation="backfadesin .5s";
-
-document.getElementById("fc-fade").style.animation="backfadesin .5s";
-
-document.getElementById("fc-fade").style.mozAnimation="backfadesin .5s";
-
-document.getElementById("fc-light").style.display="block";
-
-document.getElementById("fc-light").style.webkitAnimation="fadesin 0s";
-
-document.getElementById("fc-light").style.animation="fadesin 0s";
-
-document.getElementById("fc-light").style.mozAnimation="fadesin 0s";
-
-document.getElementById("fc-main").style.display="block";
-
-document.getElementById("fc-main").style.webkitAnimation="fadesin 2.2s";
-
-document.getElementById("fc-main").style.animation="fadesin 2.2s";
-
-document.getElementById("fc-main").style.mozAnimation="fadesin 2.2s";
-
-document.getElementById("fc-close").style.display="block";
-
-document.getElementById("fc-close").style.webkitAnimation="fadesin 2.2s";
-
-document.getElementById("fc-close").style.animation="fadesin 2.2s";
-
-document.getElementById("fc-close").style.mozAnimation="fadesin 2.2s";
-
-document.getElementById("fc-myFrame").style.display="block";
-
-document.getElementById("fc-myFrame").style.webkitAnimation="fadesin 2.2s";
-
-document.getElementById("fc-myFrame").style.animation="fadesin 2.2s";
-
-document.getElementById("fc-myFrame").style.mozAnimation="fadesin 2.2s";
-
-//document.getElementById("fc-myFrame").src="https://www."+ domain_link +"/widget/"+cause_id;
-
-document.getElementById("fc-myFrame").src="https://"+ domain_link +"/widget/"+cause_id;
-
-}
-
-}
-
-function close_window() {
-
-document.getElementById("fc-lightbox-loader").style.display="none";
-
-document.getElementById("fc-fade").style.display="none";
-
-document.getElementById("fc-light").style.display="none";
-
-document.getElementById("fc-main").style.display="none";
-
-document.getElementById("fc-close").style.display="none";
-
-document.getElementById("fc-myFrame").style.display="none";
-
-}
-
-function embed_frame(cause_id,domain_link) {
-
-document.getElementById("fc-embed-loader").style.display="block";
-
-document.getElementById("fc-embed-main-box").style.display="block";
-
-document.getElementById("fc-embed-main-box").style.webkitAnimation="fadesin 2s";
-
-document.getElementById("fc-embed-main-box").style.animation="fadesin 2s";
-
-document.getElementById("fc-embed-main-box").style.mozAnimation="fadesin 2s";
-
-document.getElementById("fc-embed-frame").style.display="block";
-
-document.getElementById("fc-embed-frame").style.webkitAnimation="fadesin 2s";
-
-document.getElementById("fc-embed-frame").style.animation="fadesin 2s";
-
-document.getElementById("fc-embed-frame").style.mozAnimation="fadesin 2s";
-
-//document.getElementById("fc-embed-frame").src="https://www."+ domain_link +"/widget/"+cause_id;
-
-document.getElementById("fc-embed-frame").src="https://"+ domain_link +"/widget/"+cause_id;
-
-}
-
-</script>
-
-<div id="fc-fade" class="fc-black_overlay" onclick="close_window()"></div>
-
-<div id="fc-light" class="fc-white_content"><div id="fc-lightbox-loader" class="fc-lightbox-loader"></div>
-
-<div id="fc-main" class="fc-main-box"><div id="fc-close" class="fc-widget_close" onclick="close_window()"></div>
-
-<iframe id="fc-myFrame" iframe height="580" width="925" style="border: 0;border-radius:5px 5px 5px 5px; box-shadow:0 0 8px rgba(0, 0, 0, 0.5);background:#fff;" scrolling="no" src=""></iframe>
-
-</div></div>
-
-<!--END Flipcause Main Integration Code-->  <link rel="stylesheet" href="https://www.mountmadonna.org//assets/css/regform.css?v=1">
-  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css">
 </head>
-<body class="bg-teal">
-
-  
-
-<header class="js-nav-main nav-main right-align absolute z3 top-0 left-0 full-width">
-
-    <div class="break5-hide nav-main__logo-outter absolute z3 left-0 ml-3">
-    <div class="container">
-      <div class="col col-12">
-
-        <a href="https://www.mountmadonna.org/" class="nav-main__logo-container fill-white fill-white--dark--hover block z2">
-                      <img src="https://www.mountmadonna.org//assets/img/logo/mount-madonna-center.png" title="Mount Madonna Center">
-                  </a>
-
-      </div>
-    </div>
-  </div>
-    <div class="nav-main__trigger-container z2 my-4">
-    <div class="container">
-
-      <div class="white col col-12">
-        <button class="js-nav-main--trigger nav-main__trigger button button--small button--transparent">
-          <span class="nav-main__trigger__hamburger">
-            <span class="nav-main__trigger__hamburger__filling--1"></span>
-            <span class="nav-main__trigger__hamburger__filling--2"></span>
-            <span class="nav-main__trigger__hamburger__filling--3"></span>
-            <span class="nav-main__trigger__hamburger__filling--4"></span>
-          </span>
-          Menu
-        </button>
-      </div>
-
-    </div>
-  </div>
-    <nav class="nav-main__container white flex flex-wrap row">
-        <div class="nav-main__upper right-align full-width overflow-visible bg-teal">
-      <div class="absolute z1 trbl-0 bg-nav-btn"></div>
-      <div class="small z2 container">
-        <div class="break5-show absolute z2 top-0 left-0 col">
-          <a href="https://www.mountmadonna.org/" class="nav-main__logo-container fill-white fill-white--dark--hover block z2">
-                          <img src="https://www.mountmadonna.org//assets/img/logo/mount-madonna-center.png" title="Mount Madonna Center">
-                      </a>
-        </div>
-
-        <div class="flex flex-wrap justify-end items-center col col-12">
-          
-                      <a href="https://donate.mountmadonna.org" class="nav-main__link nav-main__link--upper white white--dark--hover fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Donate</a>
-                      <a href="https://www.mountmadonna.org/calendar" class="nav-main__link nav-main__link--upper white white--dark--hover fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Calendar</a>
-                      <a href="https://www.mountmadonna.org/community" class="nav-main__link nav-main__link--upper white white--dark--hover fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Community</a>
-                      <a href="https://www.mountmadonna.org/work-at-mmc" class="nav-main__link nav-main__link--upper white white--dark--hover fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Opportunities</a>
-                      <a href="https://www.mountmadonna.org/contact" class="nav-main__link nav-main__link--upper white white--dark--hover fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Contact</a>
-          
-          <form autocomplete="off" class="nav-main__search-form inline-block z1" action="https://www.mountmadonna.org/search">
-            <label class="hide" for="search">Search</label>
-            <input required id="search" class="input--transparent" type="search" name="q" placeholder="Search:">
-            <button class="nav-main__search-form__button fill-white--dark fill-white--hover" type="submit">
-              <svg><use xlink:href="https://www.mountmadonna.org//assets/sprite/sprite.svg#search"></use></svg>
-            </button>
-          </form>
-        </div>
-
-      </div>
-    </div>
-        <div class="nav-main__lower right-align full-width">
-      <div class="container">
-
-        
-        <div class="pt-3 sm-pt-4 col col-12">
-          
-                      
-            <a href="https://www.mountmadonna.org/visit" class="nav-main__link white white--dark--hover small lg-h6 caps fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Visit</a>
-                      
-            <a href="https://www.mountmadonnainstitute.org/wellnesscenter" class="nav-main__link white white--dark--hover small lg-h6 caps fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="_blank">Wellness Center</a>
-                      
-            <a href="https://www.mountmadonna.org/online-offerings" class="nav-main__link white white--dark--hover small lg-h6 caps fstyle-normal sans-serif bold z1 px-2 md-px-3 lg-px-4" target="">Online Offerings</a>
-                                                
-            <a href="https://www.mountmadonna.org/host-your-group" class="nav-main__link white white--dark--hover small lg-h6 caps fstyle-normal sans-serif bold z1 px-2 md-pr-0 md-pl-3 lg-pl-4" target="">Host Your Group</a>
-                  </div>
-
-      </div>
-    </div>
-  </nav>
-</header>
-
-	<main class="bg-offWhite" role="main">
-		  
-
-<section class="hero white center table full-width bg-teal--dark overflow-hidden">
-                
-    <div class="absolute z1 trbl-0 bg-loading">
-      <div class="b-lazy absolute z1 trbl-0 bg-center bg-cover bg-no-repeat" data-src="https://cdn.mountmadonna.org/shiva-hero.jpg"></div>
-      <div class="absolute z2 trbl-0 bg-black opacity-50"></div>
-    </div>
-      <div class="table-cell z2 full-width va-middle">
-    <div class="container mt-5 sm-mt-6">
-
-      <div class="col col-12">
-        <h1 class="h2 sm-h1 text-shadow m-0">Registration - Step 1</h1>
-              </div>
-
-    </div>
-  </div>
-
-</section>
-<!-- /hero -->
-
-<nav class="breadcrumbs white small sans-serif left-align bold flex bg-teal full-width clearfix overflow-hidden">
-  <div class="absolute z1 trbl-0 bg-nav-btn"></div>
-  <div class="breadcrumbs__container flex z2 container">
-
-    <div class="flex items-center overflow-hidden col col-12">
-      <a href="https://www.mountmadonna.org/" class="no-shrink white--dark white--hover inline-block py-3 sm-py-4">Home</a>
-
-            
-      
-        <span class="white--dark no-shrink px-2 py-3 sm-py-4">&frasl;</span>
-
-        
-        
-        <span class="no-shrink inline-block py-3 sm-py-4">Registration - Step 1</span>
-
-      
-      
-    </div>
-
-  </div>
-</nav>
-
-  <section class="py-5 sm-py-6">
-  <div class="z2 flex flex-wrap content-stretch container">
-
-      <!--  BEGIN templates/views/reg-forms/reg1  -->
-
-      [% IF pid == 4815 %]
+<body>
+[% IF pid == 4815 %]
     [% tuition = ', 3HO Program Fee,' %]
 [% END %]
-         <div class="left col-12 mainForm">
-        <form autocomplete="off"
-              class="col--inline-block col-12 z1"
-              method=POST
-              name=reg
-              action="/cgi-bin/reg2?id=$pid"
-              onSubmit="return confirm();"
-              enctype="multipart/form-data"
-        >
 
-			<div class="program_information">
-				<h3 class="teal">Program Information</h3>  
-				<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+<form autocomplete="off"
+      method=POST
+      name=reg
+      action="/cgi-bin/reg2?id=$pid"
+      onSubmit="return confirm();"
+      enctype="multipart/form-data"
+>
 
-
+<h3>Program Information</h3>  
 [% IF mountain_experience %]
-<legend>You are registering for a Mountain Experience.</legend>
+You are registering for a Mountain Experience.
 <ul>
 Date: ${sdate.format("%A, %B %e, %Y")}<p>
 Meals: $meals<br>
@@ -695,185 +29,159 @@ Activities: $activities
 <input type=hidden name=meals value='$meals'>
 <input type=hidden name=activities value='$activities'>
 <input type=hidden name=children_name_age value='$children_name_age'>
-                [% ELSIF pr %]
+[% ELSIF pr %]
+    You are registering for a Personal Retreat.
+    <p>
+    $pr_dates
+    [% IF outdoors %]
+        <p>Outdoor housing only.
+    [% END %]
+    [% IF no_center_tents %]
+        <p>Center tents are not available.
+    [% END %]
+[% ELSE %]
+    You are registering for:
+    <p>
+    [% IF two_pics %]
+        <img src='$image1'><br>
+        <img src='$image2'>
+    [% ELSIF one_pic %]
+        <img src='$image1'>
+    [% END %]
+    <dl>
+    <dt>Program:</dt>
+    <dd>$title</dd>
 
-                <legend>You are registering for a Personal Retreat.</legend>
+    <dt>Dates:</dt>
+    <dd>$dates</dd>
 
-                    <!-- couldn't use <p> had to use <br><br> why? -->
-
-                    <div class=pr_dates>
-                    $pr_dates
-                    [% IF outdoors %]
-                    <br><br>Outdoor housing only.
-                    [% END %]
-                    [% IF no_center_tents %]
-                    <br><br>Center tents are not available.
-                    [% END %]
-                    </div>
-
-                [% ELSE %]
-                    <legend>You are registering for:</legend>
-                                <br style="clear:both;"/>        
-                    [% IF two_pics %]
-                        <span class="vertical_center">
-									<img class="max-width-160" src='$image1'>
-									<img class="max-width-160" src='$image2'>
-								</span>
-                    [% ELSIF one_pic %]
-							  <span class="vertical_center">
-									<img  class="max-width-160" src='$image1'>
-								</span>
-                    [% END %]
-
-							  <span class="vertical_center">
-								  <dl class="progList">
-										<dt>Program:</dt>
-										<dd>$title</dd>
-	 
-										<dt>Dates:</dt>
-										<dd>$dates</dd>
-						  
-										[% IF leader_names %]
-
-										<dt>Presenter:</dt>
-										<dd>$leader_names</dd>
-										[% END %]
-								  </dl>
-							  </span>
-                [% END %]
-
-               [% IF ! housing_not_needed %]
-                   [% IF type == 'Total' %]
-                       <p>
-                       The prices below are the total charges for lodging$tuition and all meals.
-                   [% ELSE %]
-                       <p>
-                       The prices below are Per Person Per Day and include $bdays night$bdays_pl lodging$tuition and all meals.
-                   [% END %]
-               [% END %]
-
-               [% IF confnote %]
-               <p>
-               $confnote
-               [% END %]
-               [% IF reg_msg %]
-               <p>
-               $reg_msg
-               [% END %]
-                
-                                
-
-					<br style="clear:both;"/>        
-         </div>  
-      
-                <input type=hidden value="$test" name=test >
-                <input type=hidden value="$dir" name=dir>
-                <input type=hidden value="$title" name=title>
-                <input type=hidden value="$dates" name=dates>
-                <input type=hidden value="$leader_names" name=leader_names>
-                <input type=hidden value="$name" name=name>
-                <input type=hidden value="$plink" name=plink>
-                <input type=hidden value="$pid" name=pid>
-                <input type=hidden value="$mountain_experience" name=mountain_experience>
-
-                [% IF pr %]
-                    <input type=hidden name=sdate value=$sdate>
-                    <input type=hidden name=edate value=$edate>
-                [% END %]
-
-
-
-
-            [% IF basicfull %]
-                    
-                <div class="program_length">
-                    
-                    <fieldset> 
-                    <legend>Length of Program</legend>  
-                    
-                    
-                    
-                    <fieldset>
-                        <p><span class="required">*</span>How many days do you want to attend?</p> 
-                        <ol>
-                            <li> 
-                                <input id="progchoice1" name="progchoice" class="checkbox" type="radio" value="basic" />  
-                                <label for="progchoice1">$bdays days from $bdates</label>  
-									  </li>
-									  <li> 
-                                <input id="progchoice2" name="progchoice" class="checkbox" type="radio" value="full" />  
-                                <label for="progchoice2">$fdays days from $fdates</label>  
-									  </li>
-								  </ol>
-                        </fieldset>
-                        
-
-                    </fieldset>
-                </div>
-
-            [% ELSE %]
-                        <input type=hidden name=progchoice value=basic>
-            [% END %]
-                    
-<input type=hidden name=covid_vax value=$covid_vax>
-[% IF covid_vax %]
-<div class="personal">
-<fieldset>
-<h3 class="teal">Covid 19 Protocols</h3>
-<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div>
-<!-- not any more for now ... 2/8/22
-<b>Masks</b>: The Santa Cruz County Health Department recently
-reinstated an indoor mask mandate requiring face coverings
-for everyone regardless of vaccination status.
-<p>
--->
-<span style="font-weight: bold; color: red;">Covid 19 Vaccinations</span>: 
-Proof of full Covid vaccination is required with registration for all
-guests of MMC.  Note that our Covid policies may change between
-now and the time of your program.
-We will keep you informed of any such changes.
-<!--
-Due to the current escalation of cases of Covid-19 nationwide, we have
-determined the most responsible thing for the safety of all residents
-and guests is that everyone coming to MMC
-<span class=covid_must>must</span> be fully vaccinated.
--->
-<p>
-Please take a picture of your vaccination card and upload it here:
-<p>
-<span class="required">*</span> <input type=file name=card>
-</fieldset>
-</div>
+    [% IF leader_names %]
+        <dt>Presenter:</dt>
+        <dd>$leader_names</dd>
+    [% END %]
+    </dl>
 [% END %]
-                    
-                    
-                    
-                    <div class="personal">                        
-                        <fieldset> 
-							<h3 class="teal">Registrant Information</h3>  
-							<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div>
-		                    <ol>
-                                <li>
 
-									<label for="fname"><span class="required">*</span> First Name:</label>
-									<input type="text" name="fname" id="fname" value="$fname" onchange="validatePresent(this, 'msg_fname');" class="input" placeholder="First Name"/>
-									<span class="help" id="msg_fname"></span>
-                                </li>
-                                <li>
-									<label for="lname"><span class="required">*</span> Last Name:</label>
-									<input type="text" name="lname" id="lname" value="$lname"  onchange="validatePresent(this, 'msg_lname');" class="input" placeholder="Last Name"/>
-									<span class="help" id="msg_lname"></span>
-				                  </li>
-                                <li>
-									<label for="aname">Alternate Name:</label>
-									<input type="text" name="aname" id="aname" value="$aname"  onchange="validatePresent(this, 'msg_aname');" class="input" placeholder="Alternate name for name tag (defaults to First)"/>
-				                  </li>
-                            </ol>
+[% IF ! housing_not_needed %]
+    [% IF type == 'Total' %]
+        <p>
+        The prices below are the total charges for lodging$tuition
+        and all meals.
+    [% ELSE %]
+        <p>
+        The prices below are Per Person Per Day and include
+        $bdays night$bdays_pl lodging$tuition and all meals.
+    [% END %]
+[% END %]
 
-<fieldset>
-<p><span class="required">*</span> Gender Identity<br>(for housing purposes):</p> 
-<ol>
-<li>
+[% IF confnote %]
+    <p>
+    $confnote
+[% END %]
+[% IF reg_msg %]
+    <p>
+    $reg_msg
+[% END %]
+
+<input type=hidden value="$test" name=test >
+<input type=hidden value="$dir" name=dir>
+<input type=hidden value="$title" name=title>
+<input type=hidden value="$dates" name=dates>
+<input type=hidden value="$leader_names" name=leader_names>
+<input type=hidden value="$name" name=name>
+<input type=hidden value="$plink" name=plink>
+<input type=hidden value="$pid" name=pid>
+<input type=hidden value="$mountain_experience" name=mountain_experience>
+
+[% IF pr %]
+    <input type=hidden name=sdate value=$sdate>
+    <input type=hidden name=edate value=$edate>
+[% END %]
+
+[% IF basicfull %]
+    Length of Program
+    <p>
+    <span class="required">*</span>How many days do you want to attend?</p> 
+    <ol>
+    <li> 
+    <input id="progchoice1" name="progchoice" type="radio" value="basic" />  
+    <label for="progchoice1">$bdays days from $bdates</label>  
+    </li>
+    <li> 
+    <input id="progchoice2" name="progchoice" type="radio" value="full" />  
+    <label for="progchoice2">$fdays days from $fdates</label>  
+    </li>
+    </ol>
+[% ELSE %]
+    <input type=hidden name=progchoice value=basic>
+[% END %]
+
+<input type=hidden name=covid_vax value=$covid_vax>
+
+[% IF covid_vax %]
+    <h3>Covid 19 Protocols</h3>
+    <!-- not any more for now ... 2/8/22
+    <b>Masks</b>: The Santa Cruz County Health Department recently
+    reinstated an indoor mask mandate requiring face coverings
+    for everyone regardless of vaccination status.
+    <p>
+    -->
+    <span style="font-weight: bold; color: red;">Covid 19 Vaccinations</span>: 
+    Proof of full Covid vaccination is required with registration for all
+    guests of MMC.  Note that our Covid policies may change between
+    now and the time of your program.
+    We will keep you informed of any such changes.
+    <!--
+    Due to the current escalation of cases of Covid-19 nationwide, we have
+    determined the most responsible thing for the safety of all residents
+    and guests is that everyone coming to MMC
+    <span class=covid_must>must</span> be fully vaccinated.
+    -->
+    <p>
+    Please take a picture of your vaccination card and upload it here:
+    <p>
+    <span class="required">*</span> <input type=file name=card>
+    </div>
+[% END %]
+
+<h3>Registrant Information</h3>  
+<table cellpadding=5>
+
+<tr>
+<th>
+<span class="required">*</span> First Name:
+</th>
+<td><input type="text" name="fname" id="fname"
+           value="$fname" placeholder="First Name"/>
+</td>
+</tr>
+
+<tr>
+<th>
+<span class="required">*</span> Last Name:
+</th>
+<td><input type="text" name="lname" id="lname"
+           value="$lname" placeholder="Last Name"/>
+</td>
+</tr>
+
+<tr>
+<th>
+<span>*</span> Alternate Name:
+</th>
+<td><input type="text" name="aname" id="aname"
+           value="$aname"
+           placeholder="Alternate name for name tag (defaults to First"/>
+</td>
+</tr>
+
+<tr>
+<th>
+<span class="required">*</span> Gender Identity<br>(for housing purposes):
+<br>
+<a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
+</th> 
+<td>
 <input type=radio name="gender" id="gender1" $female value="female"">
 <label for="gender1">Woman</label><br> 
 
@@ -888,17 +196,9 @@ Please take a picture of your vaccination card and upload it here:
 
 <input type=radio name="gender" id="gender5" $no_resp value="no_resp"> 
 <label for="gender5">Prefer not to respond</label><br>
+</td>
+</tr>
 
-</li>
-
-<li>
-<a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
-</li>
-
-</ol>
-</fieldset>
-
-<ol>
 <script>
 function pronouns() {
     var w = window.open('', 'pronoun_win', 'width=400 height=200');
@@ -909,516 +209,20 @@ function pronouns() {
     w.moveTo(700, 0);
 }
 </script>
-<li>
-<label for="pronouns">
-<span class="required">*</span>
-Preferred Pronouns:</label>
-<input type=text name="pronouns" id="pronouns" class="input" $pronouns value="$pronouns" placeholder="To appear on your guest name badge"> 
+
+<tr>
+<th>
+<span class="required">*</span> Preferred Pronouns:
 <br><a href="javascript:pronouns();">Why prounouns matter</a>
-</li>
+</th>
+<td>
+<input type=text name="pronouns" id="pronouns"
+       $pronouns value="$pronouns"
+       placeholder="To appear on your guest name badge"> 
+</td>
+</tr>
+</table>
 
-                                <li>
-									<label for="street1"><span class="required">*</span> Street Line 1:</label>
-									<input type="text" name="street1" id="street1" value="$street1"  onchange="validatePresent(this, 'msg_street1');" class="input" placeholder="Street Line 1"/>
-									<span class="help" id="msg_street1"></span>
-                                </li>
-                                <li>
-									<label for="street2">Street Line 2:</label>
-									<input type="text" name="street2" id="street2" value="$street2"  onchange="validatePresent(this, 'msg_street1');"  class="input" placeholder="Street Line 2"/>
-									<span class="help" id="msg_street2"></span>
-    							  </li>
-                                  <li>
-									<label for="city"><span class="required">*</span> City:</label>
-									<input type="text" name="city" id="city" value="$city"  onchange="validatePresent(this, 'msg_city');"  class="input" placeholder="City"/>
-									<span class="help" id="msg_city"></span>
-                                </li>
-                                <li>
-									<label for="state"><span class="required">*</span> State/Province:</label>
-									<input type="text" name="state" id="state" value="$state" onchange="validatePresent(this, 'msg_state');"  class="input" placeholder="State/Province"/>
-									<span class="help" id="msg_state"></span>
-                                </li>
-                                <li>
-									<label for="zip"><span class="required">*</span> Zip/Postal Code:</label>
-									<input type="text" name="zip" id="zip" value="$zip"  onchange="validatePresent(this, 'msg_zip');"  class="input" placeholder="Zip/Postal Code"/>
-									<span class="help" id="msg_zip"></span>
-                                </li>
-                                <li>
-									<label for="country"> Country:</label>
-									<input type="text" name="country" id="country" value="$country"   class="input" placeholder="Country"/>
-									<span class="help" id="msg_country">Defaults to USA</span>
-                                </li>
-                                <li>
-									<label for="cell"><span class="required">*</span> Telephone:</label>
-									<input type="text" name="cell" id="cell" value="$cell"  class="input" placeholder="Telephone"/>
-									<span class="help" id="msg_cell"></span>
-                                </li>
-                                <li>
-									<label for="email1"><span class="required">*</span> Email:</label>
-									<input type="text" name="email1" id="email1" value="$email1"  class="input" placeholder="Email"/>
-									<span class="help" id="msg_email1"></span>
-                                </li>
-                                <li>
-									<label for="email2"><span class="required">*</span> Email Again:</label>
-									<input type="text" name="email2" id="email2" value="$email2"  class="input" placeholder="Email Again"/>
-									<span class="help" id="msg_email2">Repeated to be sure it is right</span>
-                                </li>
-[% IF ! housing_not_needed %]
-    <li>
-        <label for="car_license">Car License:</label>
-        <input type="text" name="car_license" 
-               id="car_license" value="$car_license"
-               class="input" placeholder="Car License Plate"/>
-        <span class="help" 
-            id="msg_car_license">If you are driving to MMC.</span>
-    </li>
-[% END %]
-                            </ol>
-                        </fieldset>
-                    </div>
-
-
-            [% IF ceu %]
-            
-            
-                    <div class="ceu"> 
-                        <fieldset> 
-                            <h3 class="teal">Continuing Education Credits</h3>  
-														 <div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-
-														 <p>If you are a nurse[% IF mft %], LMFT, or LCSW[% END %] and wish to receive a CEU certificate</p>
-														 <label for="ceu_license">License #:</label>
-														 <input type=text name=ceu_license id="eu_license" value='$ceu_license' class="input">
-														 <span class="help" style="display: inline-block; margin-top: 1em;  color: black;">Like this: RN98765[% IF mft %], MFT43210 or LSW31415[% END %].<br>
-														 If you only want a certificate of completion enter COMP for the license #.
-														 </span>
-
-                        </fieldset>
-                    </div>
-
-            [% END %]
-
-[% IF ! staff_housing && ! housing_not_needed %]    
-                    <div class="housing">
-                    
-                        <fieldset> 
-                            <h3 class="teal">Housing Choice</h3>  
-									 <div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-									 
-									 $dncc_why                         
-									 
-<ul>
-<li>
-Indicate your <em>first</em> <strong>and</strong>
-<em>second</em> choices for housing.
-<li>We will do our best to honor your choices. If neither is available, we will assign the next best option, and waitlist you.
-[% IF ! housing_not_needed %]
-    [% IF type == 'Total' %]
-        <li>Prices are the total charge including meals, lodging$tuition and use of facilities.
-    [% ELSE %]
-        <li>Prices are per person per day and include meals, lodging$tuition and use of facilities.
-    [% END %]
-[% END %]
-<li>Camp sites are walk-in style with parking nearby.
-[% IF covid_vax %]
-<li><span style="color: red; font-weight: bold; font-size: 18pt;">COVID-19 Notice</span>
-<ul style='background: #ffe5e5; padding: 10px;'>
-<li>Covid waivers are required.
-[% IF strangers_share != 'yes' %]
-<li>Shared accommodations (Dormitory, Triple, Double) may only be reserved
-for families/friends registering together.  If you are coming alone
-you must choose a Single accomodation.
-[% END %]
-</ul>
-[% END %]
-<p>
-<li>If you have a <b>physical disability</b> that limits where you can be housed, please note this in &ldquo;Additional Requests&rdquo; below.
-<li>All individuals must be registered separately.
-</ul>
-
-									 <table border=0>
-									 <tr>
-									 <th class="housing-col1">1st</th>
-									 <th class="housing-col2">2nd</th>
-									 <th class="housing-col3">Housing</th>
-									 [% IF ! do_not_compute_costs %]
-											 [% IF basicfull %]
-											 <th class="housing-col4">Cost for<br />$bdays days</th>
-											 <th class="housing-col4">Cost for<br />$fdays days</th>
-											 [% ELSIF next_hc %]
-													 <th class="housing-col4">Cost<br>through<br>$through_date </th>
-													 <th class="housing-col4">Cost on<br>and after<br>$next_date</th>
-											 [% ELSE %]
-													 <th class="housing-col4">Cost</th>
-											 [% END %]
-									 [% END %]
-									 </tr>
-									 $housing_fees
-									 </table>
-
-									 <fieldset>
-										  <p>If you are sharing your housing with someone, put their name here:</p>
-												<ol>
-													<li>
-														<label for="withwhom_first">First</label>
-														<input type=text name="withwhom_first" id="withwhom_first" value="$withwhom_first" class="input">
-														<span class="helpRed">Make sure that they register <i>separately</i>.</span>
-													</li>
-													<li>
-
-														<label for="withwhom_last">Last</label>
-														<input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last" class="input">
-												</li>
-											</ol>
-
-									  </fieldset>
-
-									  <fieldset>
-									  <p>If given a choice, would you prefer a cabin or a room?<br>
-									  <a href="javascript:popup('/registration-help/cabins_vs_rooms_snippet.html',500,700)">What's the difference?</a></p> 
-											<ol>
-												<li>
-													<input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin style="cabin">
-													<label for="cabin_room1">Cabin - heat and electricity, but no indoor plumbing</label>  
-												</li>
-												<li>
-
-													<input type=radio name=cabin_room id=cabin_room2 value=room $room>  
-													<label for="cabin_room2">Room</label>  
-											</li>
-										</ol>
-									  </fieldset>
-
-									  
-                        </fieldset>
-                    </div>
-[% END %]
-
-<div class="prefs">
-[% IF donation %]
-<fieldset>
-<h3 class="teal">Tuition</h3>  
-<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-$donation_msg
-$donation_input
-</fieldset>
-[% END %]
-<fieldset>
-<h3 class="teal">Gift Card</h3>  
-<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-<ol>
-<li>
-<input type=text name=gift_card id=gift_card class="input"> 
-<label for="gift_card">Gift Card code for Payment</label>
-</li>
-</ol>
-</fieldset>
-[% IF discount_code %]
-<fieldset>
-<h3 class="teal">Discount Code</h3>  
-<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-<ol>
-<li>
-<input type=text name=disc_code id=disc_code class="input"> 
-<label for="disc_code">Code for Discount</label>
-</li>
-</ol>
-</fieldset>
-[% END %]
-</div>                    
-
-
-
-
-                    <div class="prefs">
-                    
-                    <fieldset>
-                            <h3 class="teal">Preferences</h3>  
-														<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-                        
-
-                            [% IF ! pr && ! housing_not_needed %]
-                            <fieldset>
-															<p>Carpooling</p>
-															<ol>
-																<li>
-																	<input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()">
-																	<label for="ride">I wish to offer a ride.</label>
-																</li>
-																<li>
-																	<input type=checkbox name=carpool id=pool value=yes $carpool onchange="toggle_from_where()">
-																	<label for="pool">I wish to carpool.</label>
-																	<span style="margin-left: 1in"><a href="javascript:popup('/registration-help/privacy.html',215,550)">Privacy Concerns?</a></span>
-																</li>
-															</ol>
-															<div id=from_where_id style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm; margin-bottom: 2mm;" class="fw">
-																<ol>
-																		 <li>
-																		<input type=radio name=from_where id=from_where1 value='Home' $home_checked>
-																		<label FOR="from_where1">From Home</label>
-																	</li>
-																	<li>
-
-																		<input type=radio name=from_where id=from_where2 value='SJC' $sjc_checked>
-																		<label for="from_where2">From the San Jose airport</label>
-																	</li>
-																	<li>
-
-																		<input type=radio name=from_where id=from_where3 value='SFO' $sfo_checked>
-																		<label for="from_where3">From the San Francisco airport</label>
-																	</li>
-																</ol>
-															</div>
-														</fieldset>
-                            [% END %]
-    
-[% IF pid != 4815 %] <!-- 3HO -->
-
-                            <fieldset>
-																 <p>How did you first hear about this program?</p>
-<ol>
-<li>
-     <input type=radio name=howHeard id=howHeard1 value=HFS_email_newsletter>
-     <label for="howHeard1">HFS Email/Newsletter</label>
-</li>
-<li>
-     <input type=radio name=howHeard id=howHeard2 value=brochure>
-     <label for="howHeard2">MMC Program Brochure</label>
-</li>
-<li>
-     <input type=radio name=howHeard id=howHeard3 value=flyer>
-     <label for="howHeard3">Flyer or Postcard</label>
-</li>
- <li>
-    <input type=radio
-           name=howHeard
-           id=howHeard4
-           value=ad
-           onclick="document.getElementById('advertiserName').focus();"
-    >
-    <label for="howHeard4">Advertisement in </label>
-
-     <input name=advertiserName
-            id=advertiserName
-            type=text
-            onfocus="document.getElementById('howHeard4').checked = true;"
-     >
-
-</li>
-</ol>
-                            </fieldset>
-[% END %] <!-- 3HO -->
-
-[% IF pid != 4815 %] <!-- 3HO -->
-
-                            <fieldset>
-															<p>Shall we keep you informed of events at Mount Madonna Center?</p>
-															<ol>
-																<li>
-																		<input type=checkbox name=e_mailings id="e_mailings" value=yes $e_mailings> 
-																		<label for="e_mailings">Yes, send me occasional e-mail announcements.</label>
-																</li>
-																<li>
-																		<input type=checkbox name=snail_mailings id=snail_mailings value=yes $snail_mailings>
-																		<label for="snail_mailings">Yes, send me postcards and brochures in the mail.</label>
-																</li>
-																<li>
-																		<input type=checkbox name=share_mailings id=share_mailings value=yes $share_mailings>
-																		<label for="share_mailings">You may share my address with MMC affiliates.</label>
-																</li>
-															</ol>
-                            </fieldset>
-[% END %] <!-- 3HO -->
-
-
-                                                     [% IF kayakalpa %]
-													 <div class="kaya_kalpa">
-														 <span class="vertical_center"><img src="/assets/img/registration/kkwc_logo.jpg" style="vertical-align: middle;"></span>
-
-															<fieldset>
-																<ol>
-																	<li>
-																		 <input type=checkbox name=kayakalpa id=kayakalpa value='yes'>
-																		 <label>Please contact me regarding <a href="https://www.mountmadonnainstitute.org/health-services/kaya-kalpa" target="_blank">massage or other bodywork</a> during my stay.</label>
-																	 </li>                            
-																</ol>
-															</fieldset>
-														</div>
-                                                        [% END %]
-
-[% IF pid != 4815 %] <!-- 3HO -->
-<h3 class="teal">Donation</h3>  
-<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-<div class="green_scene">
-<img style="margin-left: .8in; margin-top: .2in;" src="/assets/img/mmc-teal2.png" style="vertical-align: middle;" width=180>
-<fieldset>
-<ol>
-<li>
-As we work to recover from Covid closures and related expenditures,
-we invite you to consider making a donation to Mount Madonna Center.
-Your gift will support stewardship of this vibrant learning community,
-inspirational environment, and sacred land.<br>
-Mount Madonna Center is a 501(c)(3) charitable organization.
-EIN #51-0174679
-</li>
-<li>
-<input type=text name=green_amount id=green_amount class="input"> 
-<label for="green_amount">Amount</label>
-</li>
-</ol>
-</fieldset>
-</div>  <!-- green scene == Donation -->
-[% END %] <!-- 3HO -->
-
-
-											</fieldset>                    
-                    </div>
-                    <div class="requests">
-                    
-<fieldset> 
-<h3 class="teal">Dietary Restrictions</h3>  
-<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
-<p>
-<input type=text class="input" style="width: 90%" name=diet value="$diet">
-</fieldset>
-                    
-                        <fieldset> 
-                            <h3 class="teal">Additional Requests</h3>  
-														<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
-[% IF ! housing_not_needed || mountain_experience %]
-    [% IF ! pr || (children_welcome && ! mountain_experience) %]
-        Include the following in your additional requests:
-    [% END %]
-    <ul>
-        [% IF ! pr && ! mountain_experience %]
-            <li>Arrival and/or departure dates
-                if they differ from your program's.
-        [% END %]
-        [% IF children_welcome && ! mountain_experience %]
-            <li>The ages and names of children you are bringing, if any.
-            Children 4 years and under are welcome free of charge;
-            for 5-12 years old, fees are discounted 50%.  Please
-            register children 13 years and older
-            separately as an adult.
-        [% END %]
-    </ul>											
-[% END %]
-														<textarea name="request" rows=10  wrap=VIRTUAL></textarea>
-                        </fieldset>            
-                    
-                    </div>
-                    
-                    <div class="notes">
-                    
-												<h3 class="teal">Important Notes</h3>  
-<ul>
-[% IF ! children_welcome && ! housing_not_needed %]
-<li>This program is for adults only - please do not bring your children.
-[% END %]
-[% IF ! collect_total %]
-<li>Balance is due on arrival (Visa, MasterCard, cash or check only).</li>
-[% END %]
-<li>$canpol</li>
-[% IF ! housing_not_needed %]
-<li>This form does not automatically reserve your spot for the program.
-[% IF ! collect_total %]
-You are not registered until we receive your deposit.
-[% END %]
-If the program is full,
-your deposit will be refunded.</li>
-<li>Housing is not always available. <strong>Do not finalize your travel plans</strong> until you have received a housing confirmation from Mount Madonna Center.</li>
-<li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
-[% END %]
-</ul>
-                    </div>
-    
-                    <div class="submit">
-                    
-                        <button type="button" name="back" value="Back to Program" onclick="history.back(); return false;" class="mt-4 button button--programs button--inline" >Back to Program</button>
-
-                    
-                        <button type="submit" name="Submit" value="Continue to Next Step" class="mt-4 button button--programs button--inline" >Continue</button>
-                    
-                    </div>
-
-      <!--  END templates/views/reg-forms/reg1  -->
-
-  </div>
-  </section>
-
-	</main>
-
-  <footer class="white bg-teal bg-footer">
-    <div class="sm-absolute z2 top-0 left-0 full-width border-top b2 border-white"></div>
-  <div class="sm-absolute z1 top-0 left-0 full-width bg-footer-border" style="height: 15px;"></div>
-
-  <div class="z2 py-5 sm-py-6 container">     <div class="flex flex-wrap col col-12">
-
-            <div class="order-last md-order-0 left col-12 sm-col-3">
-        <a href="https://www.mountmadonna.org/" class="footer__logo-container fill-white fill-white--dark--hover block z2">
-                      <img src="https://www.mountmadonna.org//assets/img/logo/mount-madonna-center.png">
-                  </a>
-      </div>
-            <nav class="smallest sans-serif bold uppercase lh-1 mb-5 md-mb-0 left col-12 sm-col-6 md-col-5">
-                  <a href="https://www.mountmadonna.org/programs-retreats" class="white white--dark--hover left mb-3 col-6" target="">Programs &amp; Retreats</a>
-                  <a href="https://www.mountmadonna.org/calendar" class="white white--dark--hover left mb-3 col-6" target="">Calendar</a>
-                  <a href="https://www.mountmadonna.org/community" class="white white--dark--hover left mb-3 col-6" target="">Community</a>
-                  <a href="https://donate.mountmadonna.org/" class="white white--dark--hover left mb-3 col-6" target="">Donate</a>
-                  <a href="https://www.mountmadonna.org/visit" class="white white--dark--hover left mb-3 col-6" target="">Visit</a>
-                  <a href="https://www.mountmadonna.org/blog" class="white white--dark--hover left mb-3 col-6" target="">Blog</a>
-                  <a href="https://www.mountmadonna.org/host-your-group" class="white white--dark--hover left mb-3 col-6" target="">Host Your Group</a>
-                  <a href="https://www.mountmadonna.org/contact" class="white white--dark--hover left mb-3 col-6" target="">Contact</a>
-                  <a href="https://www.mountmadonna.org/transportation-directions" class="white white--dark--hover left mb-3 col-6" target="">Directions</a>
-                  <a href="https://www.mountmadonna.org/baba-hari-dass" class="white white--dark--hover left mb-3 col-6" target="">Baba Hari Dass</a>
-                  <a href="http://eepurl.com/dZfib" class="white white--dark--hover left mb-3 col-6" target="">Newsletter</a>
-                  <a href="https://www.mountmadonna.org/explore/faqs" class="white white--dark--hover left mb-3 col-6" target="">FAQs</a>
-                  <a href="https://www.mountmadonna.org/mount-madonna-center-privacy-policy" class="white white--dark--hover left mb-3 col-6" target="">Privacy Policy</a>
-              </nav>
-
-      <div class="smallest mb-5 md-mb-0 left col-12 sm-col-6 md-col-4">
-                <div class="row">
-          <h5 class="sans-serif bold uppercase va-middle mt-0 mb-4">Follow Us</h5>
-          <a href="https://www.instagram.com/mountmadonnacenter/" class="footer__social__link fill-teal fill-white--hover inline-block bg-white bg-yoga-teacher--hover va-middle" target="">
-            <div class="footer__social__svg-container">
-              <svg><use xlink:href="https://www.mountmadonna.org//assets/sprite/sprite.svg#social--instagram"></use></svg>
-            </div>
-          </a>
-          <a href="https://www.youtube.com/user/MountMadonnaCenter" class="footer__social__link fill-teal fill-white--hover inline-block bg-white bg-yoga-teacher--hover va-middle ml-2" target="">
-            <div class="footer__social__svg-container">
-              <svg><use xlink:href="https://www.mountmadonna.org//assets/sprite/sprite.svg#social--youtube"></use></svg>
-            </div>
-          </a>
-          <a href="http://www.yelp.com/biz/mount-madonna-center-watsonville" class="footer__social__link fill-teal fill-white--hover inline-block bg-white bg-yoga-teacher--hover va-middle ml-2" target="">
-            <div class="footer__social__svg-container">
-              <svg><use xlink:href="https://www.mountmadonna.org//assets/sprite/sprite.svg#social--yelp"></use></svg>
-            </div>
-          </a>
-          <a href="https://www.facebook.com/MountMadonnaCenter/" class="footer__social__link fill-teal fill-white--hover inline-block bg-white bg-yoga-teacher--hover va-middle ml-2" target="">
-            <div class="footer__social__svg-container">
-              <svg><use xlink:href="https://www.mountmadonna.org//assets/sprite/sprite.svg#social--facebook"></use></svg>
-            </div>
-          </a>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <hr style="width: 100%">
-            <h5 class="sans-serif bold uppercase va-middle">Mount Madonna Center</h5>
-            <p>(408) 847-0406</p>
-            <p>Watsonville, CA</p>
-            <p>Overlooking Monterey Bay</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-  
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="https://www.mountmadonna.org/assets/js/vendor/jquery-1.11.1.min.js"><\/script>')</script>
-
-<script src="https://www.mountmadonna.org/assets/js/mount-madonna.min.js?v=0.0.5" type="text/javascript"></script>
-  <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-  <script src="/assets/js/regform.js"></script>
-
+</form>
 </body>
 </html>

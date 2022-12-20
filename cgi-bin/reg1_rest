@@ -1,0 +1,424 @@
+
+<li>
+<label for="street1"><span class="required">*</span> Street Line 1:</label>
+<input type="text" name="street1" id="street1" value="$street1"  onchange="validatePresent(this, 'msg_street1');" class="input" placeholder="Street Line 1"/>
+<span class="help" id="msg_street1"></span>
+</li>
+<li>
+<label for="street2">Street Line 2:</label>
+<input type="text" name="street2" id="street2" value="$street2"  onchange="validatePresent(this, 'msg_street1');"  class="input" placeholder="Street Line 2"/>
+<span class="help" id="msg_street2"></span>
+</li>
+<li>
+<label for="city"><span class="required">*</span> City:</label>
+<input type="text" name="city" id="city" value="$city"  onchange="validatePresent(this, 'msg_city');"  class="input" placeholder="City"/>
+<span class="help" id="msg_city"></span>
+</li>
+<li>
+<label for="state"><span class="required">*</span> State/Province:</label>
+<input type="text" name="state" id="state" value="$state" onchange="validatePresent(this, 'msg_state');"  class="input" placeholder="State/Province"/>
+<span class="help" id="msg_state"></span>
+</li>
+<li>
+<label for="zip"><span class="required">*</span> Zip/Postal Code:</label>
+<input type="text" name="zip" id="zip" value="$zip"  onchange="validatePresent(this, 'msg_zip');"  class="input" placeholder="Zip/Postal Code"/>
+<span class="help" id="msg_zip"></span>
+</li>
+<li>
+<label for="country"> Country:</label>
+<input type="text" name="country" id="country" value="$country"   class="input" placeholder="Country"/>
+<span class="help" id="msg_country">Defaults to USA</span>
+</li>
+<li>
+<label for="cell"><span class="required">*</span> Telephone:</label>
+<input type="text" name="cell" id="cell" value="$cell"  class="input" placeholder="Telephone"/>
+<span class="help" id="msg_cell"></span>
+</li>
+<li>
+<label for="email1"><span class="required">*</span> Email:</label>
+<input type="text" name="email1" id="email1" value="$email1"  class="input" placeholder="Email"/>
+<span class="help" id="msg_email1"></span>
+</li>
+<li>
+<label for="email2"><span class="required">*</span> Email Again:</label>
+<input type="text" name="email2" id="email2" value="$email2"  class="input" placeholder="Email Again"/>
+<span class="help" id="msg_email2">Repeated to be sure it is right</span>
+</li>
+[% IF ! housing_not_needed %]
+<li>
+<label for="car_license">Car License:</label>
+<input type="text" name="car_license" 
+id="car_license" value="$car_license"
+class="input" placeholder="Car License Plate"/>
+<span class="help" 
+id="msg_car_license">If you are driving to MMC.</span>
+</li>
+[% END %]
+</ol>
+</fieldset>
+</div>
+
+
+[% IF ceu %]
+
+
+<div class="ceu"> 
+<fieldset> 
+<h3 class="teal">Continuing Education Credits</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+
+<p>If you are a nurse[% IF mft %], LMFT, or LCSW[% END %] and wish to receive a CEU certificate</p>
+<label for="ceu_license">License #:</label>
+<input type=text name=ceu_license id="eu_license" value='$ceu_license' class="input">
+<span class="help" style="display: inline-block; margin-top: 1em;  color: black;">Like this: RN98765[% IF mft %], MFT43210 or LSW31415[% END %].<br>
+If you only want a certificate of completion enter COMP for the license #.
+</span>
+
+</fieldset>
+</div>
+
+[% END %]
+
+[% IF ! staff_housing && ! housing_not_needed %]    
+<div class="housing">
+
+<fieldset> 
+<h3 class="teal">Housing Choice</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+
+$dncc_why                         
+
+<ul>
+<li>
+Indicate your <em>first</em> <strong>and</strong>
+<em>second</em> choices for housing.
+<li>We will do our best to honor your choices. If neither is available, we will assign the next best option, and waitlist you.
+[% IF ! housing_not_needed %]
+[% IF type == 'Total' %]
+<li>Prices are the total charge including meals, lodging$tuition and use of facilities.
+[% ELSE %]
+<li>Prices are per person per day and include meals, lodging$tuition and use of facilities.
+[% END %]
+[% END %]
+<li>Camp sites are walk-in style with parking nearby.
+[% IF covid_vax %]
+<li><span style="color: red; font-weight: bold; font-size: 18pt;">COVID-19 Notice</span>
+<ul style='background: #ffe5e5; padding: 10px;'>
+<li>Covid waivers are required.
+[% IF strangers_share != 'yes' %]
+<li>Shared accommodations (Dormitory, Triple, Double) may only be reserved
+for families/friends registering together.  If you are coming alone
+you must choose a Single accomodation.
+[% END %]
+</ul>
+[% END %]
+<p>
+<li>If you have a <b>physical disability</b> that limits where you can be housed, please note this in &ldquo;Additional Requests&rdquo; below.
+<li>All individuals must be registered separately.
+</ul>
+
+<table border=0>
+<tr>
+<th class="housing-col1">1st</th>
+<th class="housing-col2">2nd</th>
+<th class="housing-col3">Housing</th>
+[% IF ! do_not_compute_costs %]
+[% IF basicfull %]
+<th class="housing-col4">Cost for<br />$bdays days</th>
+<th class="housing-col4">Cost for<br />$fdays days</th>
+[% ELSIF next_hc %]
+<th class="housing-col4">Cost<br>through<br>$through_date </th>
+<th class="housing-col4">Cost on<br>and after<br>$next_date</th>
+[% ELSE %]
+<th class="housing-col4">Cost</th>
+[% END %]
+[% END %]
+</tr>
+$housing_fees
+</table>
+
+<fieldset>
+<p>If you are sharing your housing with someone, put their name here:</p>
+<ol>
+<li>
+<label for="withwhom_first">First</label>
+<input type=text name="withwhom_first" id="withwhom_first" value="$withwhom_first" class="input">
+<span class="helpRed">Make sure that they register <i>separately</i>.</span>
+</li>
+<li>
+
+<label for="withwhom_last">Last</label>
+<input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last" class="input">
+</li>
+</ol>
+
+</fieldset>
+
+<fieldset>
+<p>If given a choice, would you prefer a cabin or a room?<br>
+<a href="javascript:popup('/registration-help/cabins_vs_rooms_snippet.html',500,700)">What's the difference?</a></p> 
+<ol>
+<li>
+<input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin style="cabin">
+<label for="cabin_room1">Cabin - heat and electricity, but no indoor plumbing</label>  
+</li>
+<li>
+
+<input type=radio name=cabin_room id=cabin_room2 value=room $room>  
+<label for="cabin_room2">Room</label>  
+</li>
+</ol>
+</fieldset>
+
+
+</fieldset>
+</div>
+[% END %]
+
+<div class="prefs">
+[% IF donation %]
+<fieldset>
+<h3 class="teal">Tuition</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+$donation_msg
+$donation_input
+</fieldset>
+[% END %]
+<fieldset>
+<h3 class="teal">Gift Card</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+<ol>
+<li>
+<input type=text name=gift_card id=gift_card class="input"> 
+<label for="gift_card">Gift Card code for Payment</label>
+</li>
+</ol>
+</fieldset>
+[% IF discount_code %]
+<fieldset>
+<h3 class="teal">Discount Code</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+<ol>
+<li>
+<input type=text name=disc_code id=disc_code class="input"> 
+<label for="disc_code">Code for Discount</label>
+</li>
+</ol>
+</fieldset>
+[% END %]
+</div>                    
+
+
+
+
+<div class="prefs">
+
+<fieldset>
+<h3 class="teal">Preferences</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+
+
+[% IF ! pr && ! housing_not_needed %]
+<fieldset>
+<p>Carpooling</p>
+<ol>
+<li>
+<input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()">
+<label for="ride">I wish to offer a ride.</label>
+</li>
+<li>
+<input type=checkbox name=carpool id=pool value=yes $carpool onchange="toggle_from_where()">
+<label for="pool">I wish to carpool.</label>
+<span style="margin-left: 1in"><a href="javascript:popup('/registration-help/privacy.html',215,550)">Privacy Concerns?</a></span>
+</li>
+</ol>
+<div id=from_where_id style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm; margin-bottom: 2mm;" class="fw">
+<ol>
+<li>
+<input type=radio name=from_where id=from_where1 value='Home' $home_checked>
+<label FOR="from_where1">From Home</label>
+</li>
+<li>
+
+<input type=radio name=from_where id=from_where2 value='SJC' $sjc_checked>
+<label for="from_where2">From the San Jose airport</label>
+</li>
+<li>
+
+<input type=radio name=from_where id=from_where3 value='SFO' $sfo_checked>
+<label for="from_where3">From the San Francisco airport</label>
+</li>
+</ol>
+</div>
+</fieldset>
+[% END %]
+
+[% IF pid != 4815 %] <!-- 3HO -->
+
+<fieldset>
+<p>How did you first hear about this program?</p>
+<ol>
+<li>
+<input type=radio name=howHeard id=howHeard1 value=HFS_email_newsletter>
+<label for="howHeard1">HFS Email/Newsletter</label>
+</li>
+<li>
+<input type=radio name=howHeard id=howHeard2 value=brochure>
+<label for="howHeard2">MMC Program Brochure</label>
+</li>
+<li>
+<input type=radio name=howHeard id=howHeard3 value=flyer>
+<label for="howHeard3">Flyer or Postcard</label>
+</li>
+<li>
+<input type=radio
+name=howHeard
+id=howHeard4
+value=ad
+onclick="document.getElementById('advertiserName').focus();"
+>
+<label for="howHeard4">Advertisement in </label>
+
+<input name=advertiserName
+id=advertiserName
+type=text
+onfocus="document.getElementById('howHeard4').checked = true;"
+>
+
+</li>
+</ol>
+</fieldset>
+[% END %] <!-- 3HO -->
+
+[% IF pid != 4815 %] <!-- 3HO -->
+
+<fieldset>
+<p>Shall we keep you informed of events at Mount Madonna Center?</p>
+<ol>
+<li>
+<input type=checkbox name=e_mailings id="e_mailings" value=yes $e_mailings> 
+<label for="e_mailings">Yes, send me occasional e-mail announcements.</label>
+</li>
+<li>
+<input type=checkbox name=snail_mailings id=snail_mailings value=yes $snail_mailings>
+<label for="snail_mailings">Yes, send me postcards and brochures in the mail.</label>
+</li>
+<li>
+<input type=checkbox name=share_mailings id=share_mailings value=yes $share_mailings>
+<label for="share_mailings">You may share my address with MMC affiliates.</label>
+</li>
+</ol>
+</fieldset>
+[% END %] <!-- 3HO -->
+
+
+[% IF kayakalpa %]
+<div class="kaya_kalpa">
+<span class="vertical_center"><img src="/assets/img/registration/kkwc_logo.jpg" style="vertical-align: middle;"></span>
+
+<fieldset>
+<ol>
+<li>
+<input type=checkbox name=kayakalpa id=kayakalpa value='yes'>
+<label>Please contact me regarding <a href="https://www.mountmadonnainstitute.org/health-services/kaya-kalpa" target="_blank">massage or other bodywork</a> during my stay.</label>
+</li>                            
+</ol>
+</fieldset>
+</div>
+[% END %]
+
+[% IF pid != 4815 %] <!-- 3HO -->
+<h3 class="teal">Donation</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+<div class="green_scene">
+<img style="margin-left: .8in; margin-top: .2in;" src="/assets/img/mmc-teal2.png" style="vertical-align: middle;" width=180>
+<fieldset>
+<ol>
+<li>
+As we work to recover from Covid closures and related expenditures,
+we invite you to consider making a donation to Mount Madonna Center.
+Your gift will support stewardship of this vibrant learning community,
+inspirational environment, and sacred land.<br>
+Mount Madonna Center is a 501(c)(3) charitable organization.
+EIN #51-0174679
+</li>
+<li>
+<input type=text name=green_amount id=green_amount class="input"> 
+<label for="green_amount">Amount</label>
+</li>
+</ol>
+</fieldset>
+</div>  <!-- green scene == Donation -->
+[% END %] <!-- 3HO -->
+
+
+</fieldset>                    
+</div>
+<div class="requests">
+
+<fieldset> 
+<h3 class="teal">Dietary Restrictions</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
+<p>
+<input type=text class="input" style="width: 90%" name=diet value="$diet">
+</fieldset>
+
+<fieldset> 
+<h3 class="teal">Additional Requests</h3>  
+<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div> 
+[% IF ! housing_not_needed || mountain_experience %]
+[% IF ! pr || (children_welcome && ! mountain_experience) %]
+Include the following in your additional requests:
+[% END %]
+<ul>
+[% IF ! pr && ! mountain_experience %]
+<li>Arrival and/or departure dates
+if they differ from your program's.
+[% END %]
+[% IF children_welcome && ! mountain_experience %]
+<li>The ages and names of children you are bringing, if any.
+Children 4 years and under are welcome free of charge;
+for 5-12 years old, fees are discounted 50%.  Please
+register children 13 years and older
+separately as an adult.
+[% END %]
+</ul>											
+[% END %]
+<textarea name="request" rows=10  wrap=VIRTUAL></textarea>
+</fieldset>            
+
+</div>
+
+<div class="notes">
+
+<h3 class="teal">Important Notes</h3>  
+<ul>
+[% IF ! children_welcome && ! housing_not_needed %]
+<li>This program is for adults only - please do not bring your children.
+[% END %]
+[% IF ! collect_total %]
+<li>Balance is due on arrival (Visa, MasterCard, cash or check only).</li>
+[% END %]
+<li>$canpol</li>
+[% IF ! housing_not_needed %]
+<li>This form does not automatically reserve your spot for the program.
+[% IF ! collect_total %]
+You are not registered until we receive your deposit.
+[% END %]
+If the program is full,
+your deposit will be refunded.</li>
+<li>Housing is not always available. <strong>Do not finalize your travel plans</strong> until you have received a housing confirmation from Mount Madonna Center.</li>
+<li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
+[% END %]
+</ul>
+</div>
+
+<div class="submit">
+
+<button type="button" name="back" value="Back to Program" onclick="history.back(); return false;" class="mt-4 button button--programs button--inline" >Back to Program</button>
+
+
+<button type="submit" name="Submit" value="Continue to Next Step" class="mt-4 button button--programs button--inline" >Continue</button>
+
+</div>

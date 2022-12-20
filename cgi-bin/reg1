@@ -6,7 +6,7 @@ use CGI qw/:standard/;
 print header();
 use CGI::Carp qw/fatalsToBrowser/;
 
-use lib '.';
+use lib '.','../lib';
 use HousingNames;
 use Date::Simple qw/
     date
