@@ -65,10 +65,10 @@ The Mount Madonna Institute Wellness Center,
 co-located on our campus,
 offers various bodywork treatments, private yoga sessions, and Ayurvedic
 consultations.
-Ayurveda World, our onsite herb shop, specializes in
+<!-- Ayurveda World, our onsite herb shop, specializes in
 compounded Ayurvedic herbal formulations, handcrafted tinctures,
 oils, other traditional wellness products, and personal herbal
-consultations.
+consultations. -->
 <p>
 Please let your participants know they can arrange for appointments
 prior to their stay by going to <a target=_blank
@@ -117,9 +117,10 @@ and lodging for up to $rental.max
 people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
 to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates below:
 <h2>Rates</h2>
-The Accommodation Costs below are the total cost per person.
-Children aged 2 to 12 staying in the room with a guest will pay 1/2
-of the rates. <b>Please note all guest rooms must be vacated
+The Accommodation Costs below are the costs Per Person Per Day.
+Children aged 5 to 12 staying in the room with a guest will pay 50%
+of the rates.  Children 4 years and under are welcome free of charge.
+<b>Please note that all guest rooms must be vacated
 by 12:00 noon UNLESS OTHERWISE CONTRACTED.</b>
 Room rates include accommodations, all meals, applicable state and
 local taxes, liability insurance, use of grounds, and recreational
