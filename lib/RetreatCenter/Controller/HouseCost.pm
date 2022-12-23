@@ -145,12 +145,6 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
     model($c, 'HouseCost')->find($id)->update(\%hash);
-    for my $r (model($c, 'Rental')->search({
-        housecost_id => $id,
-        sdate => { '>=' => tt_today($c)->as_d8() },
-    })) {
-        $r->send_grid_data();
-    }
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 

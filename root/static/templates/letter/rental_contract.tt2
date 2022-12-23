@@ -63,11 +63,14 @@ We may not be able to fill specific requests thereafter.
 <p>
 We also offer, by appointment through the MMI Wellness Center,
 various bodywork treatments, private yoga sessions, and Ayurvedic
-consultations at Kaya Kalpa. Ayurveda World specializes in
+consultations at Kaya Kalpa. 
+<!--
+Ayurveda World specializes in
 compounded Ayurvedic herbal formulations, handcrafted tinctures,
 oils, and other traditional wellness products. One may also arrange
 for a personal herbal consultation at Ayurveda World by going to
 <a target=_blank href='https://ayurveda-world-herb-store.square.site/herbal-consultations'>herbal consultations</a>.
+-->
 <p>
 Please let your participants know they can arrange for appointments
 any time prior to their stay by going to 
@@ -75,8 +78,10 @@ any time prior to their stay by going to
 by calling 408-846-4075 (Kaya Kalpa),
 or by emailing 
 <a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>.
+<!--
 To reach Ayurveda World, please call 408-847-4385 or go to
 <a target=_blank href='https://www.mountmadonnainstitute.org/health-services/ayurveda-world'>Ayurveda World</a>.
+-->
 <p>
 We will do all we can to make your stay here a warmly supported
 and pleasant one.
@@ -106,12 +111,19 @@ or a comparable facility, and lodging for up to $rental.max
 people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
 to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates:
 <h2>Rates</h2>
+[% IF rental.housecost.type  == 'Per Day' %]
+The rates below are the cost Per Person Per Day.
+[% ELSE %]
+The rates below are the Total cost Per Person.
+[% END %]
+<p>
 $fee_table
 <p>
-Children aged 2 to 12 staying in the room
+Children aged 5 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
 <p>
 <b>Please note all guest rooms must be vacated by 12:00 noon UNLESS OTHERWISE CONTRACTED.</b>
+<p>
 Room rates include accommodations,
 applicable state and local taxes, insurance, meeting space,
 and use of grounds and recreational facilities.

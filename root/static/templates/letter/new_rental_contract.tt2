@@ -73,11 +73,14 @@ consultations. -->
 Please let your participants know they can arrange for appointments
 prior to their stay by going to <a target=_blank
 href='https://www.mountmadonnainstitute.org/wellnesscenter'>Wellness Center</a>,
-calling 408-846-4075, or by emailing <a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>. To reach Ayurveda World, please go to
+calling 408-846-4075, or by emailing <a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>.
+<!--
+To reach Ayurveda World, please go to
 408-846-4075,
 or by emailing kayakalpa@mountmadonna.org.
 To reach Ayurveda World, please go to
 <a target=_blank href='https://www.mountmadonnainstitute.org/health-services/ayurveda-world'>Ayurveda World</a>.
+-->
 <p>
 We are honored that you have chosen Mount Madonna Center
 for your group! We will do all we can to make your stay with
@@ -117,7 +120,11 @@ and lodging for up to $rental.max
 people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
 to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates below:
 <h2>Rates</h2>
-The Accommodation Costs below are the costs Per Person Per Day.
+[% IF rental.housecost.type  == 'Per Day' %]
+The Accommodation Costs below are the cost Per Person Per Day.
+[% ELSE %]
+The Accommodation Costs below are the Total cost Per Person.
+[% END %]
 Children aged 5 to 12 staying in the room with a guest will pay 50%
 of the rates.  Children 4 years and under are welcome free of charge.
 <b>Please note that all guest rooms must be vacated
