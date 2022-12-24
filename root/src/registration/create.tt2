@@ -160,15 +160,22 @@ $h_type_opts
 <th align=right>Referral</th>
 <td>
 <select name=referral>
-<option value="ad"            $ad_checked           >Advertisement</option>
+<option value="mmc_mmi_newsletter" $mmc_mmi_newsletter_checked>MMC or MMI Newsletter</option>
+<option value="hfs_newsletter"     $hfs_newsletter_checked>HFS Newsletter</option>
+<option value="temple_newsletter"  $temple_newsletter_checked>Temple Newsletter</option>
+<option value="social_media"       $social_media_checked>Social Media</option>
+<option value="radio"              $radio_checked>Radio</option>
+<option value="print_ad"           $print_ad_checked>Print Ad or Poster</option>
+<option value="ad"            $ad_checked>Other</option>
 <option value="web"           $web_checked          >Web</option>
 <option value="brochure"      $brochure_checked     >Brochure</option>
 <option value="flyer"         $flyer_checked        >Flyer</option>
 <option value="word_of_mouth" $word_of_mouth_checked>Word of Mouth</option>
 </select>
-</td>
-<th align=right>Ad Source</th>
-<td><input type=text name=adsource value="$adsource"></td>
+&nbsp;&nbsp;
+<b>Ad Source</b>
+&nbsp;
+<input type=text name=adsource value="$adsource"></td>
 </tr>
 
 <tr>

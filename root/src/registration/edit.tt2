@@ -131,10 +131,17 @@ After <input type=checkbox value=yes name=rental_after [% rental_after_checked %
 <th align=right>Referral</th>
 <td colspan=5>
 <select name=referral>
-<option value="ad"       [% ad_selected %]      >Advertisement</option>
-<option value="web"      [% web_selected %]     >Web</option>
-<option value="brochure" [% brochure_selected %]>Brochure</option>
-<option value="flyer"    [% flyer_selected %]   >Flyer</option>
+<option value="mmc_mmi_newsletter" $mmc_mmi_newsletter_checked>MMC or MMI Newsletter</option>
+<option value="hfs_newsletter"     $hfs_newsletter_checked>HFS Newsletter</option>
+<option value="temple_newsletter"  $temple_newsletter_checked>Temple Newsletter</option>
+<option value="social_media"       $social_media_checked>Social Media</option>
+<option value="radio"              $radio_checked>Radio</option>
+<option value="print_ad"           $print_ad_checked>Print Ad or Poster</option>
+<option value="ad"            $ad_checked>Other</option>
+<option value="web"           $web_checked          >Web</option>
+<option value="brochure"      $brochure_checked     >Brochure</option>
+<option value="flyer"         $flyer_checked        >Flyer</option>
+<option value="word_of_mouth" $word_of_mouth_checked>Word of Mouth</option>
 </select>
 <b>Ad Source</b>
 <input type=text name=adsource value="[% reg.adsource %]">

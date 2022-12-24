@@ -142,6 +142,25 @@ sub deposit_disp {
     return $self->deposit() || 0;
 }
 
+my %ref_disp = (
+    ad => 'Other',
+    print_ad => 'Print Ad or Poster',
+    social_media => 'Social Media',
+    mmc_mmi_newsletter => 'MMC or MMI Newsletter',
+    temple_newsletter => 'Temple Newsletter',
+    hfs_newsletter => 'HFS Newsletter',
+    radio => 'Radio',
+    web => 'Web',
+    brochure => 'Brochure',
+    flyer => 'Flyer',
+    word_of_mouth => 'Word of Mouth',
+    other => 'Other',
+);
+sub referral_disp {
+    my ($self) = @_;
+    return $ref_disp{$self->referral};
+}
+
 sub h_type_disp {
     my ($self) = @_;
     

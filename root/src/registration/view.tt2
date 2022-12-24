@@ -525,7 +525,7 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp to $py.or
 
 <tr>
 <th align=right>Referral</th>
-<td>$reg.referral $reg.adsource</td>
+<td>$reg.referral_disp $reg.adsource</td>
 </tr>
 
 <tr>

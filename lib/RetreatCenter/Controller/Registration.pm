@@ -3424,8 +3424,12 @@ sub update : Local {
     my $reg = model($c, 'Registration')->find($id);
     my $pr  = $reg->program();
     my $this_ref = $reg->referral || '';
-    for my $ref (qw/ad web brochure flyer word_of_mouth/) {
-        stash($c, "$ref\_selected" => ($this_ref eq $ref)? "selected": "");
+    for my $ref (qw/
+        ad web brochure flyer word_of_mouth 
+        mmc_mmi_newsletter hfs_newsletter temple_newsletter
+        radio print_ad social_media
+    /) {
+        stash($c, "$ref\_checked" => ($this_ref eq $ref)? "selected": "");
     }
     if ($pr->footnotes =~ m{[*]}) {
         stash($c, ceu => 1);
