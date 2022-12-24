@@ -595,6 +595,7 @@ EOF
     }
 
     my $fw = $href->{from_where};
+    $href->{howHeard} ||= 'other';
     stash($c,
         comment         => $href->{request},
         share_first     => normalize($href->{withwhom_first}),
@@ -3427,7 +3428,7 @@ sub update : Local {
     for my $ref (qw/
         ad web brochure flyer word_of_mouth 
         mmc_mmi_newsletter hfs_newsletter temple_newsletter
-        radio print_ad social_media
+        radio print_ad social_media other
     /) {
         stash($c, "$ref\_checked" => ($this_ref eq $ref)? "selected": "");
     }

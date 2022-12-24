@@ -166,7 +166,7 @@ $h_type_opts
 <option value="social_media"       $social_media_checked>Social Media</option>
 <option value="radio"              $radio_checked>Radio</option>
 <option value="print_ad"           $print_ad_checked>Print Ad or Poster</option>
-<option value="ad"            $ad_checked>Other</option>
+<option value="ad"            $other_checked>Other</option>
 <option value="web"           $web_checked          >Web</option>
 <option value="brochure"      $brochure_checked     >Brochure</option>
 <option value="flyer"         $flyer_checked        >Flyer</option>
