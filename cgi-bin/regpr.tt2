@@ -1,25 +1,20 @@
 <html>
 <head>
-<script type='text/javascript'
-        src='//code.jquery.com/jquery-1.8.3.js'></script>
-<link rel="stylesheet"
-      href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<title>Personal Retreat</title>
+<script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
-<script type='text/javascript'
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
 <script type='text/javascript'>
 \$(function(){
-    \$('.input-group.date').datepicker({
-        calendarWeeks: true,
-        todayHighlight: true,
+    \$('.input-daterange').datepicker({
         autoclose: true,
         startDate: '$startDate',
-        endDate: '$endDate',
-        datesDisabled: [ $disabled ],
+        datesDisabled: [ $disabled ]
     });
 });
+
 </script>
 <style>
 body {
@@ -27,7 +22,7 @@ body {
     width: 70%;
 }
 body, input, button, td, th {
-    font-size: 18pt;
+    font-size: 16pt;
 }
 button {
     background: lightgreen;
@@ -35,28 +30,35 @@ button {
 </style>
 </head>
 <body>
+<h1>Personal Retreats at Mount Madonna</h1>
+<img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=250>
+<p>
+<div class='container'>
+
 Please enter the dates of your personal retreat.
 <p>
-<form name=form action=reg1 method=get>
+<form name=form action=reg1 method=get method=POST>
 <input type=hidden name=id value=0>
 <input type=hidden name=dir value=pr>   <!-- needed? -->
 
-<table cellpadding=5>
-<tr>
-<td align=right>Arrival</td>
-<td><input type="date" id="arr_date" name="arr_date"></td>
-</tr>
-<tr>
-<td align=right>Departure</td>
-<td><input type="date" name="dep_date" id="dep_date"></td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td><button type="submit">Submit</button></td>
-</tr>
-</table>
-</form>
+<div class="input-daterange input-group"
+     id="datepicker"
+>
+<input type="text"
+       class="input-sm form-control"
+       name="arr_date"
+       placeholder="Arrival date"
+/>
+<span class="input-group-addon">to</span>
+<input type="text"
+       class="input-sm form-control"
+       name="dep_date"
+       placeholder="Departure date"
+/>
 </div>
+
+<button type="submit">Submit</button>
+</form>
 <p>
 Reservations must be made at least 48 hours in advance.
 [% IF noPR.0 %]
@@ -80,5 +82,7 @@ Reservations must be made at least 48 hours in advance.
     [% END %]
     </ul>
 [% END %]
+
+</div>
 </body>
 </html>

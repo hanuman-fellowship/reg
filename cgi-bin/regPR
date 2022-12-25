@@ -7,7 +7,6 @@ use lib '../lib';
 use Date::Simple qw/
     today
 /;
-my $today = today();
 
 use Util qw/
     db_init
@@ -23,6 +22,7 @@ my (@events) = model($c, 'Event')->search(
         order_by => 'sdate',
     }
 );
+my @disabled;
 my (@noPR, @noPRindoors);
 for my $ev (@events) {
     my ($sdate, $edate) = ($ev->sdate_obj, $ev->edate_obj);
@@ -51,10 +51,17 @@ for my $ev (@events) {
     else {
         push @noPR, $s;
     }
+    for (my $d = $sdate; $d <= $edate; ++$d) {
+        push @disabled, $d->format("%m/%d/%Y");
+    }
 }
 my %stash;
 $stash{noPR} = \@noPR;
 $stash{noPRindoors} = \@noPRindoors;
+my $today = today();
+my $start = $today + 2;
+$stash{startDate} = $start->format("%m/%d/%Y");
+$stash{disabled} = join ', ', map { qq!'$_'! } @disabled;
 
 Template->new(
     INTERPOLATE => 1,

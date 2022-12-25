@@ -1,37 +1,45 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
+
 use Template;
-use CGI qw/:standard/;
-print header();
+use CGI;
 use CGI::Carp qw/fatalsToBrowser/;
+my $q = CGI->new();
+print $q->header();
 
 use lib '.','../lib';
 use HousingNames;
+
 use Date::Simple qw/
     date
     today
 /;
 my $today = today();
+
+use Util qw/
+    db_init
+    model
+    JON
+/;
+my $c = db_init();
+use Global qw/
+    %string
+/;
+Global->init($c, 1, 1);     # to get %strings:
+
 use Time::Simple qw/
     get_time 
 /;
+# ?? needed?
 use JSON 'decode_json';
 use Slurp;
-use DBI;
-use Util qw/
-    JON
-/;
+# ??
 
-#
-# command line params
-#
-my $pid  = param('id');
+my $pid  = $q->param('id');
 
 my %stash;
 $stash{pid}  = $pid;
-
-my $progpath = "/home/reg";
 
 sub oops {
     my ($err) = @_;
@@ -42,7 +50,7 @@ sub oops {
     exit;
 }
 
-my $mountain_experience = param('mountain_experience');
+my $mountain_experience = $q->param('mountain_experience');
 $stash{mountain_experience} = $mountain_experience;
 my $only_outdoors = 0;
 my $no_center_tents = 1;
@@ -55,33 +63,16 @@ if ($pid == 0) {
     # and maybe set a flag to exclude indoor housing below
     #
     # Mountain Experience dates are restricted in regME
-    # TODO - do the same for regPR!
+    # the same is done for Personal Retreats (in regPR)
+    # BUT they may choose a date range that starts
+    # and ends on acceptable dates but includes a date
+    # that is excluded - so we still need to check.
     #
-    #
-    my $arr_date = param('arr_date');       # for PRs and MEs
-    my $dep_date = $mountain_experience? $arr_date: param('dep_date');
-    my ($sdate, $edate);
-    eval {
-        $sdate = Date::Simple->new($arr_date);
-    };
-    if (!$sdate) {
-        oops "Illegal date format for arrival date: $arr_date";
-    }
-    eval {
-        $edate = Date::Simple->new($dep_date);
-    };
-    if (!$edate) {
-        oops "Illegal date for departure date: $dep_date";
-    }
-    if ($sdate && $edate) {
-        $PR_ndays = $edate-$sdate;
-        if ($PR_ndays < 0) {
-            oops "Departure date is not on or after the arrival date!";
-        }
-    }
-    if ($sdate < $today) {
-        oops "Arrival date is in the past!";
-    }
+    my $arr_date = $q->param('arr_date');       # for PRs and MEs
+    my $dep_date = $mountain_experience? $arr_date: $q->param('dep_date');
+    my $sdate = Date::Simple->new($arr_date);
+    my $edate = Date::Simple->new($dep_date);
+    $PR_ndays = $edate-$sdate;
 
     if (! $mountain_experience) {
         my $no_date_file = "$progpath/pr/noPR.txt";
@@ -294,8 +285,6 @@ these various attributes and presents
 it to the user.
 
 if there is cookie information, it will also be used.
-
-=cut
 
 my $href = do "$progpath/progtable";
 # get the PR progtable as well
@@ -577,6 +566,9 @@ elsif ($data->{donation}) {
 EOH
 }
 $stash{donation_input} = $donation_input;
+
+=cut
+
 
 my $tt = Template->new(INTERPOLATE => 1);
 $tt->process(
