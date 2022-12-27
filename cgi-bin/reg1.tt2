@@ -16,28 +16,25 @@
 
 <h3>Program Information</h3>  
 [% IF mountain_experience %]
-You are registering for a Mountain Experience.
-<ul>
-Date: ${sdate.format("%A, %B %e, %Y")}<p>
-Meals: $meals<br>
-Activities: $activities
-[% IF children_name_age %]
-<br>Children: $children_name_age
-[% END %]
-<p>
-</ul>
-<input type=hidden name=meals value='$meals'>
-<input type=hidden name=activities value='$activities'>
-<input type=hidden name=children_name_age value='$children_name_age'>
+    You are registering for a Mountain Experience.
+    <ul>
+    Date: ${sdate.format("%A, %B %e, %Y")}<p>
+    Meals: $meals<br>
+    Activities: $activities
+    [% IF children_name_age %]
+        <br>Children: $children_name_age
+    [% END %]
+    <p>
+    </ul>
+    <input type=hidden name=meals value='$meals'>
+    <input type=hidden name=activities value='$activities'>
+    <input type=hidden name=children_name_age value='$children_name_age'>
 [% ELSIF pr %]
     You are registering for a Personal Retreat.
     <p>
     $pr_dates
     [% IF outdoors %]
         <p>Outdoor housing only.
-    [% END %]
-    [% IF no_center_tents %]
-        <p>Center tents are not available.
     [% END %]
 [% ELSE %]
     You are registering for:

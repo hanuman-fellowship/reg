@@ -41,14 +41,17 @@ td {
 </head>
 <body>
 <h2>
+<img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=150>
+<p>
 [% IF type == 'family' %]
 Meals for HFS Members/Affilates
-<br>
 [% ELSIF type == 'guest' %]
 Meals for Resident Guests and Offland Staff
-<br>
+[% ELSE %]
+Meals at Mount Madonna Center
 [% END %]
 </h2>
+<p>
 You must request meals at least 2 days in advance.
 <span style="margin-left: 1in"><a target=_blank href="https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center">Meal Information</a></span>
 <br>
@@ -135,9 +138,6 @@ You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
 <td><input type=checkbox value=yes name=child3></td>
 </tr>
 </table>
-<p>
-<button class="button teal">Submit</button>
-<p>
 <h3>Prices</h3>
 <table cellpadding=5 border=1>
 <tr>
@@ -161,6 +161,9 @@ You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
 <td class=num>\$$dinner_cost_5_12</td>
 </tr>
 </table>
+<br>
+<button class="button teal">Submit</button>
+<p>
 </form>
 </body>
 </html>
