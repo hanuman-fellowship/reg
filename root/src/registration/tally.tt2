@@ -163,11 +163,12 @@ $rows_don_dis
     <tr>
     <td align=left>$r.name</td>
     <td align=right>$r.count</td>
+    </tr>
 [% END %]
 </table>
 </ul>
 <p>
-<h2>Where heard / Other?</h2>
+<h2>Where Heard</h2>
 <ul>
 [% FOR a IN adsources %]
 $a<br>
