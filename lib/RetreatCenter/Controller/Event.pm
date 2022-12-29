@@ -1837,6 +1837,8 @@ sub _send_no_PRs {
 
 sub _put_pr_dir {
     my ($c, $tmp_fname) = @_;
+
+    return if -f '/tmp/Reg_Dev';
     my $fname = $tmp_fname;
     $fname =~ s{/tmp/}{}xms;
 

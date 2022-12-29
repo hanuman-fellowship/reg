@@ -28,8 +28,9 @@ use Util qw/
 my $c = db_init();
 use Global qw/
     %string
+    init_string
 /;
-Global->init($c, 1, 1);     # to get %strings:
+init_string($c);
 
 use Time::Simple qw/
     get_time 
@@ -259,7 +260,7 @@ if ($pid == 0) {
                             date_end   => { '>=' => $sdate->as_d8() },
                             'program.name' => { -like => '%personal%retreat%' },
                             mountain_experience => '',
-                            cancelled => { '!=' => 'yes' },
+                            'me.cancelled' => { '!=' => 'yes' },
                         },
                         {
                             join     => [qw/ program /],
@@ -419,6 +420,9 @@ else {
 
 =cut
 
+#
+# for 'extra days' programs:
+#
 my $ndays = $prog->edate_obj - $prog->sdate_obj;
 $stash{basicfull} = $prog->extradays;
 $stash{bdays}     = $PR_ndays || $ndays;
@@ -489,22 +493,12 @@ $stash{mft} = $prog->footnotes =~ m{[*][*]};
 $stash{ceu} = $prog->footnotes =~ m{[*]};
 $stash{ceu_license} = $cookie{ceu_license};
 $stash{car_license} = $cookie{car_license};
+$stash{housing_not_needed}
+    = $mountain_experience? 1
+     :                      $prog->housing_not_needed;
 
 =comment
 
-# housing
-#
-my @housekeys = grep { /^basic / } keys %$data;
-
-if (exists $data->{next_hc} && $data->{next_hc}) {
-    $stash{next_hc} = $data->{next_hc};
-    $stash{through_date} = date($data->{next_date})->prev->format("%b %e");
-    $stash{next_date} = date($data->{next_date})->format("%b %e");
-}
-$stash{housing_not_needed} = $mountain_experience? 1
-                            :                      $prog->housing_not_needed;
-my $housing_fees = "";
-HOUSING_TYPE:
 for my $k (sort { $data->{$b} <=> $data->{$a} } @housekeys) {
     if ($data->{$k} == 0) {
         # not available
@@ -555,6 +549,38 @@ EOH
 $stash{housing_fees} = $housing_fees;
 
 =cut
+
+my $hc = $prog->housecost();
+my %sys = map { $_ => 1 } qw/
+    id
+    name
+    type
+    inactive
+/;
+my @fee_rows = sort {
+                   # reverse numeric
+                   $b->{cost} <=> $a->{cost}
+               }
+               map { 
+                   +{
+                        htype      => $_,
+                        house_desc => $string{$_},
+                        cost       => $hc->$_
+                    }
+               }
+               grep {
+                   !($_ eq 'commuting' && $pid == 0)
+                            # per Savita 6/15/22
+                   #??
+                   #&&
+                   #!($only_outdoors && $_ =~ m{single|dble}xms)
+                   &&
+                   !($sys{$_} || $hc->$_ == 0)
+               }
+               $hc->columns();
+
+$stash{house_cost_type} = $hc->type;
+$stash{housing_fee_rows} = \@fee_rows;
 
 # donation - aka Tuition
 my $donation_input;

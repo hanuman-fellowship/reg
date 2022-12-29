@@ -289,6 +289,7 @@ If you only want a certificate of completion enter COMP for the license #.
 </ul>
 [% END %]
 
+<!-- staff housing?? -->
 [% IF ! staff_housing && ! housing_not_needed %]    
     <h3>Housing Choice</h3>  
     <div style='margin-left: .4in'>
@@ -301,7 +302,7 @@ If you only want a certificate of completion enter COMP for the license #.
         If neither is available, we will assign the next best option,
         and waitlist you.
     [% IF ! housing_not_needed %]
-        [% IF type == 'Total' %]
+        [% IF house_cost_type == 'Total' %]
             <li>Prices are the total charge including meals,
                 lodging$tuition and use of facilities.
         [% ELSE %]
@@ -328,19 +329,27 @@ If you only want a certificate of completion enter COMP for the license #.
     <li>All individuals must be registered separately.
     </ul>
 
-    <table border=0>
+    <ul>
+    <table cellpadding=4>
 
     <tr>
     <th>1st</th>
     <th>2nd</th>
-    <th>Housing Type</th>
+    <th class=lt>Housing Type</th>
     [% IF ! do_not_compute_costs %]
         <th>Cost</th>
     [% END %]
     </tr>
-
-    $housing_fees
+    [% FOR r IN housing_fee_rows %]
+        <tr>
+        <td><input type=radio name=house1 value='$r.htype'></td>
+        <td><input type=radio name=house2 value='$r.htype'></td>
+        <td>$r.house_desc</td>
+        <td align=right>$r.cost</td>
+        </tr>
+    [% END %]
     </table>
+    </ul>
 
     <p>If you are <b>sharing</b> your housing with someone, put their name here:</p>
     <ul>

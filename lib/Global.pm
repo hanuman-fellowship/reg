@@ -32,6 +32,8 @@ use Date::Simple qw/
 use base 'Exporter';
 our @EXPORT_OK = qw/
     %string
+    init_string
+
     %system_affil_id_for
     @hfs_affil_ids
 
@@ -57,6 +59,14 @@ our @hfs_affil_ids;
 our $lunch_always_date;
 
 my $scts = 'sys_cache_timestamp';
+
+# exported
+sub init_string {
+    my ($c) = @_;
+    for my $s (Util::model($c, 'String')->all()) {
+        $string{$s->the_key} = $s->value;
+    }
+}
 
 sub init {
     my ($class, $c, $force, $for_grab) = @_;

@@ -12,6 +12,9 @@ td, th, input {
 th {
     text-align: right;
 }
+.lt {
+    text-align: left;
+}
 a {
     text-decoration: none;
     color: blue;
