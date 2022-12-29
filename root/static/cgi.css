@@ -1,0 +1,27 @@
+body {
+    margin: .5in;
+    font-size: 16pt;
+}
+td, th, input {
+    font-size: 16pt;
+}
+.required {
+    color: red;
+    font-weight: bold;
+}
+th {
+    text-align: right;
+}
+a {
+    text-decoration: none;
+    color: blue;
+}
+h3 {
+    color: green;
+}
+li {
+    margin-bottom: 3mm;
+}
+.space {
+    line-height: 8mm;
+}

@@ -125,6 +125,7 @@ center_tent - the display name for the housing type 'center_tent'
 center_tent_end - what mmdd are center tents taken down?
 center_tent_start - what mmdd are center tents put up?
 ceu_lic_fee - how much to charge for issuing a ceu certificate?
+cgi - the cgi-bin/ directory of the site
 click_enlarge - the text to display to tell the user that they can click to enlarge
     a picture of the presenter in a program web page.
 commuting - the display name for the housing type 'commuting'

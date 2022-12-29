@@ -46,10 +46,13 @@ my %stash;
 $stash{pid}  = $pid;
 
 sub oops {
-    my ($err) = @_;
+    my ($err, $back) = @_;
     Template->new(INTERPOLATE => 1)->process(
         'err.tt2',
-        { err => $err },
+        {
+            back => $back,
+            err  => $err 
+        },
     );
     exit;
 }
@@ -59,11 +62,19 @@ $stash{mountain_experience} = $mountain_experience;
 
 my $only_outdoors = 0;
 my $PR_ndays = 0;
+
+# for PRs and MEs:
+my $arr_date = $q->param('arr_date');
+my $dep_date = $mountain_experience? $arr_date: $q->param('dep_date');
+my ($sdate, $edate);
+if ($arr_date) {
+    $sdate = date($arr_date);    # this will not die
+}
+if ($dep_date) {
+    $edate = date($dep_date);
+}
+
 if ($pid == 0) {
-    my $arr_date = $q->param('arr_date');       # for PRs and MEs
-    my $dep_date = $mountain_experience? $arr_date: $q->param('dep_date');
-    my $sdate = date($arr_date);    # this will not die
-    my $edate = date($dep_date);
     $stash{sdate} = $sdate;
     $stash{edate} = $edate;
 
@@ -103,7 +114,7 @@ if ($pid == 0) {
             # forget it.
             #
             oops "Sorry, we have reached the maximum capacity"
-               . " for Mountain Experience Retreats on $sdate.\n";
+               . " for Mountain Experience Retreats on $sdate.\n", 1;
         }
 
         my @meals; 
@@ -114,7 +125,7 @@ if ($pid == 0) {
             push @meals, 'Dinner';
         }
         if (!@meals) {
-            oops 'Surely, you want to eat either lunch or dinner!';
+            oops 'Surely, you want to eat either lunch or dinner!', 1;
         }
         my @activities;
         if ($q->param('yoga_class')) {
@@ -132,13 +143,13 @@ if ($pid == 0) {
             my @names = $name_age =~ m{([a-z]+)}xmsgi;
             my @ages  = $name_age =~ m{(\d+)}xmsg;
             if (@names != @ages) {
-                oops "Some problem with the names and ages of the children.";
+                oops "Some problem with the names and ages of the children.", 1;
             }
             my @children;
             CHILD:
             for my $i (0 .. $#ages) {
                 if ($ages[$i] > 12) {
-                    oops "$names[$i] needs to register separately.";
+                    oops "$names[$i] needs to register separately.", 1;
                 }
                 if ($ages[$i] < 5) {
                     next CHILD;
@@ -157,7 +168,7 @@ if ($pid == 0) {
 
         my $max_nights = $string{pr_max_nights};
         if ($PR_ndays > $max_nights) {
-            oops "Sorry, you can stay a maximum of $max_nights nights.";
+            oops "Sorry, you can stay a maximum of $max_nights nights.", 1;
         }
 
         #
@@ -204,7 +215,7 @@ if ($pid == 0) {
                              ;
                     }
                     $err .= '.';
-                    oops $err;
+                    oops $err, 1;
                 }
             }
         }
@@ -238,15 +249,17 @@ if ($pid == 0) {
             }
         }
 
-        JON "Maximums = @maximums";
+        #JON "Maximums = @maximums";
 
         # Look for overlapping existing PR registrations
+        # (that are not cancelled...:) )
         my (@pr_regs) = model($c, 'Registration')->search(
                         {
                             date_start => { '<=' => $edate->as_d8() },
                             date_end   => { '>=' => $sdate->as_d8() },
                             'program.name' => { -like => '%personal%retreat%' },
                             mountain_experience => '',
+                            cancelled => { '!=' => 'yes' },
                         },
                         {
                             join     => [qw/ program /],
@@ -257,82 +270,62 @@ if ($pid == 0) {
                         );
         my @PR_total;
         for my $r (@pr_regs) {
-            JON $r->person->name . ' = '
-              . $r->date_start_obj . ' to ' . ($r->date_end_obj-1);
+            #JON $r->person->name . ' = ' . $r->date_start_obj . ' to ' . ($r->date_end_obj-1);
             my $dr = DateRange->new($r->date_start_obj, $r->date_end_obj-1);
             my $ov = overlap($dr, $PRdr);
             if ($ov) {
                 # should always be an overlap
-                JON "ov = " . $ov->show;
+                #JON "ov = " . $ov->show;
                 for (my $d = $ov->sdate; $d <= $ov->edate; ++$d) {
                     ++$PR_total[$d-$sdate];
                 }
             }
         }
-        JON "PR totals = @PR_total";
+        #JON "PR totals = @PR_total";
 
         for my $i (0 .. $#maximums) {
             if ($PR_total[$i] >= $maximums[$i]) {
                 oops "Sorry, on " . ($sdate+$i)->format("%D")
-                   . " the maximum # of Personal Retreats has been reached!";
+                   . " the maximum # of Personal Retreats has been reached!", 1;
             }
         }
 
-=comment
-
-        # < $edate because they're leaving on that date
-        for (my $d = $sdate; $d < $edate; ++$d) {
-            if ($n >= $pr_max) {
-                oops "Sorry, we have reached the maximum capacity for Personal Retreats on $d.\n";
-            }
-        }
-
-=cut
-
+        $stash{pr} = 1;
+        my $dates = "$PR_ndays day"
+                  . (($PR_ndays > 1)? "s": "")
+                  . " from "
+                  . $sdate->format("%A %B %e, %Y")
+                  . " to "
+                  . $edate->format("%A %B %e, %Y")
+                  ;
+        $stash{pr_dates} = $dates;
+        $stash{outdoors} = $only_outdoors;
     }
-
-    $stash{pr} = 1;
-    my $dates = "$PR_ndays day"
-              . (($PR_ndays > 1)? "s": "")
-              . " from "
-              . $sdate->format("%A %B %e, %Y")
-              . " to "
-              . $edate->format("%A %B %e, %Y")
-              ;
-    $stash{pr_dates} = $dates;
-    $stash{outdoors} = $only_outdoors;
 }
 
-=comment
-
-reg1 takes a program id on the command line.
-it looks it up in the file 'progtable' to get the 
-various attributes of a program with that id.
-it then fills in reg1.tt2 with
-these various attributes and presents
-it to the user.
-
-if there is cookie information, it will also be used.
-
-my $href = do "$progpath/progtable";
-# get the PR progtable as well
-my $pr_href = do "$progpath/pr/progtable";
-$href->{0} = $pr_href->{0};
-if ($@) {
-    print "error in progtable: $@\n";
-    exit;
+my $prog;
+if ($pid) {
+    $prog = model($c, 'Program')->find($pid);
 }
-if (! exists $href->{$pid}) {
-    print "Sorry, program not found.\n";
-    exit;
+else {
+    # PR or ME
+    # find the Personal Retreat program containing the date $sdate
+    my $d8 = $sdate->as_d8();
+    ($prog) = model($c, 'Program')->search({
+                name  => { -like => '%personal%retreat%' },
+                sdate => { '<=' => $d8 },
+                edate => { '>=' => $d8 },
+            });
 }
-my $data = $href->{$pid};
-my %cookie = cookie(-name => 'user_data');
+if (! $prog) {
+    oops "Sorry, program not found.\n";
+}
 
 #
 # has the end registration date/time passed?
 #
-my $erdt = $data->{end_reg_date_time};
+my $title = '<b>' . $prog->title . '</b>';
+my $erdt = $prog->end_reg_date_time;
 if ($erdt =~ m{\S}xms) {
     my ($end_date, $end_time)
         = $erdt =~ m{(\d\d/\d\d/\d\d\d\d) \s+ (\d\d:\d\d)}xms;
@@ -344,56 +337,53 @@ if ($erdt =~ m{\S}xms) {
         ||
         ($end_date == $today && $end_time < $now)
     ) {
-        print "Sorry, the registrations for <b>$data->{title}</b> are now closed.\n";
-        exit;
+        oops "Sorry, registrations for $title are now closed.";
     }
 }
 
 #
 # have we reached the maximum number of allowed registrations
-# for this program?
+# for this program?  For ME and PR this is in addition
+# to the ways those are restricted to a maximum.  See above.
 #
-my $max = $data->{max};
+my $max = $prog->max;
 if ($max) {
-    my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
-    my $db = $ref->{database};
-    my $dbh = DBI->connect("DBI:mysql:database=for_reg",
-                           $db->{user}, $db->{password},
-                           { RaiseError => 1, AutoCommit => 1 }
-              ) or die "cannot connect to for_reg database\n";
-    my $sth = $dbh->prepare(<<'EOS');
-        SELECT COUNT(*)
-          FROM prog_registrations
-         WHERE prog_id = ?
-EOS
-    $sth->execute($pid);
-    my ($n) = $sth->fetchrow_array();
-    if ($n >= $max) {
-        print "Sorry, we have reached the maximum capacity for <b>$data->{title}</b>.\n";
-        exit;
+    my @regs = model($c, 'Registration')->search({
+                   program_id => $pid,
+                   cancelled => { '!=' => 'yes' },
+               });
+    if (@regs >= $max) {
+        oops "Sorry, we have reached the maximum capacity for $title.", 1;
     }
 }
 
-# TODO: complain if you try to register for a program that has already happened.
+if ($today > $prog->sdate_obj) {
+    oops "The program $title has finished.<br>You cannot register for it today.";
+}
 
+# ?? plink, type cancellation policy ??
 for my $w (qw/
     title dates leader_names name
-    canpol do_not_compute_costs dncc_why
-    plink deposit kayakalpa children_welcome
+    cancellation_policy
+    do_not_compute_costs dncc_why
+    deposit kayakalpa children_welcome
     collect_total donation donation_msg
     covid_vax confnote strangers_share
     reg_msg discount_code
-    type
 /) {
-    $stash{$w} = $data->{$w};
+    $stash{$w} = $prog->$w;
 }
-$stash{tuition} = ($data->{tuition} != 0)? ', tuition,': '';
+$stash{house_cost_type} = $prog->housecost->type;
+$stash{tuition} = ($prog->tuition != 0)? ', tuition,': '';
 
 if ($mountain_experience) {
-    # MEs have a difference cancellation policy
-    # from PRs.
-    $stash{canpol} = $data->{me_canpol};
+    # MEs have their own cancellation policy
+    my ($canpol) = model($c, 'CanPol')->search({
+                       name => 'Mountain Experience',
+                   });
+    $stash{canpol} = $canpol? $canpol->policy: 'cancellation policy for ME??';
 }
+# remedy a tinyMCE quirk
 for my $w (qw/  confnote reg_msg  /) {
     if ($stash{$w} eq '<p><br mce_bogus="1"></p>') {
         $stash{$w} = '';
@@ -405,8 +395,14 @@ for my $t (qw/
     prog_start
     prog_end
 /) {
-    $stash{$t} = get_time($data->{$t})->ampm();
+    $stash{$t} = get_time($prog->$t)->ampm();
 }
+
+=comment
+
+# ???? images from where?
+# leader?  no more?
+
 my $images = do "image_links/$pid";
 if ($images->{image1} && $images->{image2}) {
     $stash{two_pics} = 1;
@@ -420,13 +416,17 @@ elsif ($images->{image1}) {
 else {
     $stash{zero_pics} = 1;
 }
-$stash{basicfull} = ($data->{ndays} != $data->{fulldays});
-$stash{bdays}     = $PR_ndays || $data->{ndays};
+
+=cut
+
+my $ndays = $prog->edate_obj - $prog->sdate_obj;
+$stash{basicfull} = $prog->extradays;
+$stash{bdays}     = $PR_ndays || $ndays;
 $stash{bdays_pl}  = $stash{bdays} == 1? '': 's';
-$stash{fdays}     = $data->{fulldays};
+$stash{fdays}     = $ndays + $prog->extradays;
 if ($stash{basicfull}) {
     # muck with the dates
-    ($stash{bdates}, $stash{fdates}) = split m{,}, $data->{dates};
+    ($stash{bdates}, $stash{fdates}) = split m{,}, $prog->dates;
     if ($stash{fdates} =~ m{^\s*\d}) {
         my ($month) = $stash{bdates} =~ m{([a-z]+)}i;
         $stash{fdates} = "$month " . $stash{fdates};
@@ -437,6 +437,10 @@ if ($stash{basicfull}) {
 for my $g (qw/ female male non_binary trans no_resp /) {
     $stash{$g} = '';
 }
+
+# if there is cookie information, it will also be used.
+
+my %cookie = $q->cookie(-name => 'user_data');
 $stash{$cookie{gender}} = 'checked';
 
 if ($cookie{cabin_room} eq 'cabin') {
@@ -480,10 +484,13 @@ for my $w (qw/
 }
 $stash{email2} = $cookie{email1} || "";
 
-$stash{mft} = $data->{footnotes} =~ m{[*][*]};
-$stash{ceu} = $data->{footnotes} =~ m{[*]};
+# still or not??
+$stash{mft} = $prog->footnotes =~ m{[*][*]};
+$stash{ceu} = $prog->footnotes =~ m{[*]};
 $stash{ceu_license} = $cookie{ceu_license};
 $stash{car_license} = $cookie{car_license};
+
+=comment
 
 # housing
 #
@@ -495,7 +502,7 @@ if (exists $data->{next_hc} && $data->{next_hc}) {
     $stash{next_date} = date($data->{next_date})->format("%b %e");
 }
 $stash{housing_not_needed} = $mountain_experience? 1
-                            :                      $data->{housing_not_needed};
+                            :                      $prog->housing_not_needed;
 my $housing_fees = "";
 HOUSING_TYPE:
 for my $k (sort { $data->{$b} <=> $data->{$a} } @housekeys) {
@@ -547,57 +554,54 @@ EOH
 }
 $stash{housing_fees} = $housing_fees;
 
-# donation
+=cut
+
+# donation - aka Tuition
 my $donation_input;
-if ((my $s = $data->{donation_tiers}) =~ m{\S}xms) {
+if ((my $s = $prog->donation_tiers) =~ m{\S}xms) {
     my $other = index(lc $s, 'other') >= 0;
     my @nums = $s =~ m{(\d+)}xmsg;
     my ($default) = $s =~ m{(\d+)\s*[*]}xms;
     for my $n (@nums) {
         my $checked = $n == $default? 'checked': '';
         $donation_input .= <<"EOH";
-<li>
 <input type=radio name=donation_tier id=donation_$n value=$n $checked>
-<label for="donation_$n"> \$$n</label>
-</li>
+\$$n<br>
 EOH
     }
     if ($other) {
         $donation_input .= <<'EOH';
-<li>
 <input type=radio
        name=donation_tier
        id=donation_other
        value=other
        onclick="document.getElementById('donation_tier_other_amount').focus();"
 >
-<label for="donation_other"> Other: &nbsp;&nbsp;
+Other:
 <input type=text
        name=donation_tier_other_amount
        id=donation_tier_other_amount
        style="width: 1in"
        onfocus="document.getElementById('donation_other').checked = true;"
 >
-</label>
-</li>
 EOH
     }
-    $donation_input = "<fieldset><ol>$donation_input</ol></fieldset>";
+    $donation_input = $donation_input;
 }
-elsif ($data->{donation}) {
+elsif ($prog->donation) {
+    # not tiered
+    # this is for a cold cash gift
     $donation_input = <<"EOH";
-<div style="margin-top: .4in">
-<input type=text name=donation id=donation class="input"> 
-<label for="donation">Donation Amount</label>
-</div>
+<b>Donation Amount:</b>
+<input type=text name=donation id=donation> 
 EOH
 }
 $stash{donation_input} = $donation_input;
 
-=cut
-
-
-my $tt = Template->new(INTERPOLATE => 1);
+my $tt = Template->new({
+    INTERPOLATE => 1,
+    ENCODING    => 'utf8',
+});
 $tt->process(
     'reg1.tt2',
     \%stash,

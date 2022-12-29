@@ -1,5 +1,7 @@
 <html>
 <head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
 [% IF pid == 4815 %]
@@ -14,15 +16,16 @@
       enctype="multipart/form-data"
 >
 
+<img src='/static/images/mmc-teal.png' width=200>
 <h3>Program Information</h3>  
 [% IF mountain_experience %]
     You are registering for a Mountain Experience.
     <ul>
-    Date: ${sdate.format("%A, %B %e, %Y")}<p>
-    Meals: $meals<br>
-    Activities: $activities
+    <b>Date:</b> ${sdate.format("%A, %B %e, %Y")}<p>
+    <b>Meals:</b> $meals<br>
+    <b>Activities:</b> $activities
     [% IF children_name_age %]
-        <br>Children: $children_name_age
+        <br><b>Children:</b> $children_name_age
     [% END %]
     <p>
     </ul>
@@ -30,7 +33,7 @@
     <input type=hidden name=activities value='$activities'>
     <input type=hidden name=children_name_age value='$children_name_age'>
 [% ELSIF pr %]
-    You are registering for a Personal Retreat.
+    You are registering for a <b>Personal Retreat</b>.
     <p>
     $pr_dates
     [% IF outdoors %]
@@ -46,10 +49,10 @@
         <img src='$image1'>
     [% END %]
     <dl>
-    <dt>Program:</dt>
+    <dt><b>Program:</b></dt>
     <dd>$title</dd>
 
-    <dt>Dates:</dt>
+    <dt><b>Dates:</b></dt>
     <dd>$dates</dd>
 
     [% IF leader_names %]
@@ -60,14 +63,14 @@
 [% END %]
 
 [% IF ! housing_not_needed %]
-    [% IF type == 'Total' %]
+    [% IF house_cost_type == 'Total' %]
         <p>
         The prices below are the total charges for lodging$tuition
         and all meals.
     [% ELSE %]
         <p>
         The prices below are Per Person Per Day and include
-        $bdays night$bdays_pl lodging$tuition and all meals.
+        lodging$tuition and all meals.
     [% END %]
 [% END %]
 
@@ -98,7 +101,7 @@
 [% IF basicfull %]
     Length of Program
     <p>
-    <span class="required">*</span>How many days do you want to attend?</p> 
+    <span class=required>*</span>How many days do you want to attend?</p> 
     <ol>
     <li> 
     <input id="progchoice1" name="progchoice" type="radio" value="basic" />  
@@ -137,49 +140,39 @@
     <p>
     Please take a picture of your vaccination card and upload it here:
     <p>
-    <span class="required">*</span> <input type=file name=card>
-    </div>
+    <span class=required>*</span> <input type=file name=card>
 [% END %]
 
 <h3>Registrant Information</h3>  
+<span class=required>*</span> marks required fields
+
 <table cellpadding=5>
 
+
 <tr>
-<th>
-<span class="required">*</span> First Name:
-</th>
-<td><input type="text" name="fname" id="fname"
-           value="$fname" placeholder="First Name"/>
-</td>
+<th><span class=required>*</span> First Name:</th>
+<td><input type="text" size=25 name="fname" id="fname" value="$fname"></td>
 </tr>
 
 <tr>
-<th>
-<span class="required">*</span> Last Name:
-</th>
-<td><input type="text" name="lname" id="lname"
-           value="$lname" placeholder="Last Name"/>
-</td>
+<th><span class=required>*</span> Last Name:</th>
+<td><input type="text" size=25 name="lname" id="lname" value="$lname"></td>
 </tr>
 
 <tr>
-<th>
-<span>*</span> Alternate Name:
-</th>
-<td><input type="text" name="aname" id="aname"
+<th>Alternate Name:</th>
+<td><input type="text" size=25 name="aname" id="aname"
            value="$aname"
-           placeholder="Alternate name for name tag (defaults to First"/>
+           placeholder="For name tag"/>
+           <span class=help>Defaults to First</span>
 </td>
 </tr>
 
 <tr>
-<th>
-<span class="required">*</span> Gender Identity<br>(for housing purposes):
-<br>
-<a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
-</th> 
+<th valign=top>
+<span class=required>*</span> Gender Identity:</th> 
 <td>
-<input type=radio name="gender" id="gender1" $female value="female"">
+<input type=radio name="gender" id="gender1" $female value="female">
 <label for="gender1">Woman</label><br> 
 
 <input type=radio name="gender" id="gender2" $male value="male"> 
@@ -193,6 +186,7 @@
 
 <input type=radio name="gender" id="gender5" $no_resp value="no_resp"> 
 <label for="gender5">Prefer not to respond</label><br>
+<a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
 </td>
 </tr>
 
@@ -208,17 +202,266 @@ function pronouns() {
 </script>
 
 <tr>
-<th>
-<span class="required">*</span> Preferred Pronouns:
-<br><a href="javascript:pronouns();">Why prounouns matter</a>
+<th valign=top>
+<span class=required>*</span> Pronouns:
 </th>
 <td>
-<input type=text name="pronouns" id="pronouns"
-       $pronouns value="$pronouns"
-       placeholder="To appear on your guest name badge"> 
+<input type=text size=25 name="pronouns" id="pronouns"
+       value="$pronouns"
+       placeholder="To appear on name tag"> 
+<br><a href="javascript:pronouns();">Why pronouns matter</a>
 </td>
 </tr>
+
+<tr>
+<th><span class=required>*</span> Street 1:</th>
+<td><input type="text"
+       size=25 name="street1"
+       id="street1"
+       value="$street1">
+</td>
+</tr>
+
+<tr>
+<th>Street 2:</th>
+<td><input type="text" size=25 name="street2" id="street2" value="$street2"></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> City:</th>
+<td><input type="text" size=25 name="city" id="city" value="$city"/></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> State/Province:</th>
+<td><input type="text" size=25 name="state" id="state" value="$state"/></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> Zip/Postal Code:</th>
+<td><input type="text" size=25 name="zip" id="zip" value="$zip"/></td>
+</tr>
+
+<tr>
+<th>Country:</th>
+<td><input type="text" size=25 name="country" id="country" value="$country"/>
+<span class=help>Defaults to USA</span>
+</td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Telephone:</th>
+<td><input type="text" size=25 name="cell" id="cell" value="$cell"/></td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Email:</th>
+<td><input type="text" size=25 name="email1" id="email1" value="$email1"/></td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Email Again:</th>
+<td><input type="text" size=25 name="email2" id="email2" value="$email2"/>
+<span class=help>Repeated to be sure it is right</span>
+</td>
+</tr>
+
+[% IF ! housing_not_needed %]
+    <tr>
+    <th>Car License:</th>
+    <td><input type="text" size=25 name="car_license" id="car_license" value="$car_license"/>
+    <span class=help>If you are driving to MMC.</span></td>
+    </tr>
+[% END %]
 </table>
+
+<!-- no more?? why? -->
+[% IF ceu %]
+<h3>Continuing Education Credits</h3>  
+If you are a nurse[% IF mft %], LMFT, or LCSW[% END %] and wish to receive a CEU certificate provide your license #:<br>
+<ul>
+<b>License #:</b>
+<input type=text name=ceu_license id="eu_license" value='$ceu_license'/>
+<p>
+<span>Like this: RN98765[% IF mft %], MFT43210 or LSW31415[% END %].<br>
+If you only want a certificate of completion enter COMP for the license #.
+</span>
+</ul>
+[% END %]
+
+[% IF ! staff_housing && ! housing_not_needed %]    
+    <h3>Housing Choice</h3>  
+    <div style='margin-left: .4in'>
+    <!-- $dncc_why??? -->
+    <ul>
+    <li>
+    Indicate your <b>first</b> <i>and</i>
+    <b>second</b> choices for housing.
+    <li>We will do our best to honor your choices.
+        If neither is available, we will assign the next best option,
+        and waitlist you.
+    [% IF ! housing_not_needed %]
+        [% IF type == 'Total' %]
+            <li>Prices are the total charge including meals,
+                lodging$tuition and use of facilities.
+        [% ELSE %]
+            <li>Prices are per person per day and include meals,
+                lodging$tuition and use of facilities.
+        [% END %]
+    [% END %]
+    <li>Camp sites are walk-in style with parking nearby.
+    [% IF covid_vax %]
+        <li><span style="color: red; font-weight: bold; font-size: 18pt;">COVID-19 Notice</span>
+        <ul style='background: #ffe5e5; padding: 10px;'>
+        <li>Covid waivers are required.
+        [% IF strangers_share != 'yes' %]
+            <li>Shared accommodations (Dormitory, Triple, Double)
+            may only be reserved for families/friends registering together.
+            If you are coming alone you must choose a Single accomodation.
+        [% END %]
+        </ul>
+        <p>
+    [% END %]
+    <li>If you have a <b>physical disability</b> that limits
+        where you can be housed, please note this in
+        &ldquo;Additional Requests&rdquo; below.
+    <li>All individuals must be registered separately.
+    </ul>
+
+    <table border=0>
+
+    <tr>
+    <th>1st</th>
+    <th>2nd</th>
+    <th>Housing Type</th>
+    [% IF ! do_not_compute_costs %]
+        <th>Cost</th>
+    [% END %]
+    </tr>
+
+    $housing_fees
+    </table>
+
+    <p>If you are <b>sharing</b> your housing with someone, put their name here:</p>
+    <ul>
+    <b>First:</b>
+    <input type=text name="withwhom_first" id="withwhom_first" value="$withwhom_first">
+    <span class="helpRed">Make sure that they register <i>separately</i>.</span>
+    <br>
+
+    <b>Last:</b>
+    <input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last">
+    </ul>
+
+    <p>If given a <b>choice</b>, would you prefer a cabin or a room?
+    <ul class=space>
+    <input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin>
+    <b>Cabin</b> - heat and electricity, but no indoor plumbing
+    <br>
+    <input type=radio name=cabin_room id=cabin_room2 value=room $room>  
+    <b>Room</b>
+    <br>
+    <a href="javascript:popup('/registration-help/cabins_vs_rooms_snippet.html',500,700)">What's the difference?</a></p> 
+    </ul>
+
+    </div> <!-- indent for housing choice -->
+
+[% END %]
+
+[% IF donation %]
+    <h3>Tuition</h3>  
+    <ul>
+    $donation_msg<p>
+    $donation_input
+    </ul>
+[% END %]
+
+<h3>Gift Card</h3>  
+<ul>
+<b>Gift Card code for Payment:</b>
+<input type=text name=gift_card id=gift_card> 
+</ul>
+
+[% IF discount_code %]
+    <h3>Discount Code</h3>  
+    <ul>
+    <b>Code for Discount:</b>
+    <input type=text name=disc_code id=disc_code> 
+    </ul>
+[% END %]
+
+<script>
+function toggle_from_where() {
+    alert('from where');
+}
+</script>
+
+<h3>Preferences</h3>  
+<div style='margin-left: .4in' class=space>
+
+[% IF ! pr && ! housing_not_needed %]
+    <b>Carpooling</b>
+    &nbsp;&nbsp;<a href="javascript:popup('/registration-help/privacy.html',215,550)">Privacy Concerns?</a><p>
+    <ul>
+    <input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()">
+    I wish to offer a ride.<br>
+    <input type=checkbox name=carpool id=pool value=yes $carpool onchange="toggle_from_where()">
+    I wish to carpool.<p>
+
+<!-- ???
+    <div id=from_where_id style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm; margin-bottom: 2mm;">
+    -->
+
+    <input type=radio name=from_where id=from_where1 value='Home' $home_checked>
+    From Home</label><br>
+    <input type=radio name=from_where id=from_where2 value='SJC' $sjc_checked>
+    From the San Jose airport<br>
+
+    <input type=radio name=from_where id=from_where3 value='SFO' $sfo_checked>
+    From the San Francisco airport<br>
+    </ul>
+[% END %]
+
+<p>How did you <b>first hear</b> about this program?</p>
+<!-- this has changed!!!! ???? -->
+<ul>
+<input type=radio name=howHeard id=howHeard1 value=HFS_email_newsletter>
+HFS Email/Newsletter<br>
+<input type=radio name=howHeard id=howHeard2 value=brochure>
+MMC Program Brochure<br>
+<input type=radio name=howHeard id=howHeard3 value=flyer>
+Flyer or Postcard<br>
+<input type=radio name=howHeard id=howHeard4 value=ad
+onclick="document.getElementById('advertiserName').focus();">
+Advertisement in: <input name=advertiserName id=advertiserName type=text onfocus="document.getElementById('howHeard4').checked = true;">
+</ul>
+
+<p>Shall we keep you <b>informed</b> of events at Mount Madonna Center?</p>
+<ul class=space>
+
+<input type=checkbox name=e_mailings id="e_mailings" value=yes $e_mailings> 
+Yes, send me occasional e-mail announcements.<br>
+
+<input type=checkbox name=snail_mailings id=snail_mailings value=yes $snail_mailings>
+Yes, send me postcards and brochures in the mail.<br>
+
+<input type=checkbox name=share_mailings id=share_mailings value=yes $share_mailings>
+You may share my address with MMC affiliates.<br>
+</ul>
+
+[% IF kayakalpa %]
+    <b>Massage and other Bodywork</b><br>
+    <ul>
+    <!-- ?? move the image here -->
+    <a href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa' target=_blank><img src='/static/images/kkwc_logo.jpg'></a>
+
+    <br><input type=checkbox name=kayakalpa id=kayakalpa value='yes'>
+    Please contact me regarding 
+    <a target=_blank href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa'>massage and other bodywork</a> during my stay.
+    </ul>
+[% END %]
+
+</div>  <!-- indent for preferences -->
 
 </form>
 </body>

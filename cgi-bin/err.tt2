@@ -14,12 +14,16 @@ button {
 </style>
 </head>
 <body>
-<h4>Problems were found in the form:</h4>
+[% IF back %]
+Problems were found in the form:
+[% END %]
 <ul>
 $err
 </ul>
 <form>
-Please <button type="button" id=back onclick="history.go(-1); return false;">Go Back</button> and correct these things.
+[% IF back %]
+    Please <button type="button" id=back onclick="history.go(-1); return false;">Go Back</button> and correct these things.
+[% END %]
 </form>
 <script type='text/javascript'>
 document.getElementById('back').focus();
