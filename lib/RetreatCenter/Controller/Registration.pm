@@ -5775,6 +5775,8 @@ sub tally : Local {
                     }
                 }
                 elsif ($what =~ m{donation}i) {
+                    # not sure how this got here...
+                    # sliding scale donations are marked as charges
                     if ($cancelled) {
                         $can_donation += $amount;
                     }
@@ -5824,7 +5826,11 @@ sub tally : Local {
         #
         if (! $cancelled) {
             for my $rc ($r->charges()) {
-                $charges_for[$rc->type()] += $rc->amount();
+                my $amt = $rc->amount();
+                $charges_for[$rc->type()] += $amt;
+                if ($rc->what() =~ m{sliding[ ]scale}xmsi) {
+                    ++$don_dis{$amt};
+                }
             }
             $balance += $r->balance();
         }
@@ -5859,6 +5865,7 @@ sub tally : Local {
 
         # referrals
         my $ref = $r->referral_disp;
+JON $r->person->name . " $ref";
         if ($ref eq 'Other') {
             my $src = $r->adsource;
             if ($src && $src =~ m{\S}xms) {
@@ -5883,16 +5890,13 @@ sub tally : Local {
         $rows_don_dis .= "<tr><td align=right>$amt</td><td align=right>$don_dis{$amt}</td></tr>\n";
     }
 
-    my @referrals = sort {
-                        $a->{name} cmp $b->{name}
-                    }
-                    map {
-                        { 
-                            name => $_,
+    my @referrals = map {
+                        +{ 
+                            name  => $_,
                             count => $referrals{$_}
                         }
                     }
-                    keys %referrals;
+                    sort keys %referrals;
     @adsources = sort @adsources;
     stash($c,
         program     => $pr,

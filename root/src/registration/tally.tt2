@@ -150,13 +150,15 @@
 <div style="clear: both; margin-left: 1in">
 [% IF program.donation %]
 <h2>Donation Distribution</h2>
+<ul>
 <table cellpadding=5>
-<tr><th>Amount</th><th>#</th></tr>
+<tr><th>Amount</th><th align=right>#</th></tr>
 $rows_don_dis
 </table>
+</ul>
 [% END %]
 
-<h2>How Heard/Referral Tally</h2>
+<h2>How Heard?</h2>
 <ul>
 <table cellpadding=5>
 [% FOR r IN referrals %]
@@ -168,7 +170,7 @@ $rows_don_dis
 </table>
 </ul>
 <p>
-<h2>Where Heard</h2>
+<h2>Other - Where Heard?</h2>
 <ul>
 [% FOR a IN adsources %]
 $a<br>
