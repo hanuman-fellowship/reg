@@ -5722,6 +5722,9 @@ sub tally : Local {
             prefetch => [qw/ person /],
         }
     );
+    my %referrals;       # only tally 'ad' if adsource is non-blank
+    my @adsources;
+
     my $registered = 0;
     my $tot_cancelled  = 0;
     my $no_shows   = 0;
@@ -5853,6 +5856,22 @@ sub tally : Local {
             my @ages = $k =~ m{(\d+)}g;
             $kids += @ages;
         }
+
+        # referrals
+        my $ref = $r->referral_disp;
+        if ($ref eq 'Other') {
+            my $src = $r->adsource;
+            if ($src && $src =~ m{\S}xms) {
+                push @adsources, $src;
+                ++$referrals{$ref};
+            }
+            else {
+                # ignore
+            }
+        }
+        else {
+            ++$referrals{$ref};
+        }
     }
     my $tot_charge = 0;
     for my $a (@charges_for) {
@@ -5863,6 +5882,18 @@ sub tally : Local {
     for my $amt (sort { $a <=> $b } keys %don_dis) {
         $rows_don_dis .= "<tr><td align=right>$amt</td><td align=right>$don_dis{$amt}</td></tr>\n";
     }
+
+    my @referrals = sort {
+                        $a->{name} cmp $b->{name}
+                    }
+                    map {
+                        { 
+                            name => $_,
+                            count => $referrals{$_}
+                        }
+                    }
+                    keys %referrals;
+    @adsources = sort @adsources;
     stash($c,
         program     => $pr,
         id          => $prog_id,
@@ -5889,6 +5920,10 @@ sub tally : Local {
         credit      => commify($credit),
         net_cancel  => commify($can_deposit + $can_payment - $credit), 
         rows_don_dis => $rows_don_dis,
+
+        referrals   => \@referrals,
+        adsources   => \@adsources,
+
         template    => "registration/tally.tt2",
     );
 }

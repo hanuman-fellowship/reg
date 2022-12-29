@@ -155,3 +155,21 @@
 $rows_don_dis
 </table>
 [% END %]
+
+<h2>How Heard/Referral Tally</h2>
+<ul>
+<table cellpadding=5>
+[% FOR r IN referrals %]
+    <tr>
+    <td align=left>$r.name</td>
+    <td align=right>$r.count</td>
+[% END %]
+</table>
+</ul>
+<p>
+<h2>Where heard / Other?</h2>
+<ul>
+[% FOR a IN adsources %]
+$a<br>
+[% END %]
+</ul>
