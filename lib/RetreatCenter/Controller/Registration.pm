@@ -5835,6 +5835,22 @@ sub tally : Local {
             $balance += $r->balance();
         }
 
+        # referrals
+        my $ref = $r->referral_disp;
+        if ($ref eq 'Other') {
+            my $src = $r->adsource;
+            if ($src && $src =~ m{\S}xms) {
+                push @adsources, $src;
+                ++$referrals{$ref};
+            }
+            else {
+                # ignore
+            }
+        }
+        else {
+            ++$referrals{$ref};
+        }
+
         # have we seen this person before?
         # allow_dup_regs and AVI type programs will have dup regs.
         #
@@ -5863,22 +5879,6 @@ sub tally : Local {
             $kids += @ages;
         }
 
-        # referrals
-        my $ref = $r->referral_disp;
-JON $r->person->name . " $ref";
-        if ($ref eq 'Other') {
-            my $src = $r->adsource;
-            if ($src && $src =~ m{\S}xms) {
-                push @adsources, $src;
-                ++$referrals{$ref};
-            }
-            else {
-                # ignore
-            }
-        }
-        else {
-            ++$referrals{$ref};
-        }
     }
     my $tot_charge = 0;
     for my $a (@charges_for) {
