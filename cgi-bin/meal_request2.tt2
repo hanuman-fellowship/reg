@@ -45,7 +45,7 @@ we need your name and demographic information.
 <input type=hidden name=encoded_requests value='$encoded_requests'>
 <input type=hidden name=amount value='$total_cost'>
 <p>
-<table cellpadding=5 border=1>
+<table cellpadding=5>
 
 <tr>
 <th class=tbl> <span class=required>*</span> First</th>

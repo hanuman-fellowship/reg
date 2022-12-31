@@ -1,0 +1,147 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard :cgi-lib/;
+use CGI::Carp qw/fatalsToBrowser/;
+use Template;
+use lib '.';
+use SimLib;
+use Auth qw/
+    $MMC_loginid
+    $MMC_txnkey
+/;
+
+#
+# gather all the form elements into a hash
+#
+my %form = Vars();
+for my $w (keys %form) {
+    $form{$w} =~ s{^\s*|\s*$}{}g;       # trim the fields
+}
+# form defaults
+#
+if ($form{country} !~ /\S/) {
+    $form{country} = "USA";     # default
+}
+
+my %cookie = %form;
+my $cookie = cookie(
+    -name    => 'user_data',
+    -value   => \%cookie,
+    -expires => '+10y',     # i.e. don't expire
+    -domain  => 'www.mountmadonna.org',
+);
+print header(-cookie => $cookie);
+
+#
+# look in the form elements for errors.
+#
+my $err;
+
+sub check {
+    my ($field, $message) = @_;
+    if (! exists $form{$field} || $form{$field} !~ /\S/) {
+        $err .= "<li>$message\n";
+    }
+}
+
+check("rec_fname", "Missing first name of recipient");
+check("rec_lname", "Missing last name of recipient");
+check("rec_email", "Missing email of recipient");
+check("amount", "Missing amount of the gift card.");
+if ($form{amount} && $form{amount} !~ m{\A \s* \d+ \s* \z}xms) {
+    $err .= "Illegal value for the amount of the gift card.";
+}
+check("fname", "Missing first name");
+check("lname", "Missing last name");
+if (!$form{street1} && !$form{street2}) {
+    $err .= "<li>Missing street address.\n";
+} 
+check("city", "Missing city.");
+check("state", "Missing state.");
+check("zip", "Missing zip code.");
+if (! $form{cell}) {
+    $err .= "<li>Missing telephone number.\n";
+} 
+check("email1", "Missing email address.");
+
+if ($err) {
+    Template->new(INTERPOLATE => 1)->process(
+        'err.tt2',
+        { err => $err },
+    );
+    exit;
+}
+
+# all is well.
+# prepare the confirmation page.
+#
+
+my $x_amount = $form{amount}; 
+
+my %stash;
+
+# Call subroutine from authorize.net that sets $fingerprint_html 
+#
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
+                     $x_amount, $x_currency_code);
+$stash{fingerprint_html} = $fingerprint_html;
+my ($sequence, $timestamp, $hash) =
+    $fingerprint_html =~ m{value='([^']*)'}xmsg;
+$stash{sequence}  = $sequence;
+$stash{timestamp} = $timestamp;
+$stash{hash}      = $hash;
+for my $name (qw/
+    rec_fname rec_lname rec_email
+    fname lname street1 street2 city state zip
+    country cell email1 personal_note
+/) {
+    $stash{$name} = $form{$name};
+}
+if ($form{personal_note}) {
+    my $s = $form{personal_note};
+    $s =~ s{\n}{<br>}xmsg;
+    $stash{personal_note_verbose} = $s;
+}
+$stash{loginid} = $MMC_loginid;
+$stash{x_amount} = $x_amount;
+$stash{x_firstname} = $form{fname};
+$stash{x_lastname} = $form{lname};
+$stash{x_address} = "$form{street1} $form{street2}";
+
+#
+# create a readable description for the user
+#
+$stash{phone} = $form{cell};    # used to have home work cell... 
+
+if ($form{request}) {
+    my $s = $form{request};
+    $s =~ s{\n}{<br>\n}g;
+    $stash{request_verbose}
+        = "<h2>Additional Requests</h2><ul>$s</ul>";
+} else {
+    $stash{request_verbose} = "";
+}
+#
+# in addition to the street1, street2 above
+# which are for the hidden fields we also have
+# street_addr which is a special case.
+#
+my $street_addr = $form{street1};
+if ($form{street2} =~ /\S/) {
+    $street_addr .= "<br>$form{street2}";
+}
+$stash{street_addr} = $street_addr;
+
+# ip address for Jamal's purposes
+#
+$stash{real_ip} = $ENV{REMOTE_ADDR};
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'gift_card2.tt2',
+    \%stash,
+);

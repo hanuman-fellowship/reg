@@ -1,7 +1,7 @@
 list all the cgi-bin scripts and what they do
 
-meal_request2.tt2
-test suite for meal_requests
-we have one for grid
-test suite for regPR and regME
-program_inquiry
+test suites
+    we have one for grid
+    test suite for meal_requests
+    test suite for regPR and regME
+    test program_inquiry

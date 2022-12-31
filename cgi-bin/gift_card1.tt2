@@ -1,0 +1,128 @@
+         <div class="left col-12 mainForm">
+        <form autocomplete="off" class="col--inline-block col-12 z1" method=POST name=reg action="/cgi-bin/gift_card2" onSubmit="return confirm();">
+
+                    <div class="personal">
+                    It is very kind of you to send your friend the gift of meals and lodging at Mount Madonna Center.
+                    <br>
+                    These are the costs <b>per day per person</b> for the various housing options:
+                    <p>
+                    <table cellpadding=5 style="width: 450px; margin-left: .5in">
+                    <tr>
+                        <th width=60%>Housing Type</th>
+                        [% IF next_hc %]
+                            <th style="text-align: right">Cost<br>through<br>$through_date</th>
+                            <th style="text-align: right">Cost on<br>and after<br>$next_date</th>
+                        [% ELSE %]
+                            <th style="text-align: right">Cost</th>
+                        [% END %]
+                    </tr>
+                    $housing_fees_rows
+                    </table>
+                        <fieldset> 
+							<h3 class="teal">Gift Recipient Information</h3>  
+							<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div>
+		                    <ol>
+                                <li>
+
+									<label for="rec_fname"><span class="required">*</span> First Name:</label>
+									<input type="text" name="rec_fname" id="rec_fname" value='$rec_fname' class="input" placeholder="First Name"/>
+									<span class="help" id="msg_rec_fname"></span>
+                                </li>
+                                <li>
+
+									<label for="rec_lname"><span class="required">*</span> Last Name:</label>
+									<input type="text" name="rec_lname" id="rec_lname" value='$rec_lname' class="input" placeholder="Last Name"/>
+									<span class="help" id="msg_rec_lname"></span>
+                                </li>
+                                <li>
+									<label for="rec_email"><span class="required">*</span> Email:</label>
+									<input type="text" name="rec_email" id="rec_email" value='$rec_email' class="input" placeholder="Email"/>
+									<span class="help" id="msg_rec_email"></span>
+                                </li>
+                                <li>
+
+									<label for="amount"><span class="required">*</span> Amount:</label>
+									<input type="text" name="amount" id="amount" class="input" placeholder="Amount"/>
+									<span class="help" id="msg_amount"></span>
+                                </li>
+<li>
+We will be sending your friend an email notifying them of your gift.<br>
+If you would like to include a personal note to them, you may write it here:<br>
+<textarea name="personal_note" rows='3' cols='40' style="width: 7in; font-family: Arial;"></textarea>
+</li>
+                            </ol>
+							<h3 class="teal">Your Information</h3>  
+							<div class="my-4 sm-my-5 keyline__repeater--teal full-width"></div>
+		                    <ol>
+                                <li>
+
+									<label for="fname"><span class="required">*</span> First Name:</label>
+									<input type="text" name="fname" id="fname" value="$fname" onchange="validatePresent(this, 'msg_fname');" class="input" placeholder="First Name"/>
+									<span class="help" id="msg_fname"></span>
+                                </li>
+                                <li>
+									<label for="lname"><span class="required">*</span> Last Name:</label>
+									<input type="text" name="lname" id="lname" value="$lname"  onchange="validatePresent(this, 'msg_lname');" class="input" placeholder="Last Name"/>
+									<span class="help" id="msg_lname"></span>
+				                  </li>
+                            </ol>
+
+                            <ol>
+                                <li>
+									<label for="street1"><span class="required">*</span> Street Line 1:</label>
+									<input type="text" name="street1" id="street1" value="$street1"  onchange="validatePresent(this, 'msg_street1');" class="input" placeholder="Street Line 1"/>
+									<span class="help" id="msg_street1"></span>
+                                </li>
+                                <li>
+									<label for="street2">Street Line 2:</label>
+									<input type="text" name="street2" id="street2" value="$street2"  onchange="validatePresent(this, 'msg_street1');"  class="input" placeholder="Street Line 2"/>
+									<span class="help" id="msg_street2"></span>
+    							  </li>
+                                  <li>
+									<label for="city"><span class="required">*</span> City:</label>
+									<input type="text" name="city" id="city" value="$city"  onchange="validatePresent(this, 'msg_city');"  class="input" placeholder="City"/>
+									<span class="help" id="msg_city"></span>
+                                </li>
+                                <li>
+									<label for="state"><span class="required">*</span> State/Province:</label>
+									<input type="text" name="state" id="state" value="$state" onchange="validatePresent(this, 'msg_state');"  class="input" placeholder="State/Province"/>
+									<span class="help" id="msg_state"></span>
+                                </li>
+                                <li>
+									<label for="zip"><span class="required">*</span> Zip/Postal Code:</label>
+									<input type="text" name="zip" id="zip" value="$zip"  onchange="validatePresent(this, 'msg_zip');"  class="input" placeholder="Zip/Postal Code"/>
+									<span class="help" id="msg_zip"></span>
+                                </li>
+                                <li>
+									<label for="country"> Country:</label>
+									<input type="text" name="country" id="country" value="$country"   class="input" placeholder="Country"/>
+									<span class="help" id="msg_country">Defaults to USA</span>
+                                </li>
+                                <li>
+									<label for="cell"><span class="required">*</span> Telephone:</label>
+									<input type="text" name="cell" id="cell" value="$cell"  class="input" placeholder="Telephone"/>
+									<span class="help" id="msg_cell"></span>
+                                </li>
+                                <li>
+									<label for="email1"><span class="required">*</span> Email:</label>
+									<input type="text" name="email1" id="email1" value="$email1"  class="input" placeholder="Email"/>
+									<span class="help" id="msg_email1"></span>
+                                </li>
+                            </ol>
+                        </fieldset>
+                    </div>
+
+<div class=notes>
+<ul>
+<li>We will be sending you a confirmation email. 
+To prevent it from going to your spam folder, 
+kindly add the following address to your list
+of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
+</ul>
+</div>
+
+                    <div class="submit">
+                        <button type="submit" name="Submit" value="Continue to Next Step" class="mt-4 button button--programs button--inline" >Continue</button>
+                    
+                    </div>
+</div>

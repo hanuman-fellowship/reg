@@ -1,0 +1,849 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard :cgi-lib/;
+use CGI::Carp qw/fatalsToBrowser/;
+use Template;
+use lib '.';
+use SimLib;
+use Auth qw/
+    $MMC_loginid
+    $MMC_txnkey
+/;
+use Date::Simple qw/
+    today
+    date
+/;
+use HousingNames qw/
+    %housing_name
+/;
+use JSON 'decode_json';
+use Slurp;
+use DBI;
+
+use File::Copy qw/
+    copy
+/;
+
+my $test = -e 'test_mode';
+my $progpath = '/home/reg';
+my $for_reg = "$progpath/for_reg";
+
+#
+# gather all the form elements into a hash
+#
+my $q = CGI->new();
+my %form = $q->Vars();
+my $ME = $form{mountain_experience};
+for my $w (keys %form) {
+    $form{$w} =~ s{^\s*|\s*$}{}g;       # trim the fields
+}
+if (! ($form{hascar} || $form{carpool})) {
+    $form{from_where} = 'Home';
+}
+# form defaults
+#
+if ($form{hascar}) {
+    $form{carpool} = "yes";
+}
+if ($form{country} !~ /\S/) {
+    $form{country} = "USA";     # default
+}
+
+
+
+# prepare the cookie with the form values
+# to include in the header.  First delete the
+# special requests - it could be too long
+# and make trouble.
+#
+my %cookie = %form;
+delete @cookie{qw/
+    request
+    plink
+    name
+    test
+    dates
+    progchoice
+    pid
+    title
+    Submit
+    advertiserName
+    leader_names
+    green_amount
+    email2
+/};
+my $cookie = cookie(
+    -name    => 'user_data',
+    -value   => \%cookie,
+    -expires => '+10y',     # i.e. don't expire
+    -domain  => 'www.mountmadonna.org',
+);
+print header(-cookie => $cookie);
+
+#
+# get the id of the program and fill in the $data hashref
+#
+my %info;
+my $href = do "$progpath/progtable";
+# get the PR progtable as well...
+my $pr_href = do "$progpath/pr/progtable";
+$href->{0} = $pr_href->{0};
+if ($@) {
+    print "error in progtable: $@\n";
+    exit;
+}
+if (! exists $href->{$form{pid}}) {
+    print "Sorry, program not found.\n";
+    exit;
+}
+my $data = $href->{$form{pid}};
+
+#
+# look in the form elements for errors.
+#
+my $err;
+
+sub check {
+    my ($field, $message) = @_;
+    if (! exists $form{$field} || $form{$field} !~ /\S/) {
+        $err .= "<li>$message\n";
+    }
+}
+
+my $covid_vax = $q->param('covid_vax');
+my $card;
+if ($covid_vax) {
+    $card = $q->upload('card');       # can't get via Vars?
+    if (! $card) {
+        $err .= "<li>Missing COVID-19 Vaccination card image";
+    }
+}
+check("progchoice", "Please choose how many days you want to attend.");
+check("fname", "Missing first name");
+check("lname", "Missing last name");
+check("gender", "For housing purposes please specify a choice of gender identity.");
+check("pronouns", "Missing preferred pronouns");
+
+if (!$form{street1} && !$form{street2}) {
+    $err .= "<li>Missing street address.\n";
+} 
+check("city", "Missing city.");
+check("state", "Missing state.");
+check("zip", "Missing zip code.");
+if (! $form{cell}) {
+    $err .= "<li>Missing telephone number.\n";
+} 
+check("email1", "Missing email address.");
+if ($form{email1} ne $form{email2}) {
+    $err .= "<li>The two email addresses do not match.\n";
+}
+my ($sdate, $edate, $ndays);		# only for Personal Retreats 
+my $PR = $form{name} =~ m{personal\s+retreat}i;
+if ($PR) {
+    $sdate = date($form{sdate});
+    $edate = date($form{edate});
+    $ndays = $edate - $sdate;
+}
+my $staff_housing = $data->{donation} && $data->{name} =~ /staff/i;
+if (! $staff_housing
+    && ! $ME
+    && ! $data->{housing_not_needed}
+    && (!$form{house1} || !$form{house2})
+) {
+    $err .= "<li>Please fill out both choices of housing.\n";
+} 
+elsif (! $ME
+       && $sdate && $edate && $ndays == 0
+       && (   $form{house1} ne 'commuting'
+           || $form{house2} ne 'commuting')
+) {
+    $err .= "<li>For same day Personal Retreats both housing choices"
+         .  " must be 'Commuting'.";
+}
+my $shared_housing_regex = qr{dormitory|dble|triple}xmsi;
+my $first_last_regex     = qr{[a-z]{2}}xmsi;
+if ($covid_vax
+    &&
+    (   $form{house1} =~ $shared_housing_regex
+     || $form{house2} =~ $shared_housing_regex)
+    &&
+    (   $form{withwhom_first} !~ $first_last_regex
+     || $form{withwhom_last}  !~ $first_last_regex)
+) {
+    $err .= "<li>You requested shared housing"
+         .  " (Dormitory, Triple, or Double)<br>"
+         .  "but did not give the name of the person"
+         .  " with whom you will share the room.";
+}
+if ($data->{footnotes} =~ m{\*}
+    && $form{ceu_license}
+    && $form{ceu_license} !~ m{^comp$}i
+) {
+    my $begin = "<li>To qualify for a CEU certificate for this program"
+              . " you must have a license number beginning with";
+    if ($data->{footnotes} =~ m{\*\*}) {
+        if ($form{ceu_license} !~ m{^(RN|LSW|MFT|LCS)}i) {
+            $err .= "$begin RN, LSW, MFT, or LCS.";
+        }
+    }
+    else {
+        if ($form{ceu_license} !~ m{^RN}i) {
+            $err .= "$begin RN.<br>If you only want a certificate of completion enter COMP for the license #.";
+        }
+    }
+}
+my $green_amount = $form{green_amount};
+if ($green_amount && $green_amount !~ m{^\s*\$?\s*\d+([.]\d\d)?\s*$}) {
+    $err .= "<li>Illegal amount for MMC General Fund Donation: $green_amount";
+}
+$green_amount =~ s{[\s\$]}{}g;
+
+# if payment is by donation
+# we either have 'donation' or 'donation_tier'.
+my $donation_amt;
+my $slide_tuition = 0;
+if (exists $form{donation_tier}) {
+    my $s = $form{donation_tier};
+    if ($s eq 'other') {
+        $donation_amt = $form{donation_tier_other_amount};
+        if ($donation_amt && $donation_amt !~ m{^\s*\$?\s*\d+([.]\d\d)?\s*$}) {
+            $err .= "<li>Illegal amount for Tuition: $donation_amt";
+        }
+        $donation_amt =~ s{[\s\$]}{}g;
+    }
+    else {
+        $donation_amt = $s;
+    }
+    $slide_tuition = $donation_amt;
+}
+else {
+    $donation_amt = $form{donation} || 0;
+    if ($donation_amt && $donation_amt !~ m{^\s*\$?\s*\d+([.]\d\d)?\s*$}) {
+        $err .= "<li>Illegal amount for Tuition: $donation_amt";
+    }
+    $donation_amt =~ s{[\s\$]}{}g;
+}
+if (! $err && $data->{donation}) {
+    my $min = $data->{donation_minimum} || 0;
+    if ($donation_amt < $min) {
+        $err .= "<li>The minimum tuition contribution is \$$min.";
+    }
+}
+
+if ($form{aname} =~ m{\b$form{fname}\b}xmsi) {
+    # not really an alternate name (or Sanskrit)
+    # take it away so that it doesn't mess up the badges
+    $form{aname} = '';
+}
+
+#
+# Gift Card?
+#
+my ($gc_code, $gc_total, $gc_used, $gc_balance);
+$gc_code = $form{gift_card};
+if ($gc_code) {
+    my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
+    my $db = $ref->{database};
+    my $dbh = DBI->connect("DBI:mysql:database=for_reg",
+                           $db->{user}, $db->{password},
+                           { RaiseError => 1, AutoCommit => 1 }
+              ) or die "cannot connect to for_reg database\n";
+    my $aref = $dbh->selectall_arrayref(<<"EOS", { Slice => {} }, $gc_code);
+        SELECT amount 
+          FROM gift_cards
+         WHERE code = ?
+EOS
+    if (! @$aref) {
+        $err .= "Cannot find a Gift Card with a code of '$gc_code'.";
+    }
+    else {
+        for my $gc_href (@$aref) {
+            $gc_total += $gc_href->{amount};
+        }
+        if ($gc_total == 0) {
+            $err .= "Sorry, the Gift Card '$gc_code' has a zero balance.";
+        }
+    }
+}
+
+# Discount Code
+my $discount_pct = 0;
+if ($data->{discount_code}) {
+    # note that the only way to get a non-blank $form{disc_code}
+    # is to have a $data->{discount_code}
+    #
+    if ($form{disc_code} =~ m{\S}xms) {
+        if ($form{disc_code} ne $data->{discount_code}) {
+            $err .= "Sorry, invalid Discount Code.";
+        }
+        else {
+            $discount_pct = $data->{discount_pct};
+        }
+    } 
+}
+
+if ($err) {
+    Template->new(INTERPOLATE => 1)->process(
+        'err.tt2',
+        { err => $err },
+    );
+    exit;
+}
+
+# all is well.  (except maybe for the uploaded covid vax file suffix)
+# prepare the confirmation page.
+#
+
+# save the vaccination card image.
+# name it after the person
+# put this name in a hidden field.
+#
+my $name;
+if ($covid_vax) {
+    my $fname = $q->param('card');
+    #
+    # get the suffix (.jpg .png .gif or .pdf)
+    # it will usually be a .jpg file but ...
+    #
+    my ($suffix) = $fname =~ m{[.](\w+)\z}xms;
+    $suffix ||= "jpg";
+    $suffix = lc $suffix;
+    $suffix = "jpg" if $suffix eq "jpeg";
+    if ($suffix !~ m{\A (jpg|png|gif|pdf) \z}xms) {
+        Template->new(INTERPOLATE => 1)->process(
+            'err.tt2',
+            {
+                err => "The vaccination card picture must be a"
+                     . "proper image file.<br>"
+                     . "The suffix must be jpg, png, gif, or pdf.",
+            },
+        );
+        exit;
+    }
+    $name = "$form{fname}_$form{lname}.$suffix";
+    $name =~ s{[ ]}{_}xmsg;
+
+    # Upgrade the handle to one compatible with IO::Handle:
+    my $io = $card->handle;
+
+    my $arch_file = "$for_reg/covid_vax_archive/$name";
+    open my $out, '>', $arch_file;
+    my $buffer;
+    while (my $bytesread = $io->read($buffer, 1024)) {
+        print {$out} $buffer;
+    }
+    close $out;
+    # forget resizing and compressing
+    # it proved unreliable for some reason
+    #
+    if ($suffix eq 'jpg') {
+        # resize and compress the image file and put it in the /covid_vax dir
+        #
+        system "/usr/bin/convert -resize 1000x $arch_file /tmp/card$$";
+        system "/usr/bin/convert -strip -interlace Plane -quality 65%"
+             . " /tmp/card$$ $for_reg/covid_vax/$name";
+        unlink "/tmp/card$$";
+    }
+    else {
+        # cannot convert .pdf to .jpg here - will do it on akash
+        # also cannot resize or compress png in the same way
+        copy $arch_file, "$for_reg/covid_vax/$name";
+    }
+}
+
+# how much to charge??
+# it's complicated
+#
+# if mountain_experience there is no housing
+# and it's a fixed cost - in pr/ME_cost.txt
+#
+# it depends on their house1 choice, progchoice (basic/full), 
+# collect_total, percent_tuition, and deposit values.
+# oh, and housing_not_needed - in which case the cost
+# is simply the tuition.
+#
+# for Personal Retreats
+# the date range determines how many days they're staying
+# and the housing costs may have both Current and Next charges
+# and there's also M-Th discount ranges.
+#
+# and the possible use of a gift card
+#
+# and a discount code
+#
+
+#
+# How much for housing?
+#
+my $key = ($sdate && $data->{next_hc}       # for PRs
+           && $sdate >= date($data->{next_date})? "next"
+           :                                      $form{progchoice});
+my $key1 = $key . " " . $form{house1};
+my $key2 = $key . " " . $form{house2};
+my $h_cost = $data->{$key1};        # assume they'll get their first choice
+my $house1 = $data->{$key1};
+my $house2 = $data->{$key2};
+
+my $total;
+my $payment = "";
+
+# as the charges accumulate we add to $total
+# and append an explanation to $payment
+#
+if ($ME) {
+    open my $in, '<', "$progpath/pr/ME_cost.txt";
+    $h_cost = <$in>;
+    $h_cost =~ s{\D}{}xmsg;      # dos vs unix line endings :(
+    close $in;
+    $total += $h_cost;
+    $payment .= "The Mountain Experience costs \$${h_cost}.<br>";
+    if ($form{children_name_age}) {
+        my @kids = split ',', $form{children_name_age};
+        my $nkids = @kids;
+        my $kid_cost = int($nkids*($h_cost/2));
+        $total += $kid_cost;
+        my $plural = $nkids == 1? 'child': 'children';
+        $payment .= "You are bringing $nkids $plural.  This adds \$$kid_cost.<br>";
+        $payment .= "The total is now \$$total.<br>";
+    }
+}
+elsif ($PR) {
+    $ndays ||= 1;
+	$total = $ndays*$h_cost;
+    my $pl = $ndays == 1? '': 's';
+    $payment .= "For your Personal Petreat you are staying $ndays day$pl.<br>\n";
+    $payment .= "The cost per day is \$$h_cost.<br>\n";
+    $payment .= "The total is \$$total.<br>\n";
+
+    # PR discount for M-Th?
+    #
+    my $disc_start = date($data->{disc_pr_start});
+    my $disc_end   = date($data->{disc_pr_end});
+    if ($disc_start <= $edate && $sdate <= $disc_end) {
+        # there is some overlap
+        #
+        my $d = $sdate;
+        my $n_m_th_days = 0;
+        while ($d < $edate) {
+            my $dow = $d->day_of_week();
+            if (   1 <= $dow         && $dow <= 4        # Mon-Thu
+                && $disc_start <= $d && $d <= $disc_end  # in discount PR period
+            ) {
+                ++$n_m_th_days;
+            }
+            ++$d;
+        }
+        if ($n_m_th_days > 0) {
+            my $disc = int(($data->{disc_pr}/100)*$n_m_th_days*$h_cost+.5);
+            my $pl   = ($n_m_th_days == 1)? ""    : "s";
+            my $th   = ($n_m_th_days == 1)? "that": "those";
+            my $verb = ($n_m_th_days == 1)? "is"  : "are";
+            $total -= $disc;
+            $payment .= "Since you are staying for $n_m_th_days day$pl that $verb Monday-Thursday you get a $data->{disc_pr}% discount for $th day$pl.  This adds up to \$$disc.<br>\n";
+            $payment .= "Your total is reduced to \$$total.<br>\n";
+        }
+    }
+}
+elsif (! $data->{housing_not_needed}) {
+    # the housing cost is not dependent on sdate, edate.
+    # we have the total amount.
+    #
+    $total = $h_cost;
+    if ($form{pid} == 4815) {
+        $payment .= "Your total cost for meals, lodging, and 3HO Program fee is \$$total.<br>\n";
+    }
+    elsif ($form{pid} == 4827) {
+        $payment .= "Your total cost for meals, lodging, and tuition is \$$total.<br>\n";
+    }
+    else {
+        $payment .= "Your total cost for meals and lodging is \$$total.<br>\n";
+    }
+}
+
+# how much for tuition?
+#
+if (my $tuition = $data->{tuition}) {
+    my $increased = $total;
+    $total += $tuition;
+    $payment .= "The tuition charge is \$$tuition";
+    if ($increased) {
+        $payment .= " so your total is increased to \$$total";
+    }
+    $payment .= ".<br>\n";
+}
+elsif ($data->{donation}) {
+    if ($donation_amt) {
+        my $increased = $total;
+        $total += $donation_amt;
+        $payment .= "For tuition you are contributing \$$donation_amt";
+        if ($increased) {
+            $payment .= " so your total is increased to \$$total";
+        }
+        $payment .= ".<br>\n";
+    }
+    else {
+        $payment .= "$data->{donation_zero_msg}<br>\n";
+    }
+}
+
+my %stash;
+
+#
+# discount code?
+#
+if ($discount_pct) {
+    $payment .= "You entered the valid discount code of $data->{discount_code} so there is\n"; 
+    my $discount_amt = int(($discount_pct/100)*$total + 0.5);
+        # rounded up
+    $payment .= " a discount of $discount_pct% = \$$discount_amt.<br>\n";
+    $total -= $discount_amt;
+    $payment .= "Your total cost is reduced to \$$total.<br>\n";
+    $stash{discount_amt} = $discount_amt; 
+}
+
+#
+#
+# MMC General Fund Donation
+if ($green_amount) {
+    $total += $green_amount;
+    $payment .= "You wish to contribute \$$green_amount to the MMC General Fund.  The total is increased to \$$total.<br>\n";
+}
+
+#
+# apply a gift card?
+#
+if ($gc_total) {
+    if ($gc_total < $total) {
+        $gc_used = $gc_total;
+        $gc_balance = 0;
+        $total -= $gc_total;
+    }
+    else {
+        $gc_used = $total;
+        $gc_balance = $gc_total - $total;
+        $total = 0;
+    }
+    $payment .= "You wish to use the Gift Card code of '$form{gift_card}' which has a current value of \$$gc_total.<br>\n";
+    $payment .= "We will use \$$gc_used from the gift card which leaves \$$gc_balance on the gift card.<br>\n";
+    $payment .= "Using the gift card reduces the total payment today from"
+             . " \$"
+             .  ($total+$gc_used)
+             . " to \$$total.<br>\n";
+}
+
+my ($amount_now, $due);
+# how much of this total is to be collected now?
+#
+if ($data->{collect_total}) {
+	$amount_now = $total;
+    if ($total) {
+        $payment .= "The total of \$$total needs to be collected now.<br>\n";
+    }
+}
+elsif ($data->{percent_tuition}) {
+    my $pct = (100 - $data->{percent_tuition})/100;
+    $amount_now = int($data->{tuition} * $pct);
+    $payment .= "For this program we need to collect $data->{percent_tution}% of the tutition of $data->{tuition} which comes to \$$amount_now.<br>\n";
+}
+else {
+    $amount_now = $data->{deposit} || 100;
+    if ($amount_now > $total) {
+        $amount_now = $total;
+    }
+    if ($amount_now) {
+        $payment .= "For this program we need to collect a deposit of \$$amount_now.<br>\n";
+    }
+}
+if (! $data->{collect_total} && $green_amount) {
+    $amount_now += $green_amount;
+    $payment .= "The MMC General Fund donation of \$$green_amount is added to the amount to collect today.<br>\n";
+}
+$due = $total - $amount_now;
+if ($due) {
+    $payment .= "The balance of \$$due will be due when you arrive.<br>\n";
+    $payment .= "If you wish, you can pay the full amount of \$$total now.  This will simplify your registration on arrival.<br>\n";
+}
+
+#
+# now to fill in the rest of the stash for the template variables
+#
+$stash{amount_now} = $amount_now;
+$stash{due} = $due;
+$stash{total} = $total;
+# Call subroutine from authorize.net that sets $fingerprint_html 
+# We send all of the values - amount_now and the full amount total.
+# This way the user can make a choice, go to authorize.net,
+# change their mind, go back in the browser, and choose the other option.
+#
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
+                     $amount_now, $x_currency_code);
+$stash{fingerprint_html} = $fingerprint_html;
+# the above puts the hidden fields in place with
+# the deposit only values.
+my ($sequence, $timestamp, $hash) =
+    $fingerprint_html =~ m{value='([^']*)'}xmsg;
+$stash{sequence}  = $sequence;
+$stash{timestamp} = $timestamp;
+$stash{hash}      = $hash;
+my $full_fingerprint_html =
+    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
+                     $total, $x_currency_code);
+my ($full_sequence, $full_timestamp, $full_hash) =
+    $full_fingerprint_html =~ m{value='([^']*)'}xmsg;
+$stash{full_sequence}  = $full_sequence;
+$stash{full_timestamp} = $full_timestamp;
+$stash{full_hash}      = $full_hash;
+for my $name (qw/
+    fname lname aname street1 street2 city state zip
+    country cell email1 car_license carpool hascar from_where
+    e_mailings snail_mailings
+    share_mailings kayakalpa
+    house1 house2 request withwhom_first withwhom_last
+    pid title leader_names name progchoice
+    request plink
+    mountain_experience meals activities children_name_age
+/) {
+    $stash{$name} = $form{$name};
+}
+$stash{green_amount} = $green_amount;   # we may have removed a dollar sign...
+$stash{slide_tuition} = $slide_tuition;
+
+my $images = do "image_links/$form{pid}";
+if ($images->{image1} && $images->{image2}) {
+    $stash{two_pics} = 1;
+    $stash{image1} = $images->{image1};
+    $stash{image2} = $images->{image2};
+}
+elsif ($images->{image1}) {
+    $stash{one_pic} = 1;
+    $stash{image1} = $images->{image1};
+}
+else {
+    $stash{zero_pics} = 1;
+}
+$stash{loginid} = $MMC_loginid;
+
+$stash{x_firstname} = $form{fname};
+$stash{x_lastname} = $form{lname};
+if ($covid_vax) {
+    $stash{covid_vax} = 'covid_vax';
+    $stash{x_covid_vax} = $name;
+}
+$stash{x_address} = "$form{street1} $form{street2}";
+
+#
+# create a readable description for the user
+#
+my %gender_desc = (
+    female     => 'Woman',
+    male       => 'Man',
+    non_binary => 'Non-binary/non-conforming',
+    trans      => 'Transgender',
+    no_resp    => 'Prefer not to respond',
+);
+$stash{gender} = $gender_desc{$form{gender}};
+
+$stash{pronouns} = $form{pronouns};
+$stash{diet}     = $form{diet};
+
+$stash{phone} = $form{cell};    # used to have home work cell... 
+if ($form{ceu_license}) {
+    $stash{ceu} = <<"EOH";
+<tr>
+<th align=right>License #:</th>
+<td>$form{ceu_license}<span style="margin-left: 50mm">For a CEU certificate.</span></td>
+</tr>
+EOH
+	$stash{ceu_license} = $form{ceu_license};		# for passing on to reg...
+}
+else {
+    $stash{ceu} = "";
+	$stash{ceu_license} = "";
+}
+
+$stash{cabin_room} = $form{cabin_room} || 'room';
+$stash{other_cabin_room} = ($stash{cabin_room} eq 'room')? 'cabin'
+                           :                               'room'
+                           ;
+
+my $howHeardResponse = "";
+if ($form{howHeard} eq "web") {
+     $howHeardResponse = "the web";
+} elsif ($form{howHeard} eq "ad") {
+     $howHeardResponse = "an ad";
+     if ($form{advertiserName}) {
+         $howHeardResponse .= " in " . $form{advertiserName};
+     } 
+} elsif ($form{howHeard} eq "brochure") {
+     $howHeardResponse = "the Mount Madonna Center Brochure";
+} elsif ($form{howHeard} eq "flyer") {
+     $howHeardResponse = "a flyer";
+} 
+
+$stash{howheard} = $form{howHeard};
+$stash{advertisername} = $form{advertiserName};
+if ($howHeardResponse) {
+    $stash{howheard_verbose}
+        = "<p>You heard about this program through $howHeardResponse.";
+} else {
+    $stash{howheard_verbose} = "";
+}
+
+if ($form{carpool}) {
+    if ($form{hascar}) {
+        $stash{carpool_verbose} =
+            "<p>You wish to carpool from $form{from_where} and can offer a ride.";
+    }
+    else {
+        $stash{carpool_verbose} = 
+            "<p>You wish to carpool from $form{from_where} and would like a ride.";
+    }
+} else {
+    $stash{carpool_verbose} = "";
+}
+
+my $mailings_verbose = "";
+if ($form{e_mailings} || $form{snail_mailings}) {
+     $mailings_verbose = "<p>We will include you on occasional mailings via ";
+     if ($form{e_mailings}) {
+        $mailings_verbose .= "e-mail";
+     }
+     if ($form{snail_mailings}) {
+        if ($form{e_mailings}) {
+            $mailings_verbose .= " and ";
+        }
+        $mailings_verbose .= "snail mail";
+     }
+     $mailings_verbose .= ".";
+}
+else {
+    $mailings_verbose .= "<p>We will <b>not</b> include you on occasional mailings about MMC.";
+}
+$mailings_verbose .= "<p>We will "
+     . ($form{share_mailings}? "": "<b>not</b> ")
+     . "share your contact information with MMC affiliates.";
+
+if ($form{pid} == 4815) {
+    # 3HO
+    $mailings_verbose = '';
+}
+$stash{mailings_verbose} = $mailings_verbose;
+
+my $kayakalpa_verbose = "";
+if ($form{kayakalpa}) {
+    $kayakalpa_verbose .= "<p>We will contact you regarding massage or other bodywork during your stay.";
+}
+$stash{kayakalpa_verbose} = $kayakalpa_verbose;
+
+$stash{house1_verbose} = $housing_name{$form{house1}};
+$stash{house1_cost} = $house1;
+$stash{house2_verbose} = $housing_name{$form{house2}};
+$stash{house2_cost} = $house2;
+
+$stash{house1} = $form{house1};
+$stash{house2} = $form{house2};
+if ($form{withwhom_first} =~ /\S/) {
+    $stash{withwhom_verbose}
+        = "<p>You have requested to share housing with $form{withwhom_first} $form{withwhom_last}.&nbsp;&nbsp;&nbsp;He/she needs to register separately.";
+}
+else {
+    $stash{withwhom_verbose} = "";
+}
+
+if ($form{request}) {
+    my $s = $form{request};
+    $s =~ s{\n}{<br>\n}g;
+    $stash{request_verbose}
+        = "<h2>Additional Requests</h2><ul>$s</ul>";
+} else {
+    $stash{request_verbose} = "";
+}
+#
+# in addition to the street1, street2 above
+# which are for the hidden fields we also have
+# street_addr which is a special case.
+#
+my $street_addr = $form{street1};
+if ($form{street2} =~ /\S/) {
+    $street_addr .= "<br>$form{street2}";
+}
+$stash{street_addr} = $street_addr;
+
+if ($PR) {
+    $stash{title} = $ME? "Mountain Experience": "Personal Retreat";
+	$stash{sdate} = $sdate->format("%m/%d/%Y");
+	$stash{edate} = $edate->format("%m/%d/%Y");
+} else {
+	$stash{sdate} = "";
+	$stash{edate} = "";
+}
+#
+# what dates?
+#
+if ($form{dates} =~ m{,}) {
+    #
+    # we need to look at the choice of program
+    #
+    my ($bdate, $fdate) = split m{,}, $form{dates};
+    $bdate =~ s{^\s*|\s*$}{}g;
+    $fdate =~ s{^\s*|\s*$}{}g;
+    if ($fdate =~ m{^\d}) {
+        my ($month) = $bdate =~ m{^(\w+)}; 
+        $fdate = $month . " " . $fdate;
+    }
+    $stash{dates} = ($form{progchoice} eq "basic")? $bdate
+                    :                               $fdate;
+}
+elsif ($ME) {
+    $stash{dates} = $sdate->format("%A, %B %e, %Y");
+}
+elsif ($PR) {
+	my $date = "$ndays day" . (($ndays > 1)? "s": "");
+	$date .= " from ";
+	$date .= $sdate->format("%A %B %e, %Y");
+	$date .= " to ";
+	$date .= $edate->format("%A %B %e, %Y");
+	$stash{dates} = $date;
+    $stash{pr} = 1;
+}
+else {
+    $stash{dates} = $form{dates};
+}
+
+if ($gc_used) {
+    $stash{gc_code} = $gc_code;
+    $stash{gc_total} = $gc_total;
+    $stash{gc_used} = $gc_used;
+    $stash{gc_balance} = $gc_balance;
+}
+
+#
+# special action for testing purposes
+# to bypass authorize.net
+#
+if ($form{lname} =~ m{\A zz}xmsi) {
+    $stash{zzname} = 1;
+    $stash{zz_trans_id} = 'ZZ' . time();
+    $payment .= "<p style='color: red'>We will skip the authorize.net payment - for testing purposes.<br>";
+    $payment .= "Just click the button below to proceed.<br>";
+}
+
+$stash{payment} = $payment;
+$stash{waiver_needed} = $data->{waiver_needed};
+$stash{housing_not_needed} = $data->{housing_not_needed};
+$stash{staff_housing} = $staff_housing;
+
+# ip address for Jamal's purposes
+#
+$stash{real_ip} = $ENV{REMOTE_ADDR};
+
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'reg2.tt2',
+    \%stash,
+);

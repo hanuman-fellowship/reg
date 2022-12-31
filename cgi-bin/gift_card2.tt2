@@ -1,0 +1,90 @@
+         <div class="left col-12 mainForm">
+         Thank you.<br>
+         Please confirm the following and then choose PAY AMOUNT below.
+         <p>
+         You are sending a gift card for meals and lodging at Mount Madonna Center to:
+         <p>
+         <DL>
+         <dt>Name:</dt>
+         <dd>$rec_fname $rec_lname</dd>
+         <dt>Email:</dt>
+         <dd>$rec_email</dd>
+         <dt>Amount:</dt>
+         <dd>\$$x_amount</dd>
+         [% IF personal_note_verbose %]
+             <dt>Personal Note:</dt>
+             <dd>$personal_note_verbose</dd>
+         [% END %]
+         </DL>
+         <p>
+         Your information:
+                        <DL>
+                            <dt>Name:</dt>
+                            <dd>$fname $lname</dd>
+                        
+                            <dt>Address:</dt>
+                            <dd>$street_addr<br>
+                                $city, $state $zip<br>
+                                $country</dd>
+                       
+                            <dt>Telephone:</dt>
+                            <dd>$phone</dd>
+                        
+                            <dt>Email:</dt>
+                            <dd>$email1</dd>
+                        </DL>
+
+                    <FORM NAME="authorize"
+                          action="https://secure2.authorize.net/gateway/transact.dll"
+                          method="POST"
+                          onsubmit="pageTracker._linkByPost(this);"
+                    >
+
+                    <div class="submit">
+<!-- Begin Authorize.net fields -->
+$fingerprint_html
+
+<INPUT type=hidden VALUE="TRUE"                  name="x_relay_response">
+<INPUT type=hidden VALUE="https://www.mountmadonna.org/cgi-bin/relay"
+                                                 name="x_relay_url">
+
+<INPUT type=hidden VALUE="$loginid"         name="x_login">
+<INPUT type=hidden VALUE="$x_amount"        name="x_amount" id="x_amount">
+<INPUT type=hidden VALUE="PAYMENT_FORM"          name="x_show_form" >
+<INPUT type=hidden VALUE="$x_firstname"     name="x_first_name">
+<INPUT type=hidden VALUE="$x_lastname"      name="x_last_name">
+<INPUT type=hidden VALUE="$x_address"       name="x_address">
+
+<INPUT type=hidden VALUE="$real_ip"         name="x_real_ip">
+<INPUT type=hidden VALUE="$fname"          name="x_fname">
+<INPUT type=hidden VALUE="$lname"          name="x_lname">
+<INPUT type=hidden VALUE="$email1"         name="x_email">
+<INPUT type=hidden VALUE="$rec_fname"      name="x_rec_fname">
+<INPUT type=hidden VALUE="$rec_lname"      name="x_rec_lname">
+<INPUT type=hidden VALUE="$rec_email"      name="x_rec_email">
+<INPUT type=hidden VALUE="$personal_note"  name="x_personal_note">
+<INPUT type=hidden VALUE="$street1"        name="x_street1">
+<INPUT type=hidden VALUE="$street2"        name="x_street2">
+<INPUT type=hidden VALUE="$city"           name="x_city">
+<INPUT type=hidden VALUE="$state"          name="x_state">
+<INPUT type=hidden VALUE="$zip"            name="x_zip">
+<INPUT type=hidden VALUE="$country"        name="x_country">
+<INPUT type=hidden VALUE="$phone"          name="x_phone">
+<INPUT type=hidden VALUE="FALSE"           name="x_email_customer">
+<INPUT type=hidden VALUE='https://www.mountmadonna.org/assets/img/registration/mmc_logo.gif' name=x_logo_url>
+    
+                        <div>
+                            <button TYPE="button" name="back" value="Go Back and Make Changes" onclick="location.replace(document.referrer); return false;" class="my-4 button button--programs button--inline">
+                                <em>Go Back and Make Changes</em>
+                            </button>
+                        </div>
+                        <div>
+                        <button TYPE="submit"
+                                name="Accept Order"
+                                value="Pay Securely with your Credit Card"
+                                class="my-4 button button--programs button--inline"
+                        <em>Pay Amount</em>
+                        </button>
+                        </div>
+            </div>
+</div>

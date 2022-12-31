@@ -1,0 +1,23 @@
+			<div class="receipt">
+				<div class="success">
+					<img src="https://www.mountmadonna.org/assets/img/registration/success.png">
+					<div class="success_text">
+						<h2>Thank you, ${x_fname}.</h2>
+						<h3>Your payment has been received.</h3>
+					</div>
+				</div>
+				<br style="clear:both;" />
+				<p>
+<p>
+Your credit card has been charged \$$x_amount
+via an authorize.net transaction.<br>
+The id for this transaction is ${x_trans_id}.<br>
+<p>
+$x_rec_fname has been sent an email that explains how they can 
+use the gift you have given.  You are Cc'ed on that email.
+<p>
+If you did not receive this email check your spam/junk email folder.
+<br>
+If it is not there please call us at 408-846-4090.
+<p>
+</div>
