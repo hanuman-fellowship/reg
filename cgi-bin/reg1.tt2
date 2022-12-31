@@ -2,6 +2,44 @@
 <head>
 <meta charset='UTF-8'>
 <link rel="stylesheet" href="/static/cgi.css">
+<script>
+var fields = [
+    { id: 'fname', regexp: '\\S',
+                   err: 'Missing First Name' },
+    { id: 'lname', regexp: '\\S',
+                   err: 'Missing Last Name' },
+    { id: 'radio', name: 'gender',
+                   err: 'Missing Gender Identity' },
+    { id: 'pronouns',  regexp: '\\S',
+                   err: 'Missing Pronouns' },
+    { id: 'street1',  regexp: '\\S',
+                      err: 'Missing Street Address' },
+    { id: 'city',  regexp: '\\S',
+                   err: 'Missing City' },
+    { id: 'state',  regexp: '\\S',
+                    err: 'Missing State' },
+    { id: 'zip',  regexp: '\\S',
+                  err: 'Missing Zip Code' },
+    { id: 'cell',  regexp: '^[0-9 -.()]+\$',
+                   err: 'Invalid Phone number' },
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+                     err: 'Invalid Email address' },
+    { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+                     err: 'Invalid Email address' },
+    { id: 'radio', name: 'house1',
+                   err: 'Missing 1st Housing Choice' },
+    { id: 'radio', name: 'house2',
+                   err: 'Missing 2nd Housing Choice' }
+];
+</script>
+<!-- 
+to put the screen on Housing ...
+function scrollTo(hash) {
+    location.hash = "#" + hash;
+}
+
+-->
+<script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
 <body>
 [% IF pid == 4815 %]
@@ -12,7 +50,7 @@
       method=POST
       name=reg
       action="/cgi-bin/reg2?id=$pid"
-      onSubmit="return confirm();"
+      onSubmit="return check_fields();"
       enctype="multipart/form-data"
 >
 
@@ -65,7 +103,7 @@
 [% IF ! housing_not_needed %]
     [% IF house_cost_type == 'Total' %]
         <p>
-        The prices below are the total charges for lodging$tuition
+        The prices below are the Total charges for lodging$tuition
         and all meals.
     [% ELSE %]
         <p>
@@ -170,22 +208,18 @@
 
 <tr>
 <th valign=top>
+<span id=gender1></span>
 <span class=required>*</span> Gender Identity:</th> 
 <td>
-<input type=radio name="gender" id="gender1" $female value="female">
-<label for="gender1">Woman</label><br> 
+<input type=radio name="gender" $female value="female"> Woman<br> 
 
-<input type=radio name="gender" id="gender2" $male value="male"> 
-<label for="gender2">Man</label><br>
+<input type=radio name="gender" $male value="male"> Man<br>
 
-<input type=radio name="gender" id="gender4" $trans value="trans"> 
-<label for="gender4">Transgender</label><br>
+<input type=radio name="gender" $trans value="trans"> Transgender<br>
 
-<input type=radio name="gender" id="gender3" $non_binary value="non_binary"> 
-<label for="gender3" style='width: 400px'>Non-binary/non-conforming</label><br>
+<input type=radio name="gender" $non_binary value="non_binary"> Non-binary/non-conforming<br>
 
-<input type=radio name="gender" id="gender5" $no_resp value="no_resp"> 
-<label for="gender5">Prefer not to respond</label><br>
+<input type=radio name="gender" $no_resp value="no_resp"> Prefer not to respond<br>
 <a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
 </td>
 </tr>
@@ -296,17 +330,17 @@ If you only want a certificate of completion enter COMP for the license #.
     <!-- $dncc_why??? -->
     <ul>
     <li>
-    Indicate your <b>first</b> <i>and</i>
+    <span class=required>*</span> Indicate your <b>first</b> <i>and</i>
     <b>second</b> choices for housing.
     <li>We will do our best to honor your choices.
         If neither is available, we will assign the next best option,
         and waitlist you.
     [% IF ! housing_not_needed %]
         [% IF house_cost_type == 'Total' %]
-            <li>Prices are the total charge including meals,
+            <li>Prices are the Total charge including meals,
                 lodging$tuition and use of facilities.
         [% ELSE %]
-            <li>Prices are per person per day and include meals,
+            <li>Prices are Per Person Per Pay and include meals,
                 lodging$tuition and use of facilities.
         [% END %]
     [% END %]
@@ -330,6 +364,8 @@ If you only want a certificate of completion enter COMP for the license #.
     </ul>
 
     <ul>
+    <span id=house11></span>
+    <span id=house21></span>
     <table cellpadding=4>
 
     <tr>
@@ -432,17 +468,32 @@ function toggle_from_where() {
 [% END %]
 
 <p>How did you <b>first hear</b> about this program?</p>
-<!-- this has changed!!!! ???? -->
 <ul>
-<input type=radio name=howHeard id=howHeard1 value=HFS_email_newsletter>
-HFS Email/Newsletter<br>
-<input type=radio name=howHeard id=howHeard2 value=brochure>
-MMC Program Brochure<br>
-<input type=radio name=howHeard id=howHeard3 value=flyer>
-Flyer or Postcard<br>
-<input type=radio name=howHeard id=howHeard4 value=ad
-onclick="document.getElementById('advertiserName').focus();">
-Advertisement in: <input name=advertiserName id=advertiserName type=text onfocus="document.getElementById('howHeard4').checked = true;">
+<input type=radio name=howHeard id=howHeard1 value=mmc_mmi_newsletter>
+     Mount Madonna Center or Institute Newsletter<br>
+<input type=radio name=howHeard id=howHeard2 value=hfs_newsletter>
+     Hanuman Fellowship Newsletter<br>
+<input type=radio name=howHeard id=howHeard3 value=temple_newsletter>
+     Temple Newsletter<br>
+<input type=radio name=howHeard id=howHeard4 value=social_media>
+     Social Media<br>
+<input type=radio name=howHeard id=howHeard5 value=radio>
+     Radio<br>
+<input type=radio name=howHeard id=howHeard6 value=print_ad>
+     Print Ad or Poster<br>
+<input type=radio
+       name=howHeard
+       id=howHeard7
+       value=ad
+       onclick="document.getElementById('adsource').focus();"
+>
+     Other:
+<input name=adsource
+       id=adsource
+       type=text
+       size=30
+       onfocus="document.getElementById('howHeard7').checked = true;"
+>
 </ul>
 
 <p>Shall we keep you <b>informed</b> of events at Mount Madonna Center?</p>
@@ -472,6 +523,69 @@ You may share my address with MMC affiliates.<br>
 
 </div>  <!-- indent for preferences -->
 
+<h3>Donation</h3>  
+<!-- used to be for ecological projects -->
+<ul>
+<div style="width: 700px">
+As we work to recover from Covid closures and related expenditures,
+we invite you to consider making a donation to Mount Madonna Center.
+Your gift will support stewardship of this vibrant learning community,
+inspirational environment, and sacred land.
+Mount Madonna Center is a 501(c)(3) charitable organization.
+EIN #51-0174679
+</div>
+Amount:
+<input type=text name=green_amount id=green_amount class="input">
+</ul>
+
+<h3>Dietary Restrictions</h3>  
+Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
+<p>
+<input type=text size=50 name=diet value="$diet">
+
+<h3 class="teal">Additional Requests</h3>  
+[% IF ! housing_not_needed || mountain_experience %]
+    [% IF ! pr || (children_welcome && ! mountain_experience) %]
+        Include the following in your additional requests:
+    [% END %]
+    <ul>
+    [% IF ! pr && ! mountain_experience %]
+        <li>Arrival and/or departure dates if they differ from your program's.
+    [% END %]
+    [% IF children_welcome && ! mountain_experience %]
+        <li>The ages and names of children you are bringing, if any.
+        Children 4 years and under are welcome free of charge;
+        for 5-12 years old, fees are discounted 50%.  Please
+        register children 13 years and older
+        separately as an adult.
+    [% END %]
+    </ul>											
+[% END %]
+<textarea name="request" rows=5 cols=60  wrap=VIRTUAL></textarea>
+
+<h3>Important Notes</h3>  
+<ul>
+[% IF ! children_welcome && ! housing_not_needed %]
+    <li>This program is for adults only - please do not bring your children.
+[% END %]
+[% IF ! collect_total %]
+    <li>Balance is due on arrival (Visa, MasterCard, cash or check only).</li>
+[% END %]
+<li>$canpol</li>
+[% IF ! housing_not_needed %]
+    <li>This form does not automatically reserve your spot for the program.
+    [% IF ! collect_total %]
+        You are not registered until we receive your deposit.
+    [% END %]
+    If the program is full, your deposit will be refunded.</li>
+    <li>Housing is not always available. <strong>Do not finalize your travel plans</strong> until you have received a housing confirmation from Mount Madonna Center.</li>
+    <li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
+[% END %]
+</ul>
+
+<input style="background: lightgreen" type=submit id=submit value='Submit'>
+
 </form>
 </body>
 </html>
+<script>document.getElementById('fname').focus()</script>

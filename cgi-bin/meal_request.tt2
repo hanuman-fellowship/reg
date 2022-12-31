@@ -12,6 +12,7 @@
         todayHighlight: true,
         autoclose: true,
         daysOfWeekDisabled: '0',
+        startDate: '$startDate',
         datesDisabled: [ $disabled ]
     });  
 });
@@ -37,12 +38,15 @@ td {
 .num {
     text-align: right;
 }
+.form-control {
+    font-size: 16pt;
+}
 </style>
 </head>
 <body>
-<h2>
-<img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=150>
+<img src='/static/images/mmc-teal.png' width=200>
 <p>
+<h1>
 [% IF type == 'family' %]
 Meals for HFS Members/Affilates
 [% ELSIF type == 'guest' %]
@@ -50,10 +54,10 @@ Meals for Resident Guests and Offland Staff
 [% ELSE %]
 Meals at Mount Madonna Center
 [% END %]
-</h2>
+</h1>
 <p>
 You must request meals at least 2 days in advance.
-<span style="margin-left: 1in"><a target=_blank href="https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center">Meal Information</a></span>
+<span style="margin-left: 1in"><a target=_blank href="/static/meals_at_mmc.html">Meal Information</a></span>
 <br>
 Enter dates and the number of meals you wish on those dates.<br>
 If the meals are for a child (ages 5-12) check the Child column checkbox.
@@ -96,7 +100,7 @@ You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
 <tr>
 <td>
 <span class="input-group date">
-  <input type="text" class="form-control" name=date1>
+  <input type="text" class="form-control" name=date1 id=date1>
   <span class="input-group-addon">
   <i class="glyphicon glyphicon-calendar"></i>
   </span>
@@ -167,6 +171,3 @@ You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
 </form>
 </body>
 </html>
-<script>
-document.getElementById('datepicker1').focus();
-</script>

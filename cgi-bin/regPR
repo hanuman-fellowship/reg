@@ -26,7 +26,7 @@ my @disabled;
 my (@noPR, @noPRindoors);
 for my $ev (@events) {
     my ($sdate, $edate) = ($ev->sdate_obj, $ev->edate_obj);
-    my ($indoors)       = $ev->name =~ m{indoors}xms;
+    my ($indoors)       = $ev->name =~ m{indoors}xmsi;
     my $s;
     if ($sdate->month() == $edate->month()) {
         if ($sdate->day() == $edate->day()) {
@@ -50,9 +50,9 @@ for my $ev (@events) {
     }
     else {
         push @noPR, $s;
-    }
-    for (my $d = $sdate; $d <= $edate; ++$d) {
-        push @disabled, $d->format("%m/%d/%Y");
+        for (my $d = $sdate; $d <= $edate; ++$d) {
+            push @disabled, $d->format("%m/%d/%Y");
+        }
     }
 }
 my %stash;

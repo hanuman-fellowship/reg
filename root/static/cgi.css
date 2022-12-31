@@ -1,9 +1,11 @@
 body {
     margin: .5in;
     font-size: 16pt;
+    font-family: Times;
 }
 td, th, input {
     font-size: 16pt;
+    font-family: Times;
 }
 .required {
     color: red;
@@ -27,4 +29,12 @@ li {
 }
 .space {
     line-height: 8mm;
+}
+textarea {
+    font-size: 16pt;
+    font-family: Times;
+}
+.teal {
+    font-size: 16pt;
+    background: lightgreen;
 }

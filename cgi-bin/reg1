@@ -384,6 +384,9 @@ if ($mountain_experience) {
                    });
     $stash{canpol} = $canpol? $canpol->policy: 'cancellation policy for ME??';
 }
+else {
+    $stash{canpol} = $prog->canpol->policy;
+}
 # remedy a tinyMCE quirk
 for my $w (qw/  confnote reg_msg  /) {
     if ($stash{$w} eq '<p><br mce_bogus="1"></p>') {
@@ -569,13 +572,10 @@ my @fee_rows = sort {
                     }
                }
                grep {
-                   !($_ eq 'commuting' && $pid == 0)
-                            # per Savita 6/15/22
-                   #??
-                   #&&
-                   #!($only_outdoors && $_ =~ m{single|dble}xms)
-                   &&
-                   !($sys{$_} || $hc->$_ == 0)
+                   $sys{$_}? 0
+                  :$hc->$_ == 0? 0
+                  :($only_outdoors && $_ !~ m{tent|van}xms)? 0
+                  : 1
                }
                $hc->columns();
 
