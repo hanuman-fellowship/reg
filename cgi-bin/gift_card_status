@@ -1,0 +1,71 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+use CGI qw/:standard/;
+use JSON 'decode_json';
+use Slurp;
+use DBI;
+use lib '.';
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
+print header();
+my $code = param('code');
+my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
+my $db = $ref->{database};
+my $dbh = DBI->connect("DBI:mysql:database=for_reg",
+                       $db->{user}, $db->{password},
+                       { RaiseError => 1, AutoCommit => 1 }
+          ) or die "cannot connect to for_reg database\n";
+my $sth_search = $dbh->prepare(<<"EOS");
+    SELECT *
+      FROM gift_cards
+     WHERE code = ?
+  ORDER BY the_date asc, the_time asc
+EOS
+$sth_search->execute($code);
+my $header = 0;
+my $balance = 0;
+while (my $href = $sth_search->fetchrow_hashref()) {
+    if (! $header) {
+        print <<'EOH';
+<style>
+body {
+    margin-left: .5in;
+    margin-top: .5in;
+}
+</style>
+EOH
+        print "<h2>Status of MMC Gift Card with code '$code'</h2>\n";
+        print "<table cellpadding=5>\n";
+        $header = 1;
+    }
+    print "<tr><td>"
+        . date($href->{the_date})->format("%D")
+        . "</td><td>"
+        . get_time($href->{the_time})->ampm()
+        . "</td>"
+        . "<td align=right>\$$href->{amount}</td><td>"
+        ;
+    $balance += $href->{amount};
+    if ($href->{rec_lname}) {
+        print "Purchased by $href->{fname} $href->{lname}"
+            . " for $href->{rec_fname} $href->{rec_lname}"
+            . "</td>"
+            ;
+    }
+    else {
+        print "$href->{rec_fname}</td>";
+    }
+    print "</tr>\n";
+}
+if (! $header) {
+    print "Sorry, no gift card was found with the code '$code'";
+}
+else {
+    print "<tr><td colspan=2 align=right>Balance</td><td align=right>\$$balance</td></tr>\n";
+    print "</table>\n";
+}

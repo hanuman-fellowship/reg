@@ -1,15 +1,13 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
-use CGI qw/:standard :cgi-lib/;
+use CGI;
+my $q = CGI->new();
+print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
+use lib '.', '../lib';
+
 use Template;
-use lib '.';
-use SimLib;
-use Auth qw/
-    $MMC_loginid
-    $MMC_txnkey
-/;
 use Date::Simple qw/
     today
     date
@@ -17,10 +15,6 @@ use Date::Simple qw/
 use HousingNames qw/
     %housing_name
 /;
-use JSON 'decode_json';
-use Slurp;
-use DBI;
-
 use File::Copy qw/
     copy
 /;

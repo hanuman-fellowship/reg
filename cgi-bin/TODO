@@ -5,3 +5,10 @@ test suites
     test suite for meal_requests
     test suite for regPR and regME
     test program_inquiry
+    test reg1, reg2
+        tuition? or not?
+        extra days?
+    gift_card
+    gift_card_status
+    req_pay
+    omp

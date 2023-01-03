@@ -1,0 +1,683 @@
+#!/usr/bin/perl
+# THIS WILL ALL BE DIFFERENT, I THINK
+use strict;
+use warnings;
+
+use CGI qw/:standard :cgi-lib/;
+$|++;               # unbuffer STDOUT
+print header;       # so authorize.net knows we are alive
+
+use CGI::Carp qw/fatalsToBrowser/;
+use File::Copy;
+use lib '.';
+use Date::Simple qw/
+    today
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
+Date::Simple->default_format("%b %e '%q");
+use Template;
+use JSON 'decode_json';
+use Slurp;
+use DBI;
+sub get_dbh {
+    my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
+    my $db = $ref->{database};
+    my $dbh = DBI->connect("DBI:mysql:database=for_reg",
+                           $db->{user}, $db->{password},
+                           { RaiseError => 1, AutoCommit => 1 }
+              ) or die "cannot connect to for_reg database\n";
+    return $dbh;
+}
+
+#
+# hyphenated names need an extra capital
+# SMITH-JOHNSON    => Smith-Johnson
+# smith-johnson    => Smith-Johnson
+# Mckenzie         => McKenzie
+# mary jane-louise => Mary Jane-Louise
+#
+sub normalize {
+    my ($s) = @_;
+    if (! $s) {
+        return "";
+    }
+    my $t = "";
+    my @words = split m{[ ]}xms, $s;
+    for my $w (@words) {
+        $w = join '-',
+             map { s{^Mc(.)}{Mc\u$1}; $_ }
+             map { ucfirst lc }
+             split m{-}, $w
+             ;
+    }
+    return join ' ', @words;
+}
+
+sub normalize_phone {
+    my ($phone) = @_;
+    my $n = $phone =~ tr/0-9/0-9/;
+    if ($n == 10 && $phone =~ m{^[0-9\(\)-. /]+$}) {
+        #
+        # an American phone number
+        # reformat it in a standard way
+        #
+        $phone =~ s{[^0-9]}{}g;
+        $phone = substr($phone, 0, 3) . "-"
+               . substr($phone, 3, 3) . "-"
+               . substr($phone, 6, 4);
+    }
+    return $phone;
+}
+
+sub normalize_textarea {
+    my ($s) = @_;
+    $s =~ s{\cM\n}{&#10;}xmsg;
+    $s;
+}
+
+my @lets = ('a' .. 'z');
+sub rand5let {
+    my $code = '';
+    for (1 .. 5) {
+        $code .= $lets[rand @lets];
+    }
+    return $code;
+}
+
+my ($min, $hour, $d, $m, $y) = (localtime)[ 1..5 ];
+++$m;
+$y += 1900;
+my $reg = '/home/reg';
+my $fr_dir = "$reg/for_reg";
+my $arch_dir = sprintf "$fr_dir/trans_archive/$y-%02d", $m;
+mkdir $arch_dir unless -d $arch_dir;
+my $gift_arch_dir = sprintf "$fr_dir/gift_card_archive/$y-%02d", $m;
+mkdir $gift_arch_dir unless -d $gift_arch_dir;
+my $meal_reqs_arch_dir = sprintf "$fr_dir/meal_requests_archive/$y-%02d", $m;
+mkdir $meal_reqs_arch_dir unless -d $meal_reqs_arch_dir;
+my $new_hfs_arch_dir = sprintf "$fr_dir/new_hfs_archive/$y-%02d", $m;
+mkdir $new_hfs_arch_dir unless -d $new_hfs_arch_dir;
+
+sub touch {
+    my ($fname) = @_;
+    open my $out, '>', $fname;
+    close $out;
+}
+
+# form parameters to a hash
+# so it is interpolatable.
+#
+my %P = Vars();
+my $id = $P{x_trans_id};
+
+# ensure the first and last names look okay.
+$P{x_fname} = normalize($P{x_fname});
+$P{x_lname} = normalize($P{x_lname});
+$P{x_aname} = normalize($P{x_aname});
+
+#
+# was it a failed transaction?
+#
+if ((exists $P{x_response_code}  && $P{x_response_code} != 1)
+    ||
+    (! exists $P{x_trans_id})
+) {
+    print <<"EOH";
+Sorry, the transaction failed for this reason:
+<p>
+'$P{x_response_reason_text}'
+<p>
+code: $P{x_response_code} transaction id: $P{x_trans_id}
+EOH
+    exit;
+}
+
+if (exists $P{x_rental_deposit_code}) {
+    my $type = $P{x_rental_type};      # deposit or invoice
+    rename "$fr_dir/rental_$type/$P{x_rental_deposit_code}",
+           "$fr_dir/rental_$type/paid/$id";
+    # log the event for tracking purposes
+    open my $log, '>>', 'relay_log';
+    my $Type = ucfirst $type;
+    print {$log} scalar(localtime), " $id, Rental $Type $P{x_first_name} $P{x_last_name}, $P{x_rental_name} for \$$P{x_amount}\n";
+    close $log;
+    my $message;
+    Template->new(INTERPOLATE => 1)->process(
+        'rental_deposit_message.tt2',
+        \%P,
+        \$message,
+    );
+    print $message;
+    exit;
+}
+if (exists $P{x_req_mmc_code}) {
+    rename "$fr_dir/req_mmc_dir/$P{x_req_mmc_code}",
+           "$fr_dir/req_mmc_dir/paid/$id";
+    # log the event for tracking purposes
+    open my $log, '>>', 'relay_log';
+    print {$log} scalar(localtime), " $id, Requested Payment $P{x_first_name} $P{x_last_name}, $P{x_email} for \$$P{x_amount}\n";
+    close $log;
+    my $message;
+    Template->new(INTERPOLATE => 1)->process(
+        'req_mmc_message.tt2',
+        \%P,
+        \$message,
+    );
+    print $message;
+    exit;
+}
+if (exists $P{x_member_id}) {
+    my $amt = $P{x_amount};
+    $amt =~ s{[.].*}{}xms;
+    touch("$fr_dir/omp_dir/$P{x_member_id}_$amt\_$id");
+    my ($min, $hr, $d, $m, $y) = (localtime)[1..5];
+    ++$m;
+    $y += 1900;
+    my $omp_dir = sprintf "$fr_dir/omp_archive/%d-%02d", $y, $m;
+    mkdir $omp_dir if ! -d $omp_dir;
+    touch("$omp_dir/$P{x_member_id}_$amt\_$id");
+    open my $out, '>>', "omp_log.txt";
+    printf {$out} "%d-%02d-%02d %02d:%02d $id"
+                 ." $P{x_fname} $P{x_lname} $P{x_amount} $P{x_category}\n",
+                  $y, $m, $d, $hr, $min;
+    close $out;
+    Template->new(INTERPOLATE => 1)->process(
+        'omp_thanks.tt2',
+        \%P,
+    );
+    exit;
+}
+
+if (exists $P{x_encoded_requests}) {
+    # log the event for tracking purposes
+    open my $log, '>>', 'relay_log';
+    print {$log} scalar(localtime),
+        " $id, $P{x_fname} $P{x_lname}, meal request: $P{x_encoded_requests}\n";
+    close $log;
+    open my $out, '>', "$fr_dir/meal_requests/$id"
+        or die "cannot open meal_requests/$id: $!\n";
+    print {$out} "x_date => $m/$d/$y\n";
+    printf {$out} "x_time => %02d:%02d\n", $hour, $min;
+    print {$out} "x_encoded_requests => $P{x_encoded_requests}\n";
+    print {$out} "x_meal_type => $P{x_meal_type}\n";
+    for my $f (qw/ fname lname address city state zip country email amount/ ) {
+        print {$out} qq!x_$f => $P{"x_$f"}\n!;
+    } 
+    my $phone = normalize_phone($P{x_phone});
+    print {$out} "x_phone => $phone\n";
+    close $out;
+    copy("$fr_dir/meal_requests/$id", "$meal_reqs_arch_dir/$id");
+
+    my %string;
+    open my $strings, '<', '/home/reg/meal_request/meal_request_strings.txt'
+        or die "cannot open meal_request_strings.txt\n";
+    {
+        local $/;
+        my $s = <$strings>;
+        close $strings;
+        %string = %{ decode_json($s) };
+    }
+    my $dbh = get_dbh();
+    my $sth_insert = $dbh->prepare(<<'EOS');
+INSERT INTO meal_requests (
+    transaction_id,
+
+    date,
+    breakfast,
+    lunch,
+    dinner,
+    child,
+
+    breakfast_cost,
+    lunch_cost,
+    dinner_cost,
+    breakfast_cost_5_12,
+    lunch_cost_5_12,
+    dinner_cost_5_12,
+    total_cost,
+
+    first,
+    last,
+    address,
+    city,
+    st_prov,
+    zip_post,
+    country,
+
+    phone,
+    email,
+
+    date_of_request,
+    time_of_request
+)
+VALUES (
+    ?,?,?,?,?,
+    ?,?,?,?,?,
+    ?,?,?,?,?,
+    ?,?,?,?,?,
+    ?,?,?,?
+)
+EOS
+    my @terms = split ',', $P{x_encoded_requests};
+    my $display = "";
+    while (@terms) {
+        my ($date, $breakfast, $lunch, $dinner, $child) = splice @terms, 0, 5;
+        my @meals;
+        push @meals, "$breakfast for breakfast" if $breakfast;
+        push @meals, "$lunch for lunch" if $lunch;
+        push @meals, "$dinner for dinner" if $dinner;
+        $display .= "On " . date($date)->format() . ': '
+                 .  join(', ', @meals)
+                 .  ($child? ' for a child aged 5-12': '')
+                 .  "<br>\n"
+                 ;
+        $sth_insert->execute(
+            $id,
+            $date, $breakfast, $lunch, $dinner,
+            $child,
+            $string{breakfast_cost},
+            $string{lunch_cost},
+            $string{dinner_cost},
+            $string{breakfast_cost_5_12},
+            $string{lunch_cost_5_12},
+            $string{dinner_cost_5_12},
+            $P{x_amount},
+            $P{x_fname}, $P{x_lname},
+            $P{x_address},
+            $P{x_city}, $P{x_state}, $P{x_zip}, $P{x_country},
+            $P{x_phone}, $P{x_email},
+            "$m/$d/$y",
+            sprintf("%02d:%02d\n", $hour, $min),
+        );
+    }
+    $P{display_requests} = $display;
+    my $message;
+    my $tt = Template->new(INTERPOLATE => 1);
+    $tt->process(
+        'meal_request_receipt.tt2',
+        { %P, message => 1 },
+        \$message,
+    ) or die $tt->error();
+    print $message;
+    # send email
+    Template->new(INTERPOLATE => 1)->process(
+        'meal_request_receipt.tt2',
+        \%P,
+        "/tmp/$$",
+    );
+    system("./email_gmail"
+          ." -t '$P{x_fname} $P{x_lname} <$P{x_email}>'"
+          ." -s 'Meal Request at MMC'"
+          ." --file /tmp/$$"
+          ." --debug"
+    );
+    exit;
+}
+
+if (exists $P{x_rec_fname}) {
+    my $dbh = get_dbh();
+    my $sth_find = $dbh->prepare(<<'EOS');
+        SELECT code
+          FROM gift_cards
+         WHERE code = ?;
+EOS
+    my $sth_insert = $dbh->prepare(<<'EOS');
+        INSERT INTO gift_cards
+        (
+            code,
+            amount,
+            rec_fname,
+            rec_lname,
+            rec_email,
+            fname,
+            lname,
+            email,
+            the_date,
+            the_time
+        )
+        VALUES (
+            ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?
+        )
+EOS
+    # a gift card transaction
+    my $code;
+    CODE:
+    while (1) {
+        $code = rand5let();
+        # check for uniqueness
+        $sth_find->execute($code);
+        if (! $sth_find->fetchrow_array()) {
+            last CODE;
+        }
+        # loop to get another
+    } 
+    $sth_insert->execute(
+        $code,
+        $P{x_amount},
+        $P{x_rec_fname},
+        $P{x_rec_lname},
+        $P{x_rec_email},
+        $P{x_fname},
+        $P{x_lname},
+        $P{x_email},
+        today()->as_d8(),
+        get_time()->t24,
+    );
+    
+    # send email with the code
+    $P{x_personal_note} =~ s{\n}{<br>}xmsg;
+    my $tt = Template->new(INTERPOLATE => 1);
+    $tt->process(
+        'gift_card_email.tt2',
+        { %P, code => $code },
+        "/tmp/gift$$",
+    ) or die $tt->error;
+    system("./email_gmail"
+          ." -t '$P{x_rec_fname} $P{x_rec_lname} <$P{x_rec_email}>'"
+          ." -c '$P{x_fname} $P{x_lname} <$P{x_email}>'"
+          ." -s 'Gift Coupon for Lodging at Mount Madonna Center'"
+          ." --file /tmp/gift$$"
+    );
+    # log the event for tracking purposes
+    open my $log, '>>', 'relay_log';
+    print {$log} scalar(localtime),
+        " gift card $code, $P{x_fname} $P{x_lname} $P{x_amount}"
+       ." for $P{x_rec_fname} $P{x_rec_lname}\n";
+    close $log;
+
+    # create the file for grab_new
+    open my $out, '>', "$fr_dir/gift_card/$id"
+        or die "cannot open gift_card/$id: $!\n";
+    print {$out} "x_date => $m/$d/$y\n";
+    printf {$out} "x_time => %02d:%02d\n", $hour, $min;
+    print {$out} "x_code => $code\n";
+    for my $f (qw/ fname lname address city state zip country email
+                   amount rec_fname rec_lname rec_email / ) {
+        print {$out} qq!x_$f => $P{"x_$f"}\n!;
+    } 
+    my $phone = normalize_phone($P{x_phone});
+    print {$out} "x_phone => $phone\n";
+    close $out;
+
+    # for the archive
+    copy("$fr_dir/gift_card/$id", "$gift_arch_dir/$id");
+
+    # message for the user
+    $tt = Template->new(INTERPOLATE => 1);
+    $tt->process(
+        'gift_card_message.tt2',
+        \%P,
+    ) or die $tt->error();
+    # all done
+    exit;
+}
+
+if ($P{x_mem_type}) {
+    $P{x_cell}  = normalize_phone($P{x_cell});
+    $P{x_intro} = normalize_textarea($P{x_intro});
+    $P{x_ky}    = normalize_textarea($P{x_ky});
+    # a new HFS membership
+    open my $out, '>', "$fr_dir/new_hfs/$id";
+    print {$out} "x_date => $m/$d/$y\n";
+    printf {$out} "x_time => %02d:%02d\n", $hour, $min;
+    PARAM:
+    for my $k (sort keys %P) {
+        next PARAM unless $k =~ m{^x_};
+        print {$out} "$k => $P{$k}\n";
+    }
+    close $out;
+
+    # log the event for tracking purposes
+    open my $log, '>>', 'relay_log';
+    print {$log} scalar(localtime),
+        " new hfs member $P{x_fname} $P{x_lname} $P{x_amount}\n";
+    close $log;
+
+    copy("$fr_dir/new_hfs/$id", "$new_hfs_arch_dir/$id");
+    # message for the user
+    my $tt = Template->new(INTERPOLATE => 1);
+    $tt->process(
+        'new_hfs_message.tt2',
+        \%P,
+    ) or die $tt->error();
+    fork and exit;
+    # change &#10; to <br> in the textarea data
+    for my $k (qw/ x_intro x_ky /) {
+        $P{$k} =~ s{[&][#]10;}{<br>}msg;
+    }
+    Template->new(INTERPOLATE => 1)->process(
+        'new_hfs_email.tt2',
+        \%P,
+        "/tmp/new_mem$$",
+    );
+    my $name = "$P{x_fname} $P{x_lname}";
+    if ($P{x_aname}) {
+        $name .= " (aka $P{x_aname})";
+    }
+    system("./email_gmail"
+          .' -t memberships@mountmadonna.org'
+          ." -s 'New HFS Member - $name'"
+          ." --file /tmp/new_mem$$"
+    );
+    # all done
+    exit;
+}
+
+if (! exists $P{x_pid}) {
+    exit;       # must be a refund - silently ignore it
+}
+
+if ($P{x_pid} == 0) {
+    # Personal Retreat
+    my $dbh = get_dbh();
+    my $sdate = date($P{x_sdate})->as_d8();
+    if ($P{x_mountain_experience}) {
+        my $sth = $dbh->prepare(<<'EOS');
+            INSERT
+              INTO me_registrations
+                   (date, name)
+            VALUES
+                   (?, ?)
+EOS
+        $sth->execute($sdate, "$P{x_fname} $P{x_lname}");
+    }
+    else {
+        my $sth = $dbh->prepare(<<'EOS');
+            INSERT
+              INTO pr_registrations
+                   (date, name)
+            VALUES
+                   (?, ?)
+EOS
+        my $sdate = date($P{x_sdate});
+        my $edate = date($P{x_edate});
+        for (my $d = $sdate; $d < $edate; ++$d) {
+            $sth->execute($d->as_d8(), "$P{x_fname} $P{x_lname}");
+        }
+    }
+}
+else {
+    # Program registration
+    my $dbh = get_dbh();
+    my $sth = $dbh->prepare(<<'EOS');
+        INSERT
+          INTO prog_registrations
+               (prog_id, name)
+        VALUES
+               (?, ?)
+EOS
+    $sth->execute($P{x_pid}, "$P{x_fname} $P{x_lname}");
+}
+
+open my $out, '>', "/tmp/temp$id"
+	or die "cannot create /tmp/temp$id: $!\n";
+print {$out} "x_date => $m/$d/$y\n";
+printf {$out} "x_time => %02d:%02d\n", $hour, $min;
+PARAM:
+for my $k (sort keys %P) {
+    next PARAM unless $k =~ m{^x_};
+    my $val = $P{$k};
+	print {$out} "$k => " unless $k eq 'x_request';
+	if ($k =~ m{home|work|cell|phone}) {
+		print {$out} normalize_phone($val);
+    }
+    elsif ($k eq 'x_country') {
+        my $country = $val;
+        $country =~ s{^\s*|\s*$}{}g;
+        $country =~ s{[^\w ]}{}g;
+        if ($country =~ /^us|usa|united states$/i) {
+            $country = "";
+            print {$out} $country;
+        }
+        else {
+            print {$out} param($k);
+        }
+    }
+    elsif ($k eq 'x_request') {
+		my $request = $val;
+		$request =~ s{\cM\n}{ }g;
+		my $n = 1;
+        my ($i, $first);
+		while (length($request) > 70) {
+			$i = rindex($request, ' ', 70);
+			$first = substr($request, 0, $i);
+			print {$out} "x_request$n => $first\n";
+			++$n;
+			$request = substr($request, $i+1);
+		}
+		print {$out} "x_request$n => $request\n" if length($request) > 0;
+		next PARAM;		# no need for extra newline
+	}
+    elsif ($k =~ m{date}) {
+        $val =~ s{4008}{2008};        # it HAS happened, not sure why
+        print {$out} $val;
+    }
+    else {
+		print {$out} $val;
+	}
+	print {$out} "\n";
+}
+close $out;
+
+# was a gift card used to pay for this program?
+# if so, note it in the gift_cards database
+#
+if ($P{x_gc_used}) {
+    my $dbh = get_dbh();
+    my $sth_insert = $dbh->prepare(<<'EOS');
+        INSERT INTO gift_cards
+        (
+            code,
+            amount,
+            rec_fname,
+            the_date,
+            the_time
+        )
+        VALUES (
+            ?, ?, ?, ?, ?
+        )
+EOS
+    $sth_insert->execute(
+        $P{x_gc_code},
+        -$P{x_gc_used},
+        "Registration for $P{x_pname} by $P{x_fname} $P{x_lname}",
+        today()->as_d8(),
+        get_time()->t24,
+    );
+    # notify the original purchaser
+    my $sth_find = $dbh->prepare(<<'EOS');
+        SELECT *
+          FROM gift_cards
+         WHERE code = ?
+           AND fname != '';
+EOS
+    $sth_find->execute($P{x_gc_code});
+    my $href = $sth_find->fetchrow_hashref();
+    Template->new(INTERPOLATE => 1)->process(
+        'used_the_gift_card.tt2',
+        {
+            %$href,
+            gift_date => date($href->{the_date}),
+            %P,
+        },
+        "/tmp/used$$",
+    );
+    system("./email_gmail"
+          ." -t '$href->{fname} $href->{lname} <$href->{email}>'"
+          ." -s 'MMC Gift Card was used!'"
+          ." --file /tmp/used$$"
+    );
+}
+
+#
+# we have prepared the file.
+# now move it quickly to the transactions dirs.
+#
+rename "/tmp/temp$id", "$fr_dir/transactions/$id";
+
+# as a backup and an archive:
+copy("$fr_dir/transactions/$id", "$arch_dir/$id");
+
+# log the event for tracking purposes
+open my $log, '>>', 'relay_log';
+print {$log} scalar(localtime), " $id, $P{x_fname} $P{x_lname}, $P{x_email}";
+if ($P{x_rec_fname}) {
+    print {$log} " $P{x_rec_fname} $P{x_rec_lname} $P{x_rec_email} $P{x_amount}\n";
+    close $log;
+    exit;       # gift_card_message has been displayed above
+}
+else {
+    print {$log} " $P{x_title}\n";
+}
+close $log;
+
+# add a field to %P relating to housing not being needed...
+sub empty {
+    my ($s) = @_;
+    return $s =~ m{\A \s* \z}xms;
+}
+$P{housing_not_needed} = empty($P{x_house1}) && empty($P{x_house2});
+
+my $message;
+my $tt = Template->new(INTERPOLATE => 1);
+$tt->process(
+    'message.tt2',
+    \%P,
+    \$message,
+) or die $tt->error();
+print $message;
+
+# put the script into the background to send the email
+fork and exit;
+
+Template->new(INTERPOLATE => 1)->process(
+    'email.tt2',
+    \%P,
+    "/tmp/$$",
+);
+system("./email_gmail"
+      ." -t '$P{x_fname} $P{x_lname} <$P{x_email}>'"
+      ." -s 'Online registration for $P{x_title}'"
+      ." --file /tmp/$$"
+);
+#
+# and inform the program office of this online registration
+#
+if (open my $in, '<', "$reg/online_notify.txt") {
+    my $people = <$in>;
+    close $in;
+    $people =~ s{\s*\z}{}xms;   # unix and/or dos line endings :(
+    chomp $people;
+    $people ||= 'jon.bjornstad@gmail.com';
+    my $start = date($P{x_sdate})->format("%b %e");
+    my $msg = "$P{x_title} - $start - $P{x_fname} $P{x_lname}";
+    system("./email_gmail"
+          ." -t '$people'"
+          ." -s '$msg'"
+          ." -l '$msg'"
+    );
+}

@@ -30,7 +30,7 @@ button {
 </style>
 </head>
 <body>
-<img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=200>
+<img src='/static/images/mmc-teal.png' width=200>
 <h1>Personal Retreats at Mount Madonna</h1>
 <p>
 <div class='container'>

@@ -32,23 +32,11 @@ var fields = [
                    err: 'Missing 2nd Housing Choice' }
 ];
 </script>
-<!-- 
-to put the screen on Housing ...
-function scrollTo(hash) {
-    location.hash = "#" + hash;
-}
-
--->
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
 <body>
-[% IF pid == 4815 %]
-    [% tuition = ', 3HO Program Fee,' %]
-[% END %]
-
 <form autocomplete="off"
       method=POST
-      name=reg
       action="/cgi-bin/reg2?id=$pid"
       onSubmit="return check_fields();"
       enctype="multipart/form-data"
@@ -94,7 +82,7 @@ function scrollTo(hash) {
     <dd>$dates</dd>
 
     [% IF leader_names %]
-        <dt>Presenter:</dt>
+        <dt><b>Presenter:</b></dt>
         <dd>$leader_names</dd>
     [% END %]
     </dl>
@@ -539,18 +527,22 @@ Amount:
 </ul>
 
 <h3>Dietary Restrictions</h3>  
+<ul>
 Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
 <p>
 <input type=text size=50 name=diet value="$diet">
+</ul>
 
-<h3 class="teal">Additional Requests</h3>  
+<h3>Additional Requests</h3>  
+<div style='margin-left: .4in'>
+<!-- ?? confusing booleans here :( -->
 [% IF ! housing_not_needed || mountain_experience %]
     [% IF ! pr || (children_welcome && ! mountain_experience) %]
         Include the following in your additional requests:
     [% END %]
     <ul>
     [% IF ! pr && ! mountain_experience %]
-        <li>Arrival and/or departure dates if they differ from your program's.
+        li>Arrival and/or departure dates if they differ from your program's.
     [% END %]
     [% IF children_welcome && ! mountain_experience %]
         <li>The ages and names of children you are bringing, if any.
@@ -559,9 +551,11 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
         register children 13 years and older
         separately as an adult.
     [% END %]
-    </ul>											
+    </ul>
 [% END %]
+<p>
 <textarea name="request" rows=5 cols=60  wrap=VIRTUAL></textarea>
+</div>
 
 <h3>Important Notes</h3>  
 <ul>
@@ -588,4 +582,9 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
 </form>
 </body>
 </html>
-<script>document.getElementById('fname').focus()</script>
+<script>
+document.getElementById('fname').focus({ preventScroll: true });
+setTimeout(function() {
+    window.scrollTo(0, 0);
+}, 0);
+</script>

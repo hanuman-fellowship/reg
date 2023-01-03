@@ -1,51 +1,27 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use Template;
-use CGI qw/:standard/;
-print header();
+use CGI;
+my $q = CGI->new();
+print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
 
-use lib '.';
+use lib '.', '../lib';
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
 use Date::Simple qw/
     date
 /;
-use HousingNames '%housing_name';
+use HousingNames qw/
+    %housing_name
+/;
 
-my %cookie = cookie(-name => 'user_data');
+my %cookie = $q->cookie(-name => 'user_data');
 my %stash;
-
-my $progpath = '/home/reg/pr';
-my $href = do "$progpath/progtable";
-if ($@) {
-    print "error in progtable: $@\n";
-    exit;
-}
-if (! exists $href->{0}) {
-    print "Sorry, Personal Retreat program not found.\n";
-    exit;
-}
-my $data = $href->{0};
-my @housekeys = grep { /^basic / } keys %$data;
-my $housing_fees = "";
-HOUSING_TYPE:
-for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
-    my ($nk) = $k =~ m{\A basic \s+ (.*)}xms;
-    $housing_fees .= "<tr>";
-    $housing_fees .= "<th>$housing_name{$nk}</th><td align=right>$data->{$k}</td>";
-    if ($data->{next_hc}) {
-        $housing_fees .= qq!<td align=right>$data->{"next $nk"}</td>!;
-    }
-    $housing_fees .= "</tr>\n";
-}
-
-$stash{housing_fees_rows} = $housing_fees;
-
-if (exists $data->{next_hc} && $data->{next_hc}) {
-    $stash{next_hc} = $data->{next_hc};
-    $stash{through_date} = date($data->{next_date})->prev->format("%b %e");
-    $stash{next_date} = date($data->{next_date})->format("%b %e");
-}
 
 for my $w (qw/
     rec_fname rec_lname rec_email
@@ -58,7 +34,10 @@ for my $w (qw/
 }
 $stash{email2} = $cookie{email1} || "";
 
-Template->new(INCLUDE_PATH => '.', INTERPOLATE => 1)->process(
+Template->new({
+    INCLUDE_PATH => '.',
+    INTERPOLATE => 1,
+})->process(
     'gift_card1.tt2',
     \%stash,
 ) or die "no template\n";
