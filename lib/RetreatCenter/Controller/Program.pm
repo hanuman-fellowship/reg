@@ -2209,7 +2209,7 @@ sub del_file : Local {
 }
 
 # export all
-# then redirect in to registration (reg1) for this program
+# then redirect to registration (reg1) for this program
 #
 sub mmc_reg : Local {
     my ($self, $c, $prog_id) = @_;
@@ -2217,13 +2217,13 @@ sub mmc_reg : Local {
         return;
     }
     if ($prog_id eq 'pr') {
-        $c->response->redirect("https://mountmadonna.org/cgi-bin/regPR");
+        $c->response->redirect("$string{cgi}/regPR");
     }
     elsif ($prog_id eq 'me') {
-        $c->response->redirect("https://mountmadonna.org/cgi-bin/regME");
+        $c->response->redirect("$string{cgi}/regME");
     }
     else {
-        $c->response->redirect("https://mountmadonna.org/cgi-bin/reg1?id=$prog_id");
+        $c->response->redirect("$string{cgi}/reg1?id=$prog_id");
     }
 }
 

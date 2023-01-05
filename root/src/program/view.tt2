@@ -92,11 +92,11 @@ function UNreserve_cluster(cluster_id) {
 [% PR = name.match('(?i)personal.*retreat') %]
 [% IF program.webready || PR %]
     [% IF PR %]
-    <a target=mmc_reg href=$cgi/regPR>PR Reg</a>
-    &nbsp;&nbsp;&nbsp;
-    <a target=mmc_reg href=$cgi/regME>ME Reg</a>
+        <a target=mmc_reg href=/program/mmc_reg/pr>PR Reg</a>
+        &nbsp;&nbsp;&nbsp;
+        <a target=mmc_reg href=/program/mmc_reg/me>ME Reg</a>
     [% ELSE %]
-    <a target=mmc_reg href=$cgi/reg1?id=$id>MMC Reg</a>
+        <a target=mmc_reg href=/program/mmc_reg/$id>MMC Reg</a>
     [% END %]
 [% END %]
 <p class=p2>
