@@ -610,7 +610,7 @@ sub fees {
         #$hcost = int($hcost);
     }
     return 0 unless $hcost;        # don't offer this housing type if cost is zero
-    return $tuition + $hcost;
+    return $hcost;
 }
 
 sub leader_bio {
