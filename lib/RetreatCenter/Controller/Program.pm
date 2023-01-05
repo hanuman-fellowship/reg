@@ -1370,6 +1370,7 @@ sub gen_progtable {
             canpol   => $p->canpol->policy,
             type     => $housecost->type(),
             @fees,
+            tuition_name => ($p->tuition_name || 'tuition'),
             map { $_ => $p->$_ } qw(
                 title
                 dates
@@ -1393,7 +1394,6 @@ sub gen_progtable {
                 percent_tuition
                 tuition
                 tuition_rolled
-                tuition_name
                 reg_start
                 reg_end
                 prog_start
