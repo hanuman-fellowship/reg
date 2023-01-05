@@ -3,7 +3,6 @@ use strict;
 use warnings;
 use CGI;
 my $q = CGI->new();
-print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
 use lib '.', '../lib';
 
@@ -18,10 +17,11 @@ use HousingNames qw/
 use File::Copy qw/
     copy
 /;
-
-my $test = -e 'test_mode';
-my $progpath = '/home/reg';
-my $for_reg = "$progpath/for_reg";
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
 
 #
 # gather all the form elements into a hash
@@ -32,11 +32,11 @@ my $ME = $form{mountain_experience};
 for my $w (keys %form) {
     $form{$w} =~ s{^\s*|\s*$}{}g;       # trim the fields
 }
+# form defaults
+#
 if (! ($form{hascar} || $form{carpool})) {
     $form{from_where} = 'Home';
 }
-# form defaults
-#
 if ($form{hascar}) {
     $form{carpool} = "yes";
 }
@@ -44,19 +44,18 @@ if ($form{country} !~ /\S/) {
     $form{country} = "USA";     # default
 }
 
-
-
 # prepare the cookie with the form values
-# to include in the header.  First delete the
-# special requests - it could be too long
-# and make trouble.
+# to include in the header.  Remove the
+# special requests from the cookie.
+# It could be too long and make trouble.
+# Delete others as well.
 #
 my %cookie = %form;
+# plink??
 delete @cookie{qw/
     request
     plink
     name
-    test
     dates
     progchoice
     pid
@@ -73,37 +72,45 @@ my $cookie = cookie(
     -expires => '+10y',     # i.e. don't expire
     -domain  => 'www.mountmadonna.org',
 );
-print header(-cookie => $cookie);
+print $q->header(-cookie => $cookie);
 
-#
-# get the id of the program and fill in the $data hashref
-#
-my %info;
-my $href = do "$progpath/progtable";
-# get the PR progtable as well...
-my $pr_href = do "$progpath/pr/progtable";
-$href->{0} = $pr_href->{0};
-if ($@) {
-    print "error in progtable: $@\n";
+sub oops {
+    my ($err, $back) = @_;
+    Template->new(INTERPOLATE => 1)->process(
+        'err.tt2',
+        {
+            back => $back,
+            err  => $err 
+        },
+    );
     exit;
 }
-if (! exists $href->{$form{pid}}) {
-    print "Sorry, program not found.\n";
-    exit;
+
+my $pid = $form{pid};
+my $prog;
+if ($pid) {
+    $prog = model($c, 'Program')->find($pid);
 }
-my $data = $href->{$form{pid}};
+else {
+    # PR or ME
+    # find the Personal Retreat program containing the date $sdate
+    my $sdate = date($form{sdate});
+    my $d8 = $sdate->as_d8();
+    ($prog) = model($c, 'Program')->search({
+                name  => { -like => '%personal%retreat%' },
+                sdate => { '<=' => $d8 },
+                edate => { '>=' => $d8 },
+            });
+}
+if (! $prog) {
+    oops "Sorry, program not found.\n";
+}
 
 #
 # look in the form elements for errors.
+# most were caught in reg1 javascript.
 #
 my $err;
-
-sub check {
-    my ($field, $message) = @_;
-    if (! exists $form{$field} || $form{$field} !~ /\S/) {
-        $err .= "<li>$message\n";
-    }
-}
 
 my $covid_vax = $q->param('covid_vax');
 my $card;
@@ -114,21 +121,6 @@ if ($covid_vax) {
     }
 }
 check("progchoice", "Please choose how many days you want to attend.");
-check("fname", "Missing first name");
-check("lname", "Missing last name");
-check("gender", "For housing purposes please specify a choice of gender identity.");
-check("pronouns", "Missing preferred pronouns");
-
-if (!$form{street1} && !$form{street2}) {
-    $err .= "<li>Missing street address.\n";
-} 
-check("city", "Missing city.");
-check("state", "Missing state.");
-check("zip", "Missing zip code.");
-if (! $form{cell}) {
-    $err .= "<li>Missing telephone number.\n";
-} 
-check("email1", "Missing email address.");
 if ($form{email1} ne $form{email2}) {
     $err .= "<li>The two email addresses do not match.\n";
 }

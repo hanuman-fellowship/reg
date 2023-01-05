@@ -1,4 +1,9 @@
 #!/usr/bin/env perl
+#
+# test plan - click on meal_information link
+#
+#
+#
 use strict;
 use warnings;
 use lib '../lib';

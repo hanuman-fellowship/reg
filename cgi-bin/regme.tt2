@@ -79,18 +79,18 @@ more than 90 days in advance.
 <p style="margin-top: .2in">
 Which meals would you like?
 <ul>
-<input type=checkbox id=lunch name=lunch value='yes'>
-<label for=lunch>Lunch (12:30-1:30 pm weekdays); Brunch (10:00-11:00 am) Saturdays</label><br>
-<input type=checkbox id=dinner name=dinner value='yes'>
-<label for=dinner>Dinner (5:15-6:15 pm)</label><br>
+<label><input type=checkbox id=lunch name=lunch value='yes'>
+Lunch (12:30-1:30 pm weekdays); Brunch (10:00-11:00 am) Saturdays</label><br>
+<label><input type=checkbox id=dinner name=dinner value='yes'>
+Dinner (5:15-6:15 pm)</label><br>
 </ul>
 <p>
 Which of these activities would you like?
 <ul>
-<input type=checkbox id=yoga_class name=yoga_class value='1'>
-<label for=yoga_class>Yoga Class (4:00-5:00 pm)</label><br>
-<input type=checkbox id=guided_hike name=guided_hike value='1'>
-<label for=guided_hike>Guided Walk (11:30 am-12:30 pm)</label><br>
+<label><input type=checkbox id=yoga_class name=yoga_class value='1'>
+Yoga Class (4:00-5:00 pm)</label><br>
+<label><input type=checkbox id=guided_hike name=guided_hike value='1'>
+Guided Walk (11:30 am-12:30 pm)</label><br>
 </ul>
 <p>
 If you are bringing children enter their names and ages here:<br>

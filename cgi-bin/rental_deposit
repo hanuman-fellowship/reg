@@ -1,0 +1,92 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Template;
+use CGI qw/:standard/;
+use CGI::Carp qw/fatalsToBrowser/;
+print header;
+use lib '.';
+use Date::Simple qw/
+    date
+/;
+Date::Simple->default_format("%B %e '%q");
+use SimLib;
+use Auth qw/
+    $MMC_loginid
+    $MMC_txnkey
+/;
+
+
+sub commify {
+    my ($n) = @_;
+    $n = reverse $n;
+    $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+    return scalar reverse $n;
+}
+
+my $type = $0 =~ /deposit/? 'deposit': 'invoice';
+my $dir = "/home/reg/for_reg/rental_$type";
+
+my $code = param('code');
+my $fname = "$dir/$code";
+if (! -f $fname) {
+    print "Sorry, could not find a rental for the code $code.";
+    # send an alert to the authorities!
+    exit;
+}
+my %data = %{ do $fname };
+
+#for my $k (sort keys %data) {
+#    print "$k => $data{$k}<br>\n";
+#}
+
+# Call subroutine from authorize.net that sets $fingerprint_html 
+#
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
+                     $data{amount}, $x_currency_code);
+
+# 'edate' => '20171121',
+# 'country' => 'USA',
+# 'first' => 'Kiran',
+# 'sdate' => '20171116',
+# 'name' => 'Mystic Girl',
+# 'last' => 'Dejaray',
+# 'phone' => '831-216-6596',
+# 'email' => 'mysticinthecity@gmail.com',
+# 'zip_post' => '95065',
+# 'amount' => '1000',
+# 'city' => 'Santa Cruz',
+# 'st_prov' => 'CA',
+# 'id' => '1449',
+# 'addr' => '1210 Jarvis Road '
+
+my $sd = date($data{sdate});
+my $ed = date($data{edate});
+my $dates = $sd->format("%b %e") . ' to ' . $ed->format("%b %e") . ', ' . $ed->format('%Y');
+
+my %stash = (
+    %data,
+    payment_for => ucfirst($type) . " for Rental '$data{name}'",
+    amount   => $data{amount},
+    amount_disp => commify($data{amount}),
+    amount_disp => commify($data{amount}),
+    fingerprint => $fingerprint_html,
+    loginid     => $MMC_loginid,
+    rental_id   => $data{id},
+    name        => $data{name} . ' - ' . $dates,
+    code        => $code,
+    type        => $type,
+);
+
+# ip address for Jamal's purposes
+$stash{real_ip} = $ENV{REMOTE_ADDR};
+
+print Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "rental_deposit.tt2",       # no need for $type here
+    \%stash,
+);

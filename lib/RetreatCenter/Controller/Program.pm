@@ -111,6 +111,7 @@ sub create : Local {
     #
     stash($c,
         check_webready      => '',
+        check_tuition_rolled => '',
         check_linked        => 'checked',
         check_allow_dup_regs => '',
         check_kayakalpa     => 'checked',
@@ -133,6 +134,7 @@ sub create : Local {
         section             => 1,   # Web (a required field)
         program             => {
             tuition      => 0,
+            tuition_name => '',
             extradays    => 0,
             full_tuition => 0,
             deposit      => 100,
@@ -221,6 +223,7 @@ sub _get_data {
     for my $f (qw/
         req_pay
         collect_total
+        tuition_rolled
         donation
         allow_dup_regs
         kayakalpa
@@ -968,6 +971,7 @@ sub update : Local {
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
         sbath single req_pay collect_total
+        tuition_rolled
         donation
         allow_dup_regs kayakalpa
         children_welcome
@@ -1388,6 +1392,8 @@ sub gen_progtable {
                 dncc_why
                 percent_tuition
                 tuition
+                tuition_rolled
+                tuition_name
                 reg_start
                 reg_end
                 prog_start
@@ -1478,6 +1484,7 @@ sub duplicate : Local {
     for my $w (qw/
         sbath single req_pay collect_total
         donation
+        tuition_rolled
         allow_dup_regs kayakalpa
         children_welcome
         strangers_share
@@ -2151,6 +2158,7 @@ sub export : Local {
 
 sub _send_export {
     my ($c, $where) = @_;
+    return if -f '/tmp/Reg_Dev';
     my $place = $where eq 'mmi'? 'mmi_': '';
     # MMC
     my $site     = $string{"ftp_${place}site"};

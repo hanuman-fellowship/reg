@@ -531,6 +531,16 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right>Tuition Rolled<br>into Housing Cost</th>
+<td valign=top>$program.tuition_rolled</td>
+</tr>
+
+<tr>
+<th align=right>Tuition Alternate Name</th>
+<td>$program.tuition_name</td>
+</tr>
+
+<tr>
 <th align=right>Extra Days</th>
 <td>$program.extradays</td>
 </tr>

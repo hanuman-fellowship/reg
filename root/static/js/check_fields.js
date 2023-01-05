@@ -1,6 +1,7 @@
 function check_fields() {
     var mess = '';
     var focus = 0;
+    var focus_el;
     for (f in fields) {
         fld = fields[f];
         if (fld.id === 'radio') {
@@ -11,8 +12,7 @@ function check_fields() {
                       );
             if (chk == null) {
                 if (focus == 0) {
-                    var el = document.getElementById(fld.name + '1');
-                    el.scrollIntoView();
+                    focus_el = document.getElementById(fld.name + '1');
                     focus = 1;
                 }
                 mess += fld.err + '\n';
@@ -24,8 +24,8 @@ function check_fields() {
             if (! regexp.test(el.value)) {
                 mess += fld.err + '\n';
                 if (focus == 0 ){
+                    focus_el = el;
                     focus = 1;
-                    el.focus();
                 }
             }
         }
@@ -38,6 +38,10 @@ function check_fields() {
     }
     else {
         alert(mess);
+        setTimeout(function() {
+            focus_el.focus();
+            focus_el.scrollIntoView();
+        }, 0);
         return false;
     }
 }

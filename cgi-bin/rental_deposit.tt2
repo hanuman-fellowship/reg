@@ -1,0 +1,59 @@
+      <div class="col-10" style="margin: 0 auto">       
+<h3>MMC Online Payment Request</h3>
+			
+                    <div class="submit omp">
+<table cellpadding=5>
+<tr><th>Name</th><td> $first $last</td></tr>
+<tr><th>Address</th><td>$addr $city, $state $zip $country</td></tr>
+<tr><th>Phone</th><td> $phone</td></tr>
+<tr><th>Email</th><td> $email</td></tr>
+<tr><th>Total</th><td> \$$amount_disp</td></tr>
+<tr><th>Program</th><td> $name</td></tr>
+</table>
+<p>
+<form name="authorize"
+action="https://secure.authorize.net/gateway/transact.dll"
+method="POST" class="pt-6"
+>
+
+<!-- Begin Authorize.net fields -->
+$fingerprint
+
+<input type=hidden value="TRUE"             name="x_relay_response">
+<input type=hidden value="https://www.mountmadonna.org/cgi-bin/relay"
+                                        name="x_relay_url">
+
+<input type=hidden value="$loginid"         name="x_login">
+<input type=hidden value="$payment_for"     name="x_payment_for">
+<input type=hidden value="$amount"          name="x_amount">
+<input type=hidden value="PAYMENT_FORM"     name="x_show_form" >
+<input type=hidden value="$first"           name="x_first_name">
+<input type=hidden value="$last"            name="x_last_name">
+<input type=hidden value="$addr"            name="x_address">
+<input type=hidden value="$city"            name="x_city">
+<input type=hidden value="$state"           name="x_state">
+<input type=hidden value="$zip"             name="x_zip">
+<input type=hidden value="$country"         name="x_country">
+
+<input type=hidden value="$real_ip"         name="x_real_ip">
+
+<input type=hidden value="$phone"           name="x_phone">
+<input type=hidden value="$email"           name="x_email">
+<input type=hidden value="$rental_id"       name="x_rental_id">
+
+<input type=hidden value="FALSE"            name="x_email_customer">
+<input type=hidden value="$code"            name="x_rental_deposit_code">
+<input type=hidden value="$name"            name="x_rental_name">
+<input type=hidden value="$type"            name="x_rental_type">
+<input type=hidden value='https://www.mountmadonna.org/assets/img/registration/mmc_logo.gif' name=x_logo_url>                                                     
+<input type=hidden 
+value="</TD></tr></table><div class='bot'></div></div>"
+name="x_footer_html_payment_form">
+
+<button type="submit" name="Accept Order" value="Pay Securely with your Credit Card" class="button button--ayurveda button--inline">
+    <em>Proceed to Payment</em>
+</button>
+<img src="https://www.mountmadonna.org/assets/img/ui/secure90x72.gif" align=middle style="margin-left:20px;">
+</form>
+</div>                    
+</div>

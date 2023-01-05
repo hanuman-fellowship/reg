@@ -282,6 +282,16 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right>Tuition Rolled<br>Into Housing Cost</th>
+<td valign=top><input type=checkbox name=tuition_rolled value=yes $check_tuition_rolled></td>
+</tr>
+
+<tr>
+<th align=right>Tuition Alternate Name</th>
+<td><input type=text name=tuition_name value="$program.tuition_name" size=30></td>
+</tr>
+
+<tr>
 <th align=right>Extra Days</th>
 <td><input type=text name=extradays value="$program.extradays" size=2></td>
 </tr>
@@ -309,7 +319,7 @@ $level_opts
 <tr>
 <th align=right valign=top>Sliding Scale Message</th>
 <td colspan=6>
-<textarea name=donation_msg cols=70 rows=3>$program.donation_msg</textarea>
+<textarea name=donation_msg cols=50 rows=3>$program.donation_msg</textarea>
 </td>
 </tr>
 
@@ -332,7 +342,7 @@ Examples: <span class=ex>50 100</span> $ORS <span class=ex>25 50 100 other</span
 <tr>
 <th align=right valign=top>Sliding Scale Zero Message</th>
 <td colspan=6>
-<textarea name=donation_zero_msg cols=70 rows=3>$program.donation_zero_msg</textarea>
+<textarea name=donation_zero_msg cols=50 rows=3>$program.donation_zero_msg</textarea>
 </td>
 </tr>
 
@@ -403,7 +413,7 @@ Examples: <span class=ex>50 100</span> $ORS <span class=ex>25 50 100 other</span
 
 <tr>
 <th align=right valign=top>Why?</th>
-<td><textarea name=dncc_why cols=60 rows=5>$program.dncc_why</textarea></td>
+<td><textarea name=dncc_why cols=50 rows=5>$program.dncc_why</textarea></td>
 </tr>
 
 </table>

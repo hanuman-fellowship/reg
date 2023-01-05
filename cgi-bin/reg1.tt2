@@ -4,6 +4,10 @@
 <link rel="stylesheet" href="/static/cgi.css">
 <script>
 var fields = [
+[% IF basicfull %]
+    { id: 'radio', name: 'progchoice',
+                   err: 'How many days to attend?' },
+[% END %]
     { id: 'fname', regexp: '\\S',
                    err: 'Missing First Name' },
     { id: 'lname', regexp: '\\S',
@@ -25,12 +29,27 @@ var fields = [
     { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
                      err: 'Invalid Email address' },
     { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
-                     err: 'Invalid Email address' },
+                     err: 'Invalid Email address' }
+[% IF ! housing_not_needed %]
+,
     { id: 'radio', name: 'house1',
                    err: 'Missing 1st Housing Choice' },
     { id: 'radio', name: 'house2',
                    err: 'Missing 2nd Housing Choice' }
+[% END %]
 ];
+function check_form() {
+    if (!check_fields()) {
+        return false;
+    }
+    var em1 = document.getElementById('email1').value;
+    var em2 = document.getElementById('email2').value;
+    if (em1 == em2) {
+        return true;
+    }
+    alert("Emails don't match.");
+    return false;
+}
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
@@ -38,12 +57,13 @@ var fields = [
 <form autocomplete="off"
       method=POST
       action="/cgi-bin/reg2?id=$pid"
-      onSubmit="return check_fields();"
+      onSubmit="return check_form();"
       enctype="multipart/form-data"
 >
 
 <img src='/static/images/mmc-teal.png' width=200>
 <h3>Program Information</h3>  
+<span class=required>*</span> marks required fields<p>
 [% IF mountain_experience %]
     You are registering for a Mountain Experience.
     <ul>
@@ -125,19 +145,15 @@ var fields = [
 [% END %]
 
 [% IF basicfull %]
-    Length of Program
-    <p>
-    <span class=required>*</span>How many days do you want to attend?</p> 
-    <ol>
-    <li> 
-    <input id="progchoice1" name="progchoice" type="radio" value="basic" />  
-    <label for="progchoice1">$bdays days from $bdates</label>  
-    </li>
-    <li> 
-    <input id="progchoice2" name="progchoice" type="radio" value="full" />  
-    <label for="progchoice2">$fdays days from $fdates</label>  
-    </li>
-    </ol>
+<span id=progchoice1></span>
+    <h3>Length of Program</h3>
+    <span class=required>*</span> How many days do you want to attend?</p> 
+    <ul>
+    <label><input id="basic" name="progchoice" type="radio" value="basic" />
+    $bdays days from $bdates</label></br>
+    <label><input id="full"  name="progchoice" type="radio" value="full" />
+    $fdays days from $fdates</label><br>
+    </ul>
 [% ELSE %]
     <input type=hidden name=progchoice value=basic>
 [% END %]
@@ -170,7 +186,6 @@ var fields = [
 [% END %]
 
 <h3>Registrant Information</h3>  
-<span class=required>*</span> marks required fields
 
 <table cellpadding=5>
 
@@ -199,15 +214,15 @@ var fields = [
 <span id=gender1></span>
 <span class=required>*</span> Gender Identity:</th> 
 <td>
-<input type=radio name="gender" $female value="female"> Woman<br> 
+<label><input type=radio name="gender" $female value="female"> Woman</label><br> 
 
-<input type=radio name="gender" $male value="male"> Man<br>
+<label><input type=radio name="gender" $male value="male"> Man</input></label><br>
 
-<input type=radio name="gender" $trans value="trans"> Transgender<br>
+<label><input type=radio name="gender" $trans value="trans"> Transgender</label></label><br>
 
-<input type=radio name="gender" $non_binary value="non_binary"> Non-binary/non-conforming<br>
+<label><input type=radio name="gender" $non_binary value="non_binary"> Non-binary/non-conforming</label><br>
 
-<input type=radio name="gender" $no_resp value="no_resp"> Prefer not to respond<br>
+<label><input type=radio name="gender" $no_resp value="no_resp"> Prefer not to respond</label><br>
 <a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
 </td>
 </tr>
@@ -457,25 +472,24 @@ function toggle_from_where() {
 
 <p>How did you <b>first hear</b> about this program?</p>
 <ul>
-<input type=radio name=howHeard id=howHeard1 value=mmc_mmi_newsletter>
-     Mount Madonna Center or Institute Newsletter<br>
-<input type=radio name=howHeard id=howHeard2 value=hfs_newsletter>
-     Hanuman Fellowship Newsletter<br>
-<input type=radio name=howHeard id=howHeard3 value=temple_newsletter>
-     Temple Newsletter<br>
-<input type=radio name=howHeard id=howHeard4 value=social_media>
-     Social Media<br>
-<input type=radio name=howHeard id=howHeard5 value=radio>
-     Radio<br>
-<input type=radio name=howHeard id=howHeard6 value=print_ad>
-     Print Ad or Poster<br>
-<input type=radio
+<label><input type=radio name=howHeard id=howHeard1 value=mmc_mmi_newsletter>
+     Mount Madonna Center or Institute Newsletter</label><br>
+<label><input type=radio name=howHeard id=howHeard2 value=hfs_newsletter>
+     Hanuman Fellowship Newsletter</label><br>
+<label><input type=radio name=howHeard id=howHeard3 value=temple_newsletter>
+     Temple Newsletter</label><br>
+<label><input type=radio name=howHeard id=howHeard4 value=social_media>
+     Social Media</label><br>
+<label><input type=radio name=howHeard id=howHeard5 value=radio>
+     Radio</label><br>
+<label><input type=radio name=howHeard id=howHeard6 value=print_ad>
+     Print Ad or Poster</label><br>
+<label><input type=radio
        name=howHeard
        id=howHeard7
        value=ad
        onclick="document.getElementById('adsource').focus();"
->
-     Other:
+> Other:</label>
 <input name=adsource
        id=adsource
        type=text
@@ -487,14 +501,14 @@ function toggle_from_where() {
 <p>Shall we keep you <b>informed</b> of events at Mount Madonna Center?</p>
 <ul class=space>
 
-<input type=checkbox name=e_mailings id="e_mailings" value=yes $e_mailings> 
-Yes, send me occasional e-mail announcements.<br>
+<label><input type=checkbox name=e_mailings id="e_mailings" value=yes $e_mailings> 
+Yes, send me occasional e-mail announcements.</label><br>
 
-<input type=checkbox name=snail_mailings id=snail_mailings value=yes $snail_mailings>
-Yes, send me postcards and brochures in the mail.<br>
+<label><input type=checkbox name=snail_mailings id=snail_mailings value=yes $snail_mailings>
+Yes, send me postcards and brochures in the mail.</label><br>
 
-<input type=checkbox name=share_mailings id=share_mailings value=yes $share_mailings>
-You may share my address with MMC affiliates.<br>
+<label><input type=checkbox name=share_mailings id=share_mailings value=yes $share_mailings>
+You may share my address with MMC affiliates.</label><br>
 </ul>
 
 [% IF kayakalpa %]
@@ -542,7 +556,7 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
     [% END %]
     <ul>
     [% IF ! pr && ! mountain_experience %]
-        li>Arrival and/or departure dates if they differ from your program's.
+        <li>Arrival and/or departure dates if they differ from your program's.
     [% END %]
     [% IF children_welcome && ! mountain_experience %]
         <li>The ages and names of children you are bringing, if any.
@@ -583,8 +597,12 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
 </body>
 </html>
 <script>
-document.getElementById('fname').focus({ preventScroll: true });
+var focus_el = 'fname';
+[% IF basicfull %]
+    focus_el = 'progchoice1';
+[% END %]
+document.getElementById(focus_el).focus({ preventScroll: true });
 setTimeout(function() {
     window.scrollTo(0, 0);
-}, 0);
+}, 10);
 </script>

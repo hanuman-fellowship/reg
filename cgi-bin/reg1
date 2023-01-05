@@ -324,42 +324,45 @@ if (! $prog) {
 
 #
 # has the end registration date/time passed?
+# doesn't apply to PR and ME.
 #
-my $title = '<b>' . $prog->title . '</b>';
-my $erdt = $prog->end_reg_date_time;
-if ($erdt =~ m{\S}xms) {
-    my ($end_date, $end_time)
-        = $erdt =~ m{(\d\d/\d\d/\d\d\d\d) \s+ (\d\d:\d\d)}xms;
-    # convert to Date, Time objects
-    $end_date = date($end_date);
-    $end_time = get_time($end_time);
-    my $now = get_time();
-    if ($end_date < $today
-        ||
-        ($end_date == $today && $end_time < $now)
-    ) {
-        oops "Sorry, registrations for $title are now closed.";
+if ($pid) {
+    my $title = '<b>' . $prog->title . '</b>';
+    my $erdt = $prog->end_reg_date_time;
+    if ($erdt =~ m{\S}xms) {
+        my ($end_date, $end_time)
+            = $erdt =~ m{(\d\d/\d\d/\d\d\d\d) \s+ (\d\d:\d\d)}xms;
+        # convert to Date, Time objects
+        $end_date = date($end_date);
+        $end_time = get_time($end_time);
+        my $now = get_time();
+        if ($end_date < $today
+            ||
+            ($end_date == $today && $end_time < $now)
+        ) {
+            oops "Sorry, registrations for $title are now closed.";
+        }
     }
-}
 
-#
-# have we reached the maximum number of allowed registrations
-# for this program?  For ME and PR this is in addition
-# to the ways those are restricted to a maximum.  See above.
-#
-my $max = $prog->max;
-if ($max) {
-    my @regs = model($c, 'Registration')->search({
-                   program_id => $pid,
-                   cancelled => { '!=' => 'yes' },
-               });
-    if (@regs >= $max) {
-        oops "Sorry, we have reached the maximum capacity for $title.", 1;
+    #
+    # have we reached the maximum number of allowed registrations
+    # for this program?  For ME and PR this is IN ADDITION
+    # to the ways those are restricted to a maximum.  See above.
+    #
+    my $max = $prog->max;
+    if ($max) {
+        my @regs = model($c, 'Registration')->search({
+                       program_id => $pid,
+                       cancelled => { '!=' => 'yes' },
+                   });
+        if (@regs >= $max) {
+            oops "Sorry, we have reached the maximum capacity for $title.", 1;
+        }
     }
-}
 
-if ($today > $prog->sdate_obj) {
-    oops "The program $title has finished.<br>You cannot register for it today.";
+    if ($today > $prog->sdate_obj) {
+        oops "The program $title has finished.<br>You cannot register for it today.";
+    }
 }
 
 # ?? plink, type cancellation policy ??

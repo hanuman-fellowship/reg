@@ -1,0 +1,2 @@
+alter table program add column tuition_rolled varchar(3) default '';
+alter table program add column tuition_name varchar(128) default '';

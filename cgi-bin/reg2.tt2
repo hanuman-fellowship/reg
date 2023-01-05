@@ -1,0 +1,184 @@
+<h3>Program Information</h3>  
+[% IF mountain_experience %]
+    <h4>You are registering for a Mountain Experience on ${dates}.</h4>
+    Meals: $meals<br>
+    Activities: $activities
+    [% IF children_name_age %]
+        <br>Children: $children_name_age
+    [% END %]
+[% ELSIF pr %]
+    <h4>You are registering for a Personal Retreat.</h4>
+    <dl>
+    <dt>Dates:</dt>
+    <dd>$dates</dd>
+    </dl>
+[% ELSE %]
+You are registering for:
+[% IF two_pics %]
+    <img src='$image1'>
+    <img src='$image2'>
+[% ELSIF one_pic %]
+    <img src='$image1'>
+[% END %]
+    <dl>
+    <dt>Program:</dt>
+    <dd>$title</dd>
+    <dt>Dates:</dt>
+    <dd>$dates</dd>
+    [% IF leader_names %]
+        <dt>Presenter:</dt>
+        <dd>$leader_names</dd>
+    [% END %]
+    </dl>
+[% END %]
+<h3>Personal Information</h3> 
+<dl>
+<dt>Name:</dt>
+<dd>$fname $lname</dd>
+[% IF aname %]
+    <dt>Alternate:</dt>
+    <dd>$aname</dd>
+[% END %]
+
+<dt>Gender Identity:</dt>
+<dd>$gender</dd>
+
+<dt>Preferred pronouns:</dt>
+<dd>$pronouns</dd>
+
+<dt>Address:</dt>
+<dd>$street_addr<br>
+$city, $state $zip<br>
+$country</dd>
+
+<dt>Phone:</dt>
+<dd>$phone</dd>
+
+<dt>Email:</dt>
+<dd>$email1</dd>
+
+[% IF car_license %]
+    <dt>Car License:</dt>
+    <dd>$car_license</dd>
+[% END %]
+
+[% IF covid_vax %]
+<dt>COVID-19 Vaccination:</dt>
+<dd>Card uploaded $already</dd>
+[% END %]
+
+[% IF diet %]
+    <dt>Dietary Restrictions:</dt>
+    <dd>$diet</dd>
+[% END %]
+
+</dl>
+
+[% IF ceu %]
+    <h4>Continuing Education Credits</h4>  
+    <dl>
+    <dt>License #:</dt>
+    <dd>$ceu_license</dd>
+    </dl>        
+[% END %]
+
+[% IF ! staff_housing && ! housing_not_needed && ! mountain_experience %]
+    <h3>Housing Choice</h3>
+    <dl>
+    <dt>First choice:</dt>
+    <dd>$house1_verbose (\$$house1_cost[% IF pr %] per night[% END %])</dd>
+    <dt>Second choice:</dt>
+    <dd>$house2_verbose (\$$house2_cost[% IF pr %] per night[% END %])</dd>
+    </dl>
+    $withwhom_verbose
+    <p>
+    You prefer a ${cabin_room}, if available, 
+    instead of a ${other_cabin_room}.
+[% END %]
+
+[% IF carpool_verbose != ''
+      || howheard_verbose != ''
+      || kayakalpa_verbose != ''
+      || mailings_verbose != '' %]
+    <h3>Preferences</h3>
+    $carpool_verbose
+    $howheard_verbose
+    $mailings_verbose
+    $kayakalpa_verbose
+[% END %]
+
+[% IF request %]    
+    $request_verbose
+[% END %]
+
+[% IF ! total %]
+<form name="no_authorize"
+      action="/cgi-bin/reg3"
+      method="POST"
+>
+[% ELSIF zzname %]
+    <form name="no_authorize"
+          action="/cgi-bin/relay" <!-- ?? -->
+          method="POST"
+    >
+    <input type=hidden name='x_trans_id' value='$zz_trans_id'>
+[% ELSE %]
+    <FORM NAME="authorize"
+    action="https://secure2.authorize.net/gateway/transact.dll"
+    method="POST"
+    onsubmit="pageTracker._linkByPost(this);"
+    >
+[% END %]
+
+[% IF waiver_needed %]
+    <h3>Yoga Instruction and Liability Waiver and Release</h3>
+    Yoga as taught at Mount Madonna Center and Institute is primarily
+    intended to cultivate peace, self development, and well being. Practices
+    within this ancient discipline include right action, physical postures,
+    breathing exercises, and various types of meditation.
+    <p>
+    Any person participating in a yoga class at Mount Madonna
+    Center has been asked to agree to the terms below at the time of
+    registration. Participation in any yoga class offered at Mount Madonna
+    Center includes agreement with all of the following:
+    <p>
+    I understand that yoga is an ancient Indian system designed to make the
+    body strong and flexible. I realize that it is important never to do any
+    practice to the point of pain or discomfort. I am aware that there is
+    some risk involved in all physical exercise and that I am responsible
+    for recognizing my own physical limits.
+    <p>
+    I understand that yoga is not a substitute for medical attention,
+    examination, diagnosis or treatment, and that practicing yoga is not
+    recommended and is not safe under certain medical conditions. If I
+    have any concerns about whether yoga is suitable for me or if I have a
+    particular injury or medical condition, I will consult my physician before
+    participating in a yoga class.  I understand that it is important for me
+    to communicate to the instructor(s) any injuries that I have had that
+    presently cause pain or limitations of movement and I will communicate
+    with the instructor(s) information regarding such conditions before
+    participating in practices taught in classes at Mount Madonna Center.
+    <p>
+    I hereby agree to irrevocably waive, release and discharge any and
+    all claims and liabilities against Mount Madonna Center, Mount Madonna
+    Institute, its individual instructors or staff, and/or Hanuman Fellowship
+    for any personal injury, death or damage to the person or property,
+    or loss sustained as a result of participation in yoga classes.
+    Understanding that there is always some risk in participating in any
+    physical exercise, I assume the risk of injury from my participation in
+    yoga classes at Mount Madonna Center.
+    <p>
+    <span style="color: red; font-size: 14pt;">
+    By checking this box:
+    <input type=checkbox id=waiver>
+    I affirm that
+    I have read, understand, and accept the above. <!-- liability waiver and release. -->
+    </span>
+[% END %]
+
+<h3>Payment</h3>
+$payment
+[% IF total %]
+    SUBMIT...
+[% END %]
+</form>

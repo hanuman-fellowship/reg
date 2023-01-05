@@ -105,6 +105,8 @@ __PACKAGE__->add_columns(qw/
     reg_msg
     discount_pct
     discount_code
+    tuition_rolled
+    tuition_name
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -951,6 +953,8 @@ summary_id - foreign key to summary
 tub_swim - should we mention the hot tub and lake swimming in the conf letter?
 title - A short description of the program for the web page.
 tuition - A charge for the program - mostly for the presenter.
+tuition_name - An alternate name for 'tuition'
+tuition_rolled - Is tuition rolled into the housing cost?
 unlinked_dir - Obsolete.  For unlinked programs (see the linked attribute)
     this is a directory name on www.mountmadonna.org that
     will contain the program.
