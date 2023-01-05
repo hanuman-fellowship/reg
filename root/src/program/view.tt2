@@ -640,6 +640,8 @@ $leaders_house
 
 <tr><td>&nbsp;</td></tr>
 
+<!-- Not sure what this was for ... :)
+
 <tr>
 <th align=right>Do Not Compute<br>Costs</th>
 <td valign=top>$program.do_not_compute_costs</td>
@@ -649,6 +651,8 @@ $leaders_house
 <th align=right valign=top>Why?</th>
 <td>$program.dncc_why</td>
 </tr>
+
+-->
 
 </table>
 </div>

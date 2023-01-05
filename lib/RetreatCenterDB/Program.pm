@@ -888,7 +888,7 @@ donation_tiers - A string describing the tiers of donation choices
     like:   25 50* 100 other    OR    50 100
 donation_zero_msg - If there is not minimum and someone pays nothing
     what should we say?
-do_not_compute_costs - Should we not compute the costs of this program?
+do_not_compute_costs - Should we not compute the costs of this program? = Obsolete
 economy - Is Economy housing available?
 edate - end date of the program
 end_reg_date_time - format: mm/dd/yyyy hh:mm - after what date/time should

@@ -385,13 +385,36 @@ sub _get_data {
             push @mess, "Incorrect format for Donation Tiers: $P{donation_tiers}";
         }
     }
+    # Checking House Cost, etc
+    #
+    my $hc = model($c, 'HouseCost')->find($P{housecost_id});
+    my $per_day = $hc->type eq 'Per Day';
+    my $PR = $P{name} =~ m{Personal\s+Retreat}xmsi;
+    if ($per_day && $P{tuition_rolled}) {
+        push @mess, "Cannot have Rolled Tuition for Per Day House Cost";
+    }
     if ($P{extradays}) {
         if ($P{full_tuition} <= $P{tuition}) {
             push @mess, "Full Tuition must be more than normal Tuition.";
         }
+        # House cost must be Per Day
+        if (! $per_day) {
+            push @mess, "With Extra Day programs the House Cost must be Per Day";
+        }
     }
     else {
         $P{full_tuition} = 0;    # it has no meaning if > 0.
+        if ($PR) {
+            if (! $per_day) {
+                push @mess, "For Personal Retreats the House Cost must be Per Day";
+            }
+        }
+        elsif ($per_day) {
+            push @mess, "The House Cost cannot be Per Day";
+        }
+    }
+    if ($PR && $P{tuition} > 0) {
+        push @mess, "Personal Retreats cannot have Tuition";
     }
     if ($P{footnotes} =~ m{[^\*%+]}) {
         push @mess, "Footnotes can only contain *, % and +";
