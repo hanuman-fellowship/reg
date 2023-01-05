@@ -156,11 +156,11 @@ sub _affil_elem {
     my $a = $affils[$i];
     my $id = $a->id();
     my $descrip = $a->descrip();
-    return "<td><input type=checkbox name=aff$id "
+    return "<td><label><input type=checkbox name=aff$id "
            . ($checked{$id} || "")
            . "> "
            . $descrip
-           . "</td>";
+           . "</label></td>";
 }
 
 
@@ -294,7 +294,7 @@ sub leader_table {
         my $id = $_->[1];
         my $assistant = ($_->[2])? " * ": "";
         my $checked = $checked{$id} || "";
-        "<input type=checkbox name=lead$id $checked> $name$assistant"
+        "<label><input type=checkbox name=lead$id $checked> $name$assistant</label>"
     }
     sort {
         $a->[0] cmp $b->[0]

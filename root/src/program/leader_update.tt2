@@ -1,13 +1,13 @@
 <h2>Programs - Updating the Leaders</h2>
-<span class=larger>[% program.name %]</span>
-[% program.title %]
+<span class=larger>$program.name</span>
+$program.title
 <p class=p2>
-<form action="/program/leader_update_do/[% program.id %]">
+<form action="/program/leader_update_do/$program.id">
 <input type=submit id=sub value="Submit">
 <span style="margin-left: 4in">* means assistant</span><br>
 <p class=p2>
 <table>
-[% leader_table %]
+$leader_table
 </table>
 <p class=p2>
 <input type=submit id=sub value="Submit">

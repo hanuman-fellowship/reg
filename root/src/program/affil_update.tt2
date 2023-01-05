@@ -1,12 +1,12 @@
 <h2>Programs - Updating the Affiliations</h2>
 <p>
-[% program.name %]<br>
-[% program.title %] - [% program.subtitle %]
+$program.name<br>
+$program.title - $program.subtitle
 <p>
-<form action="/program/affil_update_do/[% program.id %]">
+<form action="/program/affil_update_do/$program.id">
 <ul>
 <table>
-[% affil_table %]
+$affil_table
 </table>
 <p class=p2>
 <input type=submit id=sub value="Submit">
