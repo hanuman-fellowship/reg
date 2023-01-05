@@ -1376,6 +1376,8 @@ sub gen_progtable {
                 dates
                 sdate
                 edate
+                extradays
+                full_tuition
                 leader_names
                 footnotes
                 deposit
