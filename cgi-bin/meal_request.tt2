@@ -1,5 +1,6 @@
 <html>
 <head>
+<link rel="stylesheet" href="/static/cgi.css">
 <script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
@@ -8,10 +9,9 @@
 <script type='text/javascript'>
 \$(function(){
     \$('.input-group.date').datepicker({
-        calendarWeeks: true,
         todayHighlight: true,
         autoclose: true,
-        daysOfWeekDisabled: '0',
+        ${dow_disabled}
         startDate: '$startDate',
         datesDisabled: [ $disabled ]
     });  
@@ -29,7 +29,6 @@ body, table, tr, th, td, input, .button {
     background: lightgreen;
 }
 .tbl {
-    /* text-transform: none; ??? */
     text-align: center;
 }
 td {
@@ -48,9 +47,9 @@ td {
 <p>
 <h1>
 [% IF type == 'family' %]
-Meals for HFS Members/Affilates
+Meals for HFS Members/Affilates (MMI, MMC, Temple)
 [% ELSIF type == 'guest' %]
-Meals for Resident Guests and Offland Staff
+Meals for MMC Resident Guests and Offland Staff
 [% ELSE %]
 Meals at Mount Madonna Center
 [% END %]
@@ -63,9 +62,14 @@ Enter dates and the number of meals you wish on those dates.<br>
 If the meals are for a child (ages 5-12) check the Child column checkbox.
 <p>
 [% dr = date_ranges.0 %]
-You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
+[% IF type == 'family' %]
+We do not offer meals on Sunday or lunch on Saturdays[% IF ! dr %].[% END %]
+[% ELSE %]
+We do not offer lunch on Saturdays[% IF ! dr %].[% END %]
+[% END %]
 [% IF dr %]
-<br>nor meals on these dates:<p>
+<br>nor meals on these dates:
+    <ul>
     [% FOR dr IN date_ranges %]
         [% one_day = dr.0 == dr.1 %]
         [% IF one_day %]
@@ -78,8 +82,8 @@ You cannot request meals on Sunday nor lunch on Saturdays[% IF ! dr %].[% END %]
         [% END %]
         <br>
     [% END %]
+    </ul>
 [% END %]
-<p>
 <form name=form 
       action=/cgi-bin/meal_request
       method=POST

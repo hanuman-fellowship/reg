@@ -1,11 +1,11 @@
 body {
     margin: .5in;
     font-size: 16pt;
-    font-family: Times;
+    font-family: Helvetica;
 }
 td, th, input {
     font-size: 16pt;
-    font-family: Times;
+    font-family: Helvetica;
 }
 .required {
     color: red;

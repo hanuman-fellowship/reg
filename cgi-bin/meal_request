@@ -109,14 +109,19 @@ sub no_lunch {
     return 0;
 }
 
-if (my $t = delete $params{type}) {
-    # $t is either 'family' or 'guest'
-    $stash{type} = $t;
+my $type = delete $params{type};
+$stash{dow_disabled} = '';
+if ($type) {
+    # $type is either 'family' or 'guest'
+    $stash{type} = $type;
+    if ($type eq 'family') {
+        $stash{dow_disabled} = "daysOfWeekDisabled: '0',";
+    }
     # overwrite the strings we use below with the
     # proper family or guest cost.
     for my $m (@meals) {
-        $string{"$m\_cost"} = $string{"$m\_cost_$t"};
-        $string{"$m\_cost_5_12"} = $string{"$m\_cost_5_12_$t"};
+        $string{"$m\_cost"} = $string{"$m\_cost_$type"};
+        $string{"$m\_cost_5_12"} = $string{"$m\_cost_5_12_$type"};
     }
 }
 if (! %params) {
