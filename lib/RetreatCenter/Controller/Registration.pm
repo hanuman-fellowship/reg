@@ -1631,7 +1631,7 @@ sub _compute {
 
     # tuition
     #
-    if (! $lead_assist && $auto) {
+    if (! $lead_assist && $auto && ! $pr->tuition_rolled) {
         my $tuition = $pr->tuition();
         my $what = "Tuition";
         if ($pr->extradays() && $reg->date_end() > $pr->edate()) {
