@@ -373,12 +373,14 @@ for my $w (qw/
     deposit kayakalpa children_welcome
     collect_total donation donation_msg
     covid_vax confnote strangers_share
-    reg_msg discount_code
+    reg_msg discount_code tuition tuition_rolled full_tuition
 /) {
     $stash{$w} = $prog->$w;
 }
 $stash{house_cost_type} = $prog->housecost->type;
-$stash{tuition} = ($prog->tuition != 0)? ', tuition,': '';
+
+$stash{tuition_name} = $prog->tuition_name || 'tuition';
+$stash{tuition_comma} = ($prog->tuition != 0)? "$stash{tuition_name},": '';
 
 if ($mountain_experience) {
     # MEs have their own cancellation policy
@@ -432,7 +434,6 @@ else {
 my $ndays = $prog->edate_obj - $prog->sdate_obj;
 $stash{basicfull} = $prog->extradays;
 $stash{bdays}     = $PR_ndays || $ndays;
-$stash{bdays_pl}  = $stash{bdays} == 1? '': 's';
 $stash{fdays}     = $ndays + $prog->extradays;
 if ($stash{basicfull}) {
     # muck with the dates
@@ -471,7 +472,7 @@ if ($fw eq 'SJC') {
 elsif ($fw eq 'SFO') {
     $stash{sfo_checked} = 'checked';
 }
-else {
+elsif ($fw eq 'Home') {
     $stash{home_checked} = 'checked';
 }
 $stash{from_where_display} = $stash{carpool}? 'block': 'none';

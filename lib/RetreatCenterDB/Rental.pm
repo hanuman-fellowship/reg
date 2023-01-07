@@ -387,7 +387,15 @@ EOH
 
 sub ndays_sent {
     my ($self) = @_;
-    my $ndays = today() - $self->contract_sent_obj();
+    my $ndays;
+    # breakfix for when contract_sent value was somehow messed up
+    # take a look at _get_data in Controller/Rental.pm
+    eval {
+        $ndays = today() - $self->contract_sent_obj();
+    };
+    if ($@) {
+        return "UNKNOWN";
+    }
     if ($ndays == 0) {
         return "today";
     }

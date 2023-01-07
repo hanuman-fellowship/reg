@@ -111,12 +111,24 @@ function check_form() {
 [% IF ! housing_not_needed %]
     [% IF house_cost_type == 'Total' %]
         <p>
-        The prices below are the Total charges for lodging$tuition
-        and all meals.
+        The prices below are the Total charges for lodging, meals,
+        and use of facilities.
     [% ELSE %]
         <p>
         The prices below are Per Person Per Day and include
-        lodging$tuition and all meals.
+        lodging, meals, and use of facilities.
+    [% END %]
+    [% IF tuition %]
+        <br>
+        [% IF tuition_rolled %]
+            A $tuition_name charge of \$$tuition is
+            <i>included</i> in the total fees.
+        [% ELSIF basicfull %]
+            A $tuition_name charge of \$$tuition
+            (or \$$full_tuition for $fdays days) will be added.
+        [% ELSE %]
+            A $tuition_name charge of \$$tuition will be added.
+        [% END %]
     [% END %]
 [% END %]
 
@@ -135,7 +147,6 @@ function check_form() {
 <input type=hidden value="$dates" name=dates>
 <input type=hidden value="$leader_names" name=leader_names>
 <input type=hidden value="$name" name=name>
-<input type=hidden value="$plink" name=plink>
 <input type=hidden value="$pid" name=pid>
 <input type=hidden value="$mountain_experience" name=mountain_experience>
 
@@ -188,7 +199,6 @@ function check_form() {
 <h3>Registrant Information</h3>  
 
 <table cellpadding=5>
-
 
 <tr>
 <th><span class=required>*</span> First Name:</th>
@@ -326,30 +336,42 @@ If you only want a certificate of completion enter COMP for the license #.
 </ul>
 [% END %]
 
-<!-- staff housing?? -->
 [% IF ! staff_housing && ! housing_not_needed %]    
     <h3>Housing Choice</h3>  
     <div style='margin-left: .4in'>
-    <!-- $dncc_why??? -->
     <ul>
     <li>
     <span class=required>*</span> Indicate your <b>first</b> <i>and</i>
     <b>second</b> choices for housing.
     <li>We will do our best to honor your choices.
-        If neither is available, we will assign the next best option,
-        and waitlist you.
-    [% IF ! housing_not_needed %]
-        [% IF house_cost_type == 'Total' %]
-            <li>Prices are the Total charge including meals,
-                lodging$tuition and use of facilities.
+    If neither is available, we will assign the next best option,
+    and waitlist you.
+    [% IF house_cost_type == 'Total' %]
+        <li>Prices are the Total charge including lodging, meals,
+            and use of facilities.
+    [% ELSE %]
+        <li>Prices are Per Person Per Pay and include lodging, meals,
+            and use of facilities.
+    [% END %]
+    [% IF tuition %]
+        <br>
+        [% IF tuition_rolled %]
+            A $tuition_name charge of \$$tuition is <i>included</i>
+            in the total fees.
+        [% ELSIF basicfull %]
+            A $tuition_name charge of \$$tuition
+            (or \$$full_tuition for $fdays days) will be added.
         [% ELSE %]
-            <li>Prices are Per Person Per Pay and include meals,
-                lodging$tuition and use of facilities.
+            A $tuition_name charge of \$$tuition will be added.
         [% END %]
     [% END %]
     <li>Camp sites are walk-in style with parking nearby.
     [% IF covid_vax %]
-        <li><span style="color: red; font-weight: bold; font-size: 18pt;">COVID-19 Notice</span>
+        <li><span
+                 style="color: red;
+                 font-weight: bold;
+                 font-size: 18pt;"
+            >COVID-19 Notice</span>
         <ul style='background: #ffe5e5; padding: 10px;'>
         <li>Covid waivers are required.
         [% IF strangers_share != 'yes' %]
@@ -437,12 +459,6 @@ If you only want a certificate of completion enter COMP for the license #.
     <input type=text name=disc_code id=disc_code> 
     </ul>
 [% END %]
-
-<script>
-function toggle_from_where() {
-    alert('from where');
-}
-</script>
 
 <h3>Preferences</h3>  
 <div style='margin-left: .4in' class=space>
