@@ -11,17 +11,14 @@ use Date::Simple qw/
 use Util qw/
     db_init
     model
+    get_string
 /;
 my $c = db_init();
-use Global qw/
-    %string
-/;
-Global->init($c, 1, 1);     # to get %strings:
 
 my %stash;
-$stash{ME_cost} = $string{mountain_experience_cost};
+$stash{ME_cost} = get_string($c, 'mountain_experience_cost');
 
-my $me_dow  = $string{me_dow};
+my $me_dow  = get_string($c, 'me_dow');
 $me_dow =~ s{\D}{}xmsg;
 my $dow_disabled = "0123456";
 $dow_disabled =~ s{[$me_dow]}{}xmsg;
@@ -56,7 +53,6 @@ my %disabled;
 my $d = $start;
 while ($d <= $end) {
     if ($d->day_of_week =~ m{[$dow_disabled]}xms) {
-        # TODO: UNLESS it is in Yes ME...
         $disabled{$d->format("%m/%d/%Y")} = 1;
     }
     ++$d;

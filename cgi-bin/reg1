@@ -407,27 +407,6 @@ for my $t (qw/
     $stash{$t} = get_time($prog->$t)->ampm();
 }
 
-=comment
-
-# ???? images from where?
-# leader?  no more?
-
-my $images = do "image_links/$pid";
-if ($images->{image1} && $images->{image2}) {
-    $stash{two_pics} = 1;
-    $stash{image1} = $images->{image1};
-    $stash{image2} = $images->{image2};
-}
-elsif ($images->{image1}) {
-    $stash{one_pic} = 1;
-    $stash{image1} = $images->{image1};
-}
-else {
-    $stash{zero_pics} = 1;
-}
-
-=cut
-
 #
 # for 'extra days' programs:
 #
@@ -495,7 +474,6 @@ for my $w (qw/
 }
 $stash{email2} = $cookie{email1} || "";
 
-# still or not??
 $stash{mft} = $prog->footnotes =~ m{[*][*]};
 $stash{ceu} = $prog->footnotes =~ m{[*]};
 $stash{ceu_license} = $cookie{ceu_license};
@@ -503,59 +481,6 @@ $stash{car_license} = $cookie{car_license};
 $stash{housing_not_needed}
     = $mountain_experience? 1
      :                      $prog->housing_not_needed;
-
-=comment
-
-for my $k (sort { $data->{$b} <=> $data->{$a} } @housekeys) {
-    if ($data->{$k} == 0) {
-        # not available
-        next HOUSING_TYPE;
-    }
-    if ($pid == 0 && $k =~ m{commuting}xms) {
-        # per Savita 6/15/22
-        next HOUSING_TYPE;
-    }
-    if ($only_outdoors && $k =~ m{single|dble}xms) {
-        next HOUSING_TYPE;
-    }
-    if ($stash{pr} && $k =~ m{center}xms && $no_center_tents) {
-        next HOUSING_TYPE;
-    }
-    my $nk = $k;
-    $nk =~ s{basic }{};
-    my $full = $k;
-    $full =~ s{basic}{full};
-    my $next = $k;
-    $next =~ s{basic}{next};
-    my $select1 = $cookie{house1} eq $nk? 'checked': '';
-    my $select2 = $cookie{house2} eq $nk? 'checked': '';
-    $housing_fees .= <<"EOH";
-<tr>
-
-<td style="text-align: center">
-<input type=radio name=house1 value='$nk' $select1>
-</td>
-
-<td style="text-align: center">
-<input type=radio name=house2 value='$nk' $select2>
-</td>
-
-<td>$housing_name{$nk}</td>
-EOH
-    if (! $stash{do_not_compute_costs}) {
-        $housing_fees .= "<td align=right width=50>\$$data->{$k}</td>\n";
-        if ($stash{basicfull}) {
-            $housing_fees .= "<td align=right width=70>\$$data->{$full}</td>\n";
-        }
-        elsif ($data->{next_hc}) {
-            $housing_fees .= "<td align=right width=70>\$$data->{$next}</td>\n";
-        }
-    }
-    $housing_fees .= "</tr>\n";
-}
-$stash{housing_fees} = $housing_fees;
-
-=cut
 
 my $hc = $prog->housecost();
 my %sys = map { $_ => 1 } qw/

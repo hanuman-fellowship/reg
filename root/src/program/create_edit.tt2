@@ -456,13 +456,13 @@ Examples: <span class=ex>50 100</span> $ORS <span class=ex>25 50 100 other</span
         >$program.webdesc</textarea>
     </td>
     </tr>
+[% END %]
 
     <tr>
     <th align=right>Footnotes</th>
     <td><input type=text name=footnotes value="$program.footnotes" size=5></td>
     <td><input type=submit id=sub value="Submit"></td>
     </tr>
-[% END %]
 
 [% no_export = program.school.mmi && ! program.level.public? 'disabled': '' %]
 

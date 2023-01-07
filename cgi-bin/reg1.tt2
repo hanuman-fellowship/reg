@@ -87,13 +87,6 @@ function check_form() {
     [% END %]
 [% ELSE %]
     You are registering for:
-    <p>
-    [% IF two_pics %]
-        <img src='$image1'><br>
-        <img src='$image2'>
-    [% ELSIF one_pic %]
-        <img src='$image1'>
-    [% END %]
     <dl>
     <dt><b>Program:</b></dt>
     <dd>$title</dd>
@@ -322,7 +315,6 @@ function pronouns() {
 [% END %]
 </table>
 
-<!-- no more?? why? -->
 [% IF ceu %]
 <h3>Continuing Education Credits</h3>  
 If you are a nurse[% IF mft %], LMFT, or LCSW[% END %] and wish to receive a CEU certificate provide your license #:<br>
@@ -397,9 +389,7 @@ If you only want a certificate of completion enter COMP for the license #.
     <th>1st</th>
     <th>2nd</th>
     <th class=lt>Housing Type</th>
-    [% IF ! do_not_compute_costs %]
-        <th>Cost</th>
-    [% END %]
+    <th>Cost</th>
     </tr>
     [% FOR r IN housing_fee_rows %]
         <tr>
@@ -416,7 +406,7 @@ If you only want a certificate of completion enter COMP for the license #.
     <ul>
     <b>First:</b>
     <input type=text name="withwhom_first" id="withwhom_first" value="$withwhom_first">
-    <span class="helpRed">Make sure that they register <i>separately</i>.</span>
+    <span>Make sure that they register <i>separately</i>.</span>
     <br>
 
     <b>Last:</b>

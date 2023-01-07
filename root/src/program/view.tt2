@@ -687,12 +687,12 @@ $leaders_house
     <td colspan=5>$program.webdesc</td>
     </td>
     </tr>
+[% END %]
 
     <tr>
     <th align=right>Footnotes</th>
     <td>$program.footnotes</td>
     </tr>
-[% END %]
 
 <tr>
 <th align=right>Web Ready</th>
