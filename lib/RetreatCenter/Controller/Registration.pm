@@ -1720,7 +1720,7 @@ sub _compute {
         $what = "Mountain Experience Cost";
         $extra_days = 0;
     }
-    elsif ($lead_assist || $housecost->type() eq "Per Day") {
+    elsif ($housecost->type() eq "Per Day") {
         $tot_h_cost = $prog_days*$h_cost;
         my $plural = ($prog_days == 1)? "": "s";
         my $for_whom = $lead_assist? 'for a leader/assistant<br>': '';
