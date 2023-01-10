@@ -50,7 +50,6 @@ if (! $coord) {
     print "Sorry, there is no Contact Person for this rental.";
     exit;
 }
-}
 
 my (@houses, @htypes, %fixed_cost_for_house);
 
