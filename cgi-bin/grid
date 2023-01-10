@@ -46,6 +46,11 @@ if (! $rental) {
 }
 my $rental_id = $rental->id;
 my $coord = $rental->coordinator() || $rental->contract_signer();
+if (! $coord) {
+    print "Sorry, there is no Contact Person for this rental.";
+    exit;
+}
+}
 
 my (@houses, @htypes, %fixed_cost_for_house);
 
