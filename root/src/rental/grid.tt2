@@ -39,7 +39,7 @@ $days
             <th rowspan=$maxh align=center class=${class.$h_id}>$h.name_disp
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
-                [% ELSIF h.tent && h.center %] - c
+                [% ELSIF h.cabin %] - c
                 [% ELSIF h.tent %] - o
                 [% END %]
                 </span>
@@ -136,7 +136,7 @@ $days
 <table>
 <tr><th colspan=2 align=left>Codes</th></tr>
 <tr><td>b</td><td> - bath</td></tr>
-<tr><td>c</td><td> - center tent</td></tr>
+<tr><td>c</td><td> - cabin</td></tr>
 <tr><td>o</td><td> - own tent</td></tr>
 </table>
 
