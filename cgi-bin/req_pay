@@ -1,18 +1,13 @@
-#!/usr/bin/perl
-# copied from MMI site and replace mmi/MMI with mmc/MMC
+#!/usr/bin/env perl
 use strict;
 use warnings;
 
-use CGI qw/:standard/;
-print header();
+use CGI;
+my $q = CGI->new();
+print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
 use lib '.';
-use SimLib;
 use Template;
-use Auth qw/
-    $MMC_loginid
-    $MMC_txnkey
-/;
 
 sub commify {
     my ($n) = @_;
@@ -22,29 +17,17 @@ sub commify {
     $n = scalar reverse $n;
     return $n;
 }
-
-my $test = -e 'test_mode';
-
-my $code = param('code');
-# use -f ??
-my $href = do "/home/reg/for_reg/req_mmc_dir/$code";
-if (! $href) {
+my $code = $q->param('code');
+if (! -f "/var/Reg/req_mmc_sent/$code") {
     print "Something is wrong with $code.\n";
     exit;
 }
+my $href = do "/var/Reg/req_mmc_sent/$code";
 my %data = %$href;
-
-# Call subroutine from authorize.net that sets $fingerprint_html 
-#
-my $x_currency_code = "USD";
-my $fingerprint_html =
-    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
-                     $data{total}, $x_currency_code);
 
 my %stash = (
     payment_for => "Payment for MMC Program '$data{program}'",
     amount   => $data{total},
-    test     => $test? 'TRUE': 'FALSE',
     first    => $data{first},
     last     => $data{last},
     addr     => $data{addr},
@@ -58,16 +41,11 @@ my %stash = (
     program  => $data{program},
     note     => $data{note},
     amount_disp => commify($data{total}),
-    fingerprint => $fingerprint_html,
-    loginid     => $MMC_loginid,
     req_mmc_id    => $data{id},
     req_mmc_code  => $code,
     signed        => $data{signed},
     quest_email   => $data{quest_email},
 );
-
-# ip address for Jamal's purposes
-$stash{real_ip} = $ENV{REMOTE_ADDR};
 
 Template->new(
     INTERPOLATE => 1,

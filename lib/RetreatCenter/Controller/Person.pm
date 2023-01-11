@@ -50,6 +50,9 @@ use LWP::Simple;
 use Template;
 use Data::Dumper;
 use Net::FTP;
+use File::Copy qw/
+    copy
+/;
 
 my $docs = '/var/Reg/documents';
 
@@ -1349,7 +1352,7 @@ sub _send_requests {
     my $name = $person->name();
     my $phone = $person->tel_home() || $person->tel_cell();
     my $email = $person->email();
-    my $program_name = $reg->program->name();
+    my $program_name = $reg->program->name_trimmed();
 
     my $code = rand6($c);
     my $total = 0;
@@ -1446,8 +1449,11 @@ EOH
         quest_email => $quest_email,
     });
     close $out;
+    copy("/tmp/$code", '/var/Reg/req_mmc_sent');
 
     # and send it - we assume it will be sent properly
+    # ??? clean this up when we go live with Stripe, etc
+    if (! -f '/tmp/Reg_Dev') {
     eval {
         my $o = $org eq 'MMI'? 'mmi_': '';
             # ftp_site was first, then ftp_mmi_site
@@ -1479,6 +1485,7 @@ EOH
         $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
         return;
     }
+    }   # ! -f '/tmp/Reg_Dev'
 
     # mark the payment requests as sent - with the new code
     PAYMENT:
@@ -1514,7 +1521,7 @@ EOH
         program     => $program_name,
         resending   => $resend_all,
         signed      => $signed,
-        org         => $org eq 'MMC'? 'mountmadonna': 'mountmadonnainstitute',
+        cgi         => $string{cgi},
     };
     my $html;
     $tt->process(
