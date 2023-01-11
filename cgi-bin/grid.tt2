@@ -131,7 +131,7 @@ Housing Assignment Grid
 <span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://akash.mountmadonna.org/static/hints.html',750)">Helpful Hints</a></span>
 </h2>
 <input type=hidden name=code value='$code'>
-<table cellpadding=5 border=1>
+<table cellpadding=5 border=1 width=100%>
 <tr>
 <th>Room/Site</th>
 <th align=right>Bed</th>
@@ -184,7 +184,7 @@ $days
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.own %] - o
-                [% ELSIF h.tent %] - c
+                [% ELSIF h.cabin %] - c
                 [% END %]
                 </span>
             </th>
@@ -216,7 +216,7 @@ $days
 <table>
 <tr><th align=left colspan=2>Codes</th></tr>
 <tr><td>b</td><td> - bath</td></tr>
-<tr><td>c</td><td> - center tent</td></tr>
+<tr><td>c</td><td> - cabin</td></tr>
 <tr><td>o</td><td> - own tent</td></tr>
 </table>
 

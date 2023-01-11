@@ -95,6 +95,7 @@ for my $b ($rental->rental_bookings()) {
         name  => $house->name_disp,
         max   => $house->max,
         bath  => $house->bath,
+        cabin => $house->cabin,
         tent  => $house->tent,
         own   => 1,
         cottage => $house->cottage,
@@ -307,9 +308,10 @@ if ($P{process}) {
 
         # Now we deal with actual rooms - not own van or commuting
         #
-        my $bath = ($h->{bath})? "_bath"
-                  :              ""
-                  ;
+        my $suffix = $h->{bath}?  '_bath'
+                    :$h->{cabin}? '_cabin'
+                    :              '';
+                    ;
         BED:
         for my $bed (1 .. $h->{max}) {
             my $override_np = 0;
@@ -402,8 +404,8 @@ if ($P{process}) {
                         }
                     }
                     else {
-                        $cost += ($np == 1            )? $hc{"single$bath"}
-                                :($np == 2            )? $hc{"dble$bath"}
+                        $cost += ($np == 1            )? $hc{"single$suffix"}
+                                :($np == 2            )? $hc{"dble$suffix"}
                                 :($np == 3            )? $hc{triple}
                                 :(4 <= $np && $np <= 7)? $hc{dormitory}
                                 :                        $hc{economy}
