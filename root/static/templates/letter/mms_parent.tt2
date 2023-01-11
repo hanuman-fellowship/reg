@@ -179,6 +179,58 @@ Guest Services will provide you with an information packet, lanyard,  map of the
 You are invited to schedule a wellness appointment at our  Ayurvedic Wellness Center. For information and to book an appointment for a variety of treatment options, including Massage, Reiki, Yoga Therapy, and more: Phone 408-846-4078, email <a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>,
 or visit
 <a href='https://www.mountmadonnainstitute.org/wellnesscenter'>www.mountmadonnainstitute.org/wellnesscenter</a>. 
+         [% IF reg.balance > 0 %]
+      <h2>Payments</h2>
+      <p>
+         You are welcome to pay your balance of \$$reg.balance
+         before arrival to expedite the
+         check-in process.
+         [% IF pre_payment_link %]
+         You may pay in advance
+         with a credit card online at
+         <a target=_blank href='$pre_payment_link'>this link</a>.
+         [% END %]
+      <div class=invoice>
+         <table>
+            <tr>
+               <th align=left colspan=2>Charges</th>
+            </tr>
+            [% tot = 0 %]
+            [% FOR ch IN reg.charges %]
+            <tr>
+               <td align=right valign=top>[% penny(ch.amount) %]</td>
+               <td>$ch.what</td>
+            </tr>
+            [% tot = tot + ch.amount %]
+            [% END %]
+            <tr>
+               <td align=right><span style="border-top: solid thin">\$$tot</span></td>
+               <td>Total</td>
+            </tr>
+            <tr>
+               <th align=left colspan=2>Payments</th>
+            </tr>
+            [% tot = 0 %]
+            [% FOR p IN reg.payments %]
+            <tr>
+               <td align=right>[% penny(p.amount) %]</td>
+               <td>$p.what</td>
+            </TR>
+            [% tot = tot + p.amount %]
+            [% END %]
+            <tr>
+               <td align=right><span style="border-top: solid thin">\$$tot</span></td>
+               <td>Total</td>
+            </tr>
+            <tr>
+               <th align=left colspan=2>Balance Due</th>
+            </tr>
+            <tr>
+               <td align=right width=60>\$$reg.balance</td>
+            </tr>
+         </table>
+      </div>
+      [% END %]
 <h2>Meals</h2>
 Lunch is served in the Community Building from 12:30-1:30. Reservations for lunch must be made a minimum of 48 hours in advance by emailing
 <a href='mailto:meals@mountmadonna.org'>meals@mountmadonna.org</a>
