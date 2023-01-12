@@ -5,7 +5,7 @@
 </head>
 <body>
 [% sans = person.sanskrit %]
-<img src=/static/images/hanuman.png width=100>        
+<img src=/static/images/hanuman.png width=200>        
 <div ><h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
 
 <dl>
