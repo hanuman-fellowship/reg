@@ -163,6 +163,7 @@ our %file_named = (
     e_packet      => 'MMC Guest Packet.pdf',
     f_rental_conf => 'Program Guest Confirmation Letter.pdf',
     g_rental_reg  => 'Program Registration Guidelines.pdf',
+    h_me_guest    => 'Guest-Packet_MountainExperience.pdf',
 );
 
 sub documents_do : Local {

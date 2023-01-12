@@ -8,7 +8,7 @@
 </style>
 <h2>Documents</h2>
 <div style="width: 700px">
-To update one or more of these 7 documents select 
+To update one or more of these 8 documents select 
 Choose File and browse the file system for the updated file.
 Note that the name of the file you choose must have exactly the same
 name as shown in the left hand column.
@@ -19,6 +19,15 @@ name as shown in the left hand column.
 >
 <ul>
 <table cellpadding=5>
+
+<tr><td>
+<a target=_blank href='/rental/show_file/Guest-Packet_MountainExperience.pdf'>Guest-Packet_MountainExperience.pdf</a>
+<div class=how_used>
+Attached to the confirmation letter for Mountain Experience registrations.
+</div>
+</td><td valign=top>
+<input type=file name=h_me_guest>
+</td></tr>
 
 <tr><td>
 <a target=_blank href='/rental/show_file/Info Sheet.pdf'>Info Sheet.pdf</a>
