@@ -2317,7 +2317,7 @@ sub send_conf : Local {
         = $pr->housing_not_needed()?
               []
          :$reg->mountain_experience()?
-              [ '/var/Reg/documents/Guest-Packet_MountainExperience.pdf' ],
+              [ '/var/Reg/documents/Guest-Packet_MountainExperience.pdf' ]
          :    [ '/var/Reg/documents/MMC Guest Packet.pdf' ]
          ;
     email_letter($c,
