@@ -16,7 +16,7 @@
 <dd>$addr<br>$person.city, $person.state $person.zip<br>$country</dd> 
 
 <dt>Phone:</dt>
-<dd>$person.phone</dd>
+<dd>$phone</dd>
 
 <dt>Email:</dt>
 <dd>$person.email</dd>
