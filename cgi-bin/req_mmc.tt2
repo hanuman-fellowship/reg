@@ -33,6 +33,7 @@ If you have any question about this request send an <a href='mailto:$quest_email
 action="https://secure.authorize.net/gateway/transact.dll"
 method="POST"
 >
+<!-- ... -->
 <input style="background: lightgreen" type=submit id=submit value='Pay Securely with your Credit Card'>
 </form>
 </body>

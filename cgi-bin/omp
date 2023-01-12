@@ -1,70 +1,69 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
-use CGI qw/:standard/;
+use CGI;
+my $q = CGI->new();
+print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
-print header();
-use DBI;
 use Template;
-use lib '.';
-use SimLib;
-use Auth qw/
-    $MMC_loginid
-    $MMC_txnkey
+use lib '../lib';
+use Util qw/
+    db_init
+    model
 /;
-
-my $dbh = DBI->connect(
-    'dbi:SQLite:dbname=omp_database', '', '',
-    { RaiseError => 1, AutoCommit => 1 }
-) or die "cannot connect to database\n";
-my $code = param('code');
-my $test = param('test') || -e 'test_mode' || 0;
-my $sth = $dbh->prepare(<<'EOS');
-    select * from omp
-     where secure_code = ?
-EOS
-$sth->execute($code);
-my $href = $sth->fetchrow_hashref();
-if (! $href) {
-    print " code = $code, Sorry, your online payment can no longer be made.<br>"
-        . "Contact the Hanuman Fellowship Membership Secretary.";
+my $c = db_init();
+my $code = $q->param('code');
+my $hfs_contact = "Contact the Hanuman Fellowship Membership Secretary.";
+if (! $code) {
+    print "Missing secure code.<br>$hfs_contact";
     exit;
 }
-# Call subroutine from authorize.net that sets $fingerprint_html 
-#
-
-my $x_currency_code = "USD";
-my $fingerprint_html =
-    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
-                     $href->{amount_due}, $x_currency_code);
-
-my $addr = $href->{addr1};
-if ($href->{addr2}) {
-    $addr .= "<br>$href->{addr2}";
+my ($person) = model($c, 'Person')->search({
+                   secure_code => $code,
+               });
+if (! $person) {
+    print "Could not find a person with code $code.<br>$hfs_contact";
+    exit;
 }
-my $date_payment = $href->{date_payment};
+my $member = $person->member;
+if (! $member) {
+    print "You are not an HFS Member.<br>$hfs_contact";
+    exit;
+}
+my $addr = $person->addr1;
+if ($person->addr2) {
+    $addr .= '<br>' . $person->addr2;
+}
+my @payments = model($c, 'SponsHist')->search(
+                   {
+                       member_id => $member->id,
+                   },
+                   { order_by => "date_payment desc" },
+               );
+my ($date_payment, $last_amount) = ('', 0);
+if (@payments) {
+    $date_payment = $payments[0]->date_payment;
+    $last_amount = $payments[0]->amount;
+}
 $date_payment =~ s{\A (\d\d\d\d)(\d\d)(\d\d) \z}{$2/$3/$1}xms;
 
+my $category = $member->category;
+
+my $amount_due = $category eq 'General'? get_string($c, 'mem_gen_amt')
+                :                        get_string($c, 'mem_spons_year')
+                ;
+
 my %stash = (
-    amount       => $href->{amount_due},
-    last_amount  => $href->{last_amount},
+    amount       => $member->amount_due,
+    last_amount  => $member->last_amount,
     date_payment => $date_payment,
-    total_paid   => $href->{total_paid},
-    first    => $href->{first},
-    last     => $href->{last},
-    addr     => $addr,
-    city     => $href->{city},
-    state    => $href->{st_prov},
-    zip      => $href->{zip_post},
-    country  => $href->{country} || 'USA',
-    phone    => $href->{phone},
-    email    => $href->{email},
-    member_id   => $href->{member_id},
-    category    => $href->{category},
-    real_ip     => $ENV{REMOTE_ADDR},
-    fingerprint => $fingerprint_html,
-    loginid     => $MMC_loginid,
-    test     => $test,
+    total_paid   => $member->total_paid,
+    person       => $person,
+    addr         => $addr,
+    phone        => ($person->tel_home || $person->tel_cell || ''),
+    country      => $person->country || 'USA',
+    member_id    => $member->id,    # hidden
+    category     => $member->category,
 );
 Template->new(
     INTERPOLATE => 1,
