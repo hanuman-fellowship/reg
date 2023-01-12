@@ -4,12 +4,13 @@
 <link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
+[% sans = person.sanskrit %]
 <img src=https://www.mountmadonna.org/assets/img/ui/hfs_banner.png width=838>        
 <div ><h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
 
 <dl>
 <dt>Name:</dt>
-<dd>$person.first $person.last</dd>
+<dd>$person.first $person.last [% IF sans %]($sans)[% END %]</dd>
 
 <dt>Address:</dt>
 <dd>$addr<br>$person.city, $person.state $person.zip<br>$country</dd> 
