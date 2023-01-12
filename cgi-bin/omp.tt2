@@ -17,7 +17,7 @@
 <dd>$person.first $person.last [% IF sans %]($sans)[% END %]</dd>
 
 <dt>Address:</dt>
-<dd>$addr<br>$person.city, $person.state $person.zip<br>$country</dd> 
+<dd>$addr<br>$person.city, $person.st_prov $person.zip_post<br>$country</dd> 
 
 <dt>Phone:</dt>
 <dd>$phone</dd>
