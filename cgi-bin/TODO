@@ -1,14 +1,19 @@
-list all the cgi-bin scripts and what they do
+List all the cgi-bin scripts and what they do:
 
-test suites
-    we have one for grid
-    test suite for meal_requests
-    test suite for regPR and regME
-    test program_inquiry
-    test reg1, reg2
-        tuition? or not?
-        extra days?
-    gift_card
-    gift_card_status
-    req_pay
-    omp
+grid
+reg1
+reg2
+reg3
+req_pay
+regME
+regPR
+omp
+gift_card
+meal_request
+gift_card_status
+program_inquiry
+rental_deposit
+new_member
+mlist
+sutra_send  - broken - send from akash instead?
+sutra1

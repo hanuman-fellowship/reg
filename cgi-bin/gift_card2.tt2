@@ -40,5 +40,13 @@ $country</dd>
 <dt>Email:</dt>
 <dd>$email1</dd>
 </dl>
+<form name="authorize"
+action="https://secure.authorize.net/gateway/transact.dll"
+method="POST"
+>
+<!-- ??? Should it say "Pay securely with your credit card as others do?
+Should it be consistent? -->
+<input style="background: lightgreen" type=submit id=submit value='PAY AMOUNT'>
+</form>
 </body>
 </html>

@@ -1,4 +1,4 @@
-Test Suite for Reg1
+Test Suite for Reg1 and Reg2
 
 - ME
     maximum for the day
@@ -83,3 +83,44 @@ Test Suite for Reg1
 
     Cancellation Policy
         from program (ME is diff)
+
+    Staff Housing - how does/did this work?
+        I disabled it.
+
+    Same Day PRs - must be commuting - can we force it?
+
+    Covid time and requested single/double/triple
+        but did not say who you'd be sharing with.
+        Covid implies no shared housing with stranger, right?
+
+    CEU - check the license format COMP vs ...
+
+Gift Card - is there a non-zero balance or not?
+
+Discount Code - invalid code
+
+Get Covid Vaccination File - complicated!
+
+PR Discount M-Th controlled by strings
+
+Extra Days - basic or full
+    cost is calculated - housecost is Per Day
+
+Tution - fixed, rolled, tiered/other amount, zero message
+
+Discount code valid code 
+
+Collect All now
+Collect percentage of tuition - not really used any more
+
+Donation to the MMC General Fund
+
+Two options to pay?  All now or just Deposit
+    it fiddled with the amounts for authorize.net
+    what about Stripe?
+
+Carpooling in reg2
+
+Mail opt in/out preferences
+
+zz last name - skip payment
