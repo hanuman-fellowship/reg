@@ -10,6 +10,7 @@ use lib '../lib';
 use Util qw/
     db_init
     model
+    get_string
 /;
 my $c = db_init();
 my $code = $q->param('code');
