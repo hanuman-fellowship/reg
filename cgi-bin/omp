@@ -55,8 +55,8 @@ my $amount_due = $category eq 'General'? get_string($c, 'mem_gen_amt')
                 ;
 
 my %stash = (
-    amount       => $member->amount_due,
-    last_amount  => $member->last_amount,
+    amount       => $amount_due,
+    last_amount  => $last_amount,
     date_payment => $date_payment,
     total_paid   => $member->total_paid,
     person       => $person,
