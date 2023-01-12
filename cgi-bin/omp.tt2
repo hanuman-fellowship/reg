@@ -28,10 +28,10 @@
 [% IF category == 'Sponsor' %]                       
 <dt>Previous Payment:</dt>
 <dd>\$$last_amount on $date_payment</dd>
-[% END %]
 
 <dt>Total to Date:</dt>
 <dd>\$$total_paid</dd>
+[% END %]
 
 <dt>Today's Payment:</dt>
 <dd>\$$amount</dd>
