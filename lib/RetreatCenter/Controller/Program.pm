@@ -409,14 +409,14 @@ sub _get_data {
                 push @mess, "For Personal Retreats the House Cost must be Per Day";
             }
         }
-        elsif ($per_day) {
+        elsif (!$P{housing_not_needed} && $per_day) {
             push @mess, "The House Cost cannot be Per Day";
         }
     }
     if ($PR && $P{tuition} > 0) {
         push @mess, "Personal Retreats cannot have Tuition";
     }
-    if ($P{footnotes} =~ m{[^\*%+]}) {
+    if ($P{footnotes} =~ m{[^*%+]}) {
         push @mess, "Footnotes can only contain *, % and +";
     }
     for my $t (qw/
