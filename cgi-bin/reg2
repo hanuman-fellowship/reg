@@ -66,7 +66,7 @@ delete @cookie{qw/
     green_amount
     email2
 /};
-my $cookie = cookie(
+my $cookie = $q->cookie(
     -name    => 'user_data',
     -value   => \%cookie,
     -expires => '+10y',     # i.e. don't expire
@@ -93,9 +93,9 @@ if ($pid) {
 }
 else {
     # PR or ME
-    # find the Personal Retreat program containing the date $sdate
-    my $sdate = date($form{sdate});
-    my $d8 = $sdate->as_d8();
+    # find the Personal Retreat program containing the date $arr_date
+    my $arr_date = date($form{arr_date});
+    my $d8 = $arr_date->as_d8();
     ($prog) = model($c, 'Program')->search({
                 name  => { -like => '%personal%retreat%' },
                 sdate => { '<=' => $d8 },

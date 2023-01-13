@@ -306,7 +306,7 @@ If you require additional assistance, please do not hesitate to call the Guest S
 We look forward to seeing you here soon!
 <p>
 Sincerely,<br>
-$user.first $user.last, Registrar<br>
+$user.first $user.last
 and the Guest Services Office team
 
 [% IF carpoolers %]
