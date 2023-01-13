@@ -2318,7 +2318,7 @@ sub send_conf : Local {
               []
          :$reg->mountain_experience()?
               [ '/var/Reg/documents/Guest-Packet_MountainExperience.pdf' ]
-         :    [ '/var/Reg/documents/MMC Guest Packet.pdf' ]
+         :    [ $pr->alt_packet || '/var/Reg/documents/MMC Guest Packet.pdf' ]
          ;
     email_letter($c,
         to      => $to,
