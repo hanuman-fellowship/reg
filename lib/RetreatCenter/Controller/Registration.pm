@@ -2313,12 +2313,16 @@ sub send_conf : Local {
 
     my $to = $reg->person->name_email();
     my $name = $reg->person->name;
+    my $packet = '/var/Reg/documents/MMC Guest Packet.pdf';
+    if ($pr->alt_packet) {
+        $packet = '/var/Reg/documents/' . $pr->alt_packet;
+    }
     my $attached_file_aref
         = $pr->housing_not_needed()?
               []
          :$reg->mountain_experience()?
               [ '/var/Reg/documents/Guest-Packet_MountainExperience.pdf' ]
-         :    [ $pr->alt_packet || '/var/Reg/documents/MMC Guest Packet.pdf' ]
+         :    [ $packet ]
          ;
     email_letter($c,
         to      => $to,
