@@ -39,7 +39,6 @@ Please enter the dates of your personal retreat.
 <p>
 <form name=form action=reg1 method=get method=POST>
 <input type=hidden name=id value=0>
-<input type=hidden name=dir value=pr>   <!-- needed? -->
 
 <div class="input-daterange input-group"
      id="datepicker"

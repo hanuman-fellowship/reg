@@ -134,8 +134,6 @@ function check_form() {
     $reg_msg
 [% END %]
 
-<input type=hidden value="$test" name=test >
-<input type=hidden value="$dir" name=dir>
 <input type=hidden value="$title" name=title>
 <input type=hidden value="$dates" name=dates>
 <input type=hidden value="$leader_names" name=leader_names>
@@ -143,7 +141,7 @@ function check_form() {
 <input type=hidden value="$pid" name=pid>
 <input type=hidden value="$mountain_experience" name=mountain_experience>
 
-[% IF pr %]
+[% IF pr || mountain_experience %]
     <input type=hidden name=sdate value=$sdate>
     <input type=hidden name=edate value=$edate>
 [% END %]
@@ -393,8 +391,8 @@ If you only want a certificate of completion enter COMP for the license #.
     </tr>
     [% FOR r IN housing_fee_rows %]
         <tr>
-        <td><input type=radio name=house1 value='$r.htype'></td>
-        <td><input type=radio name=house2 value='$r.htype'></td>
+        <td><input type=radio name=house1 value='$r.htype' $r.checked1></td>
+        <td><input type=radio name=house2 value='$r.htype' $r.checked2></td>
         <td>$r.house_desc</td>
         <td align=right>$r.cost</td>
         </tr>
@@ -461,10 +459,6 @@ If you only want a certificate of completion enter COMP for the license #.
     I wish to offer a ride.<br>
     <input type=checkbox name=carpool id=pool value=yes $carpool onchange="toggle_from_where()">
     I wish to carpool.<p>
-
-<!-- ???
-    <div id=from_where_id style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm; margin-bottom: 2mm;">
-    -->
 
     <input type=radio name=from_where id=from_where1 value='Home' $home_checked>
     From Home</label><br>
@@ -540,8 +534,9 @@ we invite you to consider making a donation to Mount Madonna Center.
 Your gift will support stewardship of this vibrant learning community,
 inspirational environment, and sacred land.
 Mount Madonna Center is a 501(c)(3) charitable organization.
-EIN #51-0174679
+EIN #51-0174679.
 </div>
+<p>
 Amount:
 <input type=text name=green_amount id=green_amount class="input">
 </ul>
@@ -592,8 +587,8 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
         You are not registered until we receive your deposit.
     [% END %]
     If the program is full, your deposit will be refunded.</li>
-    <li>Housing is not always available. <strong>Do not finalize your travel plans</strong> until you have received a housing confirmation from Mount Madonna Center.</li>
-    <li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
+    <li>Housing is not always available. <b>Do not finalize your travel plans</b> until you have received a housing confirmation from Mount Madonna Center.</li>
+    <li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <i>programs@mountmadonna.org</i>. </li>
 [% END %]
 </ul>
 

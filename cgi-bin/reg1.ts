@@ -8,6 +8,8 @@ Test Suite for Reg1 and Reg2
     ME has its own cancellation policy
         (not from the PR program)
 
+    mountain_experience_cost
+
 - PR
     max total nights
     'No PR' event in middle of range that
@@ -124,3 +126,5 @@ Carpooling in reg2
 Mail opt in/out preferences
 
 zz last name - skip payment
+
+Reg2/1 Cookies - remember info

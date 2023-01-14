@@ -430,7 +430,10 @@ for my $g (qw/ female male non_binary trans no_resp /) {
 
 # if there is cookie information, it will also be used.
 
-my %cookie = $q->cookie(-name => 'user_data');
+my %cookie = $q->cookie(
+    -domain => 'akash2.mountmadonna.org',       # ??
+    -name   => 'user_data',
+);
 $stash{$cookie{gender}} = 'checked';
 
 if ($cookie{cabin_room} eq 'cabin') {
@@ -443,7 +446,7 @@ else {
 }
 # Carpooling
 $stash{carpool}        = $cookie{carpool}? 'checked': '';
-$stash{hascar}         = $cookie{hascar}? 'checked': '';
+$stash{hascar}         = $cookie{hascar} ? 'checked': '';
 my $fw = $cookie{from_where};
 if ($fw eq 'SJC') {
     $stash{sjc_checked} = 'checked';
@@ -454,9 +457,8 @@ elsif ($fw eq 'SFO') {
 elsif ($fw eq 'Home') {
     $stash{home_checked} = 'checked';
 }
-$stash{from_where_display} = $stash{carpool}? 'block': 'none';
 
-$stash{e_mailings}     = $cookie{e_mailings}? 'checked': '';
+$stash{e_mailings}     = $cookie{e_mailings}    ? 'checked': '';
 $stash{snail_mailings} = $cookie{snail_mailings}? 'checked': '';
 $stash{share_mailings} = $cookie{share_mailings}? 'checked': '';
 $stash{withwhom_first} = $cookie{withwhom_first} || "";
@@ -496,6 +498,8 @@ my @fee_rows = sort {
                map { 
                    +{
                         htype      => $_,
+                        checked1   => ($_ eq $cookie{house1}? 'checked': ''),
+                        checked2   => ($_ eq $cookie{house2}? 'checked': ''),
                         house_desc => $string{$_},
                         cost       => $hc->$_
                     }

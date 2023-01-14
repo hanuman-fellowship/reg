@@ -21,6 +21,7 @@ use Util qw/
     db_init
     model
     get_string
+    JON
 /;
 my $c = db_init();
 
@@ -70,7 +71,7 @@ my $cookie = $q->cookie(
     -name    => 'user_data',
     -value   => \%cookie,
     -expires => '+10y',     # i.e. don't expire
-    -domain  => 'www.mountmadonna.org',
+    -domain  => 'akash2.mountmadonna.org',      # ??
 );
 print $q->header(-cookie => $cookie);
 
@@ -94,8 +95,8 @@ if ($pid) {
 else {
     # PR or ME
     # find the Personal Retreat program containing the date $arr_date
-    my $arr_date = date($form{arr_date});
-    my $d8 = $arr_date->as_d8();
+    my $sdate = date($form{sdate});
+    my $d8 = $sdate->as_d8();
     ($prog) = model($c, 'Program')->search({
                 name  => { -like => '%personal%retreat%' },
                 sdate => { '<=' => $d8 },
@@ -220,7 +221,7 @@ if ($form{aname} =~ m{\b$form{fname}\b}xmsi) {
 my ($gc_code, $gc_total, $gc_used, $gc_balance);
 $gc_code = $form{gift_card};
 if ($gc_code) {
-    my (@gc) = model($c, 'GiftCard')->search({
+    my (@gc) = model($c, 'GiftCards')->search({
                    code => $gc_code,
                });
     if (! @gc) {
@@ -435,9 +436,12 @@ if ($covid_vax) {
 #
 # How much for housing?
 #
-my $hc = $prog->housecost;
-my $h_cost = $hc->$house1;
+my ($hc, $h_cost);
+if (! ($ME || ! $prog->housing_not_needed)) {
+    $hc = $prog->housecost;
+    $h_cost = $hc->$house1;
     # assume they'll get their first choice
+}
 
 my $total;
 my $payment = "";
@@ -446,7 +450,7 @@ my $payment = "";
 # and append an explanation to $payment
 #
 if ($ME) {
-    $h_cost = get_string($c, 'me_cost');
+    $h_cost = get_string($c, 'mountain_experience_cost');
     $total += $h_cost;
     $payment .= "The Mountain Experience costs \$${h_cost}.<br>";
     if ($form{children_name_age}) {
@@ -758,10 +762,6 @@ $mailings_verbose .= "<p>We will "
      . ($form{share_mailings}? "": "<b>not</b> ")
      . "share your contact information with MMC affiliates.";
 
-if ($form{pid} == 4815) {
-    # 3HO
-    $mailings_verbose = '';
-}
 $stash{mailings_verbose} = $mailings_verbose;
 
 my $kayakalpa_verbose = "";
@@ -770,12 +770,14 @@ if ($form{kayakalpa}) {
 }
 $stash{kayakalpa_verbose} = $kayakalpa_verbose;
 
-$stash{house1} = $house1;
-$stash{house2} = $house2;
-$stash{house1_verbose} = $housing_name{$house1};
-$stash{house1_cost} = $hc->$house1;
-$stash{house2_verbose} = $housing_name{$house2};
-$stash{house2_cost} = $hc->$house2;
+if ($hc) {
+    $stash{house1} = $house1;
+    $stash{house2} = $house2;
+    $stash{house1_verbose} = $housing_name{$house1};
+    $stash{house1_cost} = $hc->$house1;
+    $stash{house2_verbose} = $housing_name{$house2};
+    $stash{house2_cost} = $hc->$house2;
+}
 
 if ($form{withwhom_first} =~ /\S/) {
     $stash{withwhom_verbose}
