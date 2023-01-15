@@ -50,6 +50,6 @@ my %stash = (
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    "req_mmc.tt2",
+    "req_pay.tt2",
     \%stash,
 );

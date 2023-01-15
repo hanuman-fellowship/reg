@@ -1,0 +1,69 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use CGI::Carp qw/
+    fatalsToBrowser
+/;
+use lib '../lib';
+use Util qw/
+    nsquish
+    db_init
+    model
+    add_activity
+    JON
+/;
+use Template;
+my $tt = Template->new(
+    INTERPOLATE => 1,
+);
+
+my $code = $q->param('secure_code');
+my $c = db_init();
+my ($person) = model($c, 'Person')->search({
+                   secure_code => $code,
+               });
+if (! $person) {
+    print "Sorry, there is no person for code $code.";    
+    exit;
+}
+
+my %P = $q->Vars();
+my @changes;
+for my $f (qw/
+    first last
+    addr1 addr2 city st_prov zip_post country
+    email
+    tel_cell tel_home
+/) {
+    my $v = $P{$f};
+    if ($v ne $person->$f) {
+        push @changes, $f => $v;
+    }
+}
+my $akey2 = nsquish($P{addr1}, $P{addr2}, $P{zip_post});
+if ($akey2 ne $person->akey) {
+    push @changes, 'akey', $akey2;
+}
+if (@changes) {
+    $person->update({
+        @changes,
+    });
+    add_activity($c, "<a href='/person/view/"
+                   . $person->id
+                   . "'>"
+                   . $person->name
+                   . "</a> updated their information.");
+}
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'update2.tt2',
+    {
+        p         => \%P,
+    },
+);

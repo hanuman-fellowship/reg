@@ -3,7 +3,7 @@ body {
     font-size: 16pt;
     font-family: Helvetica;
 }
-td, th, input {
+td, th, input, button {
     font-size: 16pt;
     font-family: Helvetica;
 }
@@ -36,5 +36,8 @@ textarea {
 }
 .teal {
     font-size: 16pt;
+    background: lightgreen;
+}
+button {
     background: lightgreen;
 }

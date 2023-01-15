@@ -1,0 +1,91 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use Template;
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use CGI::Carp qw/fatalsToBrowser/;
+use lib '../lib';
+use Util qw/
+    db_init
+    model
+    commify
+/;
+my $c = db_init();
+use Date::Simple qw/
+    date
+/;
+Date::Simple->default_format("%B %e '%q");
+
+my $type = $q->param('type');   # 'deposit' or 'invoice'
+if ($type !~ m{\A deposit|invoice \z}xms) {
+    print "Sorry, type must be deposit or invoice.";
+    exit;
+}
+my $code = $q->param('code');
+my ($rental) = model($c, 'Rental')->search({
+                   grid_code => $code,
+               });
+if (! $rental) {
+    print "Sorry, there is no rental for code $code.";    
+    exit;
+}
+
+# 'edate' => '20171121',
+# 'country' => 'USA',
+# 'first' => 'Kiran',
+# 'sdate' => '20171116',
+# 'name' => 'Mystic Girl',
+# 'last' => 'Dejaray',
+# 'phone' => '831-216-6596',
+# 'email' => 'mysticinthecity@gmail.com',
+# 'zip_post' => '95065',
+# 'amount' => '1000',
+# 'city' => 'Santa Cruz',
+# 'st_prov' => 'CA',
+# 'id' => '1449',
+# 'addr' => '1210 Jarvis Road '
+
+my $sd = date($rental->sdate);
+my $ed = date($rental->edate);
+my $dates = $sd->format("%b %e")
+          . ' to '
+          . $ed->format("%b %e")
+          . ', '
+          . $ed->format('%Y')
+          ;
+
+my $amount = $type eq 'deposit'? $rental->deposit
+            :                    $rental->balance
+            ;
+
+my $name = $rental->name_trimmed;
+my $person = $rental->contract_signer || $rental->coordinator();
+my %stash = (
+    first   => $person->first,
+    last    => $person->last,
+    email   => $person->email,
+    addr    => $person->addr1 . ' ' . $person->addr2,
+    city    => $person->city,
+    state   => $person->st_prov,
+    zip     => $person->zip_post,
+    country => $person->country || 'USA',
+    rental  => $rental,
+    phone   => $person->tel_cell || $person->tel_home,
+    id      => $rental->id,
+    amount  => $amount,
+    amount_disp => commify($amount),
+    name    => "$name - $dates",
+    code    => $code,
+    type    => $type,
+    payment_for => ucfirst($type) . " for Rental $name",
+);
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "rental_payment.tt2",
+    \%stash,
+);

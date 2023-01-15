@@ -1,0 +1,81 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<p>
+Greetings, $p.first,
+<p>
+This is the information we have for you.  Please verify and correct it.
+<form action="/cgi-bin/update2" method=POST>
+<input type=hidden name=secure_code value="$p.secure_code">
+
+<table cellpadding=5>
+<tr>
+<th>First</th>
+<td><input type=text name=first value="$p.first"></td>
+</tr>
+
+<tr>
+<th>Last</th>
+<td><input type=text name=last value="$p.last"></td>
+</tr>
+
+<tr>
+<th>Address</th>
+<td><input type=text name=addr1 value="$p.addr1" size=30></td>
+</tr>
+
+<tr>
+<th></th>
+<td><input type=text name=addr2 value="$p.addr2" size=30></td>
+</tr>
+
+<tr>
+<th>City</th>
+<td><input type=text name=city value="$p.city"></td>
+</tr>
+
+<tr>
+<th>State/Province</th>
+<td><input type=text name=st_prov value="$p.st_prov"></td>
+</tr>
+
+<tr>
+<th>Zip/Postal Code</th>
+<td><input type=text name=zip_post value="$p.zip_post"></td>
+</tr>
+
+<tr>
+<th>Country</th>
+<td><input type=text name=country value="$p.country"> Defaults to USA</td>
+</tr>
+
+<tr>
+<th>Email</th>
+<td><input type=text name=email value="$p.email" size=40></td>
+</tr>
+
+<tr>
+<th>Cell</th>
+<td><input type=text name=tel_cell value="$p.tel_cell"></td>
+</tr>
+
+<tr>
+<th>Home</th>
+<td><input type=text name=tel_home value="$p.tel_home"></td>
+</tr>
+
+</table>
+<p>
+<button type=submit>Submit the changes I made</button>
+</form>
+
+<form action='https://www.mountmadonna.org' method=post>
+<button type=submit>No changes are needed - It all looks Just Fine</button>
+</form>
+
+</body>
+</html>

@@ -3,17 +3,22 @@ List all the cgi-bin scripts and what they do:
 grid
 reg1
 reg2
-reg3
 req_pay
 regME
 regPR
 omp
 gift_card
 meal_request
+program_inquiry.pl
+rental_payment
+update
+
+reg3
 gift_card_status
-program_inquiry
-rental_deposit
 new_member
 mlist
-sutra_send  - broken - send from akash instead?
 sutra1
+sutra_send  - broken - send from akash instead? yes?
+    get the sutras data as well
+talks_search? and talks data
+    how to get this?

@@ -1,0 +1,32 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use CGI::Carp qw/fatalsToBrowser/;
+use lib '../lib';
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
+use Template;
+
+my $code = $q->param('code');
+my ($person) = model($c, 'Person')->search({
+                   secure_code => $code,
+               });
+if (! $person) {
+    print "Sorry, there is no person for code $code.";    
+    exit;
+}
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'update.tt2',
+    {
+        p => $person,
+    },
+);
