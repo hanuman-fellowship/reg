@@ -644,6 +644,9 @@ sub get_omp {
     ++$nomp;
 }
 
+# ??? JON - can remove when cgi-bin scripts
+# are styled effectively
+# and associated directories, etc
 sub get_rental_deposit {
     my ($get_dir, $transaction_id) = @_;
 
@@ -677,6 +680,9 @@ sub get_rental_deposit {
     );
 }
 
+# ??? JON - can remove when cgi-bin scripts
+# are styled effectively
+# and associated directories, etc
 # nearly a dup of get_rental_deposit
 # I try to be DRY and not 'repeat myself' but this code is old...
 # If you want to improve it please do.

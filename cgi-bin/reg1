@@ -23,14 +23,10 @@ my $today = today();
 use Util qw/
     db_init
     model
+    get_string
     JON
 /;
 my $c = db_init();
-use Global qw/
-    %string
-    init_string
-/;
-init_string($c);
 
 use Time::Simple qw/
     get_time 
@@ -84,7 +80,7 @@ if ($pid == 0) {
         # Mountain Experience dates are adequately restricted in regME
         # No need to check them here.
         #
-        my $me_max = $string{me_max};
+        my $me_max = get_string($c, 'me_max');
 
         #
         # are there any Configuration > Date Ranges for ME
@@ -167,7 +163,7 @@ if ($pid == 0) {
         $PR_ndays = $edate-$sdate;
         my $PRdr = DateRange->new($sdate, $edate-1);
 
-        my $max_nights = $string{pr_max_nights};
+        my $max_nights = get_string($c, 'pr_max_nights');
         if ($PR_ndays > $max_nights) {
             oops "Sorry, you can stay a maximum of $max_nights nights.", 1;
         }
@@ -226,7 +222,7 @@ if ($pid == 0) {
         # it's close.  maybe off by one somewhere. test it.
 
         # PR max
-        my $pr_max = $string{pr_max};
+        my $pr_max = get_string($c, 'pr_max');
 
         my @maximums = ($pr_max) x $PR_ndays;
 
@@ -500,7 +496,7 @@ my @fee_rows = sort {
                         htype      => $_,
                         checked1   => ($_ eq $cookie{house1}? 'checked': ''),
                         checked2   => ($_ eq $cookie{house2}? 'checked': ''),
-                        house_desc => $string{$_},
+                        house_desc => get_string($c, $_),
                         cost       => $hc->$_
                     }
                }

@@ -2,16 +2,89 @@
 use strict;
 use warnings;
 use CGI;
-use lib '.';
 my $q = CGI->new();
 print $q->header();
-
+use lib '.', '../lib';
+use Global qw/
+    %string
+/;
 use Stripe qw/
     metadata
 /;
-
 my %P = metadata($q);
-print "Thanks for your money!<p>\n";
-print "rental_id: $P{rental_id}<br>\n";
-print "amount: $P{amount}<br>\n";
-print "type: $P{type}\n";
+use Util qw/
+    db_init
+    model
+    email_letter
+    get_string
+/;
+my $c = db_init();
+#
+# initialize just the strings we will need
+# here - and in compute_balance()
+#
+for my $f (qw/
+    min_per_day
+    rental_start_hour
+    rental_end_hour
+    extra_hours_charge
+    url_prefix
+    rental_coord_email
+/) {
+    $string{$f} = get_string($c, $f);
+}
+use Date::Simple qw/
+    date
+    today
+/;
+use Time::Simple qw/
+    get_time
+/;
+my $now = get_time();
+my $now_t24 = $now->t24;
+my $today = today();
+my $today_d8 = $today->as_d8();
+# for what?  a record of the transaction?
+my $year_mon_dir = $today->format("%Y-%m");
+
+my $rental = model($c, 'Rental')->find($P{rental_id});
+my $rental_name = $rental->name_trimmed;
+
+model($c, 'RentalPayment')->create({
+    amount    => $P{amount},
+    rental_id => $P{rental_id},
+    type      => 'O',
+    user_id     => 0,                 # what other user id?
+    the_date    => $today_d8,
+    time        => $now_t24,
+});
+$rental->compute_balance();
+
+my $person = $rental->coordinator || $rental->contract_signer;
+
+#
+# notify the arrangements people in the office
+#
+my $rlink = "$string{url_prefix}/rental/view/$P{rental_id}/3";
+email_letter($c,
+    to      => $string{rental_coord_email},
+    from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                                # what else?
+    subject => "\u$P{type} payment received for $rental_name",
+    html    => $person->name . " paid \$$P{amount}"
+             . " for <a href='$rlink'>$rental_name</a>",
+    activity_msg => "\u$P{type} payment of \$$P{amount}"
+                  . " for <a href='$rlink'>$rental_name</a>",
+);
+
+use Template;
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    'rental_payment_message.tt2',
+    {
+        first => $person->first,
+        type  => $P{type},
+        rental_name => $rental_name,
+    }
+);

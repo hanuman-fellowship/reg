@@ -1,21 +1,24 @@
 List all the cgi-bin scripts and what they do:
 
+- no payment
 *grid
-reg1
+*update
+*reg1
+*regME
+*regPR
+*program_inquiry.pl
+
+- payments
 reg2
 req_pay
-regME
-regPR
 omp
 gift_card
 meal_request
-*program_inquiry.pl
 rental_payment
-*update
-
-reg3
-gift_card_status
 new_member
+
+reg3 - no payment needed - cost is covered
+gift_card_status
 mlist
 sutra1
 sutra_send  - broken - send from akash instead? yes?

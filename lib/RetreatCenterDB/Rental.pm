@@ -5,7 +5,9 @@ use base qw/DBIx::Class/;
 
 use lib '..';
 
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
 use Util qw/
     tt_today
     places
