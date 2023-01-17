@@ -15,17 +15,6 @@
 <tr><th>Program</th><td> $name</td></tr>
 </table>
 <p>
-<form>
-<!-- several other fields for the payment ...
-payment_for
-type
-id
-amount
-code
-payment_for
-...
--->
-PAY SECURELY ...
-</form>
+$payment
 </body>
 </html>

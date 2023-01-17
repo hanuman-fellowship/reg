@@ -7,17 +7,23 @@ use CGI;
 my $q = CGI->new();
 print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
-use lib '../lib';
+use lib '.', '../lib';
 use Util qw/
     db_init
     model
     commify
+    penny
+    JON
 /;
 my $c = db_init();
 use Date::Simple qw/
     date
 /;
 Date::Simple->default_format("%B %e '%q");
+
+use Stripe qw/
+    stripe_payment
+/;
 
 my $type = $q->param('type');   # 'deposit' or 'invoice'
 if ($type !~ m{\A deposit|invoice \z}xms) {
@@ -33,21 +39,6 @@ if (! $rental) {
     exit;
 }
 
-# 'edate' => '20171121',
-# 'country' => 'USA',
-# 'first' => 'Kiran',
-# 'sdate' => '20171116',
-# 'name' => 'Mystic Girl',
-# 'last' => 'Dejaray',
-# 'phone' => '831-216-6596',
-# 'email' => 'mysticinthecity@gmail.com',
-# 'zip_post' => '95065',
-# 'amount' => '1000',
-# 'city' => 'Santa Cruz',
-# 'st_prov' => 'CA',
-# 'id' => '1449',
-# 'addr' => '1210 Jarvis Road '
-
 my $sd = date($rental->sdate);
 my $ed = date($rental->edate);
 my $dates = $sd->format("%b %e")
@@ -58,15 +49,19 @@ my $dates = $sd->format("%b %e")
           ;
 
 my $amount = $type eq 'deposit'? $rental->deposit
-            :                    $rental->balance
+            :                    penny($rental->balance)
             ;
 
 my $name = $rental->name_trimmed;
 my $person = $rental->contract_signer || $rental->coordinator();
+my $rental_id = $rental->id;
+my $email = $person->email;
+# may not really need ANY of this demographic data!
+# in the stash ... nice to get it confirmed but...
 my %stash = (
     first   => $person->first,
     last    => $person->last,
-    email   => $person->email,
+    email   => $email,
     addr    => $person->addr1 . ' ' . $person->addr2,
     city    => $person->city,
     state   => $person->st_prov,
@@ -74,14 +69,24 @@ my %stash = (
     country => $person->country || 'USA',
     rental  => $rental,
     phone   => $person->tel_cell || $person->tel_home,
-    id      => $rental->id,
+    id      => $rental_id,
     amount  => $amount,
     amount_disp => commify($amount),
     name    => "$name - $dates",
-    code    => $code,
-    type    => $type,
-    payment_for => ucfirst($type) . " for Rental $name",
 );
+
+$stash{payment}
+    = stripe_payment(
+          name        => "$name - $dates",         
+          description => "\u$type",
+          amount      => $amount,
+          metadata    => {
+            rental_id => $rental_id, 
+            type      => $type,
+          },
+          email       => $email,
+          script      => 'rental_payment',
+      );
 
 Template->new(
     INTERPOLATE => 1,

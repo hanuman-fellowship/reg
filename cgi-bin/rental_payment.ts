@@ -1,6 +1,6 @@
 Rental Payments
 
-can test by entering the URL directly
+for now can test by entering the URL directly
 
 parameters:
 code => from Web Grid link

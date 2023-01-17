@@ -1,0 +1,17 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use CGI;
+use lib '.';
+my $q = CGI->new();
+print $q->header();
+
+use Stripe qw/
+    metadata
+/;
+
+my %P = metadata($q);
+print "Thanks for your money!<p>\n";
+print "rental_id: $P{rental_id}<br>\n";
+print "amount: $P{amount}<br>\n";
+print "type: $P{type}\n";

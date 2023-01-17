@@ -1,6 +1,6 @@
 List all the cgi-bin scripts and what they do:
 
-grid
+*grid
 reg1
 reg2
 req_pay
@@ -9,9 +9,9 @@ regPR
 omp
 gift_card
 meal_request
-program_inquiry.pl
+*program_inquiry.pl
 rental_payment
-update
+*update
 
 reg3
 gift_card_status
@@ -22,3 +22,11 @@ sutra_send  - broken - send from akash instead? yes?
     get the sutras data as well
 talks_search? and talks data
     how to get this?
+
+Can we can switch over to these akash cgi-bin scripts BEFORE
+    the new web site is ready?
+    One by one.
+    And style them better later.
+
+Does grid need to be styled better?
+    Yes.  No MMC logo at all...
