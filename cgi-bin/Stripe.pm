@@ -23,7 +23,6 @@ my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
 # amount
 # metadata (hashref)
 # email
-# script
 #
 sub stripe_payment {
     my (%P) = @_;
@@ -31,7 +30,7 @@ sub stripe_payment {
     # first check the parameters
     for my $k (qw/
         name description amount
-        metadata email script
+        metadata email
     /) {
         if (! exists $P{$k}) {
             die "missing $k parameter to stripe_payment\n";
@@ -41,13 +40,21 @@ sub stripe_payment {
         die "metadata should be a hash ref\n";
     }
     my $amount100 = $P{amount}*100;    # dollars to cents
+
     # insert the amount value into the metadata
     my $metadata .= qq!-d "metadata[amount]"="$P{amount}" \\\n!;
     for my $k (keys %{$P{metadata}}) {
         $metadata .= qq!-d "metadata[$k]"="$P{metadata}->{$k}" \\\n!;
     }
+
+    # the current script name is in $0
+    # use it to form the success_url
+    my $script = $0;
+    $script =~ s{\A .*/}{}xms;  # strip any leading directories
     # ??? akash or akash2 ???
     my $cgi = 'https://akash2.mountmadonna.org/cgi-bin';
+    my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
+
     my $cmd = <<"EOH";
 curl https://api.stripe.com/v1/checkout/sessions \\
   -u $stripe_key \\
@@ -57,7 +64,7 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d "line_items[0][currency]"="usd" \\
   -d "line_items[0][quantity]"="1" \\
   ${metadata}-d customer_email="$P{email}" \\
-  -d success_url="$cgi/$P{script}_hook?session_id={CHECKOUT_SESSION_ID}" \\
+  -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
     my $json = `$cmd`;

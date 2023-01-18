@@ -85,7 +85,6 @@ $stash{payment}
             type      => $type,
           },
           email       => $email,
-          script      => 'rental_payment',
       );
 
 Template->new(
