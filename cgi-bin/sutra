@@ -1,0 +1,182 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use CGI;
+my $q = CGI->new();
+print $q->header;
+use CGI::Carp qw/
+    fatalsToBrowser
+/;
+use Template;
+my $tt = Template->new(
+    INTERPOLATE => 1,
+);
+use lib '../lib';
+use Slurp qw/
+    slurp
+/;
+use Util qw/
+    trim
+/;
+
+my %P = $q->Vars();
+if (! %P) {
+    $tt->process(
+        'sutra.tt2',
+        {},
+    );
+    exit;
+}
+
+print <<"EOH";
+<html>
+<head>
+<style>
+body {
+    margin: .5in;
+    font-size: 17pt;
+}
+.sutra {
+    margin-left: 5mm;
+    font-size: 17pt;
+}
+.hr {
+    margin-top: 4mm;
+    margin-bottom: 4mm;
+}
+</style>
+</head>
+<body>
+EOH
+
+my %addrs;
+
+sub show {
+    my ($t) = @_;
+    if (substr($t, 0, 1) eq '^') {
+        $t =~ s{^\^}{<pre>};
+        $t .= "</pre>";
+    }
+    $t =~ s{\n}{<br>\n}g;
+    return <<"EOH";
+<div class=sutra>
+$t
+</div>
+EOH
+}
+
+sub get_addrs {
+    open my $addrs, "<", "addresses" or die "no addresses";
+    while (my $line = <$addrs>) {
+        chomp $line;
+        $addrs{$line} = 1;
+    }
+    close $addrs;
+}
+
+sub put_addrs {
+    open my $addrs, ">", "addresses" or die "no put";
+    for my $a (sort keys %addrs) {
+        print {$addrs} "$a\n";
+    }
+    close $addrs;
+}
+
+sub valid_email {
+    my ($em) = @_;
+    return $em =~ m{\@};
+}
+
+my $email = trim($P{email});
+if (exists $P{search}) {
+    my $pattern = trim($P{pattern});
+    if (! $pattern) {
+        print "No pattern.";
+        exit;
+    }
+    my $substring = $P{substring};
+    my $pat = $substring? qr/$pattern/i
+              :           qr/\b$pattern\b/i
+              ;
+    my $n = 0;
+    for my $s (<sutras/[0-9]*>) {
+        my $t = slurp($s);
+        if ($t =~ $pat) {
+            ++$n;
+            $t =~ s{($pat)}{<span style="color: red">$1</span>}g;
+            print show($t);
+            print "<hr class=hr width=370 align=left>\n";
+        }
+    }
+    if ($n == 0) {
+        print "No sutra matched '$pattern'.";
+    }
+}
+elsif (exists $P{sut_sub}) {
+    my $email = trim($P{email});
+    if (! $email) {
+        print "Missing email address.";
+        exit;
+    }
+    if (! valid_email($email)) {
+        print "Invalid email address: $email";
+        exit;
+    }
+    get_addrs();
+    if (exists $addrs{$email}) {
+        print "$email is <i>already</i> receiving the sutras."
+    }
+    else {
+        $addrs{$email} = 1;
+        put_addrs();
+        print "$email will now receive the sutras.";
+    }
+}
+elsif ($email && exists $P{sut_unsub}) {
+    my $email = trim($P{email});
+    if (! $email) {
+        print "Missing email address.";
+        exit;
+    }
+    if (! valid_email($email)) {
+        print "Invalid email address: $email";
+        exit;
+    }
+    get_addrs();
+    if (exists $addrs{$email}) {
+        delete $addrs{$email};
+        put_addrs();
+        print "$email will no longer receive the sutras.";
+    }
+    else {
+        print "$email is <i>not</i> receiving the sutras."
+    }
+}
+elsif (exists $P{show_all}) {
+    for my $s (<sutras/[0-9]*>) {
+        my $x = slurp($s);
+        print show($x);
+        print "<hr width=370 align=left>\n";
+    }
+}
+else {
+    my @sutras = <sutras/[0-9]*>;
+    my @pics = <../root/static/images/sutra_pics/*>;
+    my $pic = $pics[ rand @pics ];
+    $pic =~ s{.*/}{}xms;
+    my $x = slurp($sutras[ rand @sutras ]);
+    my $t = show($x);
+    print <<"EOH";
+<table>
+<tr>
+<td>
+<img src='/static/images/sutra_pics/$pic' border=3>
+</td>
+<td>
+$t
+</td>
+</tr>
+</table>
+EOH
+}

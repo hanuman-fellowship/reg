@@ -1,0 +1,114 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+open STDERR, ">>", "/home/ubuntu/www/cgi-bin/sutra_send_err";
+
+use Slurp 'slurp';
+use Email::Sender::Simple qw(sendmail);
+use Email::Simple;
+use Email::Simple::Creator;
+
+my $dir = "/home/ubuntu/www/sutra";
+
+my @remaining;
+if (open my $in, "$dir/sutras/remaining") {
+    my $s = <$in>;
+    @remaining = $s =~ m{(\d+)}g;
+    close $in;
+}
+if (! @remaining) {
+    @remaining = map { s{.*/}{}; $_ }
+                    <$dir/sutras/[0-9]*>;
+}
+
+my $the_one = splice @remaining, rand @remaining, 1;
+$the_one = "$dir/sutras/$the_one";
+
+open my $out, ">", "$dir/sutras/remaining" or die "no write remaining";
+print {$out} "@remaining\n";
+close $out;
+
+open my $in, $the_one or die "no sutra?";
+my $sutra;
+{
+    local $/;
+    $sutra = <$in>;
+    close $in;
+}
+#
+# html version for sending
+#
+$sutra =~ s{\n}{<br>\n}g;
+if (substr($sutra, 0, 1) eq '^') {
+    $sutra =~ s{^\^}{<pre>};
+    $sutra .= "</pre>";
+}
+#
+# for the hanuman fellowship site
+#
+open my $sent, ">", "$dir/sent" or die "no sent";
+print {$sent} $sutra;
+close $sent;
+
+my $html = <<"EOH";
+<html>
+<head>
+<style type="text/css">
+.sutra {
+    margin-left: 8mm;
+    margin-top: 8mm;
+    font-size: 16pt;
+    font-family: Times;
+}
+.footnote {
+    margin-top: 1in;
+    font-size: 13pt;
+    font-family: Times;
+}
+</style>
+</head>
+<body>
+<div class=sutra>
+$sutra
+</div>
+<div class=footnote>
+To unsubscribe and for other sutra related activities click here:<br>
+<a href=http://www.mountmadonna.org/sutra>www.mountmadonna.org/sutra</a>.
+</div>
+</body>
+</html>
+EOH
+
+open my $addrs, "<", "$dir/addresses" or die "no addresses";
+my @addrs = <$addrs>;
+close $addrs;
+chomp @addrs;
+
+my $n = 0;
+ADDR:
+for my $em (@addrs) {
+    ++$n;
+    if ($n % 25 == 0) {
+       sleep 60;
+       # otherwise we get an authentication error?
+    }
+    my $email = Email::Simple->create(
+        header => [
+            To      => $em,
+            From    => 'Daily Sutra <programs@mountmadonna.org>',
+            Subject => 'Daily Sutra From Babaji',
+            'Content-Type' => 'text/html',
+        ],
+        body => $html,
+    );
+    eval {
+    sendmail($email);
+    };
+    if ($@) {
+        print "failed to send to $em: $@\n";
+    }
+    else {
+        print "sent to $em ", scalar(localtime), "\n";
+    }
+}
