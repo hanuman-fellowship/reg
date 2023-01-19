@@ -118,6 +118,8 @@ $country</dd>
     $request_verbose
 [% END %]
 
+<!--
+
 [% IF ! total %]
 <form name="no_authorize"
       action="/cgi-bin/reg3"
@@ -136,6 +138,8 @@ $country</dd>
     onsubmit="pageTracker._linkByPost(this);"
     >
 [% END %]
+
+-->
 
 [% IF waiver_needed %]
     <h3>Yoga Instruction and Liability Waiver and Release</h3>
@@ -183,12 +187,11 @@ $country</dd>
     </span>
 [% END %]
 
-<h3>Payment</h3>
+<h2>Payment</h2>
 $payment
-[% IF total %]
-    <p>
-    SUBMIT...
-[% END %]
+
+<p>
+$stripe_payment
 </form>
 </body>
 </html>

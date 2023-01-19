@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+# Look for 'x_
 use strict;
 use warnings;
 use CGI;
@@ -24,6 +25,10 @@ use Util qw/
     JON
 /;
 my $c = db_init();
+
+use Stripe qw/
+    stripe_payment
+/;
 
 #
 # gather all the form elements into a hash
@@ -866,6 +871,18 @@ if ($form{lname} =~ m{\A zz}xmsi) {
 $stash{payment} = $payment;
 $stash{waiver_needed} = $prog->waiver_needed;
 $stash{housing_not_needed} = $prog->housing_not_needed;
+
+$stash{stripe_payment}
+    = stripe_payment(
+          name        => $prog->name_trimmed,         
+          description => "Registration for $form{fname} $form{lname}",
+          amount      => $total,
+          metadata    => {
+            hello => 4,
+            # many more
+          },
+          email       => $form{email1},
+      );
 
 Template->new(
     INTERPOLATE => 1,
