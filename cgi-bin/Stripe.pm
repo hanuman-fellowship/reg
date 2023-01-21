@@ -10,6 +10,9 @@ our @EXPORT_OK = qw/
 use JSON qw/
     decode_json
 /;
+use Util qw/
+    JON
+/;
 
 my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
 
@@ -67,13 +70,20 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
+JON "cmd = $cmd";
     my $json = `$cmd`;
+JON "json = $json";
     my $href = decode_json($json);
-    return <<"EOH";
-<form action="$href->{url}">
-<button type=submit>Pay Securely with your Credit Card</button>
-</form>
+    if ($href->{url}) {
+        return <<"EOH";
+    <form action="$href->{url}">
+    <button type=submit>Pay Securely with your Credit Card</button>
+    </form>
 EOH
+    }
+    else {
+        return $href->{error}{message};
+    }
 }
 
 #
@@ -84,10 +94,18 @@ EOH
 sub metadata {
     my ($q) = @_;
     my $session_id = $q->param('session_id');
+JON "session id = $session_id";
+    if (!$session_id) {
+        return error => 'no session id';
+    }
     my $cmd = "curl https://api.stripe.com/v1/checkout/sessions/$session_id"
             . " -u $stripe_key";
+JON "cmd = $cmd";
     my $json = `$cmd`;
+JON "json = $json";
     my $href = decode_json($json);
+use Data::Dumper;
+JON Dumper($href);
     return %{$href->{metadata}};
 }
 

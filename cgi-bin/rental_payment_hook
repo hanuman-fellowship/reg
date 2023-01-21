@@ -5,9 +5,6 @@ use CGI;
 my $q = CGI->new();
 print $q->header();
 use lib '.', '../lib';
-use Global qw/
-    %string
-/;
 use Stripe qw/
     metadata
 /;
@@ -17,6 +14,7 @@ use Util qw/
     model
     email_letter
     get_string
+    commify
 /;
 my $c = db_init();
 #
@@ -66,14 +64,15 @@ my $person = $rental->coordinator || $rental->contract_signer;
 # notify the arrangements people in the office
 #
 my $rlink = "$string{url_prefix}/rental/view/$P{rental_id}/3";
+my $amount = commify($P{amount});
 email_letter($c,
     to      => $string{rental_coord_email},
     from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
                                 # what else?
     subject => "\u$P{type} payment received for $rental_name",
-    html    => $person->name . " paid \$$P{amount}"
+    html    => $person->name . " paid \$$amount"
              . " for <a href='$rlink'>$rental_name</a>",
-    activity_msg => "\u$P{type} payment of \$$P{amount}"
+    activity_msg => "\u$P{type} payment of \$$amount"
                   . " for <a href='$rlink'>$rental_name</a>",
 );
 

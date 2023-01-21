@@ -1,5 +1,4 @@
 #!/usr/bin/env perl
-# Look for 'x_
 use strict;
 use warnings;
 use CGI;
@@ -99,7 +98,7 @@ if ($pid) {
 }
 else {
     # PR or ME
-    # find the Personal Retreat program containing the date $arr_date
+    # find the Personal Retreat program containing the date $sdate
     my $sdate = date($form{sdate});
     my $d8 = $sdate->as_d8();
     ($prog) = model($c, 'Program')->search({
@@ -214,10 +213,10 @@ if (! $err && $prog->donation) {
     }
 }
 
-if ($form{aname} =~ m{\b$form{fname}\b}xmsi) {
+if ($form{sanskrit} =~ m{\b$form{first}\b}xmsi) {
     # not really an alternate name (or Sanskrit)
     # take it away so that it doesn't mess up the badges
-    $form{aname} = '';
+    $form{sanskrit} = '';
 }
 
 #
@@ -650,8 +649,8 @@ $stash{due} = $due;
 $stash{total} = $total;
 
 for my $name (qw/
-    fname lname aname street1 street2 city state zip
-    country cell email1 car_license carpool hascar from_where
+    first last sanskrit addr1 addr2 city st_prov zip_post
+    country tel_cell email1 car_license carpool hascar from_where
     e_mailings snail_mailings
     share_mailings kayakalpa
     house1 house2 request withwhom_first withwhom_last
@@ -666,13 +665,9 @@ $stash{slide_tuition} = $slide_tuition;
 
 # ?? No leader images...
 
-$stash{x_firstname} = $form{fname};
-$stash{x_lastname} = $form{lname};
 if ($covid_vax) {
     $stash{covid_vax} = 'covid_vax';
-    $stash{x_covid_vax} = $name;    # $name okay??
 }
-$stash{x_address} = "$form{street1} $form{street2}";
 
 #
 # create a readable description for the user
@@ -684,12 +679,12 @@ my %gender_desc = (
     trans      => 'Transgender',
     no_resp    => 'Prefer not to respond',
 );
-$stash{gender} = $gender_desc{$form{gender}};
+$stash{sex} = $gender_desc{$form{sex}};
 
 $stash{pronouns} = $form{pronouns};
 $stash{diet}     = $form{diet};
 
-$stash{phone} = $form{cell};    # used to have home work cell... 
+$stash{tel_cell} = $form{tel_cell};    # used to have home work cell... 
 if ($form{ceu_license}) {
     $stash{ceu} = <<"EOH";
 <tr>
@@ -801,14 +796,12 @@ if ($form{request}) {
     $stash{request_verbose} = "";
 }
 #
-# in addition to the street1, street2 above
+# in addition to the addr1, addr2 above
 # which are for the hidden fields we also have
-# street_addr which is a special case.
-# for authorize.net??
 #
-my $street_addr = $form{street1};
-if ($form{street2} =~ /\S/) {
-    $street_addr .= "<br>$form{street2}";
+my $street_addr = $form{addr1};
+if ($form{addr2} =~ /\S/) {
+    $street_addr .= "<br>$form{addr2}";
 }
 $stash{street_addr} = $street_addr;
 
@@ -872,17 +865,74 @@ $stash{payment} = $payment;
 $stash{waiver_needed} = $prog->waiver_needed;
 $stash{housing_not_needed} = $prog->housing_not_needed;
 
-$stash{stripe_payment}
-    = stripe_payment(
-          name        => $prog->name_trimmed,         
-          description => "Registration for $form{fname} $form{lname}",
-          amount      => $total,
-          metadata    => {
-            hello => 4,
-            # many more
-          },
-          email       => $form{email1},
-      );
+my %metadata;
+$form{email} = $form{email1};
+$form{from_where} = $form{advertiserName};
+$form{housing_not_needed} = $prog->housing_not_needed;
+# max of 50 here!  we have 43.
+for my $f (qw/
+    prog_choice
+    fname
+    lname
+    sanskrit
+    sex
+    diet
+    pronouns
+    addr1
+    addr2
+    city
+
+    st_prov
+    zip_post
+    tel_cell
+    email
+    pid
+    mountain_experience
+    sdate
+    e_mailings
+    share_mailings
+    snail_mailings
+
+    request
+    covid_vax
+    house1
+    house2
+    cabin_room
+    green_amount
+    howHeard
+    from_where
+    gc_code
+    gc_used
+
+    gc_balance
+    activities
+    meals
+    mountain_experience
+    children_name_age
+    withwhom_first
+    withwhom_last
+    carpool
+    has_car
+    amount
+
+    discount_amt
+    ceu_license
+    housing_not_needed
+/) {
+    $metadata{$f} = $form{$f};
+}
+
+my $stripe = stripe_payment(
+    name        => $prog->name_trimmed,         
+    description => "Registration for $form{fname} $form{lname}",
+    amount      => $total,
+    metadata    => \%metadata,
+    email       => $form{email1},
+);
+if ($stripe !~ /Pay Securely/) {
+    oops($stripe, 1);
+}
+$stash{stripe_payment} = $stripe;
 
 Template->new(
     INTERPOLATE => 1,

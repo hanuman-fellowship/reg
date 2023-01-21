@@ -8,27 +8,27 @@ var fields = [
     { id: 'radio', name: 'progchoice',
                    err: 'How many days to attend?' },
 [% END %]
-    { id: 'fname', regexp: '\\S',
+    { id: 'first', regexp: '\\S',
                    err: 'Missing First Name' },
-    { id: 'lname', regexp: '\\S',
+    { id: 'last', regexp: '\\S',
                    err: 'Missing Last Name' },
-    { id: 'radio', name: 'gender',
+    { id: 'radio', name: 'sex',
                    err: 'Missing Gender Identity' },
     { id: 'pronouns',  regexp: '\\S',
                    err: 'Missing Pronouns' },
-    { id: 'street1',  regexp: '\\S',
+    { id: 'addr1',  regexp: '\\S',
                       err: 'Missing Street Address' },
     { id: 'city',  regexp: '\\S',
                    err: 'Missing City' },
-    { id: 'state',  regexp: '\\S',
+    { id: 'st_prov',  regexp: '\\S',
                     err: 'Missing State' },
-    { id: 'zip',  regexp: '\\S',
+    { id: 'zip_post',  regexp: '\\S',
                   err: 'Missing Zip Code' },
-    { id: 'cell',  regexp: '^[0-9 -.()]+\$',
+    { id: 'tel_cell',  regexp: '^[0-9 -.()]+\$',
                    err: 'Invalid Phone number' },
-    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' },
-    { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+    { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' }
 [% IF ! housing_not_needed %]
 ,
@@ -56,7 +56,7 @@ function check_form() {
 <body>
 <form autocomplete="off"
       method=POST
-      action="/cgi-bin/reg2?id=$pid"
+      action="/cgi-bin/reg2"
       onSubmit="return check_form();"
       enctype="multipart/form-data"
 >
@@ -193,18 +193,18 @@ function check_form() {
 
 <tr>
 <th><span class=required>*</span> First Name:</th>
-<td><input type="text" size=25 name="fname" id="fname" value="$fname"></td>
+<td><input type="text" size=25 name="first" id="first" value="$first"></td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Last Name:</th>
-<td><input type="text" size=25 name="lname" id="lname" value="$lname"></td>
+<td><input type="text" size=25 name="last" id="last" value="$last"></td>
 </tr>
 
 <tr>
 <th>Alternate Name:</th>
-<td><input type="text" size=25 name="aname" id="aname"
-           value="$aname"
+<td><input type="text" size=25 name="sanskrit" id="sanskrit"
+           value="$sanskrit"
            placeholder="For name tag"/>
            <span class=help>Defaults to First</span>
 </td>
@@ -212,18 +212,18 @@ function check_form() {
 
 <tr>
 <th valign=top>
-<span id=gender1></span>
+<span id=sex1></span>
 <span class=required>*</span> Gender Identity:</th> 
 <td>
-<label><input type=radio name="gender" $female value="female"> Woman</label><br> 
+<label><input type=radio name="sex" $female value="female"> Woman</label><br> 
 
-<label><input type=radio name="gender" $male value="male"> Man</input></label><br>
+<label><input type=radio name="sex" $male value="male"> Man</input></label><br>
 
-<label><input type=radio name="gender" $trans value="trans"> Transgender</label></label><br>
+<label><input type=radio name="sex" $trans value="trans"> Transgender</label></label><br>
 
-<label><input type=radio name="gender" $non_binary value="non_binary"> Non-binary/non-conforming</label><br>
+<label><input type=radio name="sex" $non_binary value="non_binary"> Non-binary/non-conforming</label><br>
 
-<label><input type=radio name="gender" $no_resp value="no_resp"> Prefer not to respond</label><br>
+<label><input type=radio name="sex" $no_resp value="no_resp"> Prefer not to respond</label><br>
 <a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
 </td>
 </tr>
@@ -254,15 +254,15 @@ function pronouns() {
 <tr>
 <th><span class=required>*</span> Street 1:</th>
 <td><input type="text"
-       size=25 name="street1"
-       id="street1"
-       value="$street1">
+       size=25 name="addr1"
+       id="addr1"
+       value="$addr1">
 </td>
 </tr>
 
 <tr>
 <th>Street 2:</th>
-<td><input type="text" size=25 name="street2" id="street2" value="$street2"></td>
+<td><input type="text" size=25 name="addr2" id="addr2" value="$addr2"></td>
 </tr>
 
 <tr>
@@ -272,12 +272,12 @@ function pronouns() {
 
 <tr>
 <th><span class=required>*</span> State/Province:</th>
-<td><input type="text" size=25 name="state" id="state" value="$state"/></td>
+<td><input type="text" size=25 name="st_prov" id="st_prov" value="$st_prov"/></td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Zip/Postal Code:</th>
-<td><input type="text" size=25 name="zip" id="zip" value="$zip"/></td>
+<td><input type="text" size=25 name="zip_post" id="zip_post" value="$zip_post"/></td>
 </tr>
 
 <tr>
@@ -598,7 +598,7 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
 </body>
 </html>
 <script>
-var focus_el = 'fname';
+var focus_el = 'first';
 [% IF basicfull %]
     focus_el = 'progchoice1';
 [% END %]

@@ -430,7 +430,7 @@ my %cookie = $q->cookie(
     -domain => 'akash2.mountmadonna.org',       # ??
     -name   => 'user_data',
 );
-$stash{$cookie{gender}} = 'checked';
+$stash{$cookie{sex}} = 'checked';
 
 if ($cookie{cabin_room} eq 'cabin') {
     $stash{cabin} = "checked";
@@ -460,9 +460,9 @@ $stash{share_mailings} = $cookie{share_mailings}? 'checked': '';
 $stash{withwhom_first} = $cookie{withwhom_first} || "";
 $stash{withwhom_last}  = $cookie{withwhom_last}  || "";
 for my $w (qw/
-    fname lname aname street1 street2
-    city state zip country
-    cell
+    first last sanskrit addr1 addr2
+    city state zip_post country
+    tel_cell
     email1
     car_license
     pronouns

@@ -10,6 +10,8 @@ Test Suite for Reg1 and Reg2
 
     mountain_experience_cost
 
+    No items in additional requests ... so don't say ...
+
 - PR
     max total nights
     'No PR' event in middle of range that

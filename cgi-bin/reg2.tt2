@@ -21,12 +21,6 @@
     </dl>
 [% ELSE %]
 You are registering for:
-[% IF two_pics %]
-    <img src='$image1'>
-    <img src='$image2'>
-[% ELSIF one_pic %]
-    <img src='$image1'>
-[% END %]
     <dl>
     <dt>Program:</dt>
     <dd>$title</dd>
@@ -48,7 +42,7 @@ You are registering for:
 [% END %]
 
 <dt>Gender Identity:</dt>
-<dd>$gender</dd>
+<dd>$sex</dd>
 
 <dt>Preferred pronouns:</dt>
 <dd>$pronouns</dd>
@@ -59,7 +53,7 @@ $city, $state $zip<br>
 $country</dd>
 
 <dt>Phone:</dt>
-<dd>$phone</dd>
+<dd>$tel_cell</dd>
 
 <dt>Email:</dt>
 <dd>$email1</dd>

@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<p>
+Thank you, ${first}.
+<p>
+Your payment has been received.
+<p>
+[% IF x_title == 'Personal Retreat' %]
+    We have received your online registration for a Personal Retreat
+    from $sdate to ${edate}.
+[% ELSE %]
+    We have received your online registration for the
+    $title program[% IF leader_names %] with $leader_names[% END %].
+[% END %]
+[% IF x_amount %]
+    <p>
+    Your credit card has been charged \$${amount}.
+    The id for this transaction is ??${trans_id}.
+[% END %]
+<p>
+The above information has been sent to you via an email to ${email}.<br>
+You will soon receive <i>another</i> letter from programs@mountmadonna.org<br>
+with confirmation of your 
+[% IF housing_not_needed %]
+    registration.
+[% ELSE %]
+    housing and all the details you will need to know<br>
+    prior to coming to Mount Madonna Center.
+[% END %]
+<p>
+If you do not receive this other letter within 3 days check your
+spam/junk email folder.
+<br>
+If it is not there please call us at 408-846-4090.
+[% IF ! housing_not_needed %]
+    <p>
+    Do <b>not</b> make travel plans until you have received
+    your housing confirmation letter.
+[% END %]
+<p>
+[% IF withwhom_last || withwhom_first %]
+    <p>
+    You requested to be housed with $withwhom_first ${withwhom_last}.
+    They <b>MUST REGISTER SEPARATELY</b>.<br>
+    [% IF pid == 0 %]
+        <a href="https://www.mountmadonna.org/cgi-bin/regPR">Click here to go back to the registration page</a> and register them.</p>
+    [% ELSE %]
+        <a href="https://www.mountmadonna.org/cgi-bin/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
+    [% END %]
+[% END %]
+</body>
+</html>

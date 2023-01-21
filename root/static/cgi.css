@@ -3,7 +3,7 @@ body {
     font-size: 16pt;
     font-family: Helvetica;
 }
-td, th, input, button {
+td, th, input, button, textarea {
     font-size: 16pt;
     font-family: Helvetica;
 }
@@ -29,10 +29,6 @@ li {
 }
 .space {
     line-height: 8mm;
-}
-textarea {
-    font-size: 16pt;
-    font-family: Times;
 }
 .teal {
     font-size: 16pt;
