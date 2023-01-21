@@ -922,17 +922,13 @@ for my $f (qw/
     $metadata{$f} = $form{$f};
 }
 
-my $stripe = stripe_payment(
+$stash{stripe_payment} = stripe_payment(
     name        => $prog->name_trimmed,         
     description => "Registration for $form{fname} $form{lname}",
     amount      => $total,
     metadata    => \%metadata,
     email       => $form{email1},
 );
-if ($stripe !~ /Pay Securely/) {
-    oops($stripe, 1);
-}
-$stash{stripe_payment} = $stripe;
 
 Template->new(
     INTERPOLATE => 1,

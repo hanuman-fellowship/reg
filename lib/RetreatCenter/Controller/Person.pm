@@ -1360,9 +1360,9 @@ sub _send_requests {
     my $tbl_py_desc = <<"EOH";
 <table cellpadding=5>
 <tr>
-<th align=right>Amount</th>
-<th align=left>For</th>
-<th align=left>Note</th>
+<th class=rt>Amount</th>
+<th class=lt>For</th>
+<th class=lt>Note</th>
 </tr>
 EOH
     my $prog_glnum = $reg->program->glnum();

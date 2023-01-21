@@ -7,11 +7,9 @@ our @EXPORT_OK = qw/
     stripe_payment
     metadata
 /;
+use Template;
 use JSON qw/
     decode_json
-/;
-use Util qw/
-    JON
 /;
 
 my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
@@ -26,6 +24,8 @@ my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
 # amount
 # metadata (hashref)
 # email
+#
+# This routine might display an error message and exit!
 #
 sub stripe_payment {
     my (%P) = @_;
@@ -70,9 +70,7 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
-JON "cmd = $cmd";
     my $json = `$cmd`;
-JON "json = $json";
     my $href = decode_json($json);
     if ($href->{url}) {
         return <<"EOH";
@@ -82,7 +80,16 @@ JON "json = $json";
 EOH
     }
     else {
-        return $href->{error}{message};
+        # could be an invalid email address...
+        # or what?
+        Template->new(INTERPOLATE => 1)->process(
+            'err.tt2',
+            {
+                back => 1,
+                err  => $href->{error}{message},
+            },
+        );
+        exit;
     }
 }
 

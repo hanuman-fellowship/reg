@@ -6,19 +6,18 @@ use CGI;
 my $q = CGI->new();
 print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
-use lib '.';
 use Template;
-
-sub commify {
-    my ($n) = @_;
-
-    $n = reverse $n;
-    $n =~ s{(\d\d\d)(?=\d)(?!\d*\.)}{$1,}gmsx;
-    $n = scalar reverse $n;
-    return $n;
-}
+use lib '.', '../lib';
+use Stripe qw/
+    stripe_payment
+/;
+use Util qw/
+    commify
+/;
 my $code = $q->param('code');
 if (! -f "/var/Reg/req_mmc_sent/$code") {
+    # this file was put there when the
+    # request was sent to the person
     print "Something is wrong with $code.\n";
     exit;
 }
@@ -45,6 +44,15 @@ my %stash = (
     req_mmc_code  => $code,
     signed        => $data{signed},
     quest_email   => $data{quest_email},
+    tbl_py_desc   => $data{tbl_py_desc},
+);
+
+$stash{stripe_payment} = stripe_payment(
+    name        => $data{program},
+    description => "Registration for $data{first} $data{last}",
+    amount      => $data{total},
+    metadata    => { code => $code },
+    email       => $data{email},
 );
 
 Template->new(

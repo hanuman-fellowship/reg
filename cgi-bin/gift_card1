@@ -25,8 +25,8 @@ my %stash;
 
 for my $w (qw/
     rec_fname rec_lname rec_email
-    fname lname street1 street2
-    city state zip country
+    first last addr1 addr2
+    city st_prov zip_post country
     cell
     email1
 /) {
@@ -35,7 +35,6 @@ for my $w (qw/
 $stash{email2} = $cookie{email1} || "";
 
 Template->new({
-    INCLUDE_PATH => '.',
     INTERPOLATE => 1,
 })->process(
     'gift_card1.tt2',

@@ -10,7 +10,7 @@
 <dt>Name:</dt>
 <dd>$first $last</dd>
 
-<dt class="pb-6">Address:</dt>
+<dt>Address:</dt>
 <dd>$addr<br>$city, $state $zip<br>$country</dd> 
 
 <dt>Phone:</dt>
@@ -29,12 +29,7 @@ $tbl_py_desc
 <p>
 If you have any question about this request send an <a href='mailto:$quest_email'>email to $signed</a>.
 
-<form name="authorize"
-action="https://secure.authorize.net/gateway/transact.dll"
-method="POST"
->
-<!-- ... -->
-<input style="background: lightgreen" type=submit id=submit value='Pay Securely with your Credit Card'>
+$stripe_payment
 </form>
 </body>
 </html>

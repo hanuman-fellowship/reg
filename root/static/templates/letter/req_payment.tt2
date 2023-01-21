@@ -1,3 +1,11 @@
+<style>
+.rt {
+    text-align: right;
+}
+.lt {
+    text-align: left;
+}
+</style>
 Greetings $name,
 <p>
 You are requested to pay \$$total for the program '$program'.<br>

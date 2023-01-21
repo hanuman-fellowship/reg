@@ -11,7 +11,7 @@ td, th, input, button, textarea {
     color: red;
     font-weight: bold;
 }
-th {
+th, .rt {
     text-align: right;
 }
 .lt {

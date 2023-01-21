@@ -8,25 +8,25 @@ var fields = [
                    err: 'Missing Recipient First Name' },
     { id: 'rec_lname', regexp: '\\S',
                    err: 'Missing Recipient Last Name' },
-    { id: 'rec_email',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+    { id: 'rec_email',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Recipient Email address' },
     { id: 'amount', regexp: '^[0-9]+\$',
                     err: 'Invalid Gift Amount' },
-    { id: 'fname', regexp: '\\S',
+    { id: 'first', regexp: '\\S',
                    err: 'Missing First Name' },
-    { id: 'lname', regexp: '\\S',
+    { id: 'last', regexp: '\\S',
                    err: 'Missing Last Name' },
-    { id: 'street1',  regexp: '\\S',
+    { id: 'addr1',  regexp: '\\S',
                       err: 'Missing Street Address' },
     { id: 'city',  regexp: '\\S',
                    err: 'Missing City' },
-    { id: 'state',  regexp: '\\S',
+    { id: 'st_prov',  regexp: '\\S',
                     err: 'Missing State' },
-    { id: 'zip',  regexp: '\\S',
+    { id: 'zip_post',  regexp: '\\S',
                   err: 'Missing Zip Code' },
     { id: 'cell',  regexp: '^[0-9 -.()]+\$',
                    err: 'Invalid Phone number' },
-    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' },
 ];
 </script>
@@ -42,7 +42,7 @@ These are the costs Per Day Per Person for the various housing options:
 <table cellpadding=5>
 <tr>
 <th>Housing Type</th>
-<th style="text-align: right">Cost</th>
+<th>Cost</th>
 </tr>
 $housing_fees_rows
 </table>
@@ -87,26 +87,26 @@ If you would like to include a personal note to them, you may write it here:
 
 <tr>
 <th><span class=required>*</span> First Name:</th>
-<td><input type="text" size=25 name="fname" id="fname" value="$fname"></td>
+<td><input type="text" size=25 name="first" id="first" value="$first"></td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Last Name:</th>
-<td><input type="text" size=25 name="lname" id="lname" value="$lname"></td>
+<td><input type="text" size=25 name="last" id="last" value="$last"></td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Street 1:</th>
 <td><input type="text"
-       size=25 name="street1"
-       id="street1"
-       value="$street1">
+       size=25 name="addr1"
+       id="addr1"
+       value="$addr1">
 </td>
 </tr>
 
 <tr>
 <th>Street 2:</th>
-<td><input type="text" size=25 name="street2" id="street2" value="$street2"></td>
+<td><input type="text" size=25 name="addr2" id="addr2" value="$addr2"></td>
 </tr>
 
 <tr>
@@ -116,12 +116,12 @@ If you would like to include a personal note to them, you may write it here:
 
 <tr>
 <th><span class=required>*</span> State/Province:</th>
-<td><input type="text" size=25 name="state" id="state" value="$state"/></td>
+<td><input type="text" size=25 name="st_prov" id="st_prov" value="$st_prov"/></td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Zip/Postal Code:</th>
-<td><input type="text" size=25 name="zip" id="zip" value="$zip"/></td>
+<td><input type="text" size=25 name="zip_post" id="zip_post" value="$zip_post"/></td>
 </tr>
 
 <tr>
@@ -148,7 +148,7 @@ To prevent it from going to your spam folder,
 kindly add the following address to your list
 of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
 <p>
-<input style="background: lightgreen" type=submit id=submit value='Submit'>
+<button type=submit>Submit</button>
 
 </form>
 </body>

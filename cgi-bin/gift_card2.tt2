@@ -17,36 +17,33 @@ You are sending a gift card for meals and lodging at Mount Madonna Center to:
 <dt>Email:</dt>
 <dd>$rec_email</dd>
 <dt>Amount:</dt>
-<dd>\$$x_amount</dd>
+<dd>\$$amount</dd>
 [% IF personal_note_verbose %]
     <dt>Personal Note:</dt>
     <dd>$personal_note_verbose</dd>
 [% END %]
-</DL>
+</dl>
 <p>
 Your information:
-<DL>
+<dl>
 <dt>Name:</dt>
-<dd>$fname $lname</dd>
+<dd>$first $last</dd>
 
 <dt>Address:</dt>
 <dd>$street_addr<br>
-$city, $state $zip<br>
+$city, $st_prov $zip_post<br>
 $country</dd>
 
 <dt>Telephone:</dt>
-<dd>$phone</dd>
+<dd>$cell</dd>
 
 <dt>Email:</dt>
 <dd>$email1</dd>
 </dl>
-<form name="authorize"
-action="https://secure.authorize.net/gateway/transact.dll"
-method="POST"
->
-<!-- ??? Should it say "Pay securely with your credit card as others do?
-Should it be consistent? -->
-<input style="background: lightgreen" type=submit id=submit value='PAY AMOUNT'>
+
+<p>
+$payment
+
 </form>
 </body>
 </html>

@@ -13,6 +13,7 @@ reg2
 req_pay
 omp
 gift_card
+gift_card_status
 meal_request
 rental_payment
 new_member

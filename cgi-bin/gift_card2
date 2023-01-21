@@ -6,6 +6,9 @@ my $q = CGI->new();
 use CGI::Carp qw/fatalsToBrowser/;
 use lib '.', '../lib';
 use Template;
+use Stripe qw/
+    stripe_payment
+/;
 
 #
 # gather all the form elements into a hash
@@ -33,12 +36,12 @@ print $q->header(-cookie => $cookie);
 # prepare the confirmation page.
 #
 
-my $x_amount = $form{amount}; 
+my $amount = $form{amount}; 
 
 my %stash;
 for my $name (qw/
-    rec_fname rec_lname rec_email
-    fname lname street1 street2 city state zip
+    rec_first rec_last rec_email
+    first last addr1 addr2 city st_prov zip_post
     country cell email1 personal_note
 /) {
     $stash{$name} = $form{$name};
@@ -52,12 +55,11 @@ if ($form{personal_note}) {
 #
 # create a readable description for the user
 #
-$stash{phone} = $form{cell};    # used to have home work cell... 
+$stash{cell} = $form{cell};
 
 #
-# in addition to the street1, street2 above
+# in addition to the addr1, addr2 above
 # which are for the hidden fields we also have
-# street_addr which is a special case.
 #
 my $street_addr = $form{street1};
 if ($form{street2} =~ /\S/) {
@@ -65,9 +67,21 @@ if ($form{street2} =~ /\S/) {
 }
 $stash{street_addr} = $street_addr;
 
-# ip address for Jamal's purposes
-#
-$stash{real_ip} = $ENV{REMOTE_ADDR};
+my %metadata = qw/
+    amount => $amount,    
+/;
+
+my $stripe = stripe_payment(
+    name        => 'Gift Card',
+    description => "Gift Card for $form{rec_first} $form{rec_last}",
+    amount      => $total,
+    metadata    => \%metadata,
+    email       => $form{email1},
+);
+if ($stripe !~ /Pay Securely/) {
+    oops($stripe, 1);
+}
+$stash{stripe_payment} = $stripe;
 
 Template->new(
     INTERPOLATE => 1,
