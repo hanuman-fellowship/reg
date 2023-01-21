@@ -94,18 +94,13 @@ EOH
 sub metadata {
     my ($q) = @_;
     my $session_id = $q->param('session_id');
-JON "session id = $session_id";
     if (!$session_id) {
         return error => 'no session id';
     }
     my $cmd = "curl https://api.stripe.com/v1/checkout/sessions/$session_id"
             . " -u $stripe_key";
-JON "cmd = $cmd";
     my $json = `$cmd`;
-JON "json = $json";
     my $href = decode_json($json);
-use Data::Dumper;
-JON Dumper($href);
     return %{$href->{metadata}};
 }
 
