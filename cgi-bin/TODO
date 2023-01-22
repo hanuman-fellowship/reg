@@ -14,7 +14,7 @@ omp
 gift_card
 gift_card_status
 meal_request
-new_member
+new_hfs_member
 rental_payment - done
 reg2 - done
 req_pay - done
@@ -22,6 +22,8 @@ req_pay - done
 reg3 - no payment needed - cost is covered
 gift_card_status
 mlist
+new_hfs_member          # tell Jen , etc about new name with '_hfs'
+    2 .tt2 email message
 sutra1
 sutra_send  - broken - send from akash instead? yes?
     get the sutras data as well
