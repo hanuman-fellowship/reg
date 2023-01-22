@@ -1,6 +1,6 @@
 Test Suite for Online Member Payment
 
-https://akash.mountmadonna.org/cgi-bin/omp?code=
+https://akash2.mountmadonna.org/cgi-bin/omp?code=
 
 and append these codes:
 

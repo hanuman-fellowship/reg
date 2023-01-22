@@ -6,13 +6,16 @@ my $q = CGI->new();
 print $q->header();
 use CGI::Carp qw/fatalsToBrowser/;
 use Template;
-use lib '../lib';
+use lib '.', '../lib';
 use Util qw/
     db_init
     model
     get_string
 /;
 my $c = db_init();
+use Stripe qw/
+    stripe_payment
+/;
 my $code = $q->param('code');
 my $hfs_contact = "Contact the Hanuman Fellowship Membership Secretary.";
 if (! $code) {
@@ -66,6 +69,20 @@ my %stash = (
     member_id    => $member->id,    # hidden
     category     => $member->category,
 );
+
+$stash{stripe_payment} = stripe_payment(
+    name        => 'HFS Membership',
+    description => ucfirst($member->category) . " Member",
+    amount      => $amount_due,
+    metadata    => {
+                       first     => $person->first,
+                       category  => $member->category,
+                       amount    => $amount_due,
+                       member_id => $member->id,
+                   },
+    email       => $person->email,
+);
+
 Template->new(
     INTERPOLATE => 1,
 )->process(

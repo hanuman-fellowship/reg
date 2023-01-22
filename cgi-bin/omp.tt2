@@ -38,13 +38,8 @@
 
 </dl>
 
-<form name="authorize"
-action="https://secure.authorize.net/gateway/transact.dll"
-method="POST"
->
-<!-- ... -->
-<input style="background: lightgreen" type=submit id=submit value='Pay Securely with your Credit Card'>
+$stripe_payment
+
 </form>
-</FORM>
 </body>
 </html>

@@ -6,17 +6,18 @@ List all the cgi-bin scripts and what they do:
 *reg1
 *regME
 *regPR
-*program_inquiry.pl
+*program_inquiry.pl         # ask Jen to remove the .pl
+                            # for consistency!
 
 - payments
-reg2
-req_pay
 omp
 gift_card
 gift_card_status
 meal_request
-rental_payment
 new_member
+rental_payment - done
+reg2 - done
+req_pay - done
 
 reg3 - no payment needed - cost is covered
 gift_card_status

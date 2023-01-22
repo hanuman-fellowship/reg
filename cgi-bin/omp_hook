@@ -1,0 +1,34 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use lib '.', '../lib';
+use Stripe qw/
+    metadata
+/;
+use Util qw/
+    db_init
+    model
+    add_activity
+/;
+my $c = db_init();
+use Template;
+
+my %P = metadata($q);
+
+my $member = model($c, 'Member')->find($P{member_id});
+my $person = $member->person;
+my $name = $member->person->name();
+add_activity($c, "HFS Membership payment of \$$P{amount} for $name");
+open my $out, '>', $P{member_id}_$P{amount}_" . time();
+close $out;
+# notify membership secretary...
+
+Template->new(
+    INTERPOLATE => 1
+)->process(
+    'omp_message.tt2',
+    \%P,
+);
