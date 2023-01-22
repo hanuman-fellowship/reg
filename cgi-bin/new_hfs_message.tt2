@@ -1,0 +1,23 @@
+<html>
+<head>
+<style>
+body {
+    margin-top: .5in;
+    margin-left: .5in;
+    font-size: 18pt;
+    font-family: Arial;
+}
+</style>
+</head>
+<body>
+<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100>
+<h2>Thank you, ${x_fname}.</h2>
+<h3>Your payment has been received.</h3>
+<p>
+Your credit card has been charged \$$x_amount
+via an authorize.net transaction.<br>
+The id for this transaction is ${x_trans_id}.
+<p>
+You are now a ${x_mem_type_disp} of the Hanuman Fellowship.
+</body>
+</html>

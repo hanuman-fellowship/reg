@@ -1,0 +1,34 @@
+<html>
+<head>
+<style>
+body {
+    font-family: Arial;
+    font-size: 18pt;
+}
+</style>
+</head>
+<body>
+New HFS $x_mem_type_disp:
+<p>
+$x_fname $x_lname [% IF x_aname %](aka $x_aname)[% END %]
+<p>
+Their introduction:
+<ul>
+$x_intro
+</ul>
+[% IF x_pic_url %]
+<p>
+Their picture:
+<ul>
+<img src='$x_pic_url'>
+</ul>
+[% END %]
+[% IF x_ky %]
+<p>
+Their preferred karma yoga:
+<ul>
+$x_ky
+</ul>
+[% END %]
+</body>
+</html>

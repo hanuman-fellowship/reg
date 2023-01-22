@@ -1,0 +1,242 @@
+<html>
+<head>
+<style>
+body {
+    width: 800px;
+    font-size: 18pt;
+    font-family: Arial;
+    margin-top: .5in;
+    margin-left: .5in;
+    margin-bottom: 1in;
+}
+.mission {
+    text-align: center;
+    color: green;
+}
+.cent {
+    text-align: center;
+}
+th, td, textarea, input {
+    font-size: 16pt;
+    font-family: Arial;
+}
+.smaller, form {
+    font-size: 16pt;
+}
+button {
+    background: lightgreen;
+    font-size: 16pt;
+}
+
+</style>
+</head>
+<body>
+<h2 class=cent>Hanuman Fellowship Membership</h2>
+<div class=cent>
+<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100>
+<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100
+     style="margin-left: 1in">
+<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100
+     style="margin-left: 1in">
+</div>
+<p>
+<div class=mission>
+The Hanuman Fellowship is organized, as inspired by the example and
+teachings of master yogi
+<a target=_blank href=https://www.mountmadonna.org/baba-hari-dass>Baba Hari Dass</a>,
+to promote the principles
+and practice of yoga by means of sadhana (spiritual practice), karma
+yoga (selfless service), and satsang (supportive community), as well
+as other spiritual disciplines and learning that foster personal
+and spiritual development and wellness and that create an environment
+for the attainment of peace.
+<p>
+</div>
+The Hanuman Fellowship (HFS) is a self-supportive community dedicated to
+the attainment of peace. In order to attain this mission and carry
+forward the teachings of Baba Hari Dass through sadhana, satsang,
+and karma yoga, a membership based on commitment and service is
+essential.
+<p>
+Members are the strength and foundation of the Fellowship and membership is a way of becoming involved in the service of maintaining and developing the programs and facilities we offer to serve the broader community.
+<p>
+Please review the membership categories and complete the
+application form below. Applicants are eligible to receive the benefits
+listed in the membership categories upon payment of annual dues.
+Eligibility to vote in the annual Board of Directors election is
+subject to confirmation by the members at the Annual
+General Meeting.
+<p>
+In Peace,<br>
+The Membership Committee<br>
+Hanuman Fellowship Board of Directors<br>
+<a href=mailto:memberships@mountmadonna.org>memberships@mountmadonna.org</a>
+<p>
+<table cellpadding=10 border=1 style="width: 900px">
+<tr>
+<th width=45% colspan=2>MEMBERSHIP CATEGORIES</th>
+<th>BENEFITS</th>
+</tr>
+
+
+<tr>
+<th width=15%>General</th>
+<td>\$50 Yearly Dues<br>
+&nbsp;&nbsp;<b>or</b><br>
+\$25 Yearly Dues + 20 hours Karma Yoga*
+</td>
+<td>
+<ul>
+<li>20% Discount on meals at MMC
+<li>Eligibility to vote for the Board of Directors
+</ul>
+</td>
+</tr>
+
+<tr>
+<th>Sponsor</th>
+<td>\$600 Yearly Dues</td>
+<td>
+All above benefits, PLUS:
+<ul>
+<li>4 free nights lodging at Mount Madonna Center.
+<p>
+This can be taken:<br>
+ As a Personal Retreat, subject to availability.<br>
+&nbsp;&nbsp;<b>or</b><br>
+For one of the four annual retreats:<br>
+Spring, Liberation, Fall, or
+New Year's.
+</ul>
+Lodging is a double room w/o private bath, or room/tent of lesser value.
+Sponsor dues lead to Lifetime Membership when the accumulated
+amount of \$12,000 is reached.
+</td>
+<tr>
+<tr>
+<th>Lifetime</th>
+<td>\$12,000 Lifetime Dues</td>
+<td>
+All above benefits, PLUS:
+<ul>
+<li>Free tuition, meals, and lodging for one of the four annual
+retreats: Spring, Liberation, Fall, or New Year's Retreat.
+</ul>
+</td>
+</tr>
+</table>
+<p>
+<div class=smaller>
+*Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
+<p>
+Please complete the form below and press Submit at the bottom:
+</div>
+<form action='/cgi-bin/new_member'
+      name=form method=post
+      enctype="multipart/form-data"
+>
+<p>
+<table cellpadding=5>
+<tr>
+<th align=right valign=top width=30%>Membership Type</th>
+<td>
+<input type=radio name=mem_type value=general checked> General - \$50 annually<p>
+<input type=radio name=mem_type value=general_ky> General with KY* - \$25 annually + 20 hours KY<p>
+<input type=radio name=mem_type value=sponsor> Sponsor - \$600 annually
+</td>
+</tr>
+<tr>
+<th align=right>First</th>
+<td>
+<input type=text size=30 name=fname value="$fname">
+</td>
+</tr>
+<tr>
+<th align=right>Last</th>
+<td>
+<input type=text size=30 name=lname value="$lname">
+</td>
+</tr>
+<tr>
+<th align=right>Sanskrit</th>
+<td>
+<input type=text size=30 name=aname value="$aname">
+(optional)
+</td>
+</tr>
+<tr>
+<tr>
+<th align=right>Street</th>
+<td>
+<input type=text size=30 name=street1 value="$street1">
+</td>
+</tr>
+<tr>
+<th align=right></th>
+<td>
+<input type=text size=30 name=street2 value="$street2"> (optional)
+</td>
+</tr>
+<tr>
+<th align=right>City
+<td>
+<input type=text size=30 name=city value="$city">
+</td>
+</tr>
+<tr>
+<th align=right>State/Province</th>
+<td>
+<input type=text size=30 name=state value="$state">
+</td>
+</tr>
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td>
+<input type=text size=30 name=zip value="$zip">
+</td>
+</tr>
+<tr>
+<th align=right>Country
+<td>
+<input type=text size=30 name=country value="USA" value="$country">
+</td>
+</tr>
+<tr>
+<th align=right>Email</th>
+<td>
+<input type=text size=30 name=email1 value="$email1">
+</td>
+</tr>
+<tr>
+<th align=right>Phone</th>
+<td>
+<input type=text size=30 name=cell value="$cell">
+</td>
+</tr>
+</table>
+As an introduction to the rest of the members, please write a few
+sentences below explaining what inspired you to become a member of
+the Hanuman Fellowship. 
+<p>
+<textarea name=intro rows=5 cols=50>
+</textarea>
+<p>
+If available, please upload a photograph of yourself for the
+purpose of identification at the Annual General Meeting when new
+members are elected into the voting body.
+<p>
+<input type=file name=photo>
+<p>
+*For those choosing the Karma Yoga option: In what areas would you like
+to become more involved (or continue your involvement) with HFS in
+order to perform your 20 hours of KY? (For example, help during
+retreats, on Saturdays after class (kitchen, landscaping, maintenance),
+Hanuman temple (tending, parking), and others.)
+<p>
+<textarea name=ky rows=5 cols=50>
+</textarea>
+<p>
+<button type=submit>Submit</button>
+</form>
+</body>
+</html>
