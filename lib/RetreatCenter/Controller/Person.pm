@@ -383,6 +383,7 @@ sub _get_data {
 
     %hash = %{ $c->request->params() };
     for my $k (keys %hash) {
+        $hash{$k} = trim($hash{$k});
         delete $hash{$k} if $k =~ m{^aff\d+$};
     }
     $hash{st_prov} = uc $hash{st_prov};
