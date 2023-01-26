@@ -10,23 +10,29 @@ Thank you, ${first}.
 <p>
 Your payment has been received.
 <p>
-[% IF x_title == 'Personal Retreat' %]
-    We have received your online registration for a Personal Retreat
-    from $sdate to ${edate}.
+[% IF title == 'Personal Retreat' %]
+    [% IF mountain_experience %]
+        We have received your online registration for a Mountain Experience
+        on ${sdate.format("%A %B %e, %Y")}.
+    [% ELSE %]
+        We have received your online registration for a Personal Retreat
+        from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
+    [% END %]
 [% ELSE %]
     We have received your online registration for the
-    $title program[% IF leader_names %] with $leader_names[% END %].
+    $title program[% IF leader_names %] with $leader_names[% END %]
+    from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
 [% END %]
-[% IF x_amount %]
+[% IF amount %]
     <p>
-    Your credit card has been charged \$${amount}.
-    The id for this transaction is ??${trans_id}.
+    Your credit card has been charged \$${amount}.<br>
+    The id for this transaction is ${transaction_id}.
 [% END %]
 <p>
 The above information has been sent to you via an email to ${email}.<br>
 You will soon receive <i>another</i> letter from programs@mountmadonna.org<br>
 with confirmation of your 
-[% IF housing_not_needed %]
+[% IF mountain_experience || housing_not_needed %]
     registration.
 [% ELSE %]
     housing and all the details you will need to know<br>
@@ -35,7 +41,6 @@ with confirmation of your
 <p>
 If you do not receive this other letter within 3 days check your
 spam/junk email folder.
-<br>
 If it is not there please call us at 408-846-4090.
 [% IF ! housing_not_needed %]
     <p>

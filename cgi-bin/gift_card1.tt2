@@ -37,15 +37,22 @@ var fields = [
 <h1>Gift Cards</h1>
 It is very kind of you to send your friend the
 gift of meals and lodging at Mount Madonna Center.
-These are the costs Per Day Per Person for the various housing options:
-<p>
+For a Personal Retreat in $month here are the costs
+Per Day Per Person for the various housing options:
+<ul>
 <table cellpadding=5>
 <tr>
-<th>Housing Type</th>
+<th class=lt>Housing Type</th>
 <th>Cost</th>
 </tr>
-$housing_fees_rows
+[% FOR r IN fee_rows %]
+<tr>
+<td class=lt>$r.desc</td>
+<td class=rt>$r.cost</td>
+</tr>
+[% END %]
 </table>
+</ul>
 
 <form autocomplete="off"
       method=POST
@@ -67,7 +74,7 @@ $housing_fees_rows
 
 <tr>
 <th><span class="required">*</span> Email:</th>
-<td><input type="text" name="rec_email" id="rec_email" value='$rec_email'></td>
+<td><input type="text" name="rec_email" id="rec_email" value='$rec_email' size=35></td>
 </tr>
 
 <tr>
@@ -80,7 +87,7 @@ $housing_fees_rows
 We will be sending your friend an email notifying them of your gift.
 If you would like to include a personal note to them, you may write it here:
 <p>
-<textarea name="personal_note" rows='3' cols='45' font-family: Times;"></textarea>
+<textarea name="personal_note" rows='5' cols='50' font-family: Times;"></textarea>
 <h3>Your Information</h3>  
 
 <table cellpadding=5>
@@ -141,14 +148,18 @@ If you would like to include a personal note to them, you may write it here:
 <td><input type="text" size=25 name="email1" id="email1" value="$email1"/></td>
 </tr>
 
+<tr>
+<th>&nbsp;</th><td><button type=submit>Submit</button></td>
+</tr>
+
 </table>
+<p>
 
 We will be sending you a confirmation email. 
 To prevent it from going to your spam folder, 
 kindly add the following address to your list
 of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
 <p>
-<button type=submit>Submit</button>
 
 </form>
 </body>

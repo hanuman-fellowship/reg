@@ -9,7 +9,6 @@ my $q = CGI->new();
 print $q->header();
 
 use lib '.','../lib';
-use HousingNames;
 use DateRange qw/
     overlap
 /;
@@ -111,7 +110,9 @@ if ($pid == 0) {
             # forget it.
             #
             oops "Sorry, we have reached the maximum capacity"
-               . " for Mountain Experience Retreats on $sdate.\n", 1;
+               . " for Mountain Experience Retreats on "
+               . $sdate->format("%A %B %e, %Y")
+               . ".\n", 1;
         }
 
         my @meals; 
@@ -461,8 +462,8 @@ $stash{withwhom_first} = $cookie{withwhom_first} || "";
 $stash{withwhom_last}  = $cookie{withwhom_last}  || "";
 for my $w (qw/
     first last sanskrit addr1 addr2
-    city state zip_post country
-    tel_cell
+    city st_prov zip_post country
+    cell
     email1
     car_license
     pronouns

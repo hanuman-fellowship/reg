@@ -699,9 +699,9 @@ my $_transport;
 sub email_letter {
     my ($c, %args) = @_;
 
-    if (-f '/tmp/Reg_Dev') {
-        return;
-    }
+    #if (-f '/tmp/Reg_Dev') {
+    #    return;
+    #}
     for my $k (qw/ to from subject html /) {
         if (! exists $args{$k}) {
             die "no $k in args for Util::email_letter\n";
@@ -718,7 +718,7 @@ sub email_letter {
         push @cc, cc => $args{cc};
         $message .= ' Cc: '
                     . (ref $args{cc}? "@{$args{cc}}"
-                      :               $args{to}     );
+                      :               $args{cc}     );
     }
     $message .= ", $args{subject}";
 

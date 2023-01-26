@@ -9,3 +9,5 @@ octjnt - Lyn Ackley - Sponsor
 
  $50 - string mem_gen_amt
 $600 - string mem_spons_year
+
+Files are created in /var/Reg/omp

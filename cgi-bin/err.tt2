@@ -1,17 +1,6 @@
 <html>
 <head>
-<style>
-body {
-    margin: .5in;
-    width: 70%;
-}
-body, input, button, td, th {
-    font-size: 16pt;
-}
-button {
-    background: lightgreen;
-}
-</style>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
 [% IF back %]

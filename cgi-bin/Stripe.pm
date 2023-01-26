@@ -12,7 +12,15 @@ use JSON qw/
     decode_json
 /;
 
+# Net::Stripe
+# https://stackoverflow.com/questions/43001753/add-extra-card-to-stripe-customer-in-curl
+# very capable and very complicated. :(
+
+# from Shantam:
 my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
+# copied on 1/22/23:
+#my $stripe_key = "pk_test_9dgtGZ9aTJDYHsPRvJEiIEAT00g77ndlOd";
+#my $stripe_key = "pk_live_n31B5r1y0q0QMvLfeAqMmTNH00amiaUNQ2";
 
 #
 # create the button for payments
@@ -45,7 +53,7 @@ sub stripe_payment {
     my $amount100 = $P{amount}*100;    # dollars to cents
 
     # insert the amount value into the metadata
-    my $metadata .= qq!-d "metadata[amount]"="$P{amount}" \\\n!;
+    my $metadata = qq!-d "metadata[amount]"="$P{amount}" \\\n!;
     for my $k (keys %{$P{metadata}}) {
         $metadata .= qq!-d "metadata[$k]"="$P{metadata}->{$k}" \\\n!;
     }
@@ -108,6 +116,10 @@ sub metadata {
             . " -u $stripe_key";
     my $json = `$cmd`;
     my $href = decode_json($json);
+    $href->{metadata}{transaction_id} = substr($session_id, -12);
+#use Util 'JON';
+#use Data::Dumper;
+#JON Dumper($href);
     return %{$href->{metadata}};
 }
 

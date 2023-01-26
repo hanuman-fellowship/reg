@@ -9,24 +9,67 @@ use Stripe qw/
     metadata
 /;
 use Template;
+my $tt = Template->new(
+             INTERPOLATE => 1
+         );
 use Util qw/
+    add_activity
+    email_letter
+    db_init
+    model
     JON
+/;
+my $c = db_init();
+
+use Date::Simple qw/
+    date
+    today
+/;
+use Time::Simple qw/
+    get_time
 /;
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
 my %P = metadata($q);
+# timestamp it
+$P{date} = today()->format("%D");
+$P{time} = get_time()->t24();
+
 my $d = Dumper(\%P);
 
-# Two regs at once???
-open my $out, '>', '/var/Reg/online/N' . time();
-                            # N for new format
+my $f = "N$P{transaction_id}";
+open my $out, '>', "/var/Reg/online/$f";
 print {$out} $d;
 close $out;
 
-Template->new(
-    INTERPOLATE => 1
-)->process(
-    'message.tt2',
-    \%P,
+add_activity($c,
+      "Online reg <a href='/registration/get_online/$f'>"
+      . "$P{first} $P{last}</a>"
+      . " for <a href='/program/view/$P{pid}'>$P{title}</a>"
 );
+
+$P{sdate} = date($P{sdate});
+$P{edate} = date($P{edate});
+
+# send email to the person to confirm
+my $html;
+$tt->process(
+    'reg_email.tt2',
+    \%P,
+    \$html,
+) or JON $tt->template_error;
+email_letter($c,
+    to      => "$P{first} $P{last} <$P{email}>",
+    from    => 'programs@mountmadonna.org',
+    subject => "Online Registration for $P{title}",
+    html    => $html,
+);
+
+# transaction ID??
+# include in template
+
+$tt->process(
+    'reg_message.tt2',
+    \%P,
+) or JON $tt->template_error;

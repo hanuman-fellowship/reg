@@ -1,0 +1,148 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use lib '.', '../lib';
+use Stripe qw/
+    metadata
+/;
+use Template;
+my $tt = Template->new(
+             INTERPOLATE => 1
+         );
+use Date::Simple qw/
+    date
+    today
+/;
+use Time::Simple qw/
+    get_time
+/;
+
+my $date = today()->as_d8();
+my $time = get_time()->t24();
+use Util qw/
+    add_or_update_deduping
+    add_activity
+    email_letter
+    db_init
+    model
+    JON
+/;
+my $c = db_init();
+my %P = metadata($q);
+
+# missing keys - we're not a full mlist thingy
+$P{sex} = '';
+for my $k (qw/ e_mailings snail_mailings share_mailings /) {
+    $P{$k} = -1;
+}
+for my $f (qw/
+    sanskrit
+    temple_id
+    tel_home tel_cell tel_work
+/) {
+    $P{$f} = '';
+}
+my ($person_id, $person, $status) = add_or_update_deduping(
+                                        $c, \%P
+                                    );
+
+$P{rec_fname} = ucfirst $P{rec_fname};
+$P{rec_lname} = ucfirst $P{rec_lname};
+my $rec_name = "$P{rec_fname} $P{rec_lname}";
+
+my @lets = ('a' .. 'z');
+sub rand5let {
+    my $code = '';
+    for (1 .. 5) {
+        $code .= $lets[rand @lets];
+    }
+    return $code;
+}
+my $code;
+CODE:
+while (1) {
+    $code = rand5let();
+    my ($card) = model($c, 'GiftCards')->search({
+                     code => $code,
+                 });
+    if (! $card) {
+        last CODE;
+    }
+    # loop to get another
+}
+$P{code} = $code;
+
+my @xaccounts = model($c, 'XAccount')->search({
+                    descr => 'Gift Cards',
+                });
+my $gift_cards_xaccount_id = $xaccounts[0]->id;
+    # what if not there??
+
+# payment to extra account
+model($c, 'XAccountPayment')->create({
+    person_id   => $person_id,
+    xaccount_id => $gift_cards_xaccount_id,
+    what        => "$rec_name, code $code",
+    amount      => $P{amount},
+    type        => 'O',               # online
+    user_id     => 0,                 # what other user id?
+    the_date    => $date,
+    time        => $time,
+    transaction_id => $P{transaction_id},
+});
+
+# create a GiftCards record ...
+model($c, 'GiftCards')->create({
+    person_id   => $person_id,
+    code        => $code,
+    amount      => $P{amount},
+    rec_fname   => $P{rec_fname},
+    rec_lname   => $P{rec_lname},
+    rec_email   => $P{rec_email},
+    the_date    => $date,
+    the_time    => $time,
+    transaction_id => $P{transaction_id},
+    reg_id      => 0,       # initial purchase
+});
+
+add_activity($c,
+    "Gift card of \$$P{amount} for $rec_name"
+    . ' by <a href=/person/view/' . $person->id . '>'
+    . $person->name . '</a>'
+);
+
+# email to the recipient Cc'ing the giver
+# it explains how to use the card.
+my $html1;
+$tt->process(
+    'gift_card_email.tt2',
+    \%P,
+    \$html1,
+);
+email_letter($c,
+    to      => "$rec_name <$P{rec_email}>",
+    cc      => "$P{first} $P{last} <$P{email}>",
+    from    => 'programs@mountmadonna.org',
+    subject => 'Mount Madonna Center Gift Card',
+    html    => $html1,
+);
+
+# send email to the person to confirm
+# including the transaction id
+my $html2;
+$tt->process(
+    'gift_card_message.tt2',
+    \%P,
+    \$html2,
+);
+email_letter($c,
+    to      => "$P{first} $P{last} <$P{email}>",
+    from    => 'programs@mountmadonna.org',
+    subject => "MMC Gift Card to $rec_name",
+    html    => $html2,
+);
+# the same response on the screen:
+print $html2;

@@ -21,6 +21,7 @@ my $c = db_init();
 # initialize just the strings we will need
 # here - and in compute_balance()
 #
+my %string;
 for my $f (qw/
     min_per_day
     rental_start_hour

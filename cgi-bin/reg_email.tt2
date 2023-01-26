@@ -1,0 +1,38 @@
+Thank you, ${first}.
+<p>
+[% IF title == 'Personal Retreat' %]
+    [% IF mountain_experience %]
+        We have received your online registration for a Mountain Experience
+        on ${sdate.format("%A %B %e, %Y")}.
+    [% ELSE %]
+        We have received your online registration for a Personal Retreat
+        from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
+    [% END %]
+[% ELSE %]
+    We have received your online registration for the<br>
+    $title program[% IF leader_names %] with $leader_names[% END %]
+    from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
+[% END %]
+<p>
+[% IF amount %]
+Your credit card has been charged \$${amount}.<br>
+The id for this transaction is ${transaction_id}.
+<p>
+[% END %]
+You will soon receive <i>another</i> letter from programs@mountmadonna.org
+with confirmation of your
+[% IF mountain_experience || housing_not_needed %]
+registration.
+[% ELSE %]
+housing and all the details you will need to know
+prior to coming to Mount Madonna Center.
+[% END %]
+<p>
+If you do not receive this other letter within 3 days check your
+spam/junk email folder.
+If it is not there please call us at 408-846-4090.
+<p>
+[% IF ! housing_not_needed %]
+Do <b>not</b> make travel plans until you have received
+your housing confirmation letter.
+[% END %]

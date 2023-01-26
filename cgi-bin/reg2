@@ -11,9 +11,6 @@ use Date::Simple qw/
     today
     date
 /;
-use HousingNames qw/
-    %housing_name
-/;
 use File::Copy qw/
     copy
 /;
@@ -300,7 +297,7 @@ if ($covid_vax) {
         );
         exit;
     }
-    $name = "$form{fname}_$form{lname}.$suffix";
+    $name = "$form{first}_$form{last}.$suffix";
     $name =~ s{[ ]}{_}xmsg;
 
     # Upgrade the handle to one compatible with IO::Handle:
@@ -441,7 +438,7 @@ if ($covid_vax) {
 # How much for housing?
 #
 my ($hc, $h_cost);
-if (! ($ME || ! $prog->housing_not_needed)) {
+if (! $ME && ! $prog->housing_not_needed) {
     $hc = $prog->housecost;
     $h_cost = $hc->$house1;
     # assume they'll get their first choice
@@ -454,6 +451,7 @@ my $payment = "";
 # and append an explanation to $payment
 #
 if ($ME) {
+    $sdate = $edate = date($form{sdate});
     $h_cost = get_string($c, 'mountain_experience_cost');
     $total += $h_cost;
     $payment .= "The Mountain Experience costs \$${h_cost}.<br>";
@@ -650,7 +648,7 @@ $stash{total} = $total;
 
 for my $name (qw/
     first last sanskrit addr1 addr2 city st_prov zip_post
-    country tel_cell email1 car_license carpool hascar from_where
+    country cell email1 car_license carpool hascar from_where
     e_mailings snail_mailings
     share_mailings kayakalpa
     house1 house2 request withwhom_first withwhom_last
@@ -684,7 +682,7 @@ $stash{sex} = $gender_desc{$form{sex}};
 $stash{pronouns} = $form{pronouns};
 $stash{diet}     = $form{diet};
 
-$stash{tel_cell} = $form{tel_cell};    # used to have home work cell... 
+$stash{cell} = $form{cell};    # used to have home work cell... 
 if ($form{ceu_license}) {
     $stash{ceu} = <<"EOH";
 <tr>
@@ -773,9 +771,9 @@ $stash{kayakalpa_verbose} = $kayakalpa_verbose;
 if ($hc) {
     $stash{house1} = $house1;
     $stash{house2} = $house2;
-    $stash{house1_verbose} = $housing_name{$house1};
+    $stash{house1_verbose} = get_string($c, $house1);
     $stash{house1_cost} = $hc->$house1;
-    $stash{house2_verbose} = $housing_name{$house2};
+    $stash{house2_verbose} = get_string($c, $house2);
     $stash{house2_cost} = $hc->$house2;
 }
 
@@ -809,6 +807,9 @@ if ($PR) {
     $stash{title} = $ME? "Mountain Experience": "Personal Retreat";
 	$stash{sdate} = $sdate->format("%m/%d/%Y");
 	$stash{edate} = $edate->format("%m/%d/%Y");
+}
+elsif ($ME) {
+	$stash{sdate} = $stash{edate} = $sdate->format("%m/%d/%Y");
 } else {
 	$stash{sdate} = "";
 	$stash{edate} = "";
@@ -846,34 +847,35 @@ else {
     $stash{dates} = $form{dates};
 }
 
-if ($gc_used) {
-    $stash{gc_code} = $gc_code;
-    $stash{gc_total} = $gc_total;
-    $stash{gc_used} = $gc_used;
-    $stash{gc_balance} = $gc_balance;
-}
-
 #
 # special action for testing purposes
 # to bypass authorize.net
 #
-if ($form{lname} =~ m{\A zz}xmsi) {
-    # how with Stripe?
+if ($form{last} =~ m{\A zz}xmsi) {
+    # how with Stripe??
 }
 
 $stash{payment} = $payment;
 $stash{waiver_needed} = $prog->waiver_needed;
 $stash{housing_not_needed} = $prog->housing_not_needed;
 
-my %metadata;
+
 $form{email} = $form{email1};
 $form{from_where} = $form{advertiserName};
 $form{housing_not_needed} = $prog->housing_not_needed;
-# max of 50 here!  we have 43.
+
+my %metadata;
+if ($gc_used) {
+    $metadata{gc_code} = $gc_code;
+    $metadata{gc_total} = $gc_total;
+    $metadata{gc_used} = $gc_used;
+    $metadata{gc_balance} = $gc_balance;
+}
+# max of 50 here!
 for my $f (qw/
     prog_choice
-    fname
-    lname
+    first
+    last
     sanskrit
     sex
     diet
@@ -884,11 +886,12 @@ for my $f (qw/
 
     st_prov
     zip_post
-    tel_cell
+    cell
     email
     pid
     mountain_experience
     sdate
+    edate
     e_mailings
     share_mailings
     snail_mailings
@@ -901,10 +904,7 @@ for my $f (qw/
     green_amount
     howHeard
     from_where
-    gc_code
-    gc_used
 
-    gc_balance
     activities
     meals
     mountain_experience
@@ -913,7 +913,6 @@ for my $f (qw/
     withwhom_last
     carpool
     has_car
-    amount
 
     discount_amt
     ceu_license
@@ -921,10 +920,12 @@ for my $f (qw/
 /) {
     $metadata{$f} = $form{$f};
 }
+$metadata{title} = $stash{title};
 
 $stash{stripe_payment} = stripe_payment(
-    name        => $prog->name_trimmed,         
-    description => "Registration for $form{fname} $form{lname}",
+    name        => $form{mountain_experience}? 'Mountain Experience'
+                  :                            $prog->name_trimmed,         
+    description => "Registration for $form{first} $form{last}",
     amount      => $total,
     metadata    => \%metadata,
     email       => $form{email1},

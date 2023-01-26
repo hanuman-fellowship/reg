@@ -25,6 +25,7 @@ add_activity($c, "HFS Membership payment of \$$P{amount} for $name");
 open my $out, '>', $P{member_id}_$P{amount}_" . time();
 close $out;
 # notify membership secretary...
+# or should we 'bring it in' directly?
 
 Template->new(
     INTERPOLATE => 1

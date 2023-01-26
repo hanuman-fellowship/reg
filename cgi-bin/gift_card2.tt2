@@ -7,24 +7,21 @@
 <img src='/static/images/mmc-teal.png' width=200>
 <p>
 Thank you.<br>
-Please confirm the following and then choose PAY AMOUNT below.
+Please confirm the following and then choose the Pay Securely button below.
 <p>
-You are sending a gift card for meals and lodging at Mount Madonna Center to:
-<p>
+You are sending a gift card for \$$amount for meals and lodging at Mount Madonna Center to:
+<h3>Recipient</h3>
 <dl>
 <dt>Name:</dt>
 <dd>$rec_fname $rec_lname</dd>
 <dt>Email:</dt>
 <dd>$rec_email</dd>
-<dt>Amount:</dt>
-<dd>\$$amount</dd>
 [% IF personal_note_verbose %]
     <dt>Personal Note:</dt>
     <dd>$personal_note_verbose</dd>
 [% END %]
 </dl>
-<p>
-Your information:
+<h3>Your information</h3>
 <dl>
 <dt>Name:</dt>
 <dd>$first $last</dd>
@@ -38,11 +35,11 @@ $country</dd>
 <dd>$cell</dd>
 
 <dt>Email:</dt>
-<dd>$email1</dd>
+<dd>$email</dd>
 </dl>
 
 <p>
-$payment
+$stripe_payment
 
 </form>
 </body>

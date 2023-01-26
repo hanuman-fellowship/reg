@@ -34,9 +34,7 @@ sub list : Local {
     my @cards = model($c, 'GiftCards')->search(
                     {},
                     { 
-                        order_by => 'code,
-                        the_date asc,
-                        the_time asc',
+                        order_by => qw/ code the_date the_time /,
                     },
                 );
     my $prev_code = '';
@@ -62,9 +60,19 @@ sub list : Local {
         if ($amount > 0) {
             $total += $amount;
         }
+        my $what = $c->rec_fname;
+        if ($c->rec_lname) {
+            my $person = $c->person;
+            $what = "Purchased by "
+                  . $person->name
+                  . " for<br>"
+                  . $c->rec_fname . ' ' . $c->rec_lname
+                  . " - " . $c->rec_email
+                  ;
+        }
         push @history, {
             amount => $amount,
-            what   => join(' ', $c->rec_fname, $c->rec_lname, $c->rec_email),
+            what   => $what,
             date   => date($c->the_date),
             time   => get_time($c->the_time),
         };
@@ -127,6 +135,8 @@ sub add_do : Local {
         transaction_id => 0,
         reg_id      => 0,
     });
+    return if -f '/tmp/Reg_Dev';
+    # ??JON remove when we use akash for creating/using the gift card
     # need the ' below - otherwise the & is interpreted by the shell :(
     my $status = qx(/usr/bin/curl -k 'https://www.mountmadonna.org/cgi-bin/gift_add?code=$code&amount=$amount&passwd=soma' 2>/dev/null);
     $c->response->redirect($c->uri_for("/giftcards/list"));

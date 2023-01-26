@@ -35,10 +35,10 @@ You are registering for:
 <h3>Personal Information</h3> 
 <dl>
 <dt>Name:</dt>
-<dd>$fname $lname</dd>
+<dd>$first $last</dd>
 [% IF aname %]
     <dt>Alternate:</dt>
-    <dd>$aname</dd>
+    <dd>$sanskrit</dd>
 [% END %]
 
 <dt>Gender Identity:</dt>
@@ -49,11 +49,11 @@ You are registering for:
 
 <dt>Address:</dt>
 <dd>$street_addr<br>
-$city, $state $zip<br>
+$city, $st_prov $zip<br>
 $country</dd>
 
 <dt>Phone:</dt>
-<dd>$tel_cell</dd>
+<dd>$cell</dd>
 
 <dt>Email:</dt>
 <dd>$email1</dd>
@@ -112,29 +112,6 @@ $country</dd>
     $request_verbose
 [% END %]
 
-<!--
-
-[% IF ! total %]
-<form name="no_authorize"
-      action="/cgi-bin/reg3"
-      method="POST"
->
-[% ELSIF zzname %]
-    <form name="no_authorize"
-          action="/cgi-bin/relay" <!-- ?? -->
-          method="POST"
-    >
-    <input type=hidden name='x_trans_id' value='$zz_trans_id'>
-[% ELSE %]
-    <FORM NAME="authorize"
-    action="https://secure2.authorize.net/gateway/transact.dll"
-    method="POST"
-    onsubmit="pageTracker._linkByPost(this);"
-    >
-[% END %]
-
--->
-
 [% IF waiver_needed %]
     <h3>Yoga Instruction and Liability Waiver and Release</h3>
     Yoga as taught at Mount Madonna Center and Institute is primarily
@@ -181,7 +158,7 @@ $country</dd>
     </span>
 [% END %]
 
-<h2>Payment</h2>
+<h3>Payment</h3>
 $payment
 
 <p>

@@ -11,17 +11,51 @@ use lib '.', '../lib';
 use Util qw/
     db_init
     model
+    get_string
 /;
 my $c = db_init();
 use Date::Simple qw/
     date
+    today
+    days_in_month
 /;
-use HousingNames qw/
-    %housing_name
+my $today = today();
+my $y = $today->year;
+my $m = $today->month;
+my $dm = days_in_month($y, $m);
+my $first = date($y, $m, 1)->as_d8();
+my $last  = date($y, $m, $dm)->as_d8();
+my ($pr) = model($c, 'Program')->search({
+               name => { -like => '%personal%retreat%' },
+               sdate => { -between => [ $first, $last ] },
+           });
+my $hc = $pr->housecost();
+my %sys = map { $_ => 1 } qw/
+    id
+    name
+    type
+    inactive
 /;
-
+my @fee_rows = sort {
+                   # reverse numeric
+                   $b->{cost} <=> $a->{cost}
+               }
+               map { 
+                   +{
+                        desc => get_string($c, $_),
+                        cost => $hc->$_
+                    }
+               }
+               grep {
+                   $sys{$_}    ? 0
+                  :$hc->$_ == 0? 0
+                  :              1
+               }
+               $hc->columns();
 my %cookie = $q->cookie(-name => 'user_data');
 my %stash;
+$stash{month} = $today->format("%B");
+$stash{fee_rows} = \@fee_rows;
 
 for my $w (qw/
     rec_fname rec_lname rec_email

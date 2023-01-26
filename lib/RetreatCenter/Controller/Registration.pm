@@ -134,50 +134,68 @@ sub list_online : Local {
 
     my @online;
     for my $f (<$rst/online/*>) {
-        open my $in, "<", $f
-            or die "cannot open $f: $!\n";
         my ($date, $time, $first, $last, $pid, $synthesized,
             $sdate, $edate, $comment, $mountain_experience);
-        $synthesized = 0;
-        $mountain_experience = 0;
-        while (<$in>) {
-            if (m{x_date => (.*)}) {
-                $date = date($1);
-            }
-            elsif (m{x_sdate => (.*)}) {
-                $sdate = date($1);
-            }
-            elsif (m{x_edate => (.*)}) {
-                $edate = date($1);
-            }
-            elsif (m{x_time => (.*)}) {
-                my $t = $1;
-                # we know the time is 24 hour time
-                $t =~ s/://;
-                $time = get_time($t);
-            }
-            elsif (m{x_fname => (.*)}) {
-                $first = normalize($1);
-            }
-            elsif (m{x_lname => (.*)}) {
-                $last = normalize($1);
-            }
-            elsif (m{x_mountain_experience\s+=>\s+1}xms) {
-                $mountain_experience = 1;
-            }
-            elsif (m{x_pid => (.*)}) {
-                $pid = $1;
-            }
-            elsif (m{x_synthesized => 1}) {
-                $synthesized = 1;
-            }
-            elsif (m{x_request\d+ => (.*)}) {
-                my $req = $1;
-                $req =~ s{'}{\\'}g;
-                $comment .= "$req<br>";
-            }
+        if ($f =~ m{\A $rst/online/N}xms) {
+            # new format
+            my $href = do $f;
+            $date = date($href->{date});
+            $time = get_time($href->{time});
+            $sdate = date($href->{sdate}) if $href->{sdate};
+            $edate = date($href->{edate}) if $href->{edate};
+            $first = normalize($href->{first});
+            $last = normalize($href->{last});
+            $mountain_experience = $href->{mountain_experience};
+            $pid = $href->{pid};
+            $comment = $href->{request};    # multi-line?
+            $comment =~ s{\n}{<br>}xmsg;    # ??
+            $comment =~ s{'}{\\'}g;
+            $synthesized = 0;   # ??
         }
-        close $in;
+        else {
+            open my $in, "<", $f
+                or die "cannot open $f: $!\n";
+            $synthesized = 0;
+            $mountain_experience = 0;
+            while (<$in>) {
+                if (m{x_date => (.*)}) {
+                    $date = date($1);
+                }
+                elsif (m{x_sdate => (.*)}) {
+                    $sdate = date($1);
+                }
+                elsif (m{x_edate => (.*)}) {
+                    $edate = date($1);
+                }
+                elsif (m{x_time => (.*)}) {
+                    my $t = $1;
+                    # we know the time is 24 hour time
+                    $t =~ s/://;
+                    $time = get_time($t);
+                }
+                elsif (m{x_fname => (.*)}) {
+                    $first = normalize($1);
+                }
+                elsif (m{x_lname => (.*)}) {
+                    $last = normalize($1);
+                }
+                elsif (m{x_mountain_experience\s+=>\s+1}xms) {
+                    $mountain_experience = 1;
+                }
+                elsif (m{x_pid => (.*)}) {
+                    $pid = $1;
+                }
+                elsif (m{x_synthesized => 1}) {
+                    $synthesized = 1;
+                }
+                elsif (m{x_request\d+ => (.*)}) {
+                    my $req = $1;
+                    $req =~ s{'}{\\'}g;
+                    $comment .= "$req<br>";
+                }
+            }
+            close $in;
+        }
 
         # space out any stray non-ASCII chars - source unknown
         $comment =~ s{\xa0}{ }xmsg if $comment;
@@ -397,7 +415,19 @@ sub get_online : Local {
     #
     # first extract all information from the file.
     #
-    my $href = x_file_to_href("$rst/online/$fname");
+    my $href;
+    if ($fname =~ m{\A N}xms) {
+        # new style
+        $href = do "$rst/online/$fname";
+        # we used to collect all 3 phone numbers ... times change
+        $href->{tel_cell} = $href->{cell};
+        $href->{tel_home} = '';
+        $href->{tel_work} = '';
+    }
+    else {
+        # old style
+        $href = x_file_to_href("$rst/online/$fname");
+    }
     if (! exists $href->{pid}) {
         $c->response->redirect($c->uri_for("/registration/list_online"));
         return;
@@ -445,10 +475,6 @@ EOH
         );
         return;
     }
-    open my $log, '>>', '/var/log/Reg/online.log';
-    print {$log} scalar(localtime), " $fname $href->{first} $href->{last}, ",
-                 $pr->name, ", ", $c->user->username(), "\n";
-    close $log;
 
     # the need for these preferences is in flux ...
     for my $k (qw/ e_mailings snail_mailings share_mailings /) {
@@ -568,6 +594,10 @@ EOF
     if ($href->{edate}) {
         stash($c, date_end => date($href->{edate}));
     }
+    else {
+        # mountain experience
+        stash($c, date_end => date($href->{sdate}));
+    }
 
     # mountain experience children
     stash($c, kids => $href->{children_name_age});
@@ -591,7 +621,8 @@ EOF
         $href->{house1} = 'not_needed';
         $href->{house2} = 'not_needed';
         $href->{request} .= ($href->{request}? '<br>': '')
-                         .  $href->{activities},
+                         .  $href->{activities}
+                         .  '<br>',
     }
 
     my $fw = $href->{from_where};
@@ -1353,7 +1384,7 @@ sub create_do : Local {
             the_time  => get_time()->t24(),
             # the rest can't be NULL so we put info about the registration
             person_id => 0,
-            rec_fname => "<a href=/registration/view/$reg_id>Registration</a> for " . $pr->name,
+            rec_fname => "<a href=/registration/view/$reg_id>Registration</a> for " . $pr->name_trimmed,
             rec_lname => '',
             rec_email => '',
             transaction_id => '',

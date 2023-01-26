@@ -38,14 +38,18 @@ print $q->header(-cookie => $cookie);
 
 my $amount = $form{amount}; 
 
-my %stash;
+my (%stash, %metadata);
 for my $name (qw/
-    rec_first rec_last rec_email
+    rec_fname rec_lname rec_email
     first last addr1 addr2 city st_prov zip_post
-    country cell email1 personal_note
+    country cell personal_note
+    amount
 /) {
     $stash{$name} = $form{$name};
 }
+# rename...
+$stash{email} = $form{email1};
+
 if ($form{personal_note}) {
     my $s = $form{personal_note};
     $s =~ s{\n}{<br>}xmsg;
@@ -55,33 +59,23 @@ if ($form{personal_note}) {
 #
 # create a readable description for the user
 #
-$stash{cell} = $form{cell};
-
 #
 # in addition to the addr1, addr2 above
-# which are for the hidden fields we also have
+# we have street_addr
 #
-my $street_addr = $form{street1};
+my $street_addr = $form{addr1};
 if ($form{street2} =~ /\S/) {
-    $street_addr .= "<br>$form{street2}";
+    $street_addr .= "<br>$form{addr2}";
 }
 $stash{street_addr} = $street_addr;
 
-my %metadata = qw/
-    amount => $amount,    
-/;
-
-my $stripe = stripe_payment(
+$stash{stripe_payment} = stripe_payment(
     name        => 'Gift Card',
-    description => "Gift Card for $form{rec_first} $form{rec_last}",
-    amount      => $total,
-    metadata    => \%metadata,
+    description => "Gift Card for \u$form{rec_fname} \u$form{rec_lname}",
+    amount      => $amount,
+    metadata    => \%stash,
     email       => $form{email1},
 );
-if ($stripe !~ /Pay Securely/) {
-    oops($stripe, 1);
-}
-$stash{stripe_payment} = $stripe;
 
 Template->new(
     INTERPOLATE => 1,

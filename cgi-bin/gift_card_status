@@ -1,64 +1,67 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use warnings;
 use strict;
-use CGI qw/:standard/;
-use JSON 'decode_json';
-use Slurp;
-use DBI;
-use lib '.';
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use lib '.', '../lib';
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
 use Date::Simple qw/
     date
 /;
 use Time::Simple qw/
     get_time
 /;
-print header();
-my $code = param('code');
-my $ref = decode_json slurp('/var/www/mount-madonna-center/config.json');
-my $db = $ref->{database};
-my $dbh = DBI->connect("DBI:mysql:database=for_reg",
-                       $db->{user}, $db->{password},
-                       { RaiseError => 1, AutoCommit => 1 }
-          ) or die "cannot connect to for_reg database\n";
-my $sth_search = $dbh->prepare(<<"EOS");
-    SELECT *
-      FROM gift_cards
-     WHERE code = ?
-  ORDER BY the_date asc, the_time asc
-EOS
-$sth_search->execute($code);
+my $code = $q->param('code');
+my @cards = model($c, 'GiftCards')->search({
+                code => $code,
+            },
+            {
+                order_by => qw/ the_date the_time /,
+            });
 my $header = 0;
 my $balance = 0;
-while (my $href = $sth_search->fetchrow_hashref()) {
+for my $card (@cards) {
     if (! $header) {
         print <<'EOH';
-<style>
-body {
-    margin-left: .5in;
-    margin-top: .5in;
-}
-</style>
+<html>
+<head>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
 EOH
         print "<h2>Status of MMC Gift Card with code '$code'</h2>\n";
         print "<table cellpadding=5>\n";
         $header = 1;
     }
     print "<tr><td>"
-        . date($href->{the_date})->format("%D")
+        . $card->the_date_obj->format("%D")
         . "</td><td>"
-        . get_time($href->{the_time})->ampm()
+        . $card->the_time_obj->ampm()
         . "</td>"
-        . "<td align=right>\$$href->{amount}</td><td>"
+        . "<td align=right>"
+        . '$' . $card->amount
+        . "</td><td>"
         ;
-    $balance += $href->{amount};
-    if ($href->{rec_lname}) {
-        print "Purchased by $href->{fname} $href->{lname}"
-            . " for $href->{rec_fname} $href->{rec_lname}"
+    $balance += $card->amount;
+    if ($card->rec_lname) {
+        my $person = $card->person;
+        print "Purchased by "
+            . $person->name
+            . " for "
+            . $card->rec_fname . ' ' . $card->rec_lname
             . "</td>"
             ;
     }
     else {
-        print "$href->{rec_fname}</td>";
+        my $s = $card->rec_fname;
+        $s =~ s{<a[^>]*>}{}xmsg;
+        $s =~ s{</a>}{}xmsg;
+        print "$s</td>";
     }
     print "</tr>\n";
 }
@@ -69,3 +72,7 @@ else {
     print "<tr><td colspan=2 align=right>Balance</td><td align=right>\$$balance</td></tr>\n";
     print "</table>\n";
 }
+print <<'EOH';
+</body>
+</html>
+EOH

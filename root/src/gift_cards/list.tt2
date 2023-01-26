@@ -19,14 +19,14 @@
 <p class=p2>
 <table cellpadding=5>
 [% FOR gc IN gift_cards %]
-    <tr><td colspan=4>$gc.code <span style="margin-left: 1in"><a href=/giftcards/add/$gc.code>add</a></span><td></tr>
+    <tr><td colspan=4><span style="font-size: 18pt">$gc.code</span> <span style="margin-left: 1in"><a href=/giftcards/add/$gc.code>add</a></span><td></tr>
     [% FOR h IN gc.history %]
         <tr>
         <td>&nbsp;</td>
-        <td align=right>$h.amount</td>
-        <td>$h.what</td>
-        <td>$h.date</td>
-        <td>$h.time</td>
+        <td align=right valign=top>$h.amount</td>
+        <td valign=top>$h.what</td>
+        <td valign=top>$h.date</td>
+        <td valign=top>$h.time</td>
         </tr>
     [% END %]
     <tr>
@@ -36,6 +36,16 @@
     </tr>
 [% END %]
 </table>
-$count card[% IF $count != 1 %]s[% END %] for a total of \$$total<br>
-Remaining Liability: \$$remaining
+<p>
+<table>
+<tr>
+<td align=right>$count card[% IF count != 1 %]s[% END %] totaling:</td>
+<td align=right>\$$total</td>
+</tr>
+
+<tr>
+<td align=right>Remaining Liability:</td>
+<td align=right>\$$remaining</td>
+</tr>
+</table>
 </ul>

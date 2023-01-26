@@ -3,7 +3,6 @@ use warnings;
 package RetreatCenterDB::GiftCards;
 use base qw/DBIx::Class/;
 
-
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 # Set the table name
@@ -26,6 +25,13 @@ __PACKAGE__->add_columns(qw/
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
 
+use Time::Simple qw/
+    get_time
+/;
+use Date::Simple qw/
+    date
+/;
+
 sub the_time_obj {
     my ($self) = @_;
     return get_time($self->the_time());
@@ -33,7 +39,7 @@ sub the_time_obj {
 
 sub the_date_obj {
     my ($self) = @_;
-    return get_time($self->the_date());
+    return date($self->the_date());
 }
 
 __PACKAGE__->belongs_to(person   => 'RetreatCenterDB::Person', 'person_id');

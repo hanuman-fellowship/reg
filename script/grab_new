@@ -644,7 +644,7 @@ sub get_omp {
     ++$nomp;
 }
 
-# ??? JON - can remove when cgi-bin scripts
+# ??JON - can remove when cgi-bin scripts
 # are styled effectively
 # and associated directories, etc
 sub get_rental_deposit {
@@ -680,7 +680,7 @@ sub get_rental_deposit {
     );
 }
 
-# ??? JON - can remove when cgi-bin scripts
+# ??JON - can remove when cgi-bin scripts
 # are styled effectively
 # and associated directories, etc
 # nearly a dup of get_rental_deposit
