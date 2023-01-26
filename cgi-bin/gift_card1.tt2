@@ -164,4 +164,3 @@ of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
 </form>
 </body>
 </html>
-<script>document.getElementById('rec_fname').focus()</script>

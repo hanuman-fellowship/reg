@@ -16,6 +16,7 @@ use Util qw/
     stash
     trim
     error
+    get_string
 /;
 
 sub index : Private {
@@ -100,6 +101,7 @@ sub list : Local {
         count => (scalar keys %balance_for),
         total => $total,
         remaining => $remaining,
+        cgi        => get_string($c, 'cgi'),
         template   => "gift_cards/list.tt2",
     );
 }

@@ -633,9 +633,13 @@ Payments
 
 <tr>
 <td></td>
-<td>
+<td colspan=3>
 [% IF editable %]
     <a href="/rental/pay_balance/$id">New Payment</a>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <a target=_blank href='$cgi/rental_payment?code=$rental.grid_code&type=deposit'>Pay Deposit</a>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <a target=_blank href='$cgi/rental_payment?code=$rental.grid_code&type=invoice'>Pay Invoice</a>
 [% END %]
 </td>
 </tr>

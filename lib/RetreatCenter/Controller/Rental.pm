@@ -741,6 +741,7 @@ sub view : Local {
 
     stash($c,
         editable       => $is_editable,
+        cgi            => $string{cgi},
         nnights        => $nnights,
         rental         => $rental,
         pg_title       => $rental->name(),

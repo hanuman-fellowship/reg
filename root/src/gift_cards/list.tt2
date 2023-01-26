@@ -9,17 +9,19 @@
 [% IF all %]
     <h3>All Cards
     <a class=cmd href=/giftcards/list>Only those with a balance</a>
-    </h3>
 [% ELSE %]
     <h3>Cards with a Balance
     <a class=cmd href=/giftcards/list/1>All Gift Cards</a>
-    </h3>
 [% END %]
+<span style='margin-left: .3in;'><a class=cmd target=_blank href='$cgi/gift_card1'>Create Card</a></span>
+</h3>
 <ul>
 <p class=p2>
 <table cellpadding=5>
 [% FOR gc IN gift_cards %]
-    <tr><td colspan=4><span style="font-size: 18pt">$gc.code</span> <span style="margin-left: 1in"><a href=/giftcards/add/$gc.code>add</a></span><td></tr>
+    <tr><td colspan=4><span style="font-size: 18pt">$gc.code</span> <span style="margin-left: 1in"><a href=/giftcards/add/$gc.code>Add</a></span>
+    <span style='margin-left: 1in'><a target=_blank href='$cgi/gift_card_status?code=$gc.code'>Status</a></span>
+    <td></tr>
     [% FOR h IN gc.history %]
         <tr>
         <td>&nbsp;</td>
