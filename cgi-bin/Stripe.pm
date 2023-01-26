@@ -62,10 +62,9 @@ sub stripe_payment {
     # use it to form the success_url
     my $script = $0;
     $script =~ s{\A .*/}{}xms;  # strip any leading directories
-    # ??? akash or akash2 ???
+    #??JONakash or akash2 ???
     my $cgi = 'https://akash2.mountmadonna.org/cgi-bin';
     my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
-
     my $cmd = <<"EOH";
 curl https://api.stripe.com/v1/checkout/sessions \\
   -u $stripe_key \\
@@ -78,6 +77,9 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
+#use Util 'JON';
+#use Data::Dumper;
+#JON "cmd = $cmd";
     my $json = `$cmd`;
     my $href = decode_json($json);
     if ($href->{url}) {

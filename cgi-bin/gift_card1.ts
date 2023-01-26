@@ -31,3 +31,6 @@ gift_card_status - nice
 
 add more $
     and use again
+
+Link on Configuration > Gift Cards
+    to create a gift card

@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<ul>
+Meal Requests:
+<br><br>
+<ul>
+$summary
+</ul>
+<br>$first $last
+<br>$addr1
+[% IF addr2 %]
+<br>$addr2
+[% END %]
+<br>$city, $st_prov<br>
+$zip_post<br>
+$country<br>
+$cell<br>
+$email1
+<p>
+$stripe_payment
+</body>
+</html>

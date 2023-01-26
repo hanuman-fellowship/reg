@@ -62,8 +62,8 @@ sub oops {
 
 my %cookie = $q->cookie(-name => 'user_data');
 for my $w (qw/
-    fname lname street1 street2
-    city state zip country
+    first last addr1 addr2
+    city st_prov zip_post country
     cell
     email1
 /) {
@@ -228,7 +228,7 @@ for my $r_href (@requests) {
                 } 
                 @meals
                 ;
-    $summary .= "$who: &nbsp;&nbsp; Cost \$$cost<br>\n";
+    $summary .= "$who: &nbsp;&nbsp; Cost \$$cost<br>";
     $tot_cost += $cost;
     push @encoded_requests, $r_href->{d8},
                             @{$r_href}{@meals},     # :)

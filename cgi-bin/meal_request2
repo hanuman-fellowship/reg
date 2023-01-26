@@ -1,0 +1,57 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib '.', '../lib';
+
+use CGI;
+my $q = CGI->new();
+use CGI::Carp qw/fatalsToBrowser/;
+use Template;
+use Stripe qw/
+    stripe_payment
+/;
+
+my %param = $q->Vars();
+if (! $param{country}) {
+    $param{country} = 'USA';
+}
+# prepare the cookie with the form values
+# to include in the header.  First delete the
+# special requests - it could be too long
+# and make trouble.
+#
+my $cookie = $q->cookie(
+    -name    => 'user_data',
+    -value   => \%param,
+    -expires => '+10y',     # i.e. don't expire
+    -domain  => 'www.mountmadonna.org',
+);
+print $q->header(-cookie => $cookie);
+
+$param{addr} = "$param{street1} $param{street2}";
+$param{description} = "$param{first} $param{last} meal request";
+
+use Util 'JON';
+use Data::Dumper;
+JON Dumper(\%param);
+
+# something is troublesome in the summary
+my $summary = $param{summary};
+$param{summary} = '';
+
+$param{stripe_payment} = stripe_payment(
+    name        => "Meal Request",
+    description => "For $param{first} $param{last}",
+    amount      => $param{amount},
+    metadata    => \%param,
+    email       => $param{email1},
+);
+$param{summary} = $summary;
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "meal_request3.tt2",
+    \%param,
+);

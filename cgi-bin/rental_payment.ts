@@ -13,3 +13,6 @@ Will need to adapt the controller code
     no need for rental_deposit and rental_invoice
     no need for various strings - can remove
     no need for send_...
+
+Two links on the Finance tab of each rental
+    to pay deposit and invoice.

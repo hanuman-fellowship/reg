@@ -8,13 +8,13 @@ var fields = [
                    err: 'Missing First Name' },
     { id: 'last',  regexp: '\\S',
                    err: 'Missing Last Name' },
-    { id: 'street1',  regexp: '\\S',
-                      err: 'Missing Street Address' },
+    { id: 'addr1',  regexp: '\\S',
+                   err: 'Missing Street Address' },
     { id: 'city',  regexp: '\\S',
                    err: 'Missing City' },
-    { id: 'state',  regexp: '\\S',
+    { id: 'st_prov',  regexp: '\\S',
                     err: 'Missing State' },
-    { id: 'zip',  regexp: '\\S',
+    { id: 'zip_post',  regexp: '\\S',
                   err: 'Missing Zip Code' },
     { id: 'cell',  regexp: '^[0-9 -.()]+\$',
                    err: 'Invalid Telephone' },
@@ -33,7 +33,7 @@ $summary
 </ul>
 <p>
 <form action='/cgi-bin/meal_request2'
-      method=GET
+      method=POST
       onsubmit='return check_fields();'
 >
 <input type=hidden name=type value="$type">
@@ -45,21 +45,21 @@ $summary
 
 <tr>
 <th class=tbl> <span class=required>*</span> First</th>
-<td><input type=text name=first id=first value='$fname' size=30 class=input></td>
+<td><input type=text name=first id=first value='$first' size=30 class=input></td>
 </tr>
 
 <tr>
 <th class=tbl> <span class=required>*</span> Last</th>
-<td><input type=text name=last id=last value='$lname' size=30 class=input></td>
+<td><input type=text name=last id=last value='$last' size=30 class=input></td>
 </tr>
 
 <tr>
 <th class=tbl><span class=required>*</span> Street</th>
-<td><input type=text name=street1 id=street1 value='$street1' size=50 class=input></td>
+<td><input type=text name=addr1 id=addr1 value='$addr1' size=50 class=input></td>
 </tr>
 <tr>
 <th></th>
-<td><input type=text name=street2 id=street2 value='$street2' size=50 class=input></td>
+<td><input type=text name=addr2 id=addr2 value='$addr2' size=50 class=input></td>
 </tr>
 
 <tr>
@@ -69,12 +69,12 @@ $summary
 
 <tr>
 <th class=tbl><span class=required>*</span> State</th>
-<td><input type=text name=state id=state value='$state' size=20 class=input></td>
+<td><input type=text name=st_prov id=st_prov value='$st_prov' size=20 class=input></td>
 </tr>
 
 <tr>
 <th class=tbl><span class=required>*</span> Zip</th>
-<td><input type=text name=zip id=zip value='$zip' size=10 class=input></td>
+<td><input type=text name=zip_post id=zip_post value='$zip_post' size=10 class=input></td>
 </tr>
 
 <tr>

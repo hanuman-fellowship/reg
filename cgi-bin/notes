@@ -1,0 +1,39 @@
+ME
+#transaction id?
+#    $q->param('session_id')
+??void transaction?
+#no housing for ME in email and message
+#ME email should say Mountain Experience
+Activity - Mountain Experience
+max ME - better date format in error message
+error message from ME should be in Helvetica
+
+PR
+again, helvetica for errors
+
+Program creation
+    no focus on conf note
+    no date(s) in message and email
+    add donation amount to message and email
+        gift card, too
+    donation added even though registration not completed
+        due to aux reg not checked
+
+Gift Card
+    gift_card2_hook
+    using all - zero payment - no need for Stripe
+        for all regs
+    didn't use gc_used, etc
+
+Meal Requests
+    use stripe
+    st_prov, zip_post, etc
+
+How to use quick one click pay - Link?
+
+Rental Housing Cost - all per day?
+    to $cgi instead
+    make link properly
+    check it out again
+
+Last name of zz...

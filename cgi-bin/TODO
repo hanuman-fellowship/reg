@@ -11,8 +11,8 @@ List all the cgi-bin scripts and what they do:
 
 - payments
 omp
-gift_card
-gift_card_status
+*gift_card
+*gift_card_status
 meal_request
 new_hfs_member
 rental_payment - done
@@ -37,3 +37,6 @@ Can we can switch over to these akash cgi-bin scripts BEFORE
 
 Does grid need to be styled better?
     Yes.  No MMC logo at all...
+
+Rental Deposit - received - update contract_received date
+    and the rental status.
