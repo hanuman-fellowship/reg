@@ -24,7 +24,7 @@ $personal_note_verbose
 </ul>
 [% END %]
 <p>
-You can check on the status of your card with <a href='https://$cgi/gift_card_status?code=$code'>this link</a>.
+You can check on the status of your card with <a href='$cgi/gift_card_status?code=$code'>this link</a>.
 <p>
 Thank you
 </body>

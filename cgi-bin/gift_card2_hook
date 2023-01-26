@@ -28,6 +28,7 @@ use Util qw/
     email_letter
     db_init
     model
+    get_string
     JON
 /;
 my $c = db_init();
@@ -116,7 +117,9 @@ add_activity($c,
 
 # email to the recipient Cc'ing the giver
 # it explains how to use the card.
+# and how to inquire its status.
 my $html1;
+$P{cgi} = get_string($c, 'cgi');
 $tt->process(
     'gift_card_email.tt2',
     \%P,
