@@ -37,3 +37,25 @@ Rental Housing Cost - all per day?
     check it out again
 
 Last name of zz...
+
+If total due is zero - because of
+    gift card or .... we need to call
+    the reg2_hook directory and pass something along...
+
+Stripe email addresses
+sf@kkkkkk.com
+    Bodhi
+        sf@bhodipath.org
+kkkkk
+    Breakfree
+        karenkiker@hotmail.com
+
+trans id on rental payment final screen?
+send email with that trans id?
+    to the person
+
+test suite for update
+
+https://www.mountmadonna.org/cgi-bin/reg1?id=4856
+
+omp bad gateway

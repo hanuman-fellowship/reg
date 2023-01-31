@@ -4,11 +4,17 @@
 <link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
+[% IF email %]
+    <img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=200>
+[% ELSE %]
+    <img src='/static/images/mmc-teal.png' width=200>
+[% END %]
 <p>
 Thank you, ${first}.
-<p>
-Your payment has been received.
+[% IF amount %]
+    <p>
+    Your payment has been received.
+[% END %]
 <p>
 [% IF title == 'Personal Retreat' %]
     [% IF mountain_experience %]
@@ -29,13 +35,15 @@ Your payment has been received.
     The id for this transaction is ${transaction_id}.
 [% END %]
 <p>
+[% IF ! email %]
 The above information has been sent to you via an email to ${email}.<br>
-You will soon receive <i>another</i> letter from programs@mountmadonna.org<br>
-with confirmation of your 
+[% END %]
+You will soon receive <i>another</i> letter from programs@mountmadonna.org
+with confirmation of your
 [% IF mountain_experience || housing_not_needed %]
     registration.
 [% ELSE %]
-    housing and all the details you will need to know<br>
+    housing and all the details you will need to know
     prior to coming to Mount Madonna Center.
 [% END %]
 <p>
@@ -46,16 +54,16 @@ If it is not there please call us at 408-846-4090.
     <p>
     Do <b>not</b> make travel plans until you have received
     your housing confirmation letter.
-[% END %]
-<p>
-[% IF withwhom_last || withwhom_first %]
     <p>
-    You requested to be housed with $withwhom_first ${withwhom_last}.
-    They <b>MUST REGISTER SEPARATELY</b>.<br>
-    [% IF pid == 0 %]
-        <a href="https://www.mountmadonna.org/cgi-bin/regPR">Click here to go back to the registration page</a> and register them.</p>
-    [% ELSE %]
-        <a href="https://www.mountmadonna.org/cgi-bin/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
+    [% IF withwhom_last || withwhom_first %]
+        <p>
+        You requested to be housed with $withwhom_first ${withwhom_last}.
+        They <b>MUST REGISTER SEPARATELY</b>.<br>
+        [% IF pid == 0 %]
+            <a href="https://www.mountmadonna.org/cgi-bin/regPR">Click here to go back to the registration page</a> and register them.</p>
+        [% ELSE %]
+            <a href="https://www.mountmadonna.org/cgi-bin/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
+        [% END %]
     [% END %]
 [% END %]
 </body>

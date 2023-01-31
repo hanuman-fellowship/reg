@@ -25,6 +25,7 @@ my $c = db_init();
 use Stripe qw/
     stripe_payment
 /;
+use Data::Dumper;
 
 #
 # gather all the form elements into a hash
@@ -922,14 +923,22 @@ for my $f (qw/
 }
 $metadata{title} = $stash{title};
 
-$stash{stripe_payment} = stripe_payment(
-    name        => $form{mountain_experience}? 'Mountain Experience'
-                  :                            $prog->name_trimmed,         
-    description => "Registration for $form{first} $form{last}",
-    amount      => $total,
-    metadata    => \%metadata,
-    email       => $form{email1},
-);
+if ($total == 0) {
+    # no payment needed
+    $stash{cgi} = get_string($c, 'cgi');
+    $stash{metadata} = Dumper(\%metadata);
+}
+else {
+    # get ready for Stripe payment
+    $stash{stripe_payment} = stripe_payment(
+        name        => $form{mountain_experience}? 'Mountain Experience'
+                      :                            $prog->name_trimmed,
+        description => "Registration for $form{first} $form{last}",
+        amount      => $total,
+        metadata    => \%metadata,
+        email       => $form{email1},
+    );
+}
 
 Template->new(
     INTERPOLATE => 1,

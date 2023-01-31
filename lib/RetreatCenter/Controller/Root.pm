@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Root;
 use base 'Catalyst::Controller';
 
+use lib '../..';
+
 use Util qw/
     tt_today
     email_letter

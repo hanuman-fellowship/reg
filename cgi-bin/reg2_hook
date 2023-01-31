@@ -31,7 +31,18 @@ use Time::Simple qw/
 use Data::Dumper;
 $Data::Dumper::Sortkeys = 1;
 
-my %P = metadata($q);
+my %P;
+my $metadata = $q->param('metadata');
+if ($metadata) {
+    # there was no payment via Stripe
+    my $VAR1;   # inside the $metadata...
+    my $href = eval $metadata;
+    %P = %$href;
+    $P{transaction_id} = time();  # no dups, right?
+}
+else {
+    %P = metadata($q);
+}
 # timestamp it
 $P{date} = today()->format("%D");
 $P{time} = get_time()->t24();
@@ -54,8 +65,9 @@ $P{edate} = date($P{edate});
 
 # send email to the person to confirm
 my $html;
+$P{email} = 1;
 $tt->process(
-    'reg_email.tt2',
+    'reg_message.tt2',
     \%P,
     \$html,
 ) or JON $tt->template_error;
@@ -66,9 +78,7 @@ email_letter($c,
     html    => $html,
 );
 
-# transaction ID??
-# include in template
-
+$P{email} = 0;
 $tt->process(
     'reg_message.tt2',
     \%P,

@@ -28,6 +28,25 @@ button {
     background: lightgreen;
 }
 </style>
+<script>
+function check_dates() {
+    var arr = document.getElementById('arr_date');
+    if (arr.value == '') {
+        alert('No arrival date!');
+        return false;
+    }
+    var dep = document.getElementById('dep_date');
+    if (dep.value == '') {
+        alert('No departure date!');
+        return false;
+    }
+    if (arr.value == dep.value) {
+        alert('Cannot depart on the same day you arrive.');
+        return false;
+    }
+    return true;
+}
+</script>
 </head>
 <body>
 <img src='/static/images/mmc-teal.png' width=200>
@@ -37,7 +56,7 @@ button {
 
 Please enter the dates of your personal retreat.
 <p>
-<form name=form action=reg1 method=get method=POST>
+<form name=form action=reg1 method=get method=POST onsubmit="return check_dates()">
 <input type=hidden name=id value=0>
 
 <div class="input-daterange input-group"
@@ -46,12 +65,14 @@ Please enter the dates of your personal retreat.
 <input type="text"
        class="input-sm form-control"
        name="arr_date"
+       id="arr_date"
        placeholder="Arrival date"
 />
 <span class="input-group-addon">to</span>
 <input type="text"
        class="input-sm form-control"
        name="dep_date"
+       id="dep_date"
        placeholder="Departure date"
 />
 </div>

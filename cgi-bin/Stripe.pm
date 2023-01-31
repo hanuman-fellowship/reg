@@ -77,9 +77,9 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
-#use Util 'JON';
-#use Data::Dumper;
-#JON "cmd = $cmd";
+use Util 'JON';
+use Data::Dumper;
+JON "cmd = $cmd";
     my $json = `$cmd`;
     my $href = decode_json($json);
     if ($href->{url}) {
