@@ -9,12 +9,12 @@ List all the cgi-bin scripts and what they do:
 *program_inquiry.pl         # ask Jen to remove the .pl
                             # for consistency!
 
-- payments
-omp
+- scripts that ask for payments:
 *gift_card
 *gift_card_status
-meal_request
 new_hfs_member
+omp
+meal_request - done
 rental_payment - done
 reg2 - done
 req_pay - done

@@ -63,12 +63,12 @@ If the meals are for a child (ages 5-12) check the Child column checkbox.
 <p>
 [% dr = date_ranges.0 %]
 [% IF type == 'family' %]
-We do not offer meals on Sunday or lunch on Saturdays[% IF ! dr %].[% END %]
+    We do not offer meals on Sunday or lunch on Saturdays[% IF ! dr %].[% END %]
 [% ELSE %]
-We do not offer lunch on Saturdays[% IF ! dr %].[% END %]
+    We do not offer lunch on Saturdays[% IF ! dr %].[% END %]
 [% END %]
 [% IF dr %]
-<br>nor meals on these dates:
+    <br>nor meals on these dates:
     <ul>
     [% FOR dr IN date_ranges %]
         [% one_day = dr.0 == dr.1 %]

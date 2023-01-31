@@ -11,6 +11,8 @@ use Template;
 use JSON qw/
     decode_json
 /;
+use Util 'JON';
+use Data::Dumper;
 
 # Net::Stripe
 # https://stackoverflow.com/questions/43001753/add-extra-card-to-stripe-customer-in-curl
@@ -77,16 +79,15 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
-use Util 'JON';
-use Data::Dumper;
-JON "cmd = $cmd";
+#JON "cmd = $cmd";
     my $json = `$cmd`;
+#JON "json = $json";
     my $href = decode_json($json);
     if ($href->{url}) {
         return <<"EOH";
-    <form action="$href->{url}">
-    <button type=submit>Pay Securely with your Credit Card</button>
-    </form>
+<form action="$href->{url}">
+<button type=submit>Pay Securely with your Credit Card</button>
+</form>
 EOH
     }
     else {
@@ -119,8 +120,6 @@ sub metadata {
     my $json = `$cmd`;
     my $href = decode_json($json);
     $href->{metadata}{transaction_id} = substr($session_id, -12);
-#use Util 'JON';
-#use Data::Dumper;
 #JON Dumper($href);
     return %{$href->{metadata}};
 }

@@ -110,7 +110,8 @@ $tt->process(
     \$html,
 );
 print $html;
-# again without the message at the bottom
+
+# send the same via email without the message at the bottom
 my $mail_msg;
 $tt->process(
     'meal_request_receipt.tt2',
@@ -123,4 +124,14 @@ email_letter($c,
     subject => 'MMC Meal Request',
     html    => $mail_msg,
 );
-# email the same
+
+# notify the office of this meal request
+my $office = get_string($c, 'meal_req_notify');
+if ($office) {
+    email_letter($c,
+        to      => $office,
+        from    => 'programs@mountmadonna.org',
+        subject => 'Meal Request',
+        html    => $mr_desc,
+    );
+}

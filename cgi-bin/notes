@@ -8,6 +8,9 @@ Activity - Mountain Experience
 max ME - better date format in error message
 error message from ME should be in Helvetica
 
+search for ??JON for places to fix before
+    going live with these cgi-bin scripts
+
 PR
 again, helvetica for errors
 
@@ -25,10 +28,6 @@ Gift Card
         for all regs
     didn't use gc_used, etc
 
-Meal Requests
-    use stripe
-    st_prov, zip_post, etc
-
 How to use quick one click pay - Link?
 
 Rental Housing Cost - all per day?
@@ -36,19 +35,11 @@ Rental Housing Cost - all per day?
     make link properly
     check it out again
 
-Last name of zz...
-
-If total due is zero - because of
-    gift card or .... we need to call
-    the reg2_hook directory and pass something along...
+Last name with /^zz/ prefix in
+    program/PR/ME registrations ... - force no payment
 
 Stripe email addresses
-sf@kkkkkk.com
-    Bodhi
-        sf@bhodipath.org
-kkkkk
-    Breakfree
-        karenkiker@hotmail.com
+    format required?
 
 trans id on rental payment final screen?
 send email with that trans id?

@@ -51,3 +51,43 @@ This may be best - perhaps the person with the card
     and Link - the pay faster 1-click thingy
     I don't need to understand or facilitate that.
     Is it okay to insert the email address?  I think so.
+
+Questions:
+    key for actual (not test) payments??
+
+    from Shantam:
+    my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
+        copied on 1/22/23:
+    my $stripe_key = "pk_test_9dgtGZ9aTJDYHsPRvJEiIEAT00g77ndlOd";
+    my $stripe_key = "pk_live_n31B5r1y0q0QMvLfeAqMmTNH00amiaUNQ2";
+    Which is right?
+
+    How to void an unsettled transaction?
+    How does the accounting office deal with the Stripe payments?
+    Can we just start using Stripe instead of authorize.net?
+
+    Certain email addresses do not work and Stripe gags on them
+        giving an error.
+         j@x.c is ok
+         j.@x.c is ok
+         .j@x.c is ok
+
+         j@x is not ok
+         j@.c not ok
+         j@c. not ok
+    So what is a regex to validate the email address?
+        answered my own question
+
+    How large a company is Stripe?  Based in San Francisco?
+        8,000 employees!  Wow.
+        10 Best Stripe Competitors and Alternatives
+            PayPal
+            Stax
+            Square
+            Adyen
+            WePay
+            2Checkout
+            Authorize.Net
+            Braintree
+            ChargeBee
+            Wise (Formerly Transferwise)

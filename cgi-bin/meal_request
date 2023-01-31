@@ -29,7 +29,7 @@ use Date::Simple qw/
     date
     today
 /;
-Date::Simple->default_format("%b %e '%q");
+Date::Simple->default_format("%B %e '%q");
 
 my @meals = qw/
     breakfast
@@ -156,21 +156,21 @@ for my $i (1 .. 3) {
     $r_href->{d8} = $dd->as_d8();
     $r_href->{child} = $params{"child$i"};
     my $got_one = 0;
-    for my $x (@meals) {
-        my $v = $params{"$x$i"};
+    for my $m (@meals) {
+        my $v = $params{"$m$i"};
         if ($v && $v !~ m{^\s* \d+ \s* $}xms) {
             oops "Illegal number: $v";
         }
-        if ($x eq 'lunch' && $v && $saturday) {
+        if ($m eq 'lunch' && $v && $saturday) {
             oops "Sorry, No lunch on Saturday $dd.";
         }
-        if ($x eq 'lunch' && no_lunch($dd, \@date_ranges)) {
+        if ($m eq 'lunch' && $v && no_lunch($dd, \@date_ranges)) {
             oops "Sorry, No lunch is served on $dd.";
         }
-        $r_href->{$x} = $v || 0;
+        $r_href->{$m} = $v || 0;
         if ($v) {
             $got_one = 1;
-            $totals{$r_href->{d8}}{$x} += $v;
+            $totals{$r_href->{d8}}{$m} += $v;
         }
     }
     if ($got_one) {
@@ -201,7 +201,7 @@ for my $d8 (keys %totals) {
         if ($cur_total{$m} + $totals{$d8}{$m} > $string{"$m\_daily_max"}) {
             oops "Sorry, we have reached the maximum number"
                . " of meal requests for $m on "
-               . date($d8)
+               . date($d8)->format("%B %e '%q")
                . ".";
         }
     }
@@ -218,7 +218,7 @@ for my $r_href (@requests) {
     }
     $cost = pennies($cost);
     $summary .= 'On '
-             .  $r_href->{date_obj}->format("%a %b %e '%q")
+             .  $r_href->{date_obj}->format("%B %e '%q")
              . ': '
              ;
     my $who = $r_href->{child}? ' - for a child aged 5-12': '';
@@ -243,6 +243,20 @@ if (@requests > 1) {
 }
 $stash{summary} = $summary;
 $stash{encoded_requests} = join ',', @encoded_requests;
+
+# if there is cookie information, it will also be used.
+my %cookie = $q->cookie(
+    -domain => 'akash2.mountmadonna.org',       # ??JON
+    -name   => 'user_data',
+);
+for my $w (qw/
+    first last sanskrit addr1 addr2
+    city st_prov zip_post country
+    cell
+    email1
+/) {
+    $stash{$w} = $cookie{$w} || "";
+}
 Template->new(
     INTERPOLATE => 1,
 )->process(
