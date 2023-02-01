@@ -1,0 +1,29 @@
+drop table if exists housing_type;
+create table housing_type (
+    name varchar(16),
+    ht_order char(3),
+    short_desc varchar(256),
+    long_desc text
+);
+insert into housing_type (
+    name, ht_order, short_desc, long_desc
+)
+values
+('center_tent', '1', '', ''),
+('commuting', '2','', ''),
+('dble', '3', '', ''),
+('dble_bath', '4', '', ''),
+('dble_cabin', '5', '', ''),
+('dble_cottage1', '6', '', ''),
+('dble_cottage2', '7', '', ''),
+('dormitory', '8', '', ''),
+('economy', '9', '', ''),
+('own_tent', '10', '', ''),
+('own_van', '11', '', ''),
+('single', '12', '', ''),
+('single_bath', '13', '', ''),
+('single_cabin', '14', '', ''),
+('single_cottage1', '15', '', ''),
+('single_cottage2', '16', '', ''),
+('triple', '17', '', ''),
+('whole_cottage', '18', '', '');

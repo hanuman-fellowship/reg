@@ -64,6 +64,9 @@ p {
 [% END %]
 </td>
 <td valign=top>
+[% IF prog_admin %]
+<a href=/housingtype>Housing Types</a><p>
+[% END %]
 <a href=/meal>Meals</a><p>
 [% IF prog_admin %]
     <a href=/string/meal_requests>Meal Requests</a><p>

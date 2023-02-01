@@ -95,6 +95,8 @@ my @classes = qw/
     Inquiry
 
     Grid
+
+    HousingType
 /;
 
 __PACKAGE__->load_classes({

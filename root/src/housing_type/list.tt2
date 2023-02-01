@@ -1,0 +1,19 @@
+<h2>Housing Types</h2>
+<ul>
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th>Order</th>
+<th align=left>Short</th>
+<th align=left>Long</th>
+</tr>
+[% FOR ht IN housing_types %]
+<tr>
+<td valign=top><a target=_blank href='/housingtype/update/$ht.name'>$ht.name</a></td>
+<td valign=top align=right>$ht.ht_order</td>
+<td valign=top>$ht.short_desc</td>
+<td valign=top><div style="width: 400px">$ht.long_desc</div></td>
+</tr>
+[% END %]
+</table>
+<ul>

@@ -1,0 +1,40 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+<h2>Housing Type <span style="color: green">$ht.name</span></h2>
+
+<form action=/housingtype/update_do/$ht.name method=POST>
+<table cellpadding=5>
+
+<tr>
+<th>Order</th>
+<td><input type=text size=3 maxlength=3 name=ht_order value=$ht.ht_order></td>
+</tr>
+
+<tr>
+<th>Short Description:</th>
+<td>
+<input type=text
+           name=short_desc
+           id=short_desc
+           value='$ht.short_desc'
+           size=60
+>
+</td>
+</tr>
+
+<tr>
+<th valign=top>Long Description:</th>
+<td>
+<textarea name=long_desc cols=60 rows=6>
+$ht.long_desc
+</textarea>
+</td>
+<tr>
+
+<tr>
+<th>&nbsp;</th>
+<td><input type=submit id=sub value="Submit"></td>
+</tr>
+</table>
+</form>
+<script>document.getElementById('short_desc').focus();</script>
