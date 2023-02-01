@@ -2,16 +2,22 @@
 <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
 <h2>Housing Type <span style="color: green">$ht.name</span></h2>
 
-<form action=/housingtype/update_do/$ht.name method=POST>
+<form action=/housingtype/update_do/$ht.name
+      method=POST
+      enctype="multipart/form-data"
+>
 <table cellpadding=5>
 
 <tr>
-<th>Order</th>
-<td><input type=text size=3 maxlength=3 name=ht_order value=$ht.ht_order></td>
+<th align=right>Order</th>
+</th>
+<td><input type=text size=3 maxlength=3 name=ht_order value=$ht.ht_order>
+<input style="margin-left: 2in" type=submit id=sub value="Submit">
+</td>
 </tr>
 
 <tr>
-<th>Short Description:</th>
+<th align=right>Short Description:</th>
 <td>
 <input type=text
            name=short_desc
@@ -23,13 +29,33 @@
 </tr>
 
 <tr>
-<th valign=top>Long Description:</th>
+<th align=right valign=top>Long Description:</th>
 <td>
 <textarea name=long_desc cols=60 rows=6>
 $ht.long_desc
 </textarea>
 </td>
 <tr>
+
+<tr>
+<th align=right valign=top>Picture #1</th>
+<td>
+[% IF pic1 %]
+<img src=/static/images/${ht.name}1.jpg> <a href='/housingtype/del_image/$ht.name/1'><img src=/static/images/redX.gif width=20></a><br>
+[% END %]
+<input name=pic1 type=file>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Picture #2</th>
+<td>
+[% IF pic2 %]
+<img src=/static/images/${ht.name}2.jpg> <a onclick="return confirm('Delete this image?');" href='/housingtype/del_image/$ht.name/2'><img src=/static/images/redX.gif width=20></a><br>
+[% END %]
+<input name=pic2 type=file>
+</td>
+</tr>
 
 <tr>
 <th>&nbsp;</th>

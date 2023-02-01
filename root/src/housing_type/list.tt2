@@ -9,11 +9,19 @@
 </tr>
 [% FOR ht IN housing_types %]
 <tr>
-<td valign=top><a target=_blank href='/housingtype/update/$ht.name'>$ht.name</a></td>
+<td valign=top><a href='/housingtype/update/$ht.name'>$ht.name</a></td>
 <td valign=top align=right>$ht.ht_order</td>
 <td valign=top>$ht.short_desc</td>
 <td valign=top><div style="width: 400px">$ht.long_desc</div></td>
 </tr>
+
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>$ht.pics</td>
+</tr>
+
 [% END %]
 </table>
 <ul>

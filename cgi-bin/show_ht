@@ -1,0 +1,46 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib '../lib';
+use CGI;
+my $q = CGI->new();
+print $q->header();
+my $name = $q->path_info();
+$name =~ s{\A /}{}xms;
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init;
+my ($ht) = model($c, 'HousingType')->search({
+               name => $name,
+           });
+print <<'EOH';
+<html>
+<head>
+<style>
+body {
+    width: 80%;
+    margin-top: .2in;
+    margin-left: .2in;
+}
+p {
+    margin: 0px;
+}
+</style>
+</head>
+<body>
+EOH
+print "<h2>" . $ht->short_desc . "</h2>\n";
+print "<div style='width: 450px; margin-bottom: 5mm;'>\n" . $ht->long_desc . "</div>\n";
+my $dir = '/var/www/src/root';
+for my $i (1, 2) {
+    my $pic = "/static/images/$name$i.jpg";
+    if (-f "$dir/$pic") {
+        print "<p><img src=$pic width=450>";
+    }
+}
+print <<'EOH';
+</body>
+</html>
+EOH

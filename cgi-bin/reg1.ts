@@ -125,6 +125,8 @@ Two options to pay?  All now or just Deposit
 
 Carpooling in reg2
 
+Room vs Cabin popup - does it look okay?
+
 Mail opt in/out preferences
 
 zz last name - skip payment

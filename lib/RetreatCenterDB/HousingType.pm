@@ -13,6 +13,19 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/name/);
 
+sub pics {
+    my ($self) = @_;
+    my $name = $self->name;
+    my $dir = '/var/www/src/root/static/images';
+    my $html = '';
+    for my $i (1, 2) {
+        if (-f "$dir/$name$i.jpg") {
+            $html .= "<img src=/static/images/$name$i.jpg width=200>&nbsp;";
+        }
+    }
+    return $html;
+}
+
 1;
 __END__
 overview - Housing types - from 'own tent' to 'whole cottage'

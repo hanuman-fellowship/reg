@@ -58,6 +58,8 @@ Can suffix the name field with -1 or -2 or -7
 
 error if unknown code
 
+Helpful hint popup - look ok?
+
 TODO:
     badges
     pronouns in notes field with some punctuation

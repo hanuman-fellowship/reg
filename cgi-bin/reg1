@@ -488,17 +488,22 @@ my %sys = map { $_ => 1 } qw/
     type
     inactive
 /;
+my (%short_desc, %ht_order);
+for my $ht (model($c, 'HousingType')->all()) {
+    $short_desc{$ht->name} = $ht->short_desc();
+    $ht_order{$ht->name} = $ht->ht_order;
+}
 my @fee_rows = sort {
-                   # reverse numeric
-                   $b->{cost} <=> $a->{cost}
+                   $a->{order} <=> $b->{order}
                }
                map { 
                    +{
                         htype      => $_,
                         checked1   => ($_ eq $cookie{house1}? 'checked': ''),
                         checked2   => ($_ eq $cookie{house2}? 'checked': ''),
-                        house_desc => get_string($c, $_),
-                        cost       => $hc->$_
+                        house_desc => $short_desc{$_},
+                        cost       => $hc->$_,
+                        order      => $ht_order{$_},
                     }
                }
                grep {

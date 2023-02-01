@@ -50,6 +50,17 @@ function check_form() {
     alert("Emails don't match.");
     return false;
 }
+function popup(url, height, width) {
+    newwin = window.open(
+        url,
+        'show_ht',      // target
+        'height=' + height + ',width=' + width + ', scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
@@ -340,7 +351,7 @@ If you only want a certificate of completion enter COMP for the license #.
         <li>Prices are the Total charge including lodging, meals,
             and use of facilities.
     [% ELSE %]
-        <li>Prices are Per Person Per Pay and include lodging, meals,
+        <li>Prices are Per Person Per Day and include lodging, meals,
             and use of facilities.
     [% END %]
     [% IF tuition %]
@@ -393,7 +404,7 @@ If you only want a certificate of completion enter COMP for the license #.
         <tr>
         <td><input type=radio name=house1 value='$r.htype' $r.checked1></td>
         <td><input type=radio name=house2 value='$r.htype' $r.checked2></td>
-        <td>$r.house_desc</td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/${r.htype}',650,500)">$r.house_desc</a></td>
         <td align=right>$r.cost</td>
         </tr>
     [% END %]
