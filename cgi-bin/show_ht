@@ -5,8 +5,9 @@ use lib '../lib';
 use CGI;
 my $q = CGI->new();
 print $q->header();
-my $name = $q->path_info();
-$name =~ s{\A /}{}xms;
+my $pi = $q->path_info();
+$pi =~ s{\A /}{}xms;
+my ($name, $cost, $type) = split '/', $pi;
 use Util qw/
     db_init
     model
@@ -32,6 +33,7 @@ p {
 <body>
 EOH
 print "<h2>" . $ht->short_desc . "</h2>\n";
+print "\$$cost $type<br><br>\n";
 print "<div style='width: 450px; margin-bottom: 5mm;'>\n" . $ht->long_desc . "</div>\n";
 my $dir = '/var/www/src/root';
 for my $i (1, 2) {

@@ -125,7 +125,12 @@ Two options to pay?  All now or just Deposit
 
 Carpooling in reg2
 
-Room vs Cabin popup - does it look okay?
+Popups:
+    Room vs Cabin
+    Gender
+    Pronouns
+    Carpool privacy
+    Housing Types
 
 Mail opt in/out preferences
 

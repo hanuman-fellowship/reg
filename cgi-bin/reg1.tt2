@@ -404,7 +404,7 @@ If you only want a certificate of completion enter COMP for the license #.
         <tr>
         <td><input type=radio name=house1 value='$r.htype' $r.checked1></td>
         <td><input type=radio name=house2 value='$r.htype' $r.checked2></td>
-        <td><a href="javascript:popup('/cgi-bin/show_ht/${r.htype}',650,500)">$r.house_desc</a></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/${r.htype}/$r.cost/$house_cost_type',650,500)">$r.house_desc</a></td>
         <td align=right>$r.cost</td>
         </tr>
     [% END %]

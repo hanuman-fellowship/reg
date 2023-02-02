@@ -2,10 +2,10 @@
 <head>
 <script type="text/javascript">
 var newwin;
-function popup(url, height) {
+function popup(url, height, width) {
     newwin = window.open(
         url, 'reg_search_help',
-        'height=' + height + ',width=550, scrollbars'
+        'height=' + height + ',width=' + width + ', scrollbars'
     );
     if (window.focus) {
         newwin.focus();
@@ -51,7 +51,7 @@ $edate <span class=dow>${edate.format("%a")}</span>
 Housing Assignment Grid
 <span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
 <span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code&by_name=1">By Name</a></span>
-<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://akash.mountmadonna.org/static/hints.html',750)">Helpful Hints</a></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://akash.mountmadonna.org/static/hints.html',750,550)">Helpful Hints</a></span>
 </h2>
 <p>
 <table cellpadding=5 border=1>
@@ -121,6 +121,7 @@ $days
 </table>
 </td><td>
 
+<!-- old way -->
 <table cellpadding=3>
 <tr>
 <th align=left>Type</th><th align=right>Cost</th>
@@ -135,6 +136,10 @@ $days
 <td>House Cost Type: $housecost_type</td>
 </tr>
 </table>
+
+<!-- new way
+[% INCLUDE grid_htype.tt2 %]
+-->
 
 </td></tr>
 

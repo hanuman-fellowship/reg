@@ -1,18 +1,5 @@
 <html>
 <head>
-<script type="text/javascript">
-var newwin;
-function popup(url, height) {
-    newwin = window.open(
-        url, 'reg_search_help',
-        'height=' + height + ',width=550, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-</script>
 <style type="text/css">
 body {
     margin-left: .5in;
@@ -89,6 +76,7 @@ Housing Assignment Grid
 </table>
 </td><td>
 
+<!-- old way -->
 <table cellpadding=3>
 <tr>
 <th align=left>Type</th><th align=right>Cost</th>
@@ -103,6 +91,10 @@ Housing Assignment Grid
 <td>House Cost Type: $housecost_type</td>
 </tr>
 </table>
+
+<!-- new way
+[% INCLUDE grid_htype.tt2 %]
+-->
 
 [% IF fixed_cost_houses %]
 <tr>

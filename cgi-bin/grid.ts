@@ -60,6 +60,8 @@ error if unknown code
 
 Helpful hint popup - look ok?
 
+Popups for housing types - look ok?
+
 TODO:
     badges
     pronouns in notes field with some punctuation

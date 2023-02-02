@@ -67,6 +67,22 @@ my %hc;
 my $sd = substr($rental->sdate(), 4, 4);        # MMDD
 my $winter = ! (   $string{center_tent_start} <= $sd
                 && $sd                        <= $string{center_tent_end});
+
+=comment
+
+# NEW WAY
+@htypes = grep {
+              my $name = $_->name;
+              $hc->$name != 0        # skip zero cost types
+          }
+          model($c, 'HousingType')->search(
+              {},
+              { order_by => 'ht_order asc' }
+          );
+
+=cut
+
+# OLD WAY 
 HTYPE:
 for my $t (housing_types(1)) {
     if ($winter && $t eq 'center_tent') {
@@ -86,6 +102,8 @@ for my $t (housing_types(1)) {
     };
 }
 @htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
+
+# OLD WAY
 
 # houses that have been assigned to this rental
 for my $b ($rental->rental_bookings()) {
@@ -220,6 +238,7 @@ if ($P{by_name}) {
         total   => commify($gtotal),
         code    => $code,
         htypes  => \@htypes,
+        housecost => $hc,
         action  => $grid_cgi,
     };
     my $tt = Template->new({
@@ -551,6 +570,7 @@ if ($P{process}) {
         total   => commify($gtotal),
         code    => $code,
         htypes  => \@htypes,
+        housecost => $hc,
         action  => $grid_cgi,
     };
     $tt->process(
@@ -601,6 +621,7 @@ my $stash = {
     nnights => $nnights,
     days    => $days,
     htypes  => \@htypes,
+    housecost => $hc,
     code    => $code,
     action  => $grid_cgi,
 };

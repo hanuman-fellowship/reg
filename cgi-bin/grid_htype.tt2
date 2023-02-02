@@ -1,0 +1,16 @@
+<table cellpadding=3>
+<tr>
+<th align=left>Type</th><th align=right>Cost</th>
+</tr>
+[% FOR ht IN htypes %]
+[% name = ht.name %]
+[% cost = housecost.$name %]
+<tr>
+<td><a href="javascript:popup('https://akash2.mountmadonna.org/cgi-bin/show_ht/$$name/$cost/$housecost_type',650,500);">$ht.short_desc</a></td>
+<td align=right>$cost</td>
+[% END %]
+<tr>
+<tr><td>&nbsp;</td></tr>
+<td>House Cost Type: $housecost_type</td>
+</tr>
+</table>
