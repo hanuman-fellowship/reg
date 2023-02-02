@@ -41,7 +41,7 @@ $ht.long_desc
 <th align=right valign=top>Picture #1</th>
 <td>
 [% IF pic1 %]
-<img src=/static/images/${ht.name}1.jpg> <a href='/housingtype/del_image/$ht.name/1'><img src=/static/images/redX.gif width=20></a><br>
+<img src=/static/images/${ht.name}1.jpg width=450> <a onclick="return confirm('Delete this image?');" href='/housingtype/del_image/$ht.name/1'><img src=/static/images/redX.gif width=20></a><br>
 [% END %]
 <input name=pic1 type=file>
 </td>
@@ -51,7 +51,7 @@ $ht.long_desc
 <th align=right valign=top>Picture #2</th>
 <td>
 [% IF pic2 %]
-<img src=/static/images/${ht.name}2.jpg> <a onclick="return confirm('Delete this image?');" href='/housingtype/del_image/$ht.name/2'><img src=/static/images/redX.gif width=20></a><br>
+<img src=/static/images/${ht.name}2.jpg width=450> <a onclick="return confirm('Delete this image?');" href='/housingtype/del_image/$ht.name/2'><img src=/static/images/redX.gif width=20></a><br>
 [% END %]
 <input name=pic2 type=file>
 </td>
