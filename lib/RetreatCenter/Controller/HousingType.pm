@@ -9,6 +9,9 @@ use Util qw/
     stash
     error
 /;
+use File::Copy qw/
+    move
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -62,7 +65,11 @@ sub update_do : Local {
         if ($upload) {
             # force the name to be .jpg even if it's a .png...
             # okay?
-            $upload->copy_to("$images/$name$i.jpg");
+            my $pic = "$images/$name$i.jpg";
+            my $tmp = '/tmp/pic.jpg';
+            $upload->copy_to($pic);
+            system("/usr/bin/convert $pic -resize 450x $tmp");
+            move $tmp, $pic;
         }
     }
     $c->response->redirect($c->uri_for('/housingtype/list'));
