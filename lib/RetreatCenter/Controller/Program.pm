@@ -214,6 +214,9 @@ sub _get_data {
     $P{footnotes} = '';
     $P{url} = '';
     $P{bank_account} = 'mmc';
+    if (empty $P{percent_tuition}) {
+        $P{percent_tution} = '0';
+    }
     #
     if ($P{school_id} == 1) {
         # MMC
