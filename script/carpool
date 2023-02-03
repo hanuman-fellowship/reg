@@ -48,7 +48,7 @@ if (! @progs) {
 #
 for my $prog (@progs) {
     my $let = "";
-    $let .= "<h3>Car Pool List for " .  $prog->name . " from "
+    $let .= "<h3>Car Pool List for " .  $prog->name_trimmed . " from "
          .  short_dates($prog->sdate_obj, $prog->edate_obj, $prog->extradays)
          .  "</h3><ul>\n"
          ;

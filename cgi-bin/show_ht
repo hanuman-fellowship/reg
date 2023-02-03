@@ -24,6 +24,7 @@ body {
     width: 80%;
     margin-top: .2in;
     margin-left: .2in;
+    font-family: Arial;
 }
 p {
     margin: 0px;
@@ -39,7 +40,7 @@ my $dir = '/var/www/src/root';
 for my $i (1, 2) {
     my $pic = "/static/images/$name$i.jpg";
     if (-f "$dir/$pic") {
-        print "<p><img src=$pic width=450>";
+        print "<img src=$pic width=450><br><br>";
     }
 }
 print <<'EOH';

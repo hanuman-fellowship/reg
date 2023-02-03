@@ -29,6 +29,17 @@ var fields = [
     { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' },
 ];
+function popup(url, height, width) {
+    newwin = window.open(
+        url,
+        'show_ht',      // target
+        'height=' + height + ',width=' + width + ', scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
@@ -40,17 +51,19 @@ gift of meals and lodging at Mount Madonna Center.
 For a Personal Retreat in $month here are the costs
 Per Person Per Day for the various housing options:
 <ul>
-<table cellpadding=5>
+<table cellpadding=3>
 <tr>
-<th class=lt>Housing Type</th>
-<th>Cost</th>
+<th class=lt>Type</th><th align=right>Cost</th>
 </tr>
-[% FOR r IN fee_rows %]
+[% FOR ht IN htypes %]
 <tr>
-<td class=lt>$r.desc</td>
-<td class=rt>$r.cost</td>
-</tr>
+<td><a href="javascript:popup('https://akash2.mountmadonna.org/cgi-bin/show_ht/$ht.type/$ht.cost/$housecost_type',650,500);">$ht.short_desc</a></td>
+<td align=right>$ht.cost</td>
 [% END %]
+<tr>
+<tr><td>&nbsp;</td></tr>
+<td>House Cost Type: $housecost_type</td>
+</tr>
 </table>
 </ul>
 

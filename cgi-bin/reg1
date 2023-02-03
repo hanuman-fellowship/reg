@@ -374,7 +374,7 @@ for my $w (qw/
 /) {
     $stash{$w} = $prog->$w;
 }
-$stash{house_cost_type} = $prog->housecost->type;
+$stash{housecost_type} = $prog->housecost->type;
 
 $stash{tuition_name} = $prog->tuition_name || 'tuition';
 $stash{tuition_comma} = ($prog->tuition != 0)? "$stash{tuition_name},": '';
@@ -482,37 +482,28 @@ $stash{housing_not_needed}
      :                      $prog->housing_not_needed;
 
 my $hc = $prog->housecost();
-my %sys = map { $_ => 1 } qw/
-    id
-    name
-    type
-    inactive
-/;
-my (%short_desc, %ht_order);
-for my $ht (model($c, 'HousingType')->all()) {
-    $short_desc{$ht->name} = $ht->short_desc();
-    $ht_order{$ht->name} = $ht->ht_order;
-}
+my @htypes = model($c, 'HousingType')->all();
 my @fee_rows = sort {
                    $a->{order} <=> $b->{order}
                }
                map { 
+                   my $type = $_->name;
                    +{
-                        htype      => $_,
-                        checked1   => ($_ eq $cookie{house1}? 'checked': ''),
-                        checked2   => ($_ eq $cookie{house2}? 'checked': ''),
-                        house_desc => $short_desc{$_},
-                        cost       => $hc->$_,
-                        order      => $ht_order{$_},
+                        htype      => $type,
+                        checked1   => ($type eq $cookie{house1}? 'checked': ''),
+                        checked2   => ($type eq $cookie{house2}? 'checked': ''),
+                        house_desc => $_->short_desc,
+                        cost       => $hc->$type,
+                        order      => $_->ht_order,
                     }
                }
                grep {
-                   $sys{$_}? 0
-                  :$hc->$_ == 0? 0
-                  :($only_outdoors && $_ !~ m{tent|van}xms)? 0
+                  my $type = $_->name;
+                   $hc->$type == 0? 0
+                  :($only_outdoors && $type !~ m{tent|van}xms)? 0
                   : 1
                }
-               $hc->columns();
+               @htypes;
 
 $stash{house_cost_type} = $hc->type;
 $stash{housing_fee_rows} = \@fee_rows;

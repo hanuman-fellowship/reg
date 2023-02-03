@@ -41,7 +41,8 @@ Test Suite for Reg1 and Reg2
         Per Day (Extra days) or Total (normal)
         Non zero types only
 
-        Overlib descriptions of types (to come)
+        Links on descriptions of housing types
+            to show long description and photos
 
         Covid Vax info about housing
             Strangers can share info?

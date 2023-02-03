@@ -1,6 +1,8 @@
 Test Suite for Gift Card
 
-Cookie used
+House Costs - with links to descriptions and photos
+
+Cookies used
 
 field check - missing field and valid email
     valid amount
