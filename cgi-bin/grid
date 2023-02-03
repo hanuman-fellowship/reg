@@ -68,17 +68,17 @@ my $sd = substr($rental->sdate(), 4, 4);        # MMDD
 my $winter = ! (   $string{center_tent_start} <= $sd
                 && $sd                        <= $string{center_tent_end});
 
-=comment
+=comment 
 
 # NEW WAY
-@htypes = grep {
+@htypes = sort {
+              $a->ht_order <=> $b->ht_order
+          }
+          grep {
               my $name = $_->name;
               $hc->$name != 0        # skip zero cost types
           }
-          model($c, 'HousingType')->search(
-              {},
-              { order_by => 'ht_order asc' }
-          );
+          model($c, 'HousingType')->all();
 
 =cut
 

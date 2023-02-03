@@ -242,7 +242,7 @@ $days
 [% INCLUDE grid_htype.tt2 %]
 -->
 
-</td></td></tr>
+</td></tr>
 <tr><td>&nbsp;</td></tr>
 
 [% IF fixed_cost_houses %]

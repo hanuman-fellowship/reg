@@ -59,11 +59,8 @@ Per Person Per Day for the various housing options:
 <tr>
 <td><a href="javascript:popup('https://akash2.mountmadonna.org/cgi-bin/show_ht/$ht.type/$ht.cost/$housecost_type',650,500);">$ht.short_desc</a></td>
 <td align=right>$ht.cost</td>
-[% END %]
-<tr>
-<tr><td>&nbsp;</td></tr>
-<td>House Cost Type: $housecost_type</td>
 </tr>
+[% END %]
 </table>
 </ul>
 
