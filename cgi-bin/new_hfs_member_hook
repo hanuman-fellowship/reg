@@ -1,0 +1,126 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib '.', '../lib';
+
+use CGI;
+my $q = CGI->new();
+print $q->header();
+
+use Template;
+my $tt = Template->new(
+             INTERPOLATE => 1
+         );
+
+use Date::Simple qw/
+    date
+    today
+/;
+use Time::Simple qw/
+    get_time
+/;
+my $date = today()->as_d8();
+my $time = get_time()->t24();
+
+use Util qw/
+    add_or_update_deduping
+    add_activity
+    email_letter
+    db_init
+    model
+    JON
+/;
+my $c = db_init();
+
+use Stripe qw/
+    metadata
+/;
+my %P = metadata($q);
+use Data::Dumper;   # JON
+JON Dumper \%P;
+
+#
+# create/update the Person
+#
+# first add missing keys - we're not a full mlist thingy
+#
+$P{sex} = '';
+for my $k (qw/ e_mailings snail_mailings share_mailings /) {
+    $P{$k} = -1;
+}
+$P{tel_cell} = $P{cell};
+for my $f (qw/
+    temple_id
+    tel_home tel_work
+/) {
+    $P{$f} = '';
+}
+my ($person_id, $person, $status) = add_or_update_deduping(
+                                        $c, \%P
+                                    );
+
+#
+# payment to the Membership extra account
+#
+my @xaccounts = model($c, 'XAccount')->search({
+                    descr => 'Membership',
+                });
+my $membership_xaccount_id = $xaccounts[0]->id;
+    # what if not there??
+model($c, 'XAccountPayment')->create({
+    person_id   => $person_id,
+    xaccount_id => $membership_xaccount_id,
+    what        => "\u$P{mem_type} membership",
+    amount      => $P{amount},
+    type        => 'O',               # online
+    user_id     => 0,                 # what other user id?
+    the_date    => $date,
+    time        => $time,
+    transaction_id => $P{transaction_id},
+});
+
+#
+# create the Membership
+#
+#...
+
+#
+# register the Activity
+#
+add_activity($c,
+    "HFS \u$P{mem_type} Membership for"
+    . ' <a href=/person/view/' . $person->id . '>'
+    . $person->name . '</a>'
+);
+
+#
+# notify membership@mountmadonna.org
+#
+# ...
+
+#
+# email to the new member
+#
+my $html;
+$tt->process(
+    'new_hfs_message.tt2',
+    {
+        url      => 'https://akash.mountmadonna.org',
+        name     => $person->name,
+        amount   => $P{amount},
+        transaction_id => $P{transaction_id},
+        Mem_Type => ucfirst $P{mem_type},
+    },
+    \$html,
+);
+email_letter($c,
+    to      => "$P{first} $P{last} <$P{email}",
+    from    => 'programs@mountmadonna.org',
+    subject => "Hanuman Fellowship \u$P{mem_type} Membership",
+    html    => $html,
+);
+#
+# the same response on the screen:
+#
+print $html;

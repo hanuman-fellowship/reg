@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<h2>Hanuman Fellowship Membership</h2>
+<img src=/static/images/hanuman.png width=100>        
+<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
+<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
+<p>
+Verify the following:
+<p>
+<table cellpadding=15 class=ind>
+<tr><td>
+$first $last<br>
+$addr1<br>
+[% IF addr2 %]
+    $addr2<br>
+[% END %]
+$city, $st_prov<br>
+$zip_post<br>
+$country
+<p>
+$cell<br>
+$email1
+</td>
+[% IF pic_thumb %]
+    <td valign=top>
+    <img src=$pic_thumb>
+    </td>
+[% END %]
+</tr>
+</table>
+<p>
+You want to enroll as a $Mem_Type in the Hanuman Fellowship.<br>
+The $prorated cost is \$${amount}.
+<p>
+Your introduction:
+<ul>
+$intro
+</ul>
+[% IF ky %]
+    Your preferred Karma Yoga areas:
+    <ul>
+    $ky
+    </ul>
+[% END %]
+<button type="button"
+        onclick="history.go(-1); return false;">
+Go Back and Make Changes
+</button>
+$stripe_payment
+</form>
+</body>
+</html>

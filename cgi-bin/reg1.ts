@@ -22,6 +22,8 @@ Test Suite for Reg1 and Reg2
         pr_max, date_ranges
 
 - Program
+    Is the program 'web ready'?
+
     Has the End date/time passed?
 
     Max registrations for this program?

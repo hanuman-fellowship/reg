@@ -1,115 +1,73 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use CGI;
 my $q = CGI->new();
-my $href = $q->Vars();
-my $type = $href->{mem_type};
-# cookie info from a registration
-my %cookie = $q->cookie(-name => 'user_data');
-
+my %form = $q->Vars();
 use Template;
 my $tt = Template->new(
     INTERPOLATE => 1,
 );
-
-use lib '.';
-use Authorize qw/
-    html_for_authorize_dot_net
+# cookie info from a registration
+my %cookie = $q->cookie(-name => 'user_data');
+use lib '.', '../lib';
+use Stripe qw/
+    stripe_payment
 /;
-
 use HTML::Entities qw/
     encode_entities
 /;
-
 my %stash;
-for my $w (qw/
-    fname lname aname street1 street2
-    city state zip country
-    cell
-    email1
-/) {
-    $stash{$w} = $cookie{$w} || "";
-}
-if (! $href->{fname}) {
+if (! $form{first}) {
+    for my $w (qw/
+        first last sanskrit addr1 addr2
+        city st_prov zip_post country
+        cell
+        email1
+    /) {
+        $stash{$w} = $cookie{$w} || "";
+    }
     # show the initial page describing the
     # mission, benefits, and costs.
     print $q->header();
     $tt->process(
-        'new_hfs_membership.tt2',
+        'new_hfs_member.tt2',
         \%stash,
     );
     exit;
 }
-# check the submitted values
-my %disp_name_of = (
-    fname   => "First",
-    lname   => "Last",
-    street1 => "Street",
-    city    => "City",
-    state   => "State/Province",
-    zip     => "Zip/Postal Code",
-    email1  => "Email",
-    cell    => "Phone",
-    intro   => "Your Introduction",
-);
-my $mess;
-for my $f (qw/
-    fname lname street1 city state zip email1 cell 
-    intro
-/) {
-    if ($href->{$f} !~ m{\S}xms) {
-        $mess .= $disp_name_of{$f} . "<br>";
-    }
-}
-if ($type eq 'general_ky' && ! $href->{ky}) {
-    $mess .= "Your preferred Karma Yoga areas";
-}
-if ($mess) {
-    print $q->header(), <<"EOH";
-<style>
-body {
-    font-size: 18pt;
-    font-family: Arial;
-    margin-top: .5in;
-    margin-left: .5in;
-}
-</style>
-The following required fields are missing:
-<p>
-<ul>
-$mess
-</ul>
-<p>
-Please <a href=# style="text-decoration: none" id=back onclick='history.go(-1); return false;'>&nbsp;go back&nbsp;</a> and fix this.
-<script>document.getElementById('back').focus()</script>
-EOH
-    exit;
-}
-# show verification page and get
-# ready to go to authorize.net
+
+# show verification page, prepare for the stripe_payment,
 # and grab any photo they uploaded
-$href->{Mem_Type} = $type eq 'general' || $type eq 'sponsor'?
-                        (ucfirst $type) . " Member"
-                   : "General Member with karma yoga";
-$href->{amount} = $type eq 'general'   ? 50
-                 :$type eq 'general_ky'? 25
-                 :                       600
-                 ;
-$href->{desc} = "HFS $type membership"; 
-$href->{gender} = '';
-$href->{authorize_data} = html_for_authorize_dot_net($href);
-for my $f (qw/ intro ky /) {
-    my $k = $f . "_disp";
-    $href->{$k} = $href->{$f};
-    $href->{$k} =~ s{\cM\n}{<br>}xmsg; 
-    $href->{$f} =~ s{\cM}{}xmsg;
-    $href->{$f} = encode_entities($href->{$f}, qq!\n"!);
-}
+%stash = %form;
+my $type = $form{mem_type};
+$stash{Mem_Type} = $type eq 'general' || $type eq 'sponsor'?
+                       "\u$type Member"
+                  : "General Member with Karma Yoga";
+$stash{amount} = $type eq 'general'   ? 50
+                :$type eq 'general_ky'? 25
+                :                       600
+                ;
+$stash{desc} = "HFS \u$type membership"; 
+# rename...
+$stash{email} = $form{email1};
+
+my %metadata = %form;
+
+$stash{stripe_payment} = stripe_payment(
+    name        => "$form{first} $form{last}",
+    description => "HFS $stash{Mem_Type} Membership",
+    amount      => $stash{amount},
+    metadata    => \%stash,
+    email       => $form{email1},
+);
+
+=comment
+
 my $photo = $q->upload('photo');
 my $pic_name = $q->param('photo');
 # pic_name will be first_last.jpg (jpg or whatever type the file is)
-$pic_name =~ s{\A .*[.]([a-z]+) \z}{$href->{fname}_$href->{lname}.$1}xms;
+$pic_name =~ s{\A .*[.]([a-z]+) \z}{$form{first}_$form{last}.$1}xms;
 if ($photo) {
     # Upgrade the handle to one compatible with IO::Handle:
     my $io = $photo->handle;
@@ -126,8 +84,11 @@ if ($photo) {
     $href->{pic_thumb} = "http://www.mountmadonna.org/reg-pics/th-$pic_name";
     $href->{pic_url}   = "http://www.mountmadonna.org/reg-pics/$pic_name";
 }
+
+=cut
+
 # get ready to send a cookie for storage
-%cookie = %$href;
+%cookie = %form;
 delete $cookie{intro};
 delete $cookie{mem_type};
 delete $cookie{ky};
@@ -135,10 +96,10 @@ my $cookie = $q->cookie(
     -name    => 'user_data',
     -value   => \%cookie,
     -expires => '+10y',     # i.e. don't expire
-    -domain  => 'www.mountmadonna.org',
+    -domain  => 'akash2.mountmadonna.org',  # ??JON
 );
 print $q->header(-cookie => $cookie);
 $tt->process(
-    'new_hfs_membership2.tt2',
-    $href,
+    'new_hfs_member2.tt2',
+    \%stash,
 );

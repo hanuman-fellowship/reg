@@ -116,7 +116,10 @@ $stash{noME} = \@noME;
 if ((localtime())[2] >= 10) {
     $disabled{($today + 2)->format("%m/%d/%Y")} = 1;
 }
-$stash{disabled} = join ', ', map { qq!'$_'! } keys %disabled;
+$stash{disabled} = join ', ',
+                   map { qq!'$_'! }
+                   sort
+                   keys %disabled;
 
 $stash{today} = $today->format("%m/%d/%Y");
 

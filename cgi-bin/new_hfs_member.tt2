@@ -1,5 +1,27 @@
 <html>
 <head>
+<meta charset='UTF-8'>
+<script>
+var fields = [
+    { id: 'first', regexp: '\\S',
+                   err: 'Missing First Name' },
+    { id: 'last', regexp: '\\S',
+                   err: 'Missing Last Name' },
+    { id: 'addr1',  regexp: '\\S',
+                      err: 'Missing Street Address' },
+    { id: 'city',  regexp: '\\S',
+                   err: 'Missing City' },
+    { id: 'st_prov',  regexp: '\\S',
+                    err: 'Missing State' },
+    { id: 'zip_post',  regexp: '\\S',
+                  err: 'Missing Zip Code' },
+    { id: 'cell',  regexp: '^[0-9 -.()]+\$',
+                   err: 'Invalid Phone number' },
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
+                     err: 'Invalid Email address' },
+];
+</script>
+<script type='text/javascript' src='/static/js/check_fields.js'></script>
 <style>
 body {
     width: 800px;
@@ -16,6 +38,10 @@ body {
 .cent {
     text-align: center;
 }
+.required {
+    color: red;
+    font-style: bold;
+}
 th, td, textarea, input {
     font-size: 16pt;
     font-family: Arial;
@@ -27,17 +53,14 @@ button {
     background: lightgreen;
     font-size: 16pt;
 }
-
 </style>
 </head>
 <body>
 <h2 class=cent>Hanuman Fellowship Membership</h2>
 <div class=cent>
-<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100>
-<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100
-     style="margin-left: 1in">
-<img src='https://www.mountmadonna.org/assets/img/hanuman.png' width=100
-     style="margin-left: 1in">
+<img src=/static/images/hanuman.png width=100>
+<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
+<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
 </div>
 <p>
 <div class=mission>
@@ -83,7 +106,7 @@ Hanuman Fellowship Board of Directors<br>
 <th width=15%>General</th>
 <td>\$50 Yearly Dues<br>
 &nbsp;&nbsp;<b>or</b><br>
-\$25 Yearly Dues + 20 hours Karma Yoga*
+\$25 Yearly Dues + 20 hours Karma Yoga**
 </td>
 <td>
 <ul>
@@ -127,13 +150,14 @@ retreats: Spring, Liberation, Fall, or New Year's Retreat.
 </table>
 <p>
 <div class=smaller>
-*Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
+** Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
 <p>
 Please complete the form below and press Submit at the bottom:
 </div>
-<form action='/cgi-bin/new_member'
+<form action='/cgi-bin/new_hfs_member'
       name=form method=post
       enctype="multipart/form-data"
+      onSubmit="return check_fields();"
 >
 <p>
 <table cellpadding=5>
@@ -141,76 +165,77 @@ Please complete the form below and press Submit at the bottom:
 <th align=right valign=top width=30%>Membership Type</th>
 <td>
 <input type=radio name=mem_type value=general checked> General - \$50 annually<p>
-<input type=radio name=mem_type value=general_ky> General with KY* - \$25 annually + 20 hours KY<p>
+<input type=radio name=mem_type value=general_ky> General with KY** - \$25 annually + 20 hours KY<p>
 <input type=radio name=mem_type value=sponsor> Sponsor - \$600 annually
+<br><br>
 </td>
 </tr>
 <tr>
-<th align=right>First</th>
+<th align=right><span class=required>*</span> First</th>
 <td>
-<input type=text size=30 name=fname value="$fname">
+<input type=text size=30 name=first id=first value="$first">
 </td>
 </tr>
 <tr>
-<th align=right>Last</th>
+<th align=right><span class=required>*</span> Last</th>
 <td>
-<input type=text size=30 name=lname value="$lname">
+<input type=text size=30 name=last id=last value="$last">
 </td>
 </tr>
 <tr>
 <th align=right>Sanskrit</th>
 <td>
-<input type=text size=30 name=aname value="$aname">
+<input type=text size=30 name=sanskrit id=sanskrit value="$sanskrit">
 (optional)
 </td>
 </tr>
 <tr>
 <tr>
-<th align=right>Street</th>
+<th align=right><span class=required>*</span> Street</th>
 <td>
-<input type=text size=30 name=street1 value="$street1">
+<input type=text size=30 name=addr1 id=addr1 value="$addr1">
 </td>
 </tr>
 <tr>
 <th align=right></th>
 <td>
-<input type=text size=30 name=street2 value="$street2"> (optional)
+<input type=text size=30 name=addr2 id=addr2 value="$addr2"> (optional)
 </td>
 </tr>
 <tr>
-<th align=right>City
+<th align=right><span class=required>*</span> City</th>
 <td>
-<input type=text size=30 name=city value="$city">
+<input type=text size=30 name=city id=city value="$city">
 </td>
 </tr>
 <tr>
-<th align=right>State/Province</th>
+<th align=right><span class=required>*</span> State/Province</th>
 <td>
-<input type=text size=30 name=state value="$state">
+<input type=text size=30 name=st_prov id=st_prov value="$st_prov">
 </td>
 </tr>
 <tr>
-<th align=right>Zip/Postal Code</th>
+<th align=right><span class=required>*</span> Zip/Postal Code</th>
 <td>
-<input type=text size=30 name=zip value="$zip">
+<input type=text size=30 name=zip_post id=zip_post value="$zip_post">
 </td>
 </tr>
 <tr>
 <th align=right>Country
 <td>
-<input type=text size=30 name=country value="USA" value="$country">
+<input type=text size=30 name=country value="$country"> Defaults to USA
 </td>
 </tr>
 <tr>
-<th align=right>Email</th>
+<th align=right><span class=required>*</span> Email</th>
 <td>
-<input type=text size=30 name=email1 value="$email1">
+<input type=text size=30 name=email1 id=email1 value="$email1">
 </td>
 </tr>
 <tr>
-<th align=right>Phone</th>
+<th align=right><span class=required>*</span> Phone</th>
 <td>
-<input type=text size=30 name=cell value="$cell">
+<input type=text size=30 name=cell id=cell value="$cell">
 </td>
 </tr>
 </table>
@@ -227,7 +252,7 @@ members are elected into the voting body.
 <p>
 <input type=file name=photo>
 <p>
-*For those choosing the Karma Yoga option: In what areas would you like
+** For those choosing the Karma Yoga option: In what areas would you like
 to become more involved (or continue your involvement) with HFS in
 order to perform your 20 hours of KY? (For example, help during
 retreats, on Saturdays after class (kitchen, landscaping, maintenance),
@@ -240,3 +265,9 @@ Hanuman temple (tending, parking), and others.)
 </form>
 </body>
 </html>
+<script>
+document.getElementById('first').focus({ preventScroll: true });
+setTimeout(function() {
+    window.scrollTo(0, 0);
+}, 30);
+</script>

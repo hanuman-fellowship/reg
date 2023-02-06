@@ -616,5 +616,5 @@ var focus_el = 'first';
 document.getElementById(focus_el).focus({ preventScroll: true });
 setTimeout(function() {
     window.scrollTo(0, 0);
-}, 10);
+}, 20);
 </script>
