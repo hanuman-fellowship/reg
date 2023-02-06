@@ -14,5 +14,8 @@ Files are created in /var/Reg/omp
     with format: memberId_amount_time
     This format is understood by the existing code.
 
+The files need to be "brought in".  Could that be
+    automatic instead?  Email is sent, yes?
+
 What if someone wants to change the type of
     membership from General to Sponsor or vica/versa?

@@ -10,25 +10,26 @@ List all the cgi-bin scripts and what they do:
                             # for consistency!
 
 - scripts that ask for payments:
-*gift_card
-*gift_card_status
-new_hfs_member
-omp
+new_hfs_member - TODO
+omp - done
+gift_card - done
+gift_card_status - done
 meal_request - done
 rental_payment - done
 reg2 - done
 req_pay - done
 
 reg3 - no payment needed - cost is covered
-gift_card_status
 mlist
-new_hfs_member          # tell Jen , etc about new name with '_hfs'
+new_hfs_member          # tell Jen , etc about new name with '_hfs'???
     2 .tt2 email message
 sutra1
 sutra_send  - broken - send from akash instead? yes?
     get the sutras data as well
 talks_search? and talks data
     how to get this?
+    ask the Babaji group what they're up to
+        and if they want these talks.
 
 Can we can switch over to these akash cgi-bin scripts BEFORE
     the new web site is ready?
@@ -36,11 +37,10 @@ Can we can switch over to these akash cgi-bin scripts BEFORE
     And style them better later.
 
 Does grid need to be styled better?
-    Yes.  No MMC logo at all...
+    Yes?  No MMC logo at all...
 
 Rental Deposit - received - update contract_received date
     and the rental status.
 
 Meal Request - maximums?
     notify meals@mmc
-    
