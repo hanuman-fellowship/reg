@@ -68,6 +68,8 @@ my $sd = substr($rental->sdate(), 4, 4);        # MMDD
 my $winter = ! (   $string{center_tent_start} <= $sd
                 && $sd                        <= $string{center_tent_end});
 
+=comment 
+
 # NEW WAY
 @htypes = sort {
               $a->ht_order <=> $b->ht_order
@@ -78,7 +80,7 @@ my $winter = ! (   $string{center_tent_start} <= $sd
           }
           model($c, 'HousingType')->all();
 
-=comment
+=cut
 
 # OLD WAY 
 HTYPE:
@@ -102,8 +104,6 @@ for my $t (housing_types(1)) {
 @htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
 
 # OLD WAY
-
-=cut
 
 # houses that have been assigned to this rental
 for my $b ($rental->rental_bookings()) {
