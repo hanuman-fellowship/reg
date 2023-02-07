@@ -1,0 +1,28 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use LWP::Simple qw/
+    get
+/;
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $ins_talk = $dbh->prepare(<<'EOS');
+    insert into talk (id, title) values (?, ?);
+EOS
+my $ins_qa = $dbh->prepare(<<'EOS');
+    insert into qa (id, talk_id, question, answer) values (?, ?, ?, ?);
+EOS
+my $html = get('https://www.mountmadonna.org/talks');
+my %talks = $html =~ m{[.]org/talks/([^"]*)">([^<]*)<}xmsg;
+my $talk_id = 0;
+for my $key (sort { $talks{$a} cmp $talks{$b} } keys %talks) {
+    ++$talk_id;
+    $ins_talk->execute($talk_id, $talks{$key});
+    my $s = get("https://www.mountmadonna.org/talks/$key");
+    my @q = $s =~ m{col-12"><strong>(.*?)</strong>}xmsg;
+    my @a = $s =~ m{col-12"><i>(.*?)</i>}xmsg;
+    for my $i (0 .. $#q) {
+        $ins_qa->execute($i+1, $talk_id, $q[$i], $a[$i]);
+    }
+}

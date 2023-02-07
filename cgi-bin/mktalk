@@ -1,0 +1,12 @@
+drop table if exists talk;
+create table talk (
+    id int(11),
+    title varchar(256)
+);
+drop table if exists qa;
+create table qa (
+    id int(11),
+    talk_id int(11),
+    question text,
+    answer text
+);

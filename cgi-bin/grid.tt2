@@ -222,7 +222,7 @@ $days
 
 </td><td valign=top>
 
-<!-- old way -->
+<!-- old way
 <table cellpadding=3>
 <tr>
 <th align=left>Type</th><th align=right>Cost</th>
@@ -237,10 +237,9 @@ $days
 <td>House Cost Type: $housecost_type</td>
 </tr>
 </table>
-
-<!-- new way
-[% INCLUDE grid_htype.tt2 %]
 -->
+
+[% INCLUDE grid_htype.tt2 %]
 
 </td></tr>
 <tr><td>&nbsp;</td></tr>

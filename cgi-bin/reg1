@@ -320,10 +320,14 @@ if (! $prog) {
 }
 
 #
+# is the program 'web ready'?
 # has the end registration date/time passed?
 # doesn't apply to PR and ME.
 #
 if ($pid) {
+    if (! $prog->webready) {
+        oops "Sorry, the program is not 'web ready'\n.";
+    }
     my $title = '<b>' . $prog->title . '</b>';
     my $erdt = $prog->end_reg_date_time;
     if ($erdt =~ m{\S}xms) {
