@@ -29,19 +29,9 @@ var fields = [
     { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' },
 ];
-function popup(url, height, width) {
-    newwin = window.open(
-        url,
-        'show_ht',      // target
-        'height=' + height + ',width=' + width + ', scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
+<script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
 <img src='/static/images/mmc-teal.png' width=200>

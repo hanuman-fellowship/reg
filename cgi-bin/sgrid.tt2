@@ -1,18 +1,5 @@
 <html>
 <head>
-<script type="text/javascript">
-var newwin;
-function popup(url, height, width) {
-    newwin = window.open(
-        url, 'reg_search_help',
-        'height=' + height + ',width=' + width + ', scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-</script>
 <style type="text/css">
 body {
     margin-left: .5in;
@@ -38,6 +25,7 @@ a {
     color: green;
 }
 </style>
+<script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
 <h2>
@@ -121,25 +109,7 @@ $days
 </table>
 </td><td>
 
-<!-- old way -->
-<table cellpadding=3>
-<tr>
-<th align=left>Type</th><th align=right>Cost</th>
-</tr>
-[% FOR ht IN htypes %]
-<tr>
-<td>$ht.desc</td>
-<td align=right>$ht.cost</td>
-[% END %]
-<tr><td>&nbsp;</td></tr>
-<tr>
-<td>House Cost Type: $housecost_type</td>
-</tr>
-</table>
-
-<!-- new way
 [% INCLUDE grid_htype.tt2 %]
--->
 
 </td></tr>
 

@@ -6,22 +6,17 @@ h3 {
 }
 </style>
 <h2>Members</h2>
-[% per = member.person %]
-<span class=larger>[% per.sanskrit || per.first %] $per.last</span>
-<span style="margin-left: 1in">
+[% person = member.person %]
+<span class=larger>[% person.sanskrit || person.first %] $person.last</span>
 [% IF Catalyst.check_user_roles('member_admin') %]
-<a href="/member/list" accesskey='l'><span class=keyed>L</span>ist</a>
-[% END %]
-&nbsp;&nbsp;&nbsp;
-<a href="/person/view/$per.id" accesskey='p'><span class=keyed>P</span>erson Info</a>
-&nbsp;&nbsp;&nbsp;
-</span>
-[% IF Catalyst.check_user_roles('member_admin') %]
-<a href="/member/update/$member.id" accesskey='e'><span class=keyed>E</span>dit/Pay</a>
-[% IF ! member.voter %]
-&nbsp;&nbsp;&nbsp;
-<a href="/member/voter_ok/$member.id">Voter OK</a>
-[% END %]
+    &nbsp;&nbsp;&nbsp;
+    <a href="/member/update/$member.id" accesskey='e'><span class=keyed>E</span>dit/Pay</a>
+    &nbsp;&nbsp;&nbsp;
+    <a target=_blank href='/cgi-bin/omp?code=$person.secure_code'>Pay Online</a>
+    [% IF ! member.voter %]
+        &nbsp;&nbsp;&nbsp;
+        <a href="/member/voter_ok/$member.id">Voter OK</a>
+    [% END %]
 [% END %]
 <p class=p2>
 <div class=red style="font-size: 14pt">

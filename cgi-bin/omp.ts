@@ -1,21 +1,17 @@
 Test Suite for Online Member Payment
 
-https://akash2.mountmadonna.org/cgi-bin/omp?code=
+Online Payment: Members > choose a Person > Pay Online
+    Try General, Sponsor
 
-and append these codes:
-
-dvrndz - Andrew Allen - General
-octjnt - Lyn Ackley - Sponsor
+Member status should be immediately updated.
 
  $50 - string mem_gen_amt
 $600 - string mem_spons_year
 
-Files are created in /var/Reg/omp
-    with format: memberId_amount_time
-    This format is understood by the existing code.
-
-The files need to be "brought in".  Could that be
-    automatic instead?  Email is sent, yes?
-
 What if someone wants to change the type of
     membership from General to Sponsor or vica/versa?
+
+Are members able to use their benefits properly?
+Is this activity recorded in SponsHist records?
+
+Yearly resetting of free program, free nights

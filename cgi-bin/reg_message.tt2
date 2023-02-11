@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
-[% IF email %]
+[% IF sending_email %]
     <img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=200>
 [% ELSE %]
     <img src='/static/images/mmc-teal.png' width=200>
@@ -35,7 +35,7 @@ Thank you, ${first}.
     The id for this transaction is ${transaction_id}.
 [% END %]
 <p>
-[% IF ! email %]
+[% IF ! sending_email %]
 The above information has been sent to you via an email to ${email}.<br>
 [% END %]
 You will soon receive <i>another</i> letter from programs@mountmadonna.org

@@ -16,23 +16,10 @@ function check(h_id, bed, nnights) {
     }
     return true;
 }
-var newwin;
-function popup(url, height, width) {
-    newwin = window.open(
-        url, 'grid_help',
-        'height=' + height + ',width=' + width + ',scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-
 var the_max = new Array();
 function set_max(i, v) {
     the_max[i] = v;
 }
-
 function add_more(id) {
     var ind = id - 1000;
     var m = the_max[ind];
@@ -73,6 +60,7 @@ function add_more(id) {
     the_max[ind] += 3;
 }
 </script>
+<script type='text/javascript' src='/static/js/popup.js'></script>
 <style type="text/css">
 body {
     margin-left: .5in;
@@ -222,25 +210,7 @@ $days
 
 </td><td valign=top>
 
-<!-- old way -->
-<table cellpadding=3>
-<tr>
-<th align=left>Type</th><th align=right>Cost</th>
-</tr>
-[% FOR ht IN htypes %]
-<tr>
-<td>$ht.desc</td>
-<td align=right>$ht.cost</td>
-[% END %]
-<tr>
-<tr><td>&nbsp;</td></tr>
-<td>House Cost Type: $housecost_type</td>
-</tr>
-</table>
-
-<!-- new way 
 [% INCLUDE grid_htype.tt2 %]
--->
 
 </td></tr>
 <tr><td>&nbsp;</td></tr>

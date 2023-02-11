@@ -50,19 +50,9 @@ function check_form() {
     alert("Emails don't match.");
     return false;
 }
-function popup(url, height, width) {
-    newwin = window.open(
-        url,
-        'show_ht',      // target
-        'height=' + height + ',width=' + width + ', scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
+<script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
 <form autocomplete="off"
@@ -235,21 +225,9 @@ function popup(url, height, width) {
 <label><input type=radio name="sex" $non_binary value="non_binary"> Non-binary/non-conforming</label><br>
 
 <label><input type=radio name="sex" $no_resp value="no_resp"> Prefer not to respond</label><br>
-<a href="javascript:popup('/registration-help/gender-housing.html', 230, 500)">How does my choice affect my housing?</a>
+<a href="javascript:popup('/static/help/gender.html', 190, 350);">How does my choice affect my housing?</a>
 </td>
 </tr>
-
-<script>
-function pronouns() {
-    var w = window.open('', 'pronoun_win', 'width=400 height=200');
-    w.document.write("<div style='margin: 10mm'>Please share the preferred pronouns you wish to use such as (in this format):<p>he/him/his, she/her/hers, ze/hir/hirs, or other.<p>More information here: <a style='color: teal; text-decoration: none' target=_blank href='https://pronouns.org/what-and-why'>why pronouns matter</a>.</div>");
-    if (window.focus) {
-        w.focus();
-    }
-    w.moveTo(700, 0);
-}
-</script>
-
 <tr>
 <th valign=top>
 <span class=required>*</span> Pronouns:
@@ -258,7 +236,7 @@ function pronouns() {
 <input type=text size=25 name="pronouns" id="pronouns"
        value="$pronouns"
        placeholder="To appear on name tag"> 
-<br><a href="javascript:pronouns();">Why pronouns matter</a>
+<br><a href="javascript:popup('/static/help/pronouns.html', 190, 380);">Why pronouns matter</a>
 </td>
 </tr>
 
@@ -402,9 +380,9 @@ If you only want a certificate of completion enter COMP for the license #.
     </tr>
     [% FOR r IN housing_fee_rows %]
         <tr>
-        <td><input type=radio name=house1 value='$r.htype' $r.checked1></td>
-        <td><input type=radio name=house2 value='$r.htype' $r.checked2></td>
-        <td><a href="javascript:popup('/cgi-bin/show_ht/${r.htype}/$r.cost/$housecost_type',650,500)">$r.house_desc</a></td>
+        <td><input type=radio name=house1 value='$r.type' $r.checked1></td>
+        <td><input type=radio name=house2 value='$r.type' $r.checked2></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/${r.type}/$r.cost/$housecost_type',650,500)">$r.short_desc</a></td>
         <td align=right>$r.cost</td>
         </tr>
     [% END %]
@@ -430,7 +408,7 @@ If you only want a certificate of completion enter COMP for the license #.
     <input type=radio name=cabin_room id=cabin_room2 value=room $room>  
     <b>Room</b>
     <br>
-    <a href="javascript:popup('/registration-help/cabins_vs_rooms_snippet.html',500,700)">What's the difference?</a></p> 
+    <a href="javascript:popup('/static/help/cabin-room.html',500,700)">What's the difference?</a></p> 
     </ul>
 
     </div> <!-- indent for housing choice -->
@@ -464,7 +442,7 @@ If you only want a certificate of completion enter COMP for the license #.
 
 [% IF ! pr && ! housing_not_needed %]
     <b>Carpooling</b>
-    &nbsp;&nbsp;<a href="javascript:popup('/registration-help/privacy.html',215,550)">Privacy Concerns?</a><p>
+    &nbsp;&nbsp;<a href="javascript:popup('/static/help/privacy.html',250,450)">Privacy Concerns?</a><p>
     <ul>
     <input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()">
     I wish to offer a ride.<br>

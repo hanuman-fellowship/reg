@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib '.';
 
 package Util;
 use base 'Exporter';
@@ -94,6 +95,8 @@ our @EXPORT_OK = qw/
     check_file_upload
     add_br
     put_pr_dir
+    add_membership_payment
+    fee_types
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2644,5 +2647,188 @@ sub put_pr_dir {
     }
 }
 
+#
+# called from several different places:
+#
+# - People > choose person > Make Member (member/create)
+# - Members > choose person > Edit/Pay (member/update)
+# - online new_hfs_member_hook
+# - online omp_hook
+#
+# $c is the first parameter.
+# either a $member_id or a $person_id must be given.
+# if $person_id we first make that person a member.
+#
+# the $amount determines the type of membership.
+# $pay_type is either:
+#     O - online, D - credit, C - check, S - cash
+#
+sub add_membership_payment {
+    my ($c, $member_id, $person_id, $amount, $pay_type) = @_;
+    if (! ($member_id || $person_id)) {
+        die "must call add_membership_payment"
+          . " with either a member_id or a person_id";
+    }
+    if (! $amount || $amount !~ m{\A [1-9]\d* \z}xms) {
+        die "illega amount given to add_membership_payment";
+    }
+    if (! $pay_type || $pay_type !~ m{\A [ODCS] \z}xms) {
+        die "pay_type must be ODCS";
+    }
+    my $gen = get_string($c, 'mem_gen_amount');
+    my $category = $amount <  $gen? 'General_ky'
+                  :$amount == $gen? 'General'
+                  :                 'Sponsor'
+                  ;
+    my $spons = $category eq 'Sponsor';
+    #
+    # the membership expires at the end of this year
+    # ?unless this payment is done in November or later...
+    #
+    my $today = tt_today($c);
+    my $year = $today->year;
+    if ($today->month >= 11) {
+        ++$year;
+    }
+    my $dt8 = date("12/31/$year")->as_d8;
+    my $date_general   = $spons? 0: $dt8;
+    my $date_sponsor   = $spons? $dt8: 0;
+    my $sponsor_nights = $spons? 4: 0;      # may change?
+
+    my ($member, $person);
+    if ($member_id) {
+        $member = model($c, 'Member')->find($member_id);
+        if (! $member) {
+            die "cannot find member with id $member_id";
+        }
+        $person_id = $member->person_id;
+    }
+    $person = model($c, 'Person')->find($person_id);
+    if (! $person) {
+        die "no person with id $person_id";
+    }
+
+    # make the person a Member if needed
+    if (! $member_id) {
+        $member = model($c, 'Member')->create({
+            person_id       => $person_id,
+            total_paid      => $amount,
+            voter           => '',     # needs approval
+            category        => $category,
+            date_general    => $date_general,
+            date_sponsor    => $date_sponsor,
+            sponsor_nights  => $sponsor_nights,
+            date_life       => '',   # unused
+            free_prog_taken => '',
+        });
+        $member_id = $member->id;
+    }
+
+    # ensure the proper affiliations are there
+    my $cat = $category;
+    $cat =~ s{_ky}{}xms;    # General_ky gets General affil
+    for my $d ('MMC Annual Yoga Retreats',
+               "HFS Member $cat",
+    ) {
+        my ($affil) = model($c, 'Affil')->search({
+                          descrip => 'MMC Annual Yoga Retreats',
+                      });
+        my $affil_id = $affil->id;
+        my @affper = model($c, 'AffilPerson')->search({
+            a_id => $affil_id,
+            p_id => $person_id,
+        });
+        if (! @affper) {
+            model($c, 'AffilPerson')->create({
+                a_id => $affil_id,
+                p_id => $person_id,
+            });
+        }
+    }
+
+    # extra account payment
+    my ($xacct) = model($c, 'XAccount')->search({
+                      descr => "Membership",
+                  });
+    my $user_id = $c->user? $c->user->obj->id: 2;
+            # default user is Sahadev (2)
+            # for online payments brought in automatically
+    my @who_now = (
+        user_id     => $user_id,
+        the_date    => $today->as_d8(),
+        time        => get_time()->t24(),
+    );
+    model($c, 'XAccountPayment')->create({
+        xaccount_id => $xacct->id,
+        person_id   => $person_id,
+        amount      => $amount,
+        type        => $pay_type,
+        what        => "HFS $category Membership",
+        @who_now,
+    });
+
+    if ($spons) {
+        # nightSpons record
+        model($c, 'NightHist')->create({
+            member_id  => $member_id,
+            reg_id     => 0,
+            num_nights => $sponsor_nights,
+            action     => 1,    # set nights
+            @who_now,
+        });
+    }
+
+    # SponsHist record to show payment
+    # other SponsHist records show the use of free nights
+    # or free program.
+=comment
+    model($c, 'SponsHist')->create({
+        member_id    => $member_id,
+        date_payment => $pay_date,
+        valid_from   => $valid_from,
+        valid_to     => $valid_to,
+        amount       => $amount,
+        type         => $pay_type,
+        general      => $cat eq 'General',
+        transaction_id => $transaction_id,
+        @who_now,
+    });
+=cut
+}
+
+#
+# called from these cgi-bin scripts:
+#     grid, gift_card1, reg1
+#
+# reg1 passes along the 3 arguments after housecost.
+#
+sub fee_types {
+    my ($c, $hc, $only_outdoors, $house1, $house2) = @_;
+    $only_outdoors ||= 0;
+    $house1 ||= '';
+    $house2 ||= '';
+    my @fee_rows =
+        sort {
+            $a->{order} <=> $b->{order}
+        }
+        map { 
+            my $type = $_->name;
+            +{
+                 type       => $type,
+                 short_desc => $_->short_desc,
+                 cost       => $hc->$type,
+                 order      => $_->ht_order,
+                 checked1   => $type eq $house1? 'checked': '',
+                 checked2   => $type eq $house2? 'checked': '',
+             }
+        }
+        grep {
+           my $type = $_->name;
+           ! ($hc->$type == 0
+              || ($only_outdoors && $type !~ m{tent|van}xms));
+        }
+        model($c, 'HousingType')->all();
+    return \@fee_rows;
+}
 
 1;

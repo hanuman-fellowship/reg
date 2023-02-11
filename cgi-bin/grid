@@ -10,6 +10,7 @@ use Util qw/
     trim
     housing_types
     add_activity
+    fee_types
     JON
 /;
 my $c = db_init();
@@ -51,7 +52,7 @@ if (! $coord) {
     exit;
 }
 
-my (@houses, @htypes, %fixed_cost_for_house);
+my (@houses, %fixed_cost_for_house);
 
 # fixed cost houses
 for my $line (split /\|/, $rental->fch_encoded()) {
@@ -63,47 +64,12 @@ for my $line (split /\|/, $rental->fch_encoded()) {
 
 # housing types and cost
 my $hc = $rental->housecost();
-my %hc;
+my %hcost = $hc->get_columns();
 my $sd = substr($rental->sdate(), 4, 4);        # MMDD
 my $winter = ! (   $string{center_tent_start} <= $sd
                 && $sd                        <= $string{center_tent_end});
 
-=comment 
-
-# NEW WAY
-@htypes = sort {
-              $a->ht_order <=> $b->ht_order
-          }
-          grep {
-              my $name = $_->name;
-              $hc->$name != 0        # skip zero cost types
-          }
-          model($c, 'HousingType')->all();
-
-=cut
-
-# OLD WAY 
-HTYPE:
-for my $t (housing_types(1)) {
-    if ($winter && $t eq 'center_tent') {
-        next HTYPE;
-        # see comment below about center_tent sites
-        # being used during the winter.
-    }
-    my $cost = $hc->$t;
-    if (! $cost) {
-        # don't display house cost if it's zero
-        next HTYPE;
-    }
-    $hc{$t} = $cost;     # for reference below
-    push @htypes, {
-        cost => $cost,
-        desc => $string{$t},
-    };
-}
-@htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
-
-# OLD WAY
+my $htypes = fee_types($c, $hc);
 
 # houses that have been assigned to this rental
 for my $b ($rental->rental_bookings()) {
@@ -237,8 +203,7 @@ if ($P{by_name}) {
         days    => $days,
         total   => commify($gtotal),
         code    => $code,
-        htypes  => \@htypes,
-        housecost => $hc,
+        htypes  => $htypes,
         action  => $grid_cgi,
     };
     my $tt = Template->new({
@@ -269,7 +234,7 @@ if ($P{process}) {
     for my $h (@houses) {
         my $id = $h->{id};
         if ($id >= 1001) {      # own van/commuting
-            my $per_night = $hc{$id == 1001? "own_van": "commuting"};
+            my $per_night = $hcost{$id == 1001? "own_van": "commuting"};
             my $bed = 1;
             BED:
             while (exists $P{"p$id\_$bed"}) {
@@ -385,8 +350,8 @@ if ($P{process}) {
                         next NIGHT;
                     }
                     if ($h->{tent}) {
-                        $cost += ($h->{own})? $hc{own_tent}
-                                :             $hc{center_tent}
+                        $cost += ($h->{own})? $hcost{own_tent}
+                                :             $hcost{center_tent}
                                 ;
                         next NIGHT;
                     }
@@ -404,30 +369,30 @@ if ($P{process}) {
                     if (my $cot = $h->{cottage}) {
                         if ($cot == 1) {
                             $cot1 = 1;
-                            $cost += ($np == 1)? $hc{single_cottage1}
-                                    :            $hc{dble_cottage1}
+                            $cost += ($np == 1)? $hcost{single_cottage1}
+                                    :            $hcost{dble_cottage1}
                                     ;
                         }
                         elsif ($cot == 2) {
-                            $cost += ($np == 1)? $hc{single_cottage2}
-                                    :            $hc{dble_cottage2}
+                            $cost += ($np == 1)? $hcost{single_cottage2}
+                                    :            $hcost{dble_cottage2}
                                     ;
                         }
                         elsif ($cot == 3) {
                             $cot3 = 1;
                             $cot3_name = $name; # the person's name
-                            $cost += $hc{whole_cottage};
+                            $cost += $hcost{whole_cottage};
                         }
                         else {
                             # ???
                         }
                     }
                     else {
-                        $cost += ($np == 1            )? $hc{"single$suffix"}
-                                :($np == 2            )? $hc{"dble$suffix"}
-                                :($np == 3            )? $hc{triple}
-                                :(4 <= $np && $np <= 7)? $hc{dormitory}
-                                :                        $hc{economy}
+                        $cost += ($np == 1            )? $hcost{"single$suffix"}
+                                :($np == 2            )? $hcost{"dble$suffix"}
+                                :($np == 3            )? $hcost{triple}
+                                :(4 <= $np && $np <= 7)? $hcost{dormitory}
+                                :                        $hcost{economy}
                                 ;
                     }
                 }
@@ -569,8 +534,7 @@ if ($P{process}) {
         days    => $days,
         total   => commify($gtotal),
         code    => $code,
-        htypes  => \@htypes,
-        housecost => $hc,
+        htypes  => $htypes,
         action  => $grid_cgi,
     };
     $tt->process(
@@ -614,14 +578,13 @@ my $stash = {
     last    => $coord->last,
     fixed_cost_houses => $rental->fixed_cost_houses,
     housecost_type => $hc->type,
+    htypes  => $htypes,
 
     # from the data file:
     data    => \%data,
     houses  => \@houses,
     nnights => $nnights,
     days    => $days,
-    htypes  => \@htypes,
-    housecost => $hc,
     code    => $code,
     action  => $grid_cgi,
 };

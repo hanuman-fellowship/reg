@@ -23,6 +23,7 @@ use Util qw/
     db_init
     model
     get_string
+    fee_types
     JON
 /;
 my $c = db_init();
@@ -486,31 +487,10 @@ $stash{housing_not_needed}
      :                      $prog->housing_not_needed;
 
 my $hc = $prog->housecost();
-my @htypes = model($c, 'HousingType')->all();
-my @fee_rows = sort {
-                   $a->{order} <=> $b->{order}
-               }
-               map { 
-                   my $type = $_->name;
-                   +{
-                        htype      => $type,
-                        checked1   => ($type eq $cookie{house1}? 'checked': ''),
-                        checked2   => ($type eq $cookie{house2}? 'checked': ''),
-                        house_desc => $_->short_desc,
-                        cost       => $hc->$type,
-                        order      => $_->ht_order,
-                    }
-               }
-               grep {
-                  my $type = $_->name;
-                   $hc->$type == 0? 0
-                  :($only_outdoors && $type !~ m{tent|van}xms)? 0
-                  : 1
-               }
-               @htypes;
-
 $stash{house_cost_type} = $hc->type;
-$stash{housing_fee_rows} = \@fee_rows;
+$stash{housing_fee_rows} = fee_types($c, $hc,
+                               $only_outdoors,
+                               $cookie{house1}, $cookie{house2});
 
 # donation - aka Tuition
 my $donation_input;

@@ -1,11 +1,14 @@
 Test Suite for new_hfs_member
 
-existing person or not
+Existing person or not
 
 3 levels of membership
 
-TODO: create the member
-    from grab_new
+Members are created immediately
 
-TODO: omp - add the payment automatically
-    from grab_new
+check:
+    Email to member *and* to memberships@mmc.org
+    Member existence, status
+    XAccount payments
+    Affiliations
+    SponsHist record

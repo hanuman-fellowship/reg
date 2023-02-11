@@ -1,9 +1,9 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
 [% IF excluded %]
-<a href="/member/list">Include Lapsed</a>
+    <a href="/member/list">Include Lapsed</a>
 [% ELSE %]
-<a href="/member/list/1">Exclude Lapsed</a>
+    <a href="/member/list/1">Exclude Lapsed</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/member/list_online">Online ($online)</a>
@@ -32,7 +32,7 @@ Search <input type=text name=pat id=pat size=12 value='$pat'>
         Showing all members matching '$pat'.
     [% END %]
 [% ELSIF excluded %]
-Showing current active members.
+    Showing current active members.
 [% ELSE %]
 Showing active members - including lapsed.
 [% END %]
@@ -45,63 +45,77 @@ Click on Name to view the member attributes.<br>
 Click on First to see person attributes.<br>
 <p class=p2>
 <table cellpadding=5 border=0>
+
+<!-- headings -->
 <tr>
 <th align=left valign=bottom>Name</th>
 <th align=left valign=bottom>First</th>
 <th align=left valign=bottom>Category</th>
 <th align=center valign=bottom>Expiration<br>Date</th>
-[% IF ! no_lapsed %]
-<th align=left valign=bottom>Status</th>
+[% IF ! excluded %]
+    <th align=left valign=bottom>Status</th>
 [% END %]
 <th align=right valign=bottom>Total<br>Paid</th>
 <th align=right>Free<br>Nights</th>
 <th align=center>Free<br>Program</th>
 </tr>
+
 [% color = 'fl_row1' %]
-[% FOREACH m IN members %]
-<tr class=$color>
-[% IF color == 'fl_row0' %]
-    [% color = 'fl_row1' %]
-[% ELSE %]
-    [% color = 'fl_row0' %]
-[% END %]
-[% per = m.person %]
-<td><a href="/member/view/$m.id">$per.last, [% per.sanskrit || per.first %]</a></td>
-<td><a tabindex=1 href="/person/view/$per.id">$per.first</a></td>
-<td>$m.category</td>
-<td>
-[% IF    m.category == 'General'    %]${m.date_general_obj.format("%D")}
-[% ELSIF m.category == 'General_ky' %]${m.date_general_obj.format("%D")}
-[% ELSIF m.category == 'Sponsor'    %]${m.date_sponsor_obj.format("%D")}
-[% END %]
-</td>
-[% IF ! no_lapsed %]
-<td>
-$m.lapsed
-</td>
-[% END %]
-<td align=right>
-[% IF m.total_paid != 0 %]
-$m.total_paid
-[% END %]
-</td>
-<td align=right>
-$m.sponsor_nights
-</td>
-<td align=center>
-[% IF m.category == 'Life' || m.category == 'Founding Life' %]
-    [% IF m.free_prog_taken %]
-<img src=/static/images/checked.gif>
+[% FOR m IN members %]
+    <tr class=$color>
+
+    [% IF color == 'fl_row0' %]
+        [% color = 'fl_row1' %]
     [% ELSE %]
-        &nbsp;
+        [% color = 'fl_row0' %]
     [% END %]
-[% ELSE %]
-    &mdash;
-[% END %]
-</td>
-<td><a href="/member/delete/$m.id" onclick="return confirm('Okay to Delete $m.person.first $m.person.last as member?');">Del</a></td>
-</tr>
-[% END %]
+    [% per = m.person %]
+
+    <td><a target=_blank href="/member/view/$m.id">$per.last, [% per.sanskrit || per.first %]</a></td>
+
+    <td><a tabindex=1 target=_blank href="/person/view/$per.id">$per.first</a></td>
+
+    <td>$m.category</td>
+
+    <td>
+    [% IF    m.category == 'General'    %]${m.date_general_obj.format("%D")}
+    [% ELSIF m.category == 'General_ky' %]${m.date_general_obj.format("%D")}
+    [% ELSIF m.category == 'Sponsor'    %]${m.date_sponsor_obj.format("%D")}
+    [% END %]
+    </td>
+
+    [% IF ! excluded %]
+        <td>
+        $m.lapsed
+        </td>
+    [% END %]
+
+    <td align=right>
+    [% IF m.total_paid != 0 %]
+        $m.total_paid
+    [% END %]
+    </td>
+
+    <td align=right>
+    $m.sponsor_nights
+    </td>
+
+    <td align=center>
+    [% IF m.category == 'Life' || m.category == 'Founding Life' %]
+        [% IF m.free_prog_taken %]
+            <img src=/static/images/checked.gif>
+        [% ELSE %]
+            &nbsp;
+        [% END %]
+    [% ELSE %]
+        &mdash;
+    [% END %]
+    </td>
+
+    <td><a href="/member/delete/$m.id" onclick="return confirm('Okay to Delete $m.person.first $m.person.last as member?');">Del</a></td>
+
+    </tr>
+[% END %]   <!-- FOR loop -->
 </table>
 </ul>
 <script type="text/javascript">

@@ -31,6 +31,8 @@ use Data::Dumper;
 # gather all the form elements into a hash
 #
 my %form = $q->Vars();
+JON "here:";
+JON Dumper \%form;
 my $ME = $form{mountain_experience};
 for my $w (keys %form) {
     $form{$w} =~ s{^\s*|\s*$}{}g;       # trim the fields
@@ -132,6 +134,7 @@ if ($PR) {
 }
 my $house1 = $form{house1};
 my $house2 = $form{house2};
+JON "1 $house1 2 $house2";
 if (! $ME
     && $sdate && $edate && $ndays == 0
     && (   $house1 ne 'commuting'

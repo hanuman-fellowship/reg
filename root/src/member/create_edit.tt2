@@ -49,7 +49,6 @@ h3 {
 <input type=hidden name=file value=$file>
 
 <span class=larger>[% person.sanskrit || person.first %] $person.last</span>
-<span style="margin-left: 1in"><a href="/person/view/$person.id" accesskey='p'><span class=keyed>P</span>erson Info</a></span>
 <p>
 
 <ul>

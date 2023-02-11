@@ -18,6 +18,8 @@ Test Suite for Reg1 and Reg2
         may start and end on valid days
     only outdoor housing (No PR Indoors)
         for any day in range
+        don't show the Cabin/Room question
+        add bullet point about only outdoor
     maximum for any day of the range
         pr_max, date_ranges
 
@@ -49,7 +51,11 @@ Test Suite for Reg1 and Reg2
         Covid Vax info about housing
             Strangers can share info?
 
-    Cabin or Room?  pop up window explanation
+    Popup windows:
+        pronouns
+        gender-housing
+        cabin/room
+        carpooling privacy concerns
 
     Share with Whom?
 

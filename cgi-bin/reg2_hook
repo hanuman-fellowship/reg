@@ -65,7 +65,7 @@ $P{edate} = date($P{edate});
 
 # send email to the person to confirm
 my $html;
-$P{email} = 1;
+$P{sending_email} = 1;
 $tt->process(
     'reg_message.tt2',
     \%P,
@@ -78,7 +78,7 @@ email_letter($c,
     html    => $html,
 );
 
-$P{email} = 0;
+$P{sending_email} = 0;
 $tt->process(
     'reg_message.tt2',
     \%P,

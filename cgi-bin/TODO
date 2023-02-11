@@ -1,3 +1,10 @@
+if outdoors only:
+    cabin/room - don't show that if outdoors only
+    add bullet point about outdoors only
+
+omp, new_hfs
+    use the Util function
+
 List all the cgi-bin scripts and what they do:
 
 - no payment
@@ -19,8 +26,7 @@ rental_payment - done
 reg2 - done
 req_pay - done
 
-reg3 - no payment needed - cost is covered
-mlist
+mlist?
 new_hfs_member          # tell Jen , etc about new name with '_hfs'???
     2 .tt2 email message
 sutra1

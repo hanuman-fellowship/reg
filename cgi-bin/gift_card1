@@ -11,6 +11,7 @@ use lib '.', '../lib';
 use Util qw/
     db_init
     model
+    fee_types
 /;
 my $c = db_init();
 use Date::Simple qw/
@@ -29,32 +30,13 @@ my ($pr) = model($c, 'Program')->search({
                name => { -like => '%personal%retreat%' },
                sdate => { -between => [ $first, $last ] },
            });
-my $hc = $pr->housecost();
-my @htypes = model($c, 'HousingType')->all();
-my @fee_rows = sort {
-                   $a->{order} <=> $b->{order}
-               }
-               map { 
-                   my $type = $_->name;
-                   +{
-                        type      => $type,
-                        short_desc => $_->short_desc,
-                        cost       => $hc->$type,
-                        order      => $_->ht_order,
-                    }
-               }
-               grep {
-                  my $type = $_->name;
-                  $hc->$type != 0
-               }
-               @htypes;
 
+my $hc = $pr->housecost();
 $stash{housecost_type} = $hc->type;
-$stash{htypes} = \@fee_rows;
+$stash{htypes} = fee_types($c, $hc);
 
 my %cookie = $q->cookie(-name => 'user_data');
 $stash{month} = $today->format("%B");
-$stash{fee_rows} = \@fee_rows;
 
 for my $w (qw/
     rec_fname rec_lname rec_email
