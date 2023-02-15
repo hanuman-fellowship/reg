@@ -22,8 +22,9 @@
         [% NEXT %]
     [% END %]
     <tr>
-    <td><a href="/housecost/view/[% hc.id %]">[% hc.name %]</a></td>
-    <td>[% IF hc.inactive == 'yes' %]inactive[% END %]<td>
+    <td>[% IF hc.inactive == 'yes' %]Inactive[% END %]<td>
+    <td>$hc.type<td>
+    <td><a href="/housecost/view/$hc.id">$hc.name</a></td>
     </tr>
 [% END %]
 </table>

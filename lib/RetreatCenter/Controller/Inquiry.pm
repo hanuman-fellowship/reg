@@ -30,7 +30,7 @@ sub index : Private {
 #
 sub list : Local {
     my ($self, $c, $order) = @_;
-    $order ||= 'date';
+    $order ||= 'status';
 
     my @inq = model($c, 'Inquiry')->all();
     if ($order eq 'leader') {
@@ -56,13 +56,14 @@ sub list : Local {
         no warnings;
         my %status_order = qw/
             0 0   # new
-            1 4   # contacted
-            2 2   # engaged
-            3 6   # denied by Host
-            4 7   # denied by MMC
-            5 3   # tentative
-            6 5   # rental
-            7 1   # priority
+            1 5   # contacted
+            2 3   # engaged
+            3 7   # denied by Host
+            4 8   # denied by MMC
+            5 4   # tentative
+            6 6   # rental
+            7 2   # priority
+            8 1   # dates proposed
         /;
         @inq = map {
                    $_->[0]
@@ -71,9 +72,16 @@ sub list : Local {
                    $a->[1] <=> $b->[1]
                    ||
                    $b->[2] <=> $a->[2]
+                   ||
+                   $b->[3] <=> $a->[3]
                }
                map {
-                   [ $_, $status_order{$_->status}, $_->the_date ]
+                   [
+                       $_,
+                       $status_order{$_->status},
+                       $_->how_many =~ m{\A (\d+)}xms,
+                       $_->the_date,
+                   ]
                }
                @inq;
     }
@@ -130,7 +138,7 @@ sub change_status : Local {
     my @statuses = $inq->statuses(); 
     my $status_opts = '';
     for my $i (0 .. $#statuses) {
-        my $selected = $i eq $inq->status? ' selected': '';
+        my $selected = $i == $inq->status? ' selected': '';
         $status_opts .= "<option value=$i$selected>$statuses[$i]</option>\n";
     }
     stash($c,
@@ -147,7 +155,7 @@ sub change_status_do : Local {
     $inq->update({
         status => $c->request->params->{new_status},
     });
-    $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
+    $c->response->redirect($c->uri_for("/inquiry/list/status"));
 }
 
 sub export : Local {

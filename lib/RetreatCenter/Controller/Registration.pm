@@ -2169,15 +2169,7 @@ sub send_conf : Local {
     if (! -r $fname) {
         error($c,
               "Sorry, cannot open confirmation letter template.",
-              'gen_error.tt2');
-        return;
-    }
-    # no need for a gate code if program is ONLINE...
-    if (! $pr->housing_not_needed() && empty($pr->gate_code())) {
-        error($c,
-              "Sorry, cannot send confirmation letter because<br>"
-              . $pr->name() . " needs a gate code!",
-              'gen_error.tt2');
+              'gen_error.tt2', 1);
         return;
     }
     Global->init($c);
@@ -2559,9 +2551,22 @@ sub _view {
     ) {
         $is_editable = 0;
     }
+    my $no_conf = '';
+    if (! $prog->housing_not_needed) {
+        if (!$reg->house_id) {
+            $no_conf = "The registration needs to be housed.";
+        }
+        elsif (empty($prog->gate_code())) {
+            $no_conf = "The program needs a Gate Code in the Summary.";
+        }
+        if ($no_conf) {
+            $no_conf = qq!onclick="alert('$no_conf'); return false;"!
+        }
+    }
 
     stash($c,
         time_travel_class($c),
+        no_conf        => $no_conf,
         editable       => $is_editable,
         req_payments   => \@req_payments,
         send_requests  => $send_requests,
@@ -3608,6 +3613,26 @@ sub update_do : Local {
         my @alerts = get_PR_alerts($c, $dates{date_start}, $dates{date_end});
         if (@alerts) {
             stash($c, alerts => join "\\n\\n", @alerts);
+        }
+        # did the start date change?  if so, change the program_id
+        if ($dates{date_start} != $reg->date_start()) {
+            my $dt = date($dates{date_start});
+            my $first_of_month = date($dt->year, $dt->month, 1);
+            my ($new_pr) = model($c, 'Program')->search({
+                            sdate => $first_of_month->as_d8(),
+                          });
+            $reg->update({
+                program_id => $new_pr->id(),
+            });
+            # and adjust the reg_count in both PR programs.
+            my $n = $pr->reg_count();
+            $pr->update({
+                reg_count => $n-1,
+            });
+            $n = $new_pr->reg_count();
+            $new_pr->update({
+                reg_count => $n+1,
+            });
         }
     }
     if ($reg->house_id()

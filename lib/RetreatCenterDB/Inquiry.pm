@@ -54,6 +54,7 @@ my @status = (
     'Tentative',        # 5
     'Rental',           # 6
     'Priority',         # 7
+    'Dates Proposed',   # 8
 );
 
 sub status_disp {

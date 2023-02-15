@@ -1246,6 +1246,7 @@ sub error {
     my $st_ref = shift->stash;
     $st_ref->{mess}     = shift;
     $st_ref->{template} = shift;
+    $st_ref->{close_window} = shift;
 }
 
 sub payment_warning {

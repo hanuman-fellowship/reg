@@ -400,16 +400,18 @@ If you only want a certificate of completion enter COMP for the license #.
     <input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last">
     </ul>
 
-    <p>If given a <b>choice</b>, would you prefer a cabin or a room?
-    <ul class=space>
-    <input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin>
-    <b>Cabin</b> - heat and electricity, but no indoor plumbing
-    <br>
-    <input type=radio name=cabin_room id=cabin_room2 value=room $room>  
-    <b>Room</b>
-    <br>
-    <a href="javascript:popup('/static/help/cabin-room.html',500,700)">What's the difference?</a></p> 
-    </ul>
+    [% IF ! outdoors %]
+        <p>If given a <b>choice</b>, would you prefer a cabin or a room?
+        <ul class=space>
+        <input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin>
+        <b>Cabin</b> - heat and electricity, but no indoor plumbing
+        <br>
+        <input type=radio name=cabin_room id=cabin_room2 value=room $room>  
+        <b>Room</b>
+        <br>
+        <a href="javascript:popup('/static/help/cabin-room.html',500,700)">What's the difference?</a></p> 
+        </ul>
+    [% END %]
 
     </div> <!-- indent for housing choice -->
 

@@ -26,7 +26,6 @@ $status_opts
 <input type=submit id=sub value='Submit'>
 </form>
 </td></tr>
-<tr><th>Status</th><td>$inquiry.status_disp</td></tr>
 <tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
 <tr><th>Leader Name</th><td>$inquiry.leader_name</td></tr>
 <tr><th>Phone</th><td>$inquiry.phone</td></tr>

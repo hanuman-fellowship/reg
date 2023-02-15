@@ -1,7 +1,3 @@
-if outdoors only:
-    cabin/room - don't show that if outdoors only
-    add bullet point about outdoors only
-
 omp, new_hfs
     use the Util function
 
