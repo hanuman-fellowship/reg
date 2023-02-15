@@ -2617,7 +2617,7 @@ sub add_br {
     return $s;
 }
 
-#
+#??JON - will be obsolete
 # put the value in the file in the pr_dir on mountmadonna.org
 #
 sub put_pr_dir {
