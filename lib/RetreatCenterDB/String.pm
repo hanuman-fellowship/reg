@@ -314,6 +314,7 @@ mem_credit_hours - obsolete - can be removed
 mem_credit_phone - obsolete - can be removed
 mem_email - the email address of the membership secretary
 mem_gen_amt - how much for a General membership?
+mem_gen_ky_amt - how much for a General KY membership?
 mem_life_total - total donations to be a Life member
 mem_phone - phone number of the membership secretary
 mem_site - obsolete - can be removed

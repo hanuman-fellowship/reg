@@ -7,6 +7,8 @@
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/member/list_online">Online ($online)</a>
+&nbsp;&nbsp;&nbsp;
+<a href="$cgi/new_hfs_member">New HFS Member</a>
 <p class=p2>
 <a href="/member/voter_list">Voter List</a>
 &nbsp;&nbsp;&nbsp;

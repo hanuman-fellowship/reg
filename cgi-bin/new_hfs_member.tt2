@@ -104,9 +104,9 @@ Hanuman Fellowship Board of Directors<br>
 
 <tr>
 <th width=15%>General</th>
-<td>\$50 Yearly Dues<br>
+<td>\$$mem_gen_amt Yearly Dues<br>
 &nbsp;&nbsp;<b>or</b><br>
-\$25 Yearly Dues + 20 hours Karma Yoga**
+\$$mem_gen_ky_amt Yearly Dues + 20 hours Karma Yoga**
 </td>
 <td>
 <ul>
@@ -118,7 +118,7 @@ Hanuman Fellowship Board of Directors<br>
 
 <tr>
 <th>Sponsor</th>
-<td>\$600 Yearly Dues</td>
+<td>\$$mem_spons_year Yearly Dues</td>
 <td>
 All above benefits, PLUS:
 <ul>
@@ -133,7 +133,7 @@ New Year's.
 </ul>
 Lodging is a double room w/o private bath, or room/tent of lesser value.
 Sponsor dues lead to Lifetime Membership when the accumulated
-amount of \$12,000 is reached.
+amount of \$$mem_life_total is reached.
 </td>
 <tr>
 <tr>
@@ -164,9 +164,9 @@ Please complete the form below and press Submit at the bottom:
 <tr>
 <th align=right valign=top width=30%>Membership Type</th>
 <td>
-<input type=radio name=mem_type value=general checked> General - \$50 annually<p>
-<input type=radio name=mem_type value=general_ky> General with KY** - \$25 annually + 20 hours KY<p>
-<input type=radio name=mem_type value=sponsor> Sponsor - \$600 annually
+<input type=radio name=mem_type value=general checked> General - \$$mem_gen_amt annually<p>
+<input type=radio name=mem_type value=general_ky> General with KY** - \$$mem_gen_ky_amt annually + 20 hours KY<p>
+<input type=radio name=mem_type value=sponsor> Sponsor - \$$mem_spons_year annually
 <br><br>
 </td>
 </tr>
@@ -269,5 +269,5 @@ Hanuman temple (tending, parking), and others.)
 document.getElementById('first').focus({ preventScroll: true });
 setTimeout(function() {
     window.scrollTo(0, 0);
-}, 30);
+}, 50);
 </script>

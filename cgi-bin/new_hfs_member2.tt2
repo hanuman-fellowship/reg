@@ -10,9 +10,7 @@
 <img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
 <p>
 Verify the following:
-<p>
-<table cellpadding=15 class=ind>
-<tr><td>
+<ul>
 $first $last<br>
 $addr1<br>
 [% IF addr2 %]
@@ -24,15 +22,11 @@ $country
 <p>
 $cell<br>
 $email1
-</td>
-[% IF pic_thumb %]
-    <td valign=top>
-    <img src=$pic_thumb>
-    </td>
-[% END %]
-</tr>
-</table>
 <p>
+[% IF pic_thumb %]
+    <img src=$pic_thumb>
+[% END %]
+</ul>
 You want to enroll as a $Mem_Type in the Hanuman Fellowship.<br>
 The $prorated cost is \$${amount}.
 <p>
@@ -46,10 +40,6 @@ $intro
     $ky
     </ul>
 [% END %]
-<button type="button"
-        onclick="history.go(-1); return false;">
-Go Back and Make Changes
-</button>
 $stripe_payment
 </form>
 </body>

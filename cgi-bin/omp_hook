@@ -11,7 +11,8 @@ use Stripe qw/
 use Util qw/
     db_init
     model
-    add_activity
+    add_membership_payment
+    member_notify
 /;
 my $c = db_init();
 use Template;
@@ -19,17 +20,8 @@ use Template;
 my %P = metadata($q);
 
 my $member = model($c, 'Member')->find($P{member_id});
-my $person = $member->person;
-my $name = $member->person->name();
-add_activity($c, "HFS Membership payment of \$$P{amount} for $name");
-open my $out, '>', "$P{member_id}_$P{amount}_" . time();
-close $out;
-# notify membership secretary...
-# or should we 'bring it in' directly?
+add_membership_payment($c, $P{member_id}, 0,
+                       $P{amount}, 'O', $P{transaction_id});
 
-Template->new(
-    INTERPOLATE => 1
-)->process(
-    'omp_message.tt2',
-    \%P,
-);
+member_notify($c, $member->person, $P{category},
+              0, $P{amount}, $P{transaction_id});

@@ -8,28 +8,11 @@ use CGI;
 my $q = CGI->new();
 print $q->header();
 
-use Template;
-my $tt = Template->new(
-             INTERPOLATE => 1
-         );
-
-use Date::Simple qw/
-    date
-    today
-/;
-use Time::Simple qw/
-    get_time
-/;
-my $date = today()->as_d8();
-my $time = get_time()->t24();
-
 use Util qw/
     add_or_update_deduping
-    add_activity
-    email_letter
+    add_membership_payment
+    member_notify
     db_init
-    model
-    JON
 /;
 my $c = db_init();
 
@@ -37,8 +20,6 @@ use Stripe qw/
     metadata
 /;
 my %P = metadata($q);
-use Data::Dumper;   # JON
-JON Dumper \%P;
 
 #
 # create/update the Person
@@ -47,7 +28,7 @@ JON Dumper \%P;
 #
 $P{sex} = '';
 for my $k (qw/ e_mailings snail_mailings share_mailings /) {
-    $P{$k} = -1;
+    $P{$k} = '';    # default to no for new people?
 }
 $P{tel_cell} = $P{cell};
 for my $f (qw/
@@ -59,68 +40,18 @@ for my $f (qw/
 my ($person_id, $person, $status) = add_or_update_deduping(
                                         $c, \%P
                                     );
+my $member_id = 0;
+if (my $mem = $person->member) {
+    # unlikely - unless ... wanting to change
+    # from General to Sponsor...
+    $member_id = $mem->id;
+}
 
 #
-# payment to the Membership extra account
+# create the Membership and add the payment
 #
-my @xaccounts = model($c, 'XAccount')->search({
-                    descr => 'Membership',
-                });
-my $membership_xaccount_id = $xaccounts[0]->id;
-    # what if not there??
-model($c, 'XAccountPayment')->create({
-    person_id   => $person_id,
-    xaccount_id => $membership_xaccount_id,
-    what        => "\u$P{mem_type} membership",
-    amount      => $P{amount},
-    type        => 'O',               # online
-    user_id     => 0,                 # what other user id?
-    the_date    => $date,
-    time        => $time,
-    transaction_id => $P{transaction_id},
-});
+add_membership_payment($c, $member_id, $person_id,
+                       $P{amount}, 'O', $P{transaction_id});
 
-#
-# create the Membership
-#
-#...
-
-#
-# register the Activity
-#
-add_activity($c,
-    "HFS \u$P{mem_type} Membership for"
-    . ' <a href=/person/view/' . $person->id . '>'
-    . $person->name . '</a>'
-);
-
-#
-# notify membership@mountmadonna.org
-#
-# ...
-
-#
-# email to the new member
-#
-my $html;
-$tt->process(
-    'new_hfs_message.tt2',
-    {
-        url      => 'https://akash.mountmadonna.org',
-        name     => $person->name,
-        amount   => $P{amount},
-        transaction_id => $P{transaction_id},
-        Mem_Type => ucfirst $P{mem_type},
-    },
-    \$html,
-);
-email_letter($c,
-    to      => "$P{first} $P{last} <$P{email}",
-    from    => 'programs@mountmadonna.org',
-    subject => "Hanuman Fellowship \u$P{mem_type} Membership",
-    html    => $html,
-);
-#
-# the same response on the screen:
-#
-print $html;
+member_notify($c, $person, $P{mem_type},
+              1, $P{amount}, $P{transaction_id});

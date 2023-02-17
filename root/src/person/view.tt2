@@ -65,7 +65,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 [% IF Catalyst.check_user_roles('member_admin') %]
     &nbsp;&nbsp;&nbsp;
     [% IF person.member %]
-        <a href="/member/update/$person.member.id" accesskey='m'><span class=keyed>M</span>ember Info</a>
+        <a href="/member/view/$person.member.id" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% ELSE %]
         <a href="/member/create/$id" accesskey='m'>Make <span class=keyed>M</span>ember</a>
     [% END %]

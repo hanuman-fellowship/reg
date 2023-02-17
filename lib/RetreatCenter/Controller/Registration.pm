@@ -2552,7 +2552,7 @@ sub _view {
         $is_editable = 0;
     }
     my $no_conf = '';
-    if (! $prog->housing_not_needed) {
+    if (! ($ME || $prog->housing_not_needed)) {
         if (!$reg->house_id) {
             $no_conf = "The registration needs to be housed.";
         }

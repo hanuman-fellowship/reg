@@ -433,7 +433,7 @@ for my $g (qw/ female male non_binary trans no_resp /) {
 # if there is cookie information, it will also be used.
 
 my %cookie = $q->cookie(
-    -domain => 'akash2.mountmadonna.org',       # ??
+    -domain => 'akash2.mountmadonna.org',       # ??JON
     -name   => 'user_data',
 );
 $stash{$cookie{sex}} = 'checked';

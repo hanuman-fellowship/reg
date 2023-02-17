@@ -96,6 +96,7 @@ our @EXPORT_OK = qw/
     add_br
     put_pr_dir
     add_membership_payment
+    member_notify
     fee_types
 /;
 use POSIX   qw/ceil/;
@@ -2090,6 +2091,11 @@ sub add_or_update_deduping {
         # or didn't find a match of phone/email/temple_id.
         # so we add a new person.
         #
+        for my $k (@mailing_keys) {
+            if ($href->{$k} == -1) {
+                $href->{$k} = '';
+            }
+        }
         my @comment;
         if ($args{request_to_comment}) {
             push @comment, comment => $href->{request};
@@ -2651,32 +2657,36 @@ sub put_pr_dir {
 #
 # called from several different places:
 #
-# - People > choose person > Make Member (member/create)
-# - Members > choose person > Edit/Pay (member/update)
-# - online new_hfs_member_hook
+# - People > choose person > Make Member (member/create) - maybe
+# - Members > choose person > Edit/Pay (member/update) - maybe
+# - online new_hfs_member_hook - done
 # - online omp_hook
+#
+# this subroutine can DIE if given invalid parameters
 #
 # $c is the first parameter.
 # either a $member_id or a $person_id must be given.
-# if $person_id we first make that person a member.
+# if $person_id and not $member_id we first make that person a member.
 #
 # the $amount determines the type of membership.
 # $pay_type is either:
 #     O - online, D - credit, C - check, S - cash
+# with online payments we have a transaction id.
+#   cash/check we do not so we just use 0
 #
 sub add_membership_payment {
-    my ($c, $member_id, $person_id, $amount, $pay_type) = @_;
+    my ($c, $member_id, $person_id, $amount, $pay_type, $transaction_id) = @_;
     if (! ($member_id || $person_id)) {
         die "must call add_membership_payment"
           . " with either a member_id or a person_id";
     }
     if (! $amount || $amount !~ m{\A [1-9]\d* \z}xms) {
-        die "illega amount given to add_membership_payment";
+        die "illegal amount given to add_membership_payment";
     }
     if (! $pay_type || $pay_type !~ m{\A [ODCS] \z}xms) {
         die "pay_type must be ODCS";
     }
-    my $gen = get_string($c, 'mem_gen_amount');
+    my $gen = get_string($c, 'mem_gen_amt');
     my $category = $amount <  $gen? 'General_ky'
                   :$amount == $gen? 'General'
                   :                 'Sponsor'
@@ -2684,9 +2694,10 @@ sub add_membership_payment {
     my $spons = $category eq 'Sponsor';
     #
     # the membership expires at the end of this year
-    # ?unless this payment is done in November or later...
+    # ??unless this payment is done in November or later...
     #
     my $today = tt_today($c);
+    my $todayd8 = $today->as_d8();
     my $year = $today->year;
     if ($today->month >= 11) {
         ++$year;
@@ -2709,8 +2720,10 @@ sub add_membership_payment {
         die "no person with id $person_id";
     }
 
+    my $new = '';
     # make the person a Member if needed
     if (! $member_id) {
+        $new = 'New ';
         $member = model($c, 'Member')->create({
             person_id       => $person_id,
             total_paid      => $amount,
@@ -2732,7 +2745,7 @@ sub add_membership_payment {
                "HFS Member $cat",
     ) {
         my ($affil) = model($c, 'Affil')->search({
-                          descrip => 'MMC Annual Yoga Retreats',
+                          descrip => $d,
                       });
         my $affil_id = $affil->id;
         my @affper = model($c, 'AffilPerson')->search({
@@ -2751,12 +2764,12 @@ sub add_membership_payment {
     my ($xacct) = model($c, 'XAccount')->search({
                       descr => "Membership",
                   });
-    my $user_id = $c->user? $c->user->obj->id: 2;
+    my $user_id = $c->can('user')? $c->user->obj->id: 2;
             # default user is Sahadev (2)
             # for online payments brought in automatically
     my @who_now = (
         user_id     => $user_id,
-        the_date    => $today->as_d8(),
+        the_date    => $todayd8,
         time        => get_time()->t24(),
     );
     model($c, 'XAccountPayment')->create({
@@ -2780,21 +2793,73 @@ sub add_membership_payment {
     }
 
     # SponsHist record to show payment
-    # other SponsHist records show the use of free nights
-    # or free program.
-=comment
+    # probably an unnecessary duplicate of XAccount
     model($c, 'SponsHist')->create({
         member_id    => $member_id,
-        date_payment => $pay_date,
-        valid_from   => $valid_from,
-        valid_to     => $valid_to,
+        date_payment => $todayd8,
+        valid_from   => date($year, 1, 1)->as_d8(),
+        valid_to     => date($year, 12, 31)->as_d8(),
         amount       => $amount,
         type         => $pay_type,
         general      => $cat eq 'General',
         transaction_id => $transaction_id,
         @who_now,
     });
-=cut
+    add_activity($c,
+        "${new}HFS $cat Membership for"
+        . " <a href=/person/view/$person_id>" . $person->name . '</a>'
+    );
+}
+
+#
+# send email and issue html to the screen
+#
+sub member_notify {
+    my ($c, $person, $type, $new, $amount, $transaction_id) = @_;
+
+    $type = ucfirst $type;
+    my $New = $new? 'New ': '';
+
+    #
+    # notify membership@mountmadonna.org
+    # if new, include intro, ky preference, and picture.
+    # then delete pic
+    #
+    email_letter($c,
+        to      => get_string($c, 'mem_email'),
+        from    => 'programs@mountmadonna.org',
+        subject => $New . 'HFS Membership',
+        html    => $New . "$type Member: "
+                 . '<a href=https://akash.mountmadonna.org/person/view/'
+                 . $person->id . '>' . $person->name . '</a>'
+    );
+    #
+    # email to the new member
+    #
+    my $html;
+    Template->new(
+        INTERPOLATE => 1,
+    )->process(
+        'member_message.tt2',
+        {
+            first    => $person->first,
+            amount   => $amount,
+            type     => $type,
+            new      => $new,
+            transaction_id => $transaction_id,
+        },
+        \$html,
+    );
+    email_letter($c,
+        to      => $person->name . '<' . $person->email . '>',
+        from    => 'programs@mountmadonna.org',
+        subject => "Hanuman Fellowship $type Membership",
+        html    => $html,
+    );
+    #
+    # the same response on the screen:
+    #
+    print $html;
 }
 
 #

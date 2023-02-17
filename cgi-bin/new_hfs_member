@@ -1,6 +1,13 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use lib '.', '../lib';
+use Util qw/
+    db_init
+    get_string
+/;
+my $c = db_init();
+
 use CGI;
 my $q = CGI->new();
 my %form = $q->Vars();
@@ -9,13 +16,13 @@ my $tt = Template->new(
     INTERPOLATE => 1,
 );
 # cookie info from a registration
-my %cookie = $q->cookie(-name => 'user_data');
+my %cookie = $q->cookie(
+    -domain => 'akash2.mountmadonna.org',   #??JON
+    -name   => 'user_data',
+);  # ??JON domain?
 use lib '.', '../lib';
 use Stripe qw/
     stripe_payment
-/;
-use HTML::Entities qw/
-    encode_entities
 /;
 my %stash;
 if (! $form{first}) {
@@ -29,6 +36,15 @@ if (! $form{first}) {
     }
     # show the initial page describing the
     # mission, benefits, and costs.
+    #
+    for my $k (qw/
+        mem_gen_amt
+        mem_gen_ky_amt
+        mem_spons_year
+        mem_life_total
+    /) {
+        $stash{$k} = get_string($c, $k);
+    }
     print $q->header();
     $tt->process(
         'new_hfs_member.tt2',
@@ -44,23 +60,13 @@ my $type = $form{mem_type};
 $stash{Mem_Type} = $type eq 'general' || $type eq 'sponsor'?
                        "\u$type Member"
                   : "General Member with Karma Yoga";
-$stash{amount} = $type eq 'general'   ? 50
-                :$type eq 'general_ky'? 25
-                :                       600
+$stash{amount} = $type eq 'general'   ? get_string($c, 'mem_gen_amt')
+                :$type eq 'general_ky'? get_string($c, 'mem_gen_ky_amt')
+                :                       get_string($c, 'mem_spons_year')
                 ;
 $stash{desc} = "HFS \u$type membership"; 
 # rename...
 $stash{email} = $form{email1};
-
-my %metadata = %form;
-
-$stash{stripe_payment} = stripe_payment(
-    name        => "$form{first} $form{last}",
-    description => "HFS $stash{Mem_Type} Membership",
-    amount      => $stash{amount},
-    metadata    => \%stash,
-    email       => $form{email1},
-);
 
 =comment
 
@@ -86,6 +92,17 @@ if ($photo) {
 }
 
 =cut
+
+
+my %metadata = %form;
+
+$stash{stripe_payment} = stripe_payment(
+    name        => "$form{first} $form{last}",
+    description => "HFS $stash{Mem_Type} Membership",
+    amount      => $stash{amount},
+    metadata    => \%stash,
+    email       => $form{email1},
+);
 
 # get ready to send a cookie for storage
 %cookie = %form;
