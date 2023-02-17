@@ -71,8 +71,8 @@ my %stash = (
 );
 
 $stash{stripe_payment} = stripe_payment(
-    name        => 'HFS Membership',
-    description => ucfirst($member->category) . " Member",
+    name        => $person->name,
+    description => 'HFS ' . ucfirst($member->category) . " Membership",
     amount      => $amount_due,
     metadata    => {
                        first     => $person->first,

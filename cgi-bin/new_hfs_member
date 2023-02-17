@@ -68,13 +68,12 @@ $stash{desc} = "HFS \u$type membership";
 # rename...
 $stash{email} = $form{email1};
 
-=comment
-
 my $photo = $q->upload('photo');
-my $pic_name = $q->param('photo');
-# pic_name will be first_last.jpg (jpg or whatever type the file is)
-$pic_name =~ s{\A .*[.]([a-z]+) \z}{$form{first}_$form{last}.$1}xms;
 if ($photo) {
+    my $pic_name = $q->param('photo');
+    # pic_name will be first_last.jpg (jpg or whatever type the file is)
+    $pic_name =~ s{\A .*[.]([a-z]+) \z}{$form{first}_$form{last}.$1}xms;
+
     # Upgrade the handle to one compatible with IO::Handle:
     my $io = $photo->handle;
     open my $out, '>', "/tmp/pic$$";
@@ -83,18 +82,12 @@ if ($photo) {
         print {$out} $buffer;
     }
     close $out;
-    my $pic_dir = "../reg-pics";
-    system("/usr/bin/convert /tmp/pic$$ -resize 800x $pic_dir/$pic_name");
-    system("/usr/bin/convert $pic_dir/$pic_name -resize 300x $pic_dir/th-$pic_name");
+
+    my $dir = '/var/www/src/root/static/images';
+    system("/usr/bin/convert /tmp/pic$$ -resize 800x $dir/$pic_name");
     unlink "/tmp/pic$$";
-    $href->{pic_thumb} = "http://www.mountmadonna.org/reg-pics/th-$pic_name";
-    $href->{pic_url}   = "http://www.mountmadonna.org/reg-pics/$pic_name";
+    $stash{pic} = $pic_name;
 }
-
-=cut
-
-
-my %metadata = %form;
 
 $stash{stripe_payment} = stripe_payment(
     name        => "$form{first} $form{last}",

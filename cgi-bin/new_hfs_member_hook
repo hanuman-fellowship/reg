@@ -54,4 +54,10 @@ add_membership_payment($c, $member_id, $person_id,
                        $P{amount}, 'O', $P{transaction_id});
 
 member_notify($c, $person, $P{mem_type},
-              1, $P{amount}, $P{transaction_id});
+              $P{amount}, $P{transaction_id},
+              {
+                  intro => $P{intro},
+                  ky    => $P{ky},
+                  pic   => $P{pic},
+              }
+             );

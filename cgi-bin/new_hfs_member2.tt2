@@ -29,12 +29,20 @@ $email1
 </ul>
 You want to enroll as a $Mem_Type in the Hanuman Fellowship.<br>
 The $prorated cost is \$${amount}.
-<p>
-Your introduction:
-<ul>
-$intro
-</ul>
+[% IF intro %]
+    <p>
+    Your introduction:
+    <ul>
+    $intro
+    </ul>
+[% END %]
+[% IF pic %]
+    <p>
+    Your picture:<p>
+    <img src=/static/images/$pic>
+[% END %]
 [% IF ky %]
+    <p>
     Your preferred Karma Yoga areas:
     <ul>
     $ky

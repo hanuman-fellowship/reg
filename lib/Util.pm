@@ -2812,31 +2812,51 @@ sub add_membership_payment {
 }
 
 #
+# called from cgi-bin/omp_hook and new_hfs_member_hook.
 # send email and issue html to the screen
 #
 sub member_notify {
-    my ($c, $person, $type, $new, $amount, $transaction_id) = @_;
+    my ($c, $person, $type, $amount, $transaction_id, $new_href) = @_;
 
     $type = ucfirst $type;
-    my $New = $new? 'New ': '';
+    my $New = $new_href? 'New ': '';
 
     #
     # notify membership@mountmadonna.org
     # if new, include intro, ky preference, and picture.
     # then delete pic
     #
+    my $html = $New . "$type Member: "
+             . '<a href=https://akash.mountmadonna.org/person/view/'
+             . $person->id . '>' . $person->name . '</a>';
+    if ($new_href) {
+        if ($new_href->{intro}) {
+            $html .= "<p>Introduction:<br>$new_href->{intro}";
+        }
+        if ($new_href->{ky}) {
+            $html .= "<p>Preferred Karma Yoga:<br>$new_href->{ky}";
+        }
+    }
+    my @attach = ();
+    my $dir = '/var/www/src/root/static/images';
+    if ($new_href && $new_href->{pic}) {
+        @attach = ( files_to_attach => [ "$dir/$new_href->{pic}" ] );
+        $html .= "<p>See attached picture.<p>";
+    }
     email_letter($c,
         to      => get_string($c, 'mem_email'),
         from    => 'programs@mountmadonna.org',
         subject => $New . 'HFS Membership',
-        html    => $New . "$type Member: "
-                 . '<a href=https://akash.mountmadonna.org/person/view/'
-                 . $person->id . '>' . $person->name . '</a>'
+        html    => $html,
+        @attach,
     );
+    if (@attach) {
+        unlink "$dir/$new_href->{pic}";
+    }
     #
     # email to the new member
     #
-    my $html;
+    my $html2;
     Template->new(
         INTERPOLATE => 1,
     )->process(
@@ -2845,21 +2865,21 @@ sub member_notify {
             first    => $person->first,
             amount   => $amount,
             type     => $type,
-            new      => $new,
+            new      => $new_href,
             transaction_id => $transaction_id,
         },
-        \$html,
+        \$html2,
     );
     email_letter($c,
         to      => $person->name . '<' . $person->email . '>',
         from    => 'programs@mountmadonna.org',
         subject => "Hanuman Fellowship $type Membership",
-        html    => $html,
+        html    => $html2,
     );
     #
     # the same response on the screen:
     #
-    print $html;
+    print $html2;
 }
 
 #

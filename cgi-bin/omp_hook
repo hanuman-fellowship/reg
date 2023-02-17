@@ -24,4 +24,4 @@ add_membership_payment($c, $P{member_id}, 0,
                        $P{amount}, 'O', $P{transaction_id});
 
 member_notify($c, $member->person, $P{category},
-              0, $P{amount}, $P{transaction_id});
+              $P{amount}, $P{transaction_id}, 0);
