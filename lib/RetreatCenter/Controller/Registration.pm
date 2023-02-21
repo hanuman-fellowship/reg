@@ -2553,7 +2553,7 @@ sub _view {
     }
     my $no_conf = '';
     if (! ($reg->mountain_experience
-           || $reg->ht_type eq 'not_needed'
+           || $reg->h_type eq 'not_needed'
            || $prog->housing_not_needed
     )) {
         if (!$reg->house_id) {
