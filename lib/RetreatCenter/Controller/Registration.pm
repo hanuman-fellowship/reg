@@ -2552,7 +2552,10 @@ sub _view {
         $is_editable = 0;
     }
     my $no_conf = '';
-    if (! ($reg->mountain_experience || $prog->housing_not_needed)) {
+    if (! ($reg->mountain_experience
+           || $reg->ht_type eq 'not_needed'
+           || $prog->housing_not_needed
+    )) {
         if (!$reg->house_id) {
             $no_conf = "The registration needs to be housed.";
         }
