@@ -297,6 +297,11 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right>Reg By Day</th>
+<td><input type=checkbox value=yes name=reg_by_day $check_reg_by_day></td>
+</tr>
+
+<tr>
 <th align=right>Full Tuition</th>
 <td><input type=text name=full_tuition value="$program.full_tuition" size=4></td>
 </tr>

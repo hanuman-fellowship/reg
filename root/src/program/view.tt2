@@ -546,6 +546,11 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right>Reg By Day</th>
+<td>$program.reg_by_day</td>
+</tr>
+
+<tr>
 <th align=right>Full Tuition</th>
 <td>$program.full_tuition</td>
 </tr>

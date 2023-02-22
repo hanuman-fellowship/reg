@@ -1,0 +1,154 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use feature 'say';
+my $top = <<'EOH';
+<html>
+<head>
+<title>%TITLE%</title>
+<style>
+body {
+    font-family: Times;
+    font-size: 18pt;
+    margin-left: .4in;
+    width: 80%;
+    background: ivory;
+}
+a {
+    text-decoration: none;
+    color: blue;
+}
+.top {
+    margin-left: 1in;
+    font-size: 14pt;
+}
+.q {
+    font-weight: bold;
+    margin-bottom: 5mm;
+}
+.a {
+    font-style: italic;
+    margin-left: 20mm;
+    margin-bottom: 10mm;
+}
+.title {
+    text-align: center;
+    font-size: 50px;
+    margin-top: 10mm;
+}
+.subtitle {
+    text-align: center;
+    font-size: 25px;
+    margin-bottom: 10mm;
+}
+</style>
+</head>
+<body>
+EOH
+my $bottom = <<'EOH';
+</body>
+</html>
+EOH
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $sth_get_talks = $dbh->prepare(<<'EOS') or die "no prepare 1";
+    select * from talk;
+EOS
+my $sth_get_qa = $dbh->prepare(<<'EOS') or die "no prepare 2";
+    SELECT question, answer
+      FROM qa
+     WHERE talk_id = ?
+  ORDER BY id;
+EOS
+my $rst = '/var/www/src/root/static';
+my @talks;
+$sth_get_talks->execute() or die "no execute";
+while (my $href = $sth_get_talks->fetchrow_hashref()) {
+    push @talks, $href->{title};
+    open my $out, '>', "$rst/talks/talk$href->{id}.html";
+    my $copy = $top;
+    $copy =~ s{%TITLE%}{Talks with Babaji - $href->{title}}xms;
+    print {$out} $copy;
+    print {$out} <<"EOH";
+<div class=title>$href->{title}</div>
+<div class=subtitle>Talks with Babaji</div>
+EOH
+    $sth_get_qa->execute($href->{id});
+    my $n = 1;
+    while (my ($q, $a) = $sth_get_qa->fetchrow_array()) {
+        for ($q, $a) {
+            s{[&]quot;(.*?)[&]quot;}{&#8220;$1&#8221;}msg;
+            s{[&]#039;}{&#8217;}msg;
+            s{"([^"]*)"}{&#8220;$1&#8221}msg;
+            s{[&]quot;}{}msg;   # a stray single double quote
+        }
+        if ("$q$a" =~ /[&]\w/ && !($href->{id} == 5 && $n == 5)) {
+            warn "$href->{id} and $q => $a\n";
+        }
+        if ("$q$a" =~ /[&]#[012345679]/) {
+            warn "$href->{id} and $q => $a\n";
+        }
+        say {$out} "<a name=qa$n></a>"
+                 . "<div class=q>$q</div>"
+                 . "<div class=a>$a</div>";
+        ++$n;
+    }
+    print {$out} $bottom;
+    close $out;
+}
+open my $index, '>', "$rst/talks/index.html";
+print {$index} <<'EOH';
+<html>
+<head>
+<title>Talks with Babaji</title>
+<style>
+td {
+    font-size: 16pt;
+}
+a {
+    text-decoration: none;
+    color: blue;
+}
+body {
+    margin: .4in;
+    background: ivory;
+    font-size: 18pt;
+}
+td, input {
+    font-size: 18pt;
+    font-family: Times;
+}
+</style>
+<script type='text/javascript' src='/static/js/popup.js'></script>
+</head>
+<body>
+<center>
+<img src=/static/images/darshan.jpg>
+<h1>Talks with Babaji</h1>
+<table cellpadding=5>
+EOH
+sub elem {
+    my ($i) = @_;
+    return "<td>"
+         . "<a target=_talk href=/static/talks/talk$i.html>"
+         . $talks[$i-1]
+         . "</a>"
+         . "</td>";
+}
+for my $i (1 .. 20) {
+    say {$index} "<tr>" . elem($i) . elem($i+20) . "</tr>";
+}
+say {$index} "<tr><td></td>" . elem(41) . "</tr>";
+print {$index} <<'EOH';
+</table>
+<p>
+<form target=_blank action=/cgi-bin/talk_search>
+Search Pattern: <input type=text name=pattern size=20>
+&nbsp;&nbsp;<a href="javascript:popup('/static/talks/info.html', 350, 400);"><img src=/static/images/info.png width=20></a>
+</form>
+</center>
+</body>
+</html>
+EOH
+close $index;

@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use feature 'say';
+use DBI;
+my ($talk_id, $qa_id, $q_a, $src, $dest) = @ARGV;
+if ($talk_id !~ m{\A \d+ \z}xms && 1 <= $talk_id && $talk_id <= 41) {
+    die "talk id!\n";
+}
+if ($qa_id !~ m{\A \d+ \z}xms) {
+    die "qa_id!\n";
+}
+if ($q_a !~ m{\A [qa] \z}xms) {
+    die "q_a!\n";
+}
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $sth_get = $dbh->prepare(<<'EOS');
+    select question, answer
+      from qa
+     where talk_id = ? and id = ?
+EOS
+my $sth_put = $dbh->prepare(<<'EOS');
+    update qa
+       set question = ?, answer = ?
+     where talk_id = ? and id = ?
+EOS
+$sth_get->execute($talk_id, $qa_id);
+my ($question, $answer) = $sth_get->fetchrow_array();
+if ($q_a eq 'q') {
+    say "q: $question";
+    $question =~ s{$src}{$dest};
+    say "q: $question";
+}
+else {
+    say "a: $answer";
+    $answer =~ s{$src}{$dest};
+    say "a: $answer";
+}
+$sth_put->execute($question, $answer, $talk_id, $qa_id);

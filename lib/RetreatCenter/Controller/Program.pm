@@ -123,6 +123,7 @@ sub create : Local {
         check_single        => 'checked',
         check_req_pay       => 'checked',
         check_collect_total => 'checked',
+        check_reg_by_day    => '',
         check_donation      => '',
         check_economy       => '',
         check_commuting     => 'checked',
@@ -226,6 +227,7 @@ sub _get_data {
     for my $f (qw/
         req_pay
         collect_total
+        reg_by_day
         tuition_rolled
         donation
         allow_dup_regs
@@ -396,6 +398,9 @@ sub _get_data {
     if ($per_day && $P{tuition_rolled}) {
         push @mess, "Cannot have Rolled Tuition for Per Day House Cost";
     }
+    if ($P{reg_by_day} && ! $per_day) {
+        push @mess, "HouseCost must be Per Day when Program is Reg By Day";
+    }
     if ($P{extradays}) {
         if ($P{full_tuition} <= $P{tuition}) {
             push @mess, "Full Tuition must be more than normal Tuition.";
@@ -412,7 +417,7 @@ sub _get_data {
                 push @mess, "For Personal Retreats the House Cost must be Per Day";
             }
         }
-        elsif (!$P{housing_not_needed} && $per_day) {
+        elsif (!$P{reg_by_day} && !$P{housing_not_needed} && $per_day) {
             push @mess, "The House Cost cannot be Per Day";
         }
     }
@@ -996,7 +1001,7 @@ sub update : Local {
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
-        sbath single req_pay collect_total
+        sbath single req_pay collect_total reg_by_day
         tuition_rolled
         donation
         allow_dup_regs kayakalpa
@@ -1408,6 +1413,7 @@ sub gen_progtable {
                 footnotes
                 deposit
                 collect_total
+                reg_by_day
                 donation
                 donation_msg
                 donation_tiers
@@ -1510,7 +1516,7 @@ sub duplicate : Local {
         webready => 0,
     });
     for my $w (qw/
-        sbath single req_pay collect_total
+        sbath single req_pay collect_total reg_by_day
         donation
         tuition_rolled
         allow_dup_regs kayakalpa
@@ -2039,6 +2045,7 @@ sub _do_export {
                 footnotes
                 deposit
                 collect_total
+                reg_by_day
                 donation
                 donation_msg
                 donation_minimum

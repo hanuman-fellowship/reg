@@ -5,12 +5,13 @@ link on member/list - New HFS Member
 Existing person or not
 
 3 levels of membership
+    General_KY??    check it
 
 Members are created immediately
 
 check:
     Email to member *and* to memberships@mmc.org
-    Member existence, status
+    Member existence, status, category
     XAccount payments
     Affiliations
     SponsHist record

@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use CGI;
+my $q = CGI->new();
+print $q->header;
+my $pattern = $q->param('pattern');
+my $start = "[[:<:]]";
+my $end   = "[[:>:]]";
+if ($pattern =~ s{\A s \s+}{}xms) {
+    $start = $end = '';
+}
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $sth_search = $dbh->prepare(<<"EOS");
+    SELECT id, talk_id, question, answer
+      FROM qa
+     WHERE question regexp '$start$pattern$end'
+        OR answer   regexp '$start$pattern$end'
+  ORDER BY talk_id, id
+EOS
+$sth_search->execute();
+print <<"EOH";
+<html>
+<head>
+<title>Talks with Babaji - Searching for '$pattern'.</title>
+<style>
+body {
+    font-family: Times;
+    font-size: 18pt;
+    margin-left: .5in;
+    margin-top: .2in;
+    width: 80%;
+    background: ivory;
+}
+.q {
+    font-weight: bold;
+    margin-bottom: 5mm;
+}
+.a {
+    font-style: italic;
+    margin-left: 20mm;
+    margin-bottom: 10mm;
+}
+.highlight {
+    background-color: #FFFFA0;
+}
+</style>
+</head>
+<body>
+<h2>Searching Talks with Babaji for '$pattern':</h2>
+<p>
+EOH
+while (my ($id, $talk_id, $question, $answer)
+         = $sth_search->fetchrow_array()
+) {
+    for ($question, $answer) {
+        s{($pattern)}{<span class=highlight>$1</span>}xmsgi;
+    }
+    print <<"EOH";
+<div onclick="window.open('/static/talks/talk$talk_id.html#qa$id')">
+<div class=q>$question</div>
+<div class=a>$answer</div>
+</div>
+EOH
+}
+print <<'EOH';
+</body>
+</html>
+EOH

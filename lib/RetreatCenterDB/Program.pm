@@ -107,6 +107,7 @@ __PACKAGE__->add_columns(qw/
     discount_code
     tuition_rolled
     tuition_name
+    reg_by_day
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -944,6 +945,7 @@ ptemplate - the template file to be used for generating the program web page.
 refresh_days - a binary encoded field to indicate which days that
     the rooms should be refreshed (new linen).  Mostly for programs longer
     than a week.  It is used when creating the 'make up' list.
+reg_by_day - Registrants can choose which days they want to attend.
 reg_count - The number of current registrants.
     This field keeps changing as people sign up and cancel.
     Too difficult and time consuming to keep recomputing it.
