@@ -45,6 +45,11 @@ body {
     margin-top: 4mm;
     margin-bottom: 4mm;
 }
+.date {
+    display: block;
+    margin-top: .2in;
+    color: gray;
+}
 </style>
 </head>
 <body>
@@ -54,6 +59,7 @@ my %addrs;
 
 sub show {
     my ($t) = @_;
+    chomp $t;
     if (substr($t, 0, 1) eq '^') {
         $t =~ s{^\^}{<pre>};
         $t .= "</pre>";

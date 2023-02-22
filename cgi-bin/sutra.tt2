@@ -70,7 +70,7 @@ Want to see <b>all</b> of the sutras?
 </form>
 
 <tr><td colspan=2>
-To see a sutra chosen at random (or, if you wish, one <i>perfect</i> for <b>you</b><br>at <u>this</u> moment in time) press this button:</td></tr>
+To see a sutra chosen at random (or, if you wish, one <i>perfect</i> for <b>you</b> at <u>this</u> moment in time) press this button:</td></tr>
 <form target=_blank action=/cgi-bin/sutra>
 <tr>
 <td></td>
@@ -87,7 +87,7 @@ refreshing the browser screen.
 </table>
 </form>
 
-<p>If you are having a problem with anything on this page,<br>
+<p>If you are having a problem with anything on this page,
 please send a message to Sahadev by clicking <A HREF="mailto:jon.bjornstad@gmail.com?subject=Daily Sutra from Babaji">here</A>.
 
 </body>
