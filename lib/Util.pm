@@ -700,6 +700,9 @@ my $_transport;
 #     files_to_attach
 #     activity_msg
 #
+# if activity_msg is 'none' do not
+# add an activity - unless the email sending failed.
+#
 sub email_letter {
     my ($c, %args) = @_;
 
@@ -738,11 +741,7 @@ sub email_letter {
         $_transport = Email::Sender::Transport::SMTP->new(%args);
         if (! ref $_transport) {
             $message .= " - could not create mail_sender";
-            model($c, 'Activity')->create({
-                message => $message,
-                cdate   => tt_today($c)->as_d8(),
-                ctime   => get_time()->t24(),
-            });
+            add_activity($c, $message);
             return;
         }
     }
@@ -770,11 +769,9 @@ sub email_letter {
         $message .= "Failed to send email: $@\n";
     };
     $message = substr($message, 0, 256);        # in case it failed...
-    model($c, 'Activity')->create({
-        message => $args{activity_msg} || $message,
-        cdate   => tt_today($c)->as_d8(),
-        ctime   => get_time()->t24(),
-    });
+    if ($args{activity_msg} ne 'none') {
+        add_activity($c, $args{activity_msg} || $message);
+    }
 }
 
 sub lunch_table {

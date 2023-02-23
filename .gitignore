@@ -17,6 +17,9 @@ gen_files/
 output/
 grab_running
 output/
+cgi-bin/sutras/addresses
+cgi-bin/sutras/sent_log
+cgi-bin/sutras/remaining
 root/static/images/
 root/static/js/*
 root/static/grid/
@@ -26,6 +29,7 @@ root/static/report*
 root/static/phone*
 root/static/online/
 root/static/omp/
+root/static/talks/
 root/static/grab_new/
 root/static/req_mmc/
 root/static/req_mmi/

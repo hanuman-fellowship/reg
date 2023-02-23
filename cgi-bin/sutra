@@ -55,6 +55,7 @@ body {
 <body>
 EOH
 
+my $dir = '/var/www/src/cgi-bin/sutras';
 my %addrs;
 
 sub show {
@@ -73,7 +74,7 @@ EOH
 }
 
 sub get_addrs {
-    open my $addrs, "<", "addresses" or die "no addresses";
+    open my $addrs, "<", "$dir/addresses" or die "no addresses";
     while (my $line = <$addrs>) {
         chomp $line;
         $addrs{$line} = 1;
@@ -82,7 +83,7 @@ sub get_addrs {
 }
 
 sub put_addrs {
-    open my $addrs, ">", "addresses" or die "no put";
+    open my $addrs, ">", "$dir/addresses" or die "no put";
     for my $a (sort keys %addrs) {
         print {$addrs} "$a\n";
     }
@@ -106,7 +107,7 @@ if (exists $P{search}) {
               :           qr/\b$pattern\b/i
               ;
     my $n = 0;
-    for my $s (<sutras/[0-9]*>) {
+    for my $s (<$dir/[0-9]*>) {
         my $t = slurp($s);
         if ($t =~ $pat) {
             ++$n;
@@ -160,14 +161,14 @@ elsif ($email && exists $P{sut_unsub}) {
     }
 }
 elsif (exists $P{show_all}) {
-    for my $s (<sutras/[0-9]*>) {
+    for my $s (<$dir/[0-9]*>) {
         my $x = slurp($s);
         print show($x);
         print "<hr width=370 align=left>\n";
     }
 }
 else {
-    my @sutras = <sutras/[0-9]*>;
+    my @sutras = <$dir/[0-9]*>;
     my @pics = <../root/static/images/sutra_pics/*>;
     my $pic = $pics[ rand @pics ];
     $pic =~ s{.*/}{}xms;
