@@ -58,6 +58,10 @@ my $html = <<"EOH";
     font-size: 13pt;
     font-family: Times;
 }
+.date {
+    color: gray;
+    margin-top: .2in;
+}
 </style>
 </head>
 <body>
@@ -77,8 +81,6 @@ my @addrs = <$addrs>;
 close $addrs;
 chomp @addrs;
 
-open my $log, '>>', "$dir/sent_log";
-
 my $n = 0;
 ADDR:
 for my $em (@addrs) {
@@ -90,12 +92,10 @@ for my $em (@addrs) {
 
     email_letter($c,
         to => $em,
-        from => 'programs@mountmadonna.org',    # ???
+        from => 'Daily Sutra <notifications@mountmadonna.org>',
         subject => 'Daily Sutra from Babaji',
         html => $html,
         activity_msg => 'none',
     );
-    
-    print {$log} "daily sutra sent to $em ", scalar(localtime), "\n";
+    print "sutra sent to $em\n" 
 }
-close $log;

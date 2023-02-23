@@ -29,6 +29,9 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 # at 1:00 am each day clear old backup files
 0 1 * * * $REG/clear_old
 
+# at 4:00 am each day send a sutra from Babaji
+0 4 * * * $REG/sutra_send
+
 # Get online registrations and rental grid files (etc) every 15 minutes
 0,15,30,45 * * * * $REG/grab
 
