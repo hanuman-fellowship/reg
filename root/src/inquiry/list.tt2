@@ -1,5 +1,5 @@
 <h2>Inquiries</h2>
-<a target=_blank href=$cgi/program_inquiry.pl>Create</a>
+<a target=_blank href=https://akash.mountmadonna.org/cgi-bin/program_inquiry.pl>Create</a>
 &nbsp;&nbsp;
 <a href=/inquiry/export>Export</a>
 <p>
