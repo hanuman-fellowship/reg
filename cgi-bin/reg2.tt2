@@ -26,6 +26,10 @@ You are registering for:
     <dd>$title</dd>
     <dt>Dates:</dt>
     <dd>$dates</dd>
+    [% IF by_days %]
+        <dt>You are staying overnight on these days:</dt>
+        <dd>$by_days</dd>
+    [% END %]
     [% IF leader_names %]
         <dt>Presenter:</dt>
         <dd>$leader_names</dd>

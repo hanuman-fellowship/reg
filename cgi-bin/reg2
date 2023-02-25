@@ -446,7 +446,9 @@ if (! $ME && ! $prog->housing_not_needed) {
 }
 
 my $total;
+my @by_days;
 my $payment = "";
+my %stash;
 
 # as the charges accumulate we add to $total
 # and append an explanation to $payment
@@ -505,12 +507,33 @@ elsif ($PR) {
     }
 }
 elsif (! $prog->housing_not_needed) {
+    my $ndays = $prog->edate_obj - $prog->sdate_obj;
     if ($prog->extradays) {
-        my $ndays = date($prog->edate) - date($prog->sdate);
         if ($form{progchoice} eq 'full') {
             $ndays += $prog->extradays;
         }
         $payment .= "You are staying $ndays days at a cost of \$$h_cost Per Day.<br>";
+        $total = $h_cost * $ndays;
+        $payment .= "The total is \$$total.<br>";
+    }
+    elsif ($prog->reg_by_day) {
+        my $ndays = 0;
+        my $sd = $prog->sdate_obj;
+        my $by_days;
+        for my $i (1 .. $form{ndays}) {
+            if ($form{"date$i"}) {
+                ++$ndays;
+                push @by_days, $i;
+                $by_days .= ($sd + $i - 1)->format("%A %B %e") . ', ';
+            }
+        }
+        # if no days chosen?
+        if ($ndays == 0) {
+            oops("Please choose the days that you want to attend.", 1);
+        }
+        $by_days =~ s{,\s\z}{.}xms;
+        $payment .= "You are staying these days: $by_days<br>";
+        $payment .= "This is $ndays days at a cost of \$$h_cost Per Day.<br>";
         $total = $h_cost * $ndays;
         $payment .= "The total is \$$total.<br>";
     }
@@ -558,7 +581,6 @@ elsif ($prog->donation) {   # aka tuition by donation
     }
 }
 
-my %stash;
 
 #
 # discount code?
@@ -865,6 +887,10 @@ $form{email} = $form{email1};
 $form{from_where} = $form{advertiserName};
 $form{housing_not_needed} = $prog->housing_not_needed;
 
+#
+# What should be passed on to reg2_hook
+# after the Stripe payment?
+#
 my %metadata;
 if ($gc_used) {
     $metadata{gc_code} = $gc_code;
@@ -922,6 +948,11 @@ for my $f (qw/
     $metadata{$f} = $form{$f};
 }
 $metadata{title} = $stash{title};
+
+if ($prog->reg_by_day) {
+    # ?? an aref instead
+    $metadata{reg_by_day} = "@by_days";
+}
 
 if ($total == 0) {
     # no payment needed

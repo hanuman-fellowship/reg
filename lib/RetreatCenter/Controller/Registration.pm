@@ -544,13 +544,16 @@ EOH
     # for programs gotten with 'reg_by_day' we have another
     # special case.
     #
-    if (exists $href->{by_day_dates}) {
+    if (exists $href->{reg_by_day}) {
         my @dates;
-        if ($href->{by_day_dates}) {
-            # these are the dates of the nights they're staying
-            @dates = split ',', $href->{by_day_dates};
-            my $sdate = date($dates[0]);
-            my $edate = date($dates[-1]);
+        if ($href->{reg_by_day}) {
+            # these are the 1-based indices of the nights they're staying
+            # TO BE CONTINUED...
+            my $pr_sdate = $pr->sdate_obj;
+            my @dates = map { $pr_sdate + $_ - 1 }
+                        split ' ', $href->{reg_by_day};
+            my $sdate = $dates[0];
+            my $edate = $dates[-1];
             stash($c, date_start => $sdate);
             stash($c, date_end   => $edate+1);
                 # +1 above because it is the date they're leaving
@@ -566,7 +569,7 @@ EOH
                 # and put a comment in the person's registration
                 #
                 my $all_dates = join ', ', 
-                                map { date($_)->format("%b %e") }
+                                map { $_->format("%b %e") }
                                 @dates;
                 $href->{request} .= <<"EOF"
 <p class=p2>

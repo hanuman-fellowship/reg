@@ -367,6 +367,19 @@ if ($pid) {
     }
 }
 
+if ($prog->reg_by_day) {
+    # prepare the date_names array
+    my $sdate = $prog->sdate_obj;
+    my $edate = $prog->edate_obj;
+    my $ndays = $edate - $sdate;
+    $stash{ndays} = $ndays;
+    my @date_names;
+    for my $i (1 .. $ndays) {
+        push @date_names, ($sdate + $i - 1)->format("%A, %B %e");
+    }
+    $stash{date_names} = \@date_names;
+}
+
 # ?? plink, type cancellation policy ??
 for my $w (qw/
     title dates leader_names name
@@ -423,6 +436,16 @@ if ($stash{basicfull}) {
         my ($month) = $stash{bdates} =~ m{([a-z]+)}i;
         $stash{fdates} = "$month " . $stash{fdates};
     }
+}
+
+if ($prog->reg_by_day) {
+    my $sdate = $prog->sdate_obj;
+    $stash{last_index} = $ndays - 1;
+    my @date_names;
+    for my $i (1 .. $ndays) {
+        push @date_names, ($sdate + $i - 1)->format("%A, %B %e");
+    }
+    $stash{date_names} = \@date_names;
 }
 
 # Gender Identity
@@ -491,6 +514,8 @@ $stash{house_cost_type} = $hc->type;
 $stash{housing_fee_rows} = fee_types($c, $hc,
                                $only_outdoors,
                                $cookie{house1}, $cookie{house2});
+$stash{cabin} =    $hc->single_cabin != 0
+                || $hc->dble_cabin   != 0;
 
 # donation - aka Tuition
 my $donation_input;

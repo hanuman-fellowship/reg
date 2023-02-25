@@ -159,6 +159,21 @@ function check_form() {
     </ul>
 [% ELSE %]
     <input type=hidden name=progchoice value=basic>
+    [% IF date_names %]
+        <input type=hidden value="$ndays" name=ndays>
+        <!-- program is reg_by_day -->
+        <h3>When will you attend?</h3>
+        Choose the nights you'd like to stay, if any.<br>
+        If you are not staying overnight choose Commuting for the housing choice.
+        <ul>
+        [% i = 1 %]
+        [% FOR d IN date_names %]
+            <input type=checkbox id=date$i name=date$i value=$i> $d<br>
+            [% i = i + 1 %]
+            [% END %]
+        </ul>
+        <p>
+    [% END %]
 [% END %]
 
 <input type=hidden name=covid_vax value=$covid_vax>
@@ -400,7 +415,7 @@ If you only want a certificate of completion enter COMP for the license #.
     <input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last">
     </ul>
 
-    [% IF ! outdoors %]
+    [% IF ! outdoors && cabin %]
         <p>If given a <b>choice</b>, would you prefer a cabin or a room?
         <ul class=space>
         <input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin>
