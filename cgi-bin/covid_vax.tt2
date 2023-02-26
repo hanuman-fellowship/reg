@@ -1,0 +1,32 @@
+<html>
+<head>
+<style>
+body {
+    font-size: 18pt;
+    margin-left: .5in;
+    margin-top: .5in;
+}
+button {
+    font-size: 18pt;
+    background: lightgreen;
+}
+</style>
+</head>
+<body>
+Greetings $name,
+<p>
+We require that everyone at Mount Madonna Center be fully vaccinated
+against COVID-19.
+<p>
+<form action=/cgi-bin/covid_vax
+      name=form
+      method=post
+      enctype="multipart/form-data"
+>
+<input type=hidden name=person_id value=$person_id>
+Please choose your vaccination card image file here: <input type=file name=card>
+<p>
+And then press: <button type=submit>Upload</button>
+</form>
+</body>
+</html>

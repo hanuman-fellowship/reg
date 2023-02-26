@@ -548,44 +548,22 @@ EOH
         my @dates;
         if ($href->{reg_by_day}) {
             # these are the 1-based indices of the nights they're staying
-            # TO BE CONTINUED...
+            # we know these numbers are consecutive with no gaps.
             my $pr_sdate = $pr->sdate_obj;
-            my @dates = map { $pr_sdate + $_ - 1 }
+            my @dates = map { $pr_sdate + ($_ - 1) }
                         split ' ', $href->{reg_by_day};
             my $sdate = $dates[0];
             my $edate = $dates[-1];
             stash($c, date_start => $sdate);
-            stash($c, date_end   => $edate+1);
+            stash($c, date_end   => ($edate+1));
                 # +1 above because it is the date they're leaving
-            if ($edate - $sdate >= @dates) {
-                # like this: 20211229,20211231
-                # where they are not staying on the 30th
-                # or 20211231,20220105,20220110
-                # where they are not staying from the 1st to the 4th
-                # or from the 6th to the 9th.
-                # it could happen!
-                # in this rare case book the room the entire time
-                # but charge them just for the days they're here
-                # and put a comment in the person's registration
-                #
-                my $all_dates = join ', ', 
-                                map { $_->format("%b %e") }
-                                @dates;
-                $href->{request} .= <<"EOF"
-<p class=p2>
-<span style="background-color: red;">
-There are gaps in the dates!
-</span><br>
-$all_dates
-EOF
-            }
         }
         else {
             # not staying - commuting for the last night's festivities
             $href->{house1} = 'commuting';
             $href->{house2} = 'commuting';
             my $edate = $pr->edate_obj;
-            stash($c, date_start => $edate-1);
+            stash($c, date_start => ($edate-1));
             stash($c, date_end   => $edate);
         }
     }
@@ -597,10 +575,11 @@ EOF
     if ($href->{edate}) {
         stash($c, date_end => date($href->{edate}));
     }
-    else {
+    elsif (! $href->{reg_by_day}) {
         # mountain experience
         stash($c, date_end => date($href->{sdate}));
     }
+    # Very confusing.  Test Test Test because it's a Mess Mess Mess
 
     # mountain experience children
     stash($c, kids => $href->{children_name_age});

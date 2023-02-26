@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI;
+my $q = CGI->new();
+print $q->header();
+my $href = $q->Vars();
+
+use Template;
+my $tt = Template->new(
+    INTERPOLATE => 1,
+);
+
+use File::Copy qw/
+    copy
+/;
+
+if ($href->{name}) {
+    # show the initial page
+    $tt->process(
+        'covid_vax.tt2',
+        $href,
+    );
+    exit;
+}
+my $card = $q->upload('card');
+my $fname = $q->param('card');
+if (! $card) {
+    $tt->process(
+        'err.tt2',
+        { err => "Missing Covid Vaccination card" },
+    );
+    exit;
+}
+my ($suffix) = $fname =~ m{[.](\w+)\z}xms;
+$suffix ||= "jpg";
+$suffix = lc $suffix;
+$suffix = "jpg" if $suffix eq 'jpeg';
+if ($suffix !~ m{\A (jpg|png|gif|pdf) \z}xms) {
+    $tt->process(
+        'err.tt2',
+        {
+            err => "The vaccination card picture must be a"
+                 . " proper image file.<br>"
+                 . "The suffix must be jpg, png, gif, or pdf.",
+        },
+    );
+    exit;
+}
+
+# Upgrade the handle to one compatible with IO::Handle:
+my $io = $card->handle;
+my $for_reg = '/home/reg/for_reg';
+my $arch = "$for_reg/covid_vax_archive/$href->{person_id}.$suffix";
+open my $out, '>', $arch;
+my $buffer;
+while (my $bytesread = $io->read($buffer, 1024)) {
+    print {$out} $buffer;
+}
+close $out;
+# 
+if ($suffix eq 'jpg') {
+    system "/usr/bin/convert -resize 1000x $arch /tmp/card$$";
+    system "/usr/bin/convert -strip -interlace Plane -quality 65%"
+         . " /tmp/card$$ $for_reg/covid_vax/$href->{person_id}.$suffix";
+    unlink "/tmp/card$$";
+}
+else {
+    copy $arch, "$for_reg/covid_vax/$href->{person_id}.$suffix";
+}
+$tt->process(
+    'covid_thanks.tt2',
+);

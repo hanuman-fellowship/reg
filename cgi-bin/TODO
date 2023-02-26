@@ -9,11 +9,12 @@ List all the cgi-bin scripts and what they do:
 *reg1
 *regME
 *regPR
+covid_vax
 *program_inquiry.pl         # ask Jen to remove the .pl
                             # for consistency!
 
 - scripts that ask for payments:
-new_hfs_member - TODO
+new_hfs_member
 omp - done
 gift_card - done
 gift_card_status - done
@@ -25,9 +26,8 @@ req_pay - done
 mlist?
 new_hfs_member          # tell Jen , etc about new name with '_hfs'???
     2 .tt2 email message
-sutra1
-sutra_send  - broken - send from akash instead? yes?
-    get the sutras data as well
+sutra
+sutra_send - done
 talks_search? and talks data
     how to get this?
     ask the Babaji group what they're up to

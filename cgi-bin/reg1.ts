@@ -38,7 +38,17 @@ Test Suite for Reg1 and Reg2
     Extra Days
         Full Tuition
 
+    Reg By Day
+        try contiguous dates
+        try 1 day try 4 days
+        try 2 days and choose Commuting
+        try non-continguous dates
+            and get error at online registration time
+        What about going back and have 'Sending...'.
+
     Covid Vaccination required or not
+        not included at this time
+        can rejuvenate it
 
     - Housing Not Needed
     - Housing Needed

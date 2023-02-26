@@ -519,21 +519,35 @@ elsif (! $prog->housing_not_needed) {
     elsif ($prog->reg_by_day) {
         my $ndays = 0;
         my $sd = $prog->sdate_obj;
-        my $by_days;
         for my $i (1 .. $form{ndays}) {
             if ($form{"date$i"}) {
                 ++$ndays;
                 push @by_days, $i;
-                $by_days .= ($sd + $i - 1)->format("%A %B %e") . ', ';
             }
         }
         # if no days chosen?
         if ($ndays == 0) {
             oops("Please choose the days that you want to attend.", 1);
         }
-        $by_days =~ s{,\s\z}{.}xms;
-        $payment .= "You are staying these days: $by_days<br>";
-        $payment .= "This is $ndays days at a cost of \$$h_cost Per Day.<br>";
+        if ($by_days[-1] - $by_days[0] + 1 > @by_days) {
+            # for example: @by_days is (2, 4)  so we have 4 - 2 + 1 > 2
+            oops("Sorry, you cannot come, go, and then come back.<br>"
+               . "Please register twice.");
+        }
+        if ($by_days[0] == $by_days[-1]) {
+            $payment .= "You are staying "
+                     .  ($sd + $by_days[0] - 1)->format("%A %B %e")
+                     .  ".<br>";
+        }
+        else {
+            $payment .= "You are staying "
+                     .  ($sd + $by_days[0] - 1)->format("%A %B %e")
+                     .  " through "
+                     .  ($sd + $by_days[-1] - 1)->format("%A %B %e")
+                     . ".<br>";
+        }
+        my $pl = $ndays == 1? '': 's';
+        $payment .= "This is $ndays day$pl at a cost of \$$h_cost Per Day.<br>";
         $total = $h_cost * $ndays;
         $payment .= "The total is \$$total.<br>";
     }

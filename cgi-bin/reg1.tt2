@@ -163,8 +163,14 @@ function check_form() {
         <input type=hidden value="$ndays" name=ndays>
         <!-- program is reg_by_day -->
         <h3>When will you attend?</h3>
-        Choose the nights you'd like to stay, if any.<br>
-        If you are not staying overnight choose Commuting for the housing choice.
+        <div style="width: 600px">
+        <span class=required>*</span> Choose the nights you'd like to stay, if any.
+        If you are not staying overnight choose
+        Commuting for the housing choice below.
+        Note that your dates must be consecutive.
+        If you want to come, go, and then come back,
+        you will need to register a second time.
+        </div>
         <ul>
         [% i = 1 %]
         [% FOR d IN date_names %]
@@ -603,13 +609,3 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
 </form>
 </body>
 </html>
-<script>
-var focus_el = 'first';
-[% IF basicfull %]
-    focus_el = 'progchoice1';
-[% END %]
-document.getElementById(focus_el).focus({ preventScroll: true });
-setTimeout(function() {
-    window.scrollTo(0, 0);
-}, 20);
-</script>
