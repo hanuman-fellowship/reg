@@ -2536,6 +2536,8 @@ sub _view {
     my $no_conf = '';
     if (! ($reg->mountain_experience
            || $reg->h_type eq 'not_needed'
+           || $reg->h_type eq 'own_van'
+           || $reg->h_type eq 'commuting'
            || $prog->housing_not_needed
     )) {
         if (!$reg->house_id) {
