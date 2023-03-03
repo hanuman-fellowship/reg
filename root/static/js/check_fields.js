@@ -31,9 +31,9 @@ function check_fields() {
         }
     }
     if (mess === '') {
-        var el = document.getElementById('submit');
-        el.disabled = true; // no double clicking...
-        el.value = 'Sending...';
+        //var el = document.getElementById('submit');
+        //el.disabled = true; // no double clicking...
+        //el.value = 'Sending...';
         return true;
     }
     else {

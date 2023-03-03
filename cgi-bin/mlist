@@ -1,0 +1,135 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use Template;
+my $tt = Template->new(
+             INTERPOLATE => 1,
+         );
+my %P = $q->Vars();
+if (! exists $P{first}) {
+    $tt->process(
+        'mlist.tt2'
+    );
+    exit;
+}
+my $c = db_init();
+use lib '../lib';
+use Util qw/
+    email_letter
+    add_or_update_deduping
+    db_init
+    get_string
+    model
+    JON
+/;
+for my $k (keys %P) {
+    $P{$k} =~ s{^\s*|\s*$}{}g;
+}
+for my $k (qw/
+    e_mailings
+    snail_mailings
+    share_mailings
+/) {
+    $P{$k} = "" if ! exists $P{$k};
+}
+$P{sex} = '';       # was purposely not included on the form
+my $interest = $P{interest};
+$P{tel_cell} = $P{cell};
+for my $k (qw/ home work /) {
+    $P{"tel_$k"} = '';
+}
+$P{addr2} = '';
+my $html = <<"EOH";
+$P{first} $P{last}<br>
+$P{addr1}<br>
+$P{city}, $P{st_prov}<br>
+$P{zip_post}
+EOH
+if ($P{country}) {
+    $html .= <<"EOH";
+<br>$P{country}
+EOH
+}
+if ($P{request}) {
+    $html .= <<"EOH";
+<p>
+Special Request:<br>
+$P{request}
+EOH
+}
+$P{email} = $P{email1};
+for my $w (qw/ interest email1 email2 Submit /) {
+    delete $P{$w};
+}
+for my $k (sort keys %P) {
+    JON "$k => $P{$k}";
+}
+my ($person_id, $person, $status);
+my %system_affil_id_for;
+my @affils;
+my @affil_ids;
+
+eval {
+# gather needed affiliations
+#
+# first get all system affils
+@affils = model($c, 'Affil')->search({
+    system => 'yes',
+});
+for my $a (@affils) {
+    my $id = $a->id;
+    my $descrip = $a->descrip;
+    $system_affil_id_for{$descrip} = $id;
+}
+if ($interest eq 'All Schools') {
+    for my $k (grep { /MMI/ } keys %system_affil_id_for) {
+        push @affil_ids, $system_affil_id_for{$k};
+    }
+}
+else {
+    push @affil_ids, $system_affil_id_for{"MMI - $interest"};
+}
+# ?? Other interests for non MMI?
+#    push @affil_ids, $system_affil_id_for{"MMC Annual Yoga Retreats"},
+#                     $system_affil_id_for{"MMC Hosted by MMC"};
+
+push @affil_ids, $system_affil_id_for{"Website Subscriber"};
+    # the above will be removed when this person
+    # registers for a program
+
+# create/update the person
+    # this could die:
+    ($person_id, $person, $status) = add_or_update_deduping(
+        $c,
+        \%P,
+        affil_ids => \@affil_ids,
+        request_to_comment => 1,
+    );
+};      # end of eval
+if ($@) {
+    JON "error: $@";
+}
+
+# notify the reception office
+# in case a flyer/mailing needs to be sent
+# or a special request was given
+email_letter($c,
+    to      => 'jon.bjornstad@gmail.com',
+    #to      => get_string($c, 'reception_email'),  # ?? mmi ??
+    from    => 'Mount Madonna Center <programs@mountmadonna.org>',
+    subject => 'Online Mailing List Request',
+    html    => $html,
+    activity_msg => "Mailing List"
+                  . " <a target=_blank href='/person/view/$person_id'>"
+                  . $person->.name
+                  . "</a>"
+                  ;
+);
+
+# Thank you message on the screen
+$tt->process(
+    'mlist_msg.tt2',
+);

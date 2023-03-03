@@ -1,0 +1,39 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use feature 'say';
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $sth_get_talks = $dbh->prepare(<<'EOS') or die "no prepare 1";
+    select * from talk;
+EOS
+my $sth_get_qa = $dbh->prepare(<<'EOS') or die "no prepare 2";
+    SELECT question, answer
+      FROM qa
+     WHERE talk_id = ?
+  ORDER BY id;
+EOS
+mkdir 'texttalk' if ! -d 'texttalk';
+$sth_get_talks->execute() or die "no execute";
+while (my $href = $sth_get_talks->fetchrow_hashref()) {
+    open my $out, '>', "texttalk/talk$href->{id}.txt";
+    print {$out} <<"EOT";
+*$href->{title}*
+
+EOT
+    $sth_get_qa->execute($href->{id});
+    while (my ($q, $a) = $sth_get_qa->fetchrow_array()) {
+        for ($q, $a) {
+            s{[&]quot;(.*?)[&]quot;}{"$1"}msg;
+            s{[&]#039;}{'}msg;
+            s{[&]quot;}{}msg;   # a stray single double quote
+        }
+        say {$out} <<"EOT";
+q: $q
+a: $a
+
+EOT
+    }
+    close $out;
+}
