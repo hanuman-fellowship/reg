@@ -44,7 +44,6 @@ Test Suite for Reg1 and Reg2
         try 2 days and choose Commuting
         try non-continguous dates
             and get error at online registration time
-        What about going back and have 'Sending...'.
 
     Covid Vaccination required or not
         not included at this time

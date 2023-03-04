@@ -29,7 +29,9 @@ function check_form() {
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
 <body>
-<p>Fields marked with a <span class=required>*</span> are required.</P>
+<img src='/static/images/mmc-teal.png' width=200>
+<h2>Mailing List</h2>  
+Fields marked with a <span class=required>*</span> are required.</P>
 <h3>Contact Information</h3>  
 <form action="/cgi-bin/mlist"
       method="post"
@@ -39,54 +41,54 @@ function check_form() {
 
 <tr>
 <th><span class=required>*</span> First Name</th>
-<td><input type=text name=first id=first></td>
+<td><input type=text name=first id=first size=30></td>
 </td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Last Name</th>
-<td><input type=text name=last id=last></td>
+<td><input type=text name=last id=last size=30></td>
 </td>
 </tr>
 
 <tr>
 <th><span class="required">*</span> Email</th>
-<td><input type=text name=email1 id=email1></td>
+<td><input type=text name=email1 id=email1 size=30></td>
 </tr>
 
 <tr>
 <th><span class="required">*</span> Email Again</th>
-<td><input type=text name=email2 id=email2> Repeated to be sure it is right</td>
+<td><input type=text name=email2 id=email2 size=30> Repeated to be sure it is right</td>
 </tr>
 
 <tr>
 <th>Street Address</th>
-<td><input type=text name=addr1 id=addr1></td>
+<td><input type=text name=addr1 id=addr1 size=30></td>
 </tr>
 
 <tr>
 <th>City</th>
-<td><input type=text name=city id=city></td>
+<td><input type=text name=city id=city size=30></td>
 </tr>
 
 <tr>
 <th>State/Province</th>
-<td><input type=text name=st_prov id=st_prov></td>
+<td><input type=text name=st_prov id=st_prov size=30></td>
 </tr>
 
 <tr>
 <th>Zip/Postal Code</th>
-<td><input type=text name=zip_post id=zip_post></td>
+<td><input type=text name=zip_post id=zip_post size=30></td>
 </tr>
 
 <tr>
 <th>Country</th>
-<td><input type=text name=country id=country> Defaults to USA</td>
+<td><input type=text name=country id=country size=30> Defaults to USA</td>
 </tr>
 
 <tr>
 <th>Telephone</th>
-<td><input type=text name=cell id=cellcountry></td>
+<td><input type=text name=cell id=cellcountry size=30></td>
 </tr>
 </table>
 <h3>Preferences</h3>  
@@ -120,12 +122,11 @@ I am interested in:
 <h3>Comments or Requests:</h3>  
 <textarea name="request" rows=10 cols=40 wrap=VIRTUAL></textarea>
 <p>
-Don't let our emails end up in your spam filter! <br>
+Don't let our emails end up in your spam filter.<br>
 Add the following address to your address book:</p>
 <ul>
-<li>programs@mountmadonna.org</li>
+programs@mountmadonna.org
 </ul>
-</div>
 
 <input style="background: lightgreen" type=submit id=submit value='Submit'>
 </form>

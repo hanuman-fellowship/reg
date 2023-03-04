@@ -7,6 +7,9 @@ use CGI::Carp qw/fatalsToBrowser/;
 use lib '.', '../lib';
 
 use Template;
+my $tt = Template->new(
+             INTERPOLATE => 1,
+         );
 use Date::Simple qw/
     today
     date
@@ -79,7 +82,7 @@ print $q->header(-cookie => $cookie);
 
 sub oops {
     my ($err, $back) = @_;
-    Template->new(INTERPOLATE => 1)->process(
+    $tt->process(
         'err.tt2',
         {
             back => $back,
@@ -256,7 +259,7 @@ if ($prog->discount_code) {
 }
 
 if ($err) {
-    Template->new(INTERPOLATE => 1)->process(
+    $tt->process(
         'err.tt2',
         { err => $err },
     );
@@ -274,8 +277,6 @@ if ($err) {
 my $name;
 if ($covid_vax) {
 
-=comment
-
     # ?? we get the param again??
     # we're not getting the file itself, just its name
     my $fname = $q->param('card');
@@ -288,7 +289,7 @@ if ($covid_vax) {
     $suffix = lc $suffix;
     $suffix = "jpg" if $suffix eq "jpeg";
     if ($suffix !~ m{\A (jpg|png|gif|pdf) \z}xms) {
-        Template->new(INTERPOLATE => 1)->process(
+        $tt->process(
             'err.tt2',
             {
                 err => "The vaccination card picture must be a"
@@ -306,7 +307,17 @@ if ($covid_vax) {
 
     my $cov_dir = '/var/Reg/documents/covid_vax';
     my $cov_file = "$cov_dir/$name";
-    open my $out, '>', $cov_file;
+    my $out;
+    if (! open $out, '>', $cov_file) {
+        $tt->process(
+            'err.tt2',
+            {
+                err => "Cannot open $cov_file for writing.",
+            },
+        );
+        exit;
+        
+    }
     my $buffer;
     while (my $bytesread = $io->read($buffer, 1024)) {
         print {$out} $buffer;
@@ -348,71 +359,6 @@ if ($covid_vax) {
         $suffix = 'jpg';
         # we leave the .pdf there? sure.
     }
-    # now to craft an email and an activity message
-    my $person_name;
-    my ($person_id) = $cov_file =~ m{\A (\d+)[.]}xms;
-    if ($person_id) {
-        my $person = model($c, 'Person')->find($person_id);
-        $person_name = $person->name;
-        my $cf = "$person_name.$suffix";
-        $cf =~ s{[ ]}{_}xmsg;   # for the space between first and last
-                                # and for first names like Mary Beth
-        rename $cov_file, "$cov_dir/$cf";
-        if ($person) {
-            $person->update({
-                covid_vax => $cf,
-                vax_okay  => '',
-            });
-        }
-        else {
-            # a stray file from somewhere
-            # with an unknown person id?
-            unlink "$get_dir/$cf";
-            return;
-        }
-    }
-    else {
-        #
-        # the file is named "FIRST_LAST.suffix"
-        # because it was uploaded during an online registration.
-        # the filename is stored in the x_covid_vax field.
-        # just get the file (in $get_dir) for later use
-        # when the registration is "brought in".
-        # extract the person name from the filename
-        #
-        # we can't update the person yet because the
-        # Person record may not have been created yet.
-        #
-        # BUT ... if an _existing_ person is REuploading a card
-        # we should clear out vax_okay on the Person record...
-        #
-        $person_name = $f;
-        $person_name =~ s{[.]$suffix}{}xms;
-        $person_name =~ s{_}{ }xmsg;
-        for my $p (model($c, 'Person')->search({
-                       covid_vax => $cf,
-                   })
-        ) {
-            $p->update({
-                vax_okay => '',
-            });
-        }
-    }
-    chmod 0666, "$get_dir/$cf";     # so we can rotate it?
-    $person_name = "<a target=_blank href='https://akash.mountmadonna.org"
-                 . "/person/view_covid/$cf'>"
-                 . "$person_name</a>"
-                 ;
-    email_letter($c,
-        to      => get_string($c, 'covid_notify'),
-        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-        subject => 'COVID-19 Vaccination Card',
-        html    => "Got COVID-19 vaccination card for $person_name",
-        activity_msg => "Received COVID-19 Vaccination card for $person_name.",
-    );
-
-=cut
-
 }
 
 # how much to charge??
@@ -985,9 +931,7 @@ else {
     );
 }
 
-Template->new(
-    INTERPOLATE => 1,
-)->process(
+$tt->process(
     'reg2.tt2',
     \%stash,
 );

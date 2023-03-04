@@ -124,9 +124,8 @@ email_letter($c,
     html    => $html,
     activity_msg => "Mailing List"
                   . " <a target=_blank href='/person/view/$person_id'>"
-                  . $person->.name
-                  . "</a>"
-                  ;
+                  . $person->name
+                  . "</a>",
 );
 
 # Thank you message on the screen
