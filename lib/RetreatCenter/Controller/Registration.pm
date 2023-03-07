@@ -689,6 +689,7 @@ sub _rest_of_reg {
     my @reg = model($c, 'Registration')->search({
                   person_id  => $person->id(),
                   program_id => $program->id(),
+                  cancelled  => { '!=' => 'yes' },
               });
     if (! $program->allow_dup_regs() && @reg) {
         stash($c,
@@ -1162,6 +1163,7 @@ sub create_do : Local {
         && (@reg = model($c, 'Registration')->search({
                            person_id  => $P{person_id},
                            program_id => $prog_id,
+                           cancelled  => { '!=' => 'yes' },
                   })
            )
     ) {

@@ -445,6 +445,7 @@ if ($prog->reg_by_day) {
     for my $i (1 .. $ndays) {
         push @date_names, ($sdate + $i - 1)->format("%A, %B %e");
     }
+    $stash{ndates} = scalar(@date_names);
     $stash{date_names} = \@date_names;
 }
 
