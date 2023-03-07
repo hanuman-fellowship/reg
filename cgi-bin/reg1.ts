@@ -10,7 +10,11 @@ Test Suite for Reg1 and Reg2
 
     mountain_experience_cost
 
+    No ME events
+    Yes ME events
+
     No items in additional requests ... so don't say ...
+        ???
 
 - PR
     max total nights
@@ -46,8 +50,6 @@ Test Suite for Reg1 and Reg2
             and get error at online registration time
 
     Covid Vaccination required or not
-        not included at this time
-        can rejuvenate it
 
     - Housing Not Needed
     - Housing Needed

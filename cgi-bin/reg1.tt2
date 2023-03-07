@@ -42,6 +42,18 @@ function check_form() {
     if (!check_fields()) {
         return false;
     }
+[% IF date_names %]
+    var prev = 0;
+    for (let i = 1; i < $$ndates; ++i) {
+        if (document.getElementById('date' + i).checked) {
+            if (prev != 0 && i != prev + 1) {
+                alert('You cannot come, go, and come back!');
+                return false;
+            }
+            prev = i;
+        }
+    }
+[% END %]
     var em1 = document.getElementById('email1').value;
     var em2 = document.getElementById('email2').value;
     if (em1 == em2) {
@@ -257,7 +269,7 @@ function check_form() {
 <input type=text size=25 name="pronouns" id="pronouns"
        value="$pronouns"
        placeholder="To appear on name tag"> 
-<br><a href="javascript:popup('/static/help/pronouns.html', 190, 380);">Why pronouns matter</a>
+<br><a href="javascript:popup('/static/help/pronouns.html', 220, 390);">Why pronouns matter</a>
 </td>
 </tr>
 
@@ -465,7 +477,7 @@ If you only want a certificate of completion enter COMP for the license #.
 
 [% IF ! pr && ! housing_not_needed %]
     <b>Carpooling</b>
-    &nbsp;&nbsp;<a href="javascript:popup('/static/help/privacy.html',250,450)">Privacy Concerns?</a><p>
+    &nbsp;&nbsp;<a href="javascript:popup('/static/help/privacy.html',270,450)">Privacy Concerns?</a><p>
     <ul>
     <input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()">
     I wish to offer a ride.<br>
