@@ -50,7 +50,7 @@ $pr.name
 <tr>
 <td align=right>[% IF not_sunday && p.dow == 0 %]<span class=red>Sun</span>[% END %]</td>
 <td>[% p.count %] [% p.noun %]</td>
-<td><a target=happening href="/program/view/[% p.id %]">$pr.name</a></td>
+<td><a target=happening href="/program/view/[% p.id %]">$p.name</a></td>
 <td></td>
 <td>$p.edate</td>
 </tr>
