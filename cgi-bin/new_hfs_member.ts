@@ -16,3 +16,5 @@ check:
     Affiliations
     SponsHist record
     NightHist record for Sponsor members
+
+No more "Online(1)"

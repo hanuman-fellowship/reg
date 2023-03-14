@@ -184,8 +184,9 @@ After you arrive and pass through Mount Madonna Center's main gate at
 large building on the campus main road - refer to the campus map). Inside
 the Community Building, please go to the Guest Services Office. The
 Guest Services Staff will provide you with an updated Guest Information
-Packet and help with any additional questions. Check-in is between 3:00
-to 5:30 pm, and check-out is noon. Please note, you are more than welcome
+Packet and help with any additional questions. Check-in is from
+${program.reg_start_obj.ampm} to ${program.reg_end_obj.ampm} and
+check-out is at noon. Please note, you are more than welcome
 to stay for lunch on the day of departure after vacating your room.
 
 <h2>Late Arrivals</h2>

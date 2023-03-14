@@ -1,17 +1,20 @@
 *gift_card1.ts
 *grid.ts
-meal_request.ts
-mlist.ts
-new_hfs_member.ts
-omp.ts
+*meal_request.ts
+*mlist.ts           # change email address of reception...
+*new_hfs_member.ts  # remove Online(1) and associated methods
+*omp.ts             # check mem_email, no grab_new
+*regME.ts           # no export, no sending of ME parameters, no grab_new
+*regPR.ts           # no export, no sending of PR parameters, no grab_new
 reg1.ts
-regME.ts
-regPR.ts
 rental_payment.ts
 req_pay.ts
 sutra.ts
 talk_search.ts
 update.ts
+    
+    In general - grab_new
+               - no export, no ftp, no sending of PR/ME/Meals stuff
 
 mlist? - in new web site?  at mountmadonnainstitute.org?
     $ market for MMI?   such an elaborate structure

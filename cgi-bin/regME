@@ -64,7 +64,7 @@ my @noME;
 for my $type (qw/ No Yes /) {
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'regexp' => "${type}.*ME" },
+            name  => { 'regexp' => "${type}.*ME[[:>:]]" },
             edate => { '>='   => today()->as_d8() },
         },
         {

@@ -2734,6 +2734,15 @@ sub add_membership_payment {
         });
         $member_id = $member->id;
     }
+    else {
+        $member->update({
+            total_paid      => $member->total_paid + $amount,
+            date_general    => $date_general,
+            date_sponsor    => $date_sponsor,
+            sponsor_nights  => $sponsor_nights,
+            free_prog_taken => '',
+        });
+    }
 
     # ensure the proper affiliations are there
     my $cat = $category;

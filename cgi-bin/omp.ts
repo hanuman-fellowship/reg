@@ -12,7 +12,7 @@ $600 - string mem_spons_year
 What if someone wants to change the type of
     membership from General to Sponsor or vica/versa?
     Use new_hfs_member?
-        Does this work?
+        Does this work? yes
 
 Are members able to use their benefits properly?
 Is this activity recorded in SponsHist records?
