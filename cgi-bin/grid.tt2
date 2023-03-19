@@ -6,10 +6,7 @@ function check(h_id, bed, nnights) {
     var s = document.getElementById(x).value;
     s = s.trim();
     var l = s.length;
-    if (l > 1) {
-        return true;
-    }
-    var chk = (l == 1);
+    var chk = (l >= 1);
     for (n = 1; n <= nnights; ++n) {
         var y = 'n' + h_id + '_' + bed + '_' + n;
         document.getElementById(y).checked = chk;
