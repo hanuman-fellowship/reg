@@ -145,6 +145,7 @@ p {
     [% END %]
     &nbsp;&nbsp;
     <a $no_conf
+       target=_blank
        href="/registration/send_conf/$id/1">Preview</a>
 [% END %]
 &nbsp;&nbsp;

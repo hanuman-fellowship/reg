@@ -2320,16 +2320,15 @@ sub send_conf : Local {
 
     my $to = $reg->person->name_email();
     my $name = $reg->person->name;
-    my $packet = '/var/Reg/documents/MMC Guest Packet.pdf';
-    if ($pr->alt_packet) {
-        $packet = '/var/Reg/documents/' . $pr->alt_packet;
-    }
+    my $docdir = '/var/Reg/documents/';
     my $attached_file_aref
-        = $pr->housing_not_needed()?
-              []
+        = $pr->alt_packet?
+              [ $docdir . $pr->alt_packet ]
          :$reg->mountain_experience()?
-              [ '/var/Reg/documents/Guest-Packet_MountainExperience.pdf' ]
-         :    [ $packet ]
+              [ $docdir . 'Guest-Packet_MountainExperience.pdf' ]
+         :$pr->housing_not_needed()?
+              []
+         :    [ $docdir . 'MMC Guest Packet.pdf' ];
          ;
     email_letter($c,
         to      => $to,
