@@ -1,0 +1,21 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+my $rental_id = shift or die "usage: grid_cksum rental_id";
+use lib '/var/www/src/lib';
+use Util qw/
+    db_init
+    model
+/;
+my $fname = "/tmp/$$";
+open my $out, '>', $fname;
+my $c = db_init();
+for my $g (model($c, 'Grid')->search({
+               rental_id => $rental_id,
+           })
+) {
+    print {$out} join(' ', $g->name, $g->house_id, $g->bed_num), "\n";
+}
+close $out;
+my ($sum) = `cksum $fname` =~ m{ \A (\d+) }xms;
+printf "%10s", $sum;

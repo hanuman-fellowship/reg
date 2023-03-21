@@ -35,6 +35,9 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 # Get online registrations and rental grid files (etc) every 15 minutes
 0,15,30,45 * * * * $REG/grab
 
+# Grid monitor
+0,15,30,45 * * * * $REG/grid_monitor
+
 # at 1:00 am get the rooms/campsites to be made up
 0 1 * * * $REG/makeup
 

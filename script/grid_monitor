@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use Util qw/
+    db_init
+    model
+/;
+use Date::Simple qw/
+    today
+/;
+my $today_d8 = today()->as_d8();
+my $mon_d8 = (today()+30)->as_d8();
+my $c = db_init();
+open my $log, '>>', '/var/Reg/output/grid.log';
+for my $r (model($c, 'Rental')->search({
+               sdate => { between => [ $today_d8, $mon_d8 ] },
+           })
+) {
+    my $id = $r->id;
+    print {$log} "$tstamp cron ",
+                 `/var/www/src/cgi-bin/grid_cksum $id`,
+                 ' ', $r->name_trimmed, "\n";
+}
+close $log;

@@ -53,6 +53,9 @@ if (! $coord) {
     exit;
 }
 
+my $tstamp = substr(scalar(localtime()), 4, 15);
+open my $log, '>>', '/var/Reg/output/grid.log';
+
 my (@houses, %fixed_cost_for_house);
 
 # fixed cost houses
@@ -568,6 +571,9 @@ if ($P{process}) {
         htypes  => $htypes,
         action  => $grid_cgi,
     };
+    my $cksum = `/var/www/src/cgi-bin/grid_cksum $rental_id`;
+    print {$log} "$tstamp done $cksum ", $rental->name_trimmed, "\n";
+    close $log;
     $tt->process(
         "sgrid.tt2",  # template
         $stash,       # variables
@@ -621,6 +627,8 @@ my $stash = {
     code    => $code,
     action  => $grid_cgi,
 };
+print {$log} "$tstamp edit ", (' ' x 11), $rental->name, "\n";
+close $log;
 $tt->process(
     "grid.tt2",   # template
     $stash,       # variables
