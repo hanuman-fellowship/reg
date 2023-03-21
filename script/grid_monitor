@@ -12,6 +12,7 @@ use Date::Simple qw/
 /;
 my $today_d8 = today()->as_d8();
 my $mon_d8 = (today()+30)->as_d8();
+my $tstamp = substr(scalar(localtime()), 4, 15);
 my $c = db_init();
 open my $log, '>>', '/var/Reg/output/grid.log';
 for my $r (model($c, 'Rental')->search({
