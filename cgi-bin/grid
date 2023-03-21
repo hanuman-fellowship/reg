@@ -627,7 +627,7 @@ my $stash = {
     code    => $code,
     action  => $grid_cgi,
 };
-print {$log} "$tstamp edit ", (' ' x 11), $rental->name, "\n";
+print {$log} "$tstamp edit ", (' ' x 11), $rental->name_trimmed, "\n";
 close $log;
 $tt->process(
     "grid.tt2",   # template
