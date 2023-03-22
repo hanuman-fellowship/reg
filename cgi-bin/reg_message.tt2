@@ -1,7 +1,11 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% IF sending_email %]
+    <link rel="stylesheet" href="https://akash.mountmadonna.org/static/cgi.css">
+[% ELSE %]
+    <link rel="stylesheet" href="/static/cgi.css">
+[% END %]
 </head>
 <body>
 [% IF sending_email %]

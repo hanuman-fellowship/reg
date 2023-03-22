@@ -37,3 +37,9 @@ li {
 button {
     background: lightgreen;
 }
+.tbl {
+    text-align: center;
+}
+.num {
+    text-align: right;
+}

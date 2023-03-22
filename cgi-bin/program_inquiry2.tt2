@@ -1,19 +1,7 @@
 <html>
 <head>
-<style>
-body {
-    margin: .5in;
-    font-size: 18pt;
-    font-family: Arial;
-}
-th, td {
-    font-size: 18pt;
-    vertical-align: top;
-}
-th {
-    text-align: right;
-}
-</style>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
 <table cellpadding=4>

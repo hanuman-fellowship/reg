@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset='UTF-8'>
 <script type='text/javascript'
         src='//code.jquery.com/jquery-1.8.3.js'></script>
 <link rel="stylesheet"
@@ -21,22 +22,13 @@
     });
 });
 </script>
-<style>
-body {
-    margin: .5in;
-    width: 70%;
-}
-body, input, button, td, th {
-    font-size: 16pt;
-}
-button {
-    background: lightgreen;
-}
-</style>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
-<!-- see this site:
-https://www.jquery-az.com/bootstrap-datepicker-set-up-guide-with-8-online-demos-and-code/ -->
+<!--
+see this site:
+https://www.jquery-az.com/bootstrap-datepicker-set-up-guide-with-8-online-demos-and-code/
+-->
 <img src='/static/images/mmc-teal.png' width=200>
 <p>
 <h1>Mountain Experience Registration</h1>

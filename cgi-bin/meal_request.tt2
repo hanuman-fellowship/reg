@@ -1,6 +1,5 @@
 <html>
 <head>
-<link rel="stylesheet" href="/static/cgi.css">
 <script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
@@ -17,30 +16,7 @@
     });  
 });
 </script>
-<style>
-body {
-    margin: .5in;
-}
-body, table, tr, th, td, input, .button {
-    font-size: 16pt;
-    font-family: Helvetica;
-}
-.teal {
-    background: lightgreen;
-}
-.tbl {
-    text-align: center;
-}
-td {
-    text-align: center;
-}
-.num {
-    text-align: right;
-}
-.form-control {
-    font-size: 16pt;
-}
-</style>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
 <img src='/static/images/mmc-teal.png' width=200>

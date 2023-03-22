@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta charset='UTF-8'>
 <title>Personal Retreat</title>
 <script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
@@ -14,20 +15,7 @@
         datesDisabled: [ $disabled ]
     });
 });
-
 </script>
-<style>
-body {
-    margin: .5in;
-    width: 70%;
-}
-body, input, button, td, th {
-    font-size: 16pt;
-}
-button {
-    background: lightgreen;
-}
-</style>
 <script>
 function check_dates() {
     var arr = document.getElementById('arr_date');
@@ -47,6 +35,7 @@ function check_dates() {
     return true;
 }
 </script>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
 <img src='/static/images/mmc-teal.png' width=200>

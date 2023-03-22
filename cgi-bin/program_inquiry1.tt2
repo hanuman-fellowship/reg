@@ -1,21 +1,6 @@
 <html>
 <head>
-<style>
-body {
-    margin: .5in
-}
-body, input, textarea, .submit, option, select {
-    font-size: 18pt;
-    font-family: Arial;
-}
-.required {
-    color: red;
-    font-size: 24pt;
-}
-.submit {
-    background: lightgreen;
-}
-</style>
+<meta charset='UTF-8'>
 <script>
 var fields = [
     { id: 'leader_name', regexp: '\\S',
@@ -35,6 +20,7 @@ var fields = [
 ];
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
+<link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
 <img src='/static/images/mmc-teal.png' width=200>
