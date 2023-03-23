@@ -43,3 +43,9 @@ button {
 .num {
     text-align: right;
 }
+.even {
+    background: #dddddd;
+}
+.odd {
+    background: white;
+}

@@ -16,7 +16,7 @@ __PACKAGE__->set_primary_key(qw/name/);
 sub short_desc_with_br {
     my ($self) = @_;
     my $s = $self->short_desc;
-    $s =~ s{/}{<br>}xmsg;
+    $s =~ s{\s*/\s*}{<br>}xmsg;
     $s;
 }
 

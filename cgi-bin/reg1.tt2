@@ -411,13 +411,19 @@ If you only want a certificate of completion enter COMP for the license #.
     <th class=lt>Housing Type</th>
     <th>Cost</th>
     </tr>
+    [% cl_row = 'even' %]
     [% FOR r IN housing_fee_rows %]
-        <tr>
+        <tr class=$cl_row>
         <td><input type=radio name=house1 value='$r.type' $r.checked1></td>
         <td><input type=radio name=house2 value='$r.type' $r.checked2></td>
         <td><a href="javascript:popup('/cgi-bin/show_ht/${r.type}/$r.cost/$housecost_type',650,500)">$r.short_desc</a></td>
         <td align=right>$r.cost</td>
         </tr>
+        [% IF cl_row == 'even' %]
+            [% cl_row = 'odd' %]
+        [% ELSE %]
+            [% cl_row = 'even' %]
+        [% END %]
     [% END %]
     </table>
     </ul>
