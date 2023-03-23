@@ -2907,7 +2907,7 @@ sub fee_types {
             my $type = $_->name;
             +{
                  type       => $type,
-                 short_desc => $_->short_desc,
+                 short_desc => $_->short_desc_with_br,
                  cost       => $hc->$type,
                  order      => $_->ht_order,
                  checked1   => $type eq $house1? 'checked': '',
