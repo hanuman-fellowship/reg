@@ -33,7 +33,7 @@ p {
 </head>
 <body>
 EOH
-print "<h2>" . $ht->short_desc . "</h2>\n";
+print "<h2>" . $ht->short_desc_with_br . "</h2>\n";
 print "\$$cost $type<br><br>\n";
 print "<div style='width: 450px; margin-bottom: 5mm;'>\n" . $ht->long_desc . "</div>\n";
 my $dir = '/var/www/src/root';
