@@ -41,15 +41,21 @@ gift of meals and lodging at Mount Madonna Center.
 For a Personal Retreat in $month here are the costs
 Per Person Per Day for the various housing options:
 <ul>
+[% cl_row = 'even' %]
 <table cellpadding=3>
 <tr>
 <th class=lt>Type</th><th align=right>Cost</th>
 </tr>
 [% FOR ht IN htypes %]
-<tr>
-<td><a href="javascript:popup('https://akash2.mountmadonna.org/cgi-bin/show_ht/$ht.type/$ht.cost/$housecost_type',650,500);">$ht.short_desc</a></td>
-<td align=right>$ht.cost</td>
-</tr>
+    <tr class=$cl_row>
+    <td><a href="javascript:popup('https://akash2.mountmadonna.org/cgi-bin/show_ht/$ht.type/$ht.cost/$housecost_type',650,500);">$ht.short_desc</a></td>
+    <td align=right>$ht.cost</td>
+    </tr>
+    [% IF cl_row == 'even' %]
+        [% cl_row = 'odd' %]
+    [% ELSE %]
+        [% cl_row = 'even' %]
+    [% END %]
 [% END %]
 </table>
 </ul>

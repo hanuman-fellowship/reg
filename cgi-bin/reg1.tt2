@@ -186,7 +186,7 @@ function check_form() {
         <ul>
         [% i = 1 %]
         [% FOR d IN date_names %]
-            <input type=checkbox id=date$i name=date$i value=$i> $d<br>
+            <label><input type=checkbox id=date$i name=date$i value=$i> $d</label><br>
             [% i = i + 1 %]
             [% END %]
         </ul>
@@ -442,11 +442,11 @@ If you only want a certificate of completion enter COMP for the license #.
     [% IF ! outdoors && cabin %]
         <p>If given a <b>choice</b>, would you prefer a cabin or a room?
         <ul class=space>
-        <input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin>
-        <b>Cabin</b> - heat and electricity, but no indoor plumbing
+        <label><input type=radio name=cabin_room id=cabin_room1 value=cabin $cabin>
+        <b>Cabin</b> - heat and electricity, but no indoor plumbing</label>
         <br>
-        <input type=radio name=cabin_room id=cabin_room2 value=room $room>  
-        <b>Room</b>
+        <label><input type=radio name=cabin_room id=cabin_room2 value=room $room>  
+        <b>Room</b></label>
         <br>
         <a href="javascript:popup('/static/help/cabin-room.html',500,700)">What's the difference?</a></p> 
         </ul>
@@ -485,18 +485,16 @@ If you only want a certificate of completion enter COMP for the license #.
     <b>Carpooling</b>
     &nbsp;&nbsp;<a href="javascript:popup('/static/help/privacy.html',270,450)">Privacy Concerns?</a><p>
     <ul>
-    <input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()">
-    I wish to offer a ride.<br>
-    <input type=checkbox name=carpool id=pool value=yes $carpool onchange="toggle_from_where()">
-    I wish to carpool.<p>
+    <label><input type=checkbox name=hascar id=ride value=yes $hascar onchange="toggle_from_where()"> I wish to offer a ride.</label><br>
+    <label><input type=checkbox name=carpool id=pool value=yes $carpool onchange="toggle_from_where()"> I wish to carpool.</label><p>
 
-    <input type=radio name=from_where id=from_where1 value='Home' $home_checked>
+    <label><input type=radio name=from_where id=from_where1 value='Home' $home_checked>
     From Home</label><br>
-    <input type=radio name=from_where id=from_where2 value='SJC' $sjc_checked>
-    From the San Jose airport<br>
+    <label><input type=radio name=from_where id=from_where2 value='SJC' $sjc_checked>
+    From the San Jose airport</label><br>
 
-    <input type=radio name=from_where id=from_where3 value='SFO' $sfo_checked>
-    From the San Francisco airport<br>
+    <label><input type=radio name=from_where id=from_where3 value='SFO' $sfo_checked>
+    From the San Francisco airport</label><br>
     </ul>
 [% END %]
 
@@ -547,9 +545,9 @@ You may share my address with MMC affiliates.</label><br>
     <!-- ?? move the image here -->
     <a href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa' target=_blank><img src='/static/images/kkwc_logo.jpg'></a>
 
-    <br><input type=checkbox name=kayakalpa id=kayakalpa value='yes'>
+    <br><label><input type=checkbox name=kayakalpa id=kayakalpa value='yes'>
     Please contact me regarding 
-    <a target=_blank href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa'>massage and other bodywork</a> during my stay.
+    <a target=_blank href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa'>massage and other bodywork</a> during my stay.</label>
     </ul>
 [% END %]
 

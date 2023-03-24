@@ -15,7 +15,8 @@ for my $g (model($c, 'Grid')->search({
            })
 ) {
     print {$out} join(' ', $g->name, $g->notes,
-                           $g->house_id, $g->bed_num),
+                           $g->house_id, $g->bed_num,
+                           $g->occupancy),
                  "\n";
 }
 close $out;
