@@ -14,15 +14,25 @@ use JSON qw/
 use Util 'JON';
 use Data::Dumper;
 
-# Net::Stripe
+# see Net::Stripe on CPAN
 # https://stackoverflow.com/questions/43001753/add-extra-card-to-stripe-customer-in-curl
 # very capable and very complicated. :(
+# we won't use it as we don't need it. yet.
 
-# from Shantam:
-my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
-# copied on 1/22/23:
-#my $stripe_key = "pk_test_9dgtGZ9aTJDYHsPRvJEiIEAT00g77ndlOd";
-#my $stripe_key = "pk_live_n31B5r1y0q0QMvLfeAqMmTNH00amiaUNQ2";
+#
+# There are 4 keys for account MMC Reg.
+# test or live, publishable or secret
+#
+my %stripe_key;
+open my $in, '<', 'stripe_keys';
+while (my $line = <$in>) {
+    chomp $line;
+    my ($code, $key) = $line =~ m{\A (\w+) \s+ (.*) \z}xms;
+    $stripe_key{$code} = $key;
+}
+close $in;
+#my $stripe_key = $stripe_key{test_secret};
+my $stripe_key = $stripe_key{live_secret};
 
 #
 # create the button for payments
@@ -36,6 +46,14 @@ my $stripe_key = "sk_test_CTgcxK02ela76EawraITgSdd00oyIH2lsp:";     # test
 # email
 #
 # This routine might display an error message and exit!
+#
+# What about 'images' in the curl command?
+# See: https://stripe.com/docs/payments/checkout/migrating-prices
+# or: https://stripe.com/docs/videos
+# SO complex!  We'll use just what we need then expand it if needed.
+#
+# Cancelling (aka voiding) a payment:
+# https://stripe.com/docs/refunds#cancel-payment
 #
 sub stripe_payment {
     my (%P) = @_;
@@ -70,11 +88,12 @@ sub stripe_payment {
     my $cmd = <<"EOH";
 curl https://api.stripe.com/v1/checkout/sessions \\
   -u $stripe_key \\
-  --data-binary "line_items[0][name]"="$P{name}" \\
-  -d "line_items[0][description]"="$P{description}" \\
-  -d "line_items[0][amount]"="$amount100" \\
-  -d "line_items[0][currency]"="usd" \\
-  -d "line_items[0][quantity]"="1" \\
+  -d mode=payment \\
+  -d            "line_items[0][price_data][unit_amount]"="$amount100" \\
+  -d            "line_items[0][price_data][currency]"="usd" \\
+  --data-binary "line_items[0][price_data][product_data][name]"="$P{name}" \\
+  -d            "line_items[0][price_data][product_data][description]"="$P{description}" \\
+  -d            "line_items[0][quantity]"="1" \\
   ${metadata}-d customer_email="$P{email}" \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"

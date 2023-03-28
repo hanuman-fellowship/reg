@@ -25,7 +25,7 @@ my $cookie = $q->cookie(
     -name    => 'user_data',
     -value   => \%param,
     -expires => '+10y',     # i.e. don't expire
-    -domain  => 'akash2.mountmadonna.org',      #??JON
+    -domain  => '.mountmadonna.org',
 );
 print $q->header(-cookie => $cookie);
 

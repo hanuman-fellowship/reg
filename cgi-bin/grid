@@ -34,6 +34,8 @@ use Date::Simple qw/
 /;
 Date::Simple->default_format("%B %e '%q");
 
+my $bin = '/var/www/src/cgi-bin';
+
 my $grid_cgi = $0;
 my $email_check = $grid_cgi !~ m{grid_ne}xms;
 $grid_cgi =~ s{/var/www/src}{}xms;
@@ -47,6 +49,19 @@ if (! $rental) {
     exit;
 }
 my $rental_id = $rental->id;
+sub dump_grid {
+    my ($fname) = @_;
+    open my $out, '>', $fname;
+    for my $g (model($c, 'Grid')->search(
+                   { rental_id => $rental_id },
+                   { order_by  => 'name'     }
+               )
+    ) {
+        print {$out} join(' ', $g->name, $g->notes, $g->house_id,
+                               $g->bed_num, $g->occupancy), "\n";
+    }
+    close $out;
+}
 my $coord = $rental->coordinator() || $rental->contract_signer();
 if (! $coord) {
     print "Sorry, there is no Contact Person for this rental.";
@@ -531,8 +546,15 @@ if ($P{process}) {
     # all is okay.
     # time to add the accumulated records to the Grid table.
     #
-    # but first clear all rows for this rental
+    # create a tmp file of the existing state
+    # clear all rows for this rental
+    # add the new rows
+    # create another tmp file of the new state
+    # later place a diff of these two files in the grid log.
     #
+    my $before = "/tmp/$rental_id-before";
+    dump_grid($before);
+
     model($c, 'Grid')->search({
         rental_id => $rental_id,
     })->delete_all();
@@ -543,6 +565,8 @@ if ($P{process}) {
             @$aref,
         });
     }
+    my $after = "/tmp/$rental_id-after";
+    dump_grid($after);
 
     # now to update three fields in the Rental
     #
@@ -594,9 +618,11 @@ if ($P{process}) {
         htypes  => $htypes,
         action  => $grid_cgi,
     };
-    my $cksum = `/var/www/src/cgi-bin/grid_cksum $rental_id`;
+    my $cksum = `$bin/grid_cksum $rental_id`;
     print {$log} "$tstamp done $cksum $rental_name\n";
     close $log;
+    system("diff $before $after >>$grid_log");
+    unlink $before, $after;
     $tt->process(
         "sgrid.tt2",  # template
         $stash,       # variables

@@ -17,9 +17,9 @@ my $tt = Template->new(
 );
 # cookie info from a registration
 my %cookie = $q->cookie(
-    -domain => 'akash2.mountmadonna.org',   #??JON
+    -domain => '.mountmadonna.org',
     -name   => 'user_data',
-);  # ??JON domain?
+);
 use lib '.', '../lib';
 use Stripe qw/
     stripe_payment
@@ -106,7 +106,7 @@ my $cookie = $q->cookie(
     -name    => 'user_data',
     -value   => \%cookie,
     -expires => '+10y',     # i.e. don't expire
-    -domain  => 'akash2.mountmadonna.org',  # ??JON
+    -domain  => '.mountmadonna.org',
 );
 print $q->header(-cookie => $cookie);
 $tt->process(

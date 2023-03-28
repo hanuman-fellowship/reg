@@ -246,7 +246,7 @@ $stash{encoded_requests} = join ',', @encoded_requests;
 
 # if there is cookie information, it will also be used.
 my %cookie = $q->cookie(
-    -domain => 'akash2.mountmadonna.org',       # ??JON
+    -domain => '.mountmadonna.org',
     -name   => 'user_data',
 );
 for my $w (qw/
