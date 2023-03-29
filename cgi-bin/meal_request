@@ -12,6 +12,8 @@ use CGI;
 use CGI::Carp qw/fatalsToBrowser/;
 my $q = CGI->new();
 print $q->header();
+my %params = $q->Vars();
+my $type = delete $params{type};
 
 use Util qw/
     db_init
@@ -39,7 +41,9 @@ my @meals = qw/
 
 my %stash;
 my $today = today();
-my $start = $today + 2;
+my $advance = ($type eq 'family' || $type eq 'guest')? 3: 2;
+my $start = $today + $advance;
+$stash{advance} = $advance;
 $stash{startDate} = $start->format("%m/%d/%Y");
 
 sub pennies {
@@ -71,10 +75,10 @@ for my $w (qw/
 }
 my @date_ranges;
 my @disabled;
-for my $type (qw/ Meal Lunch /) {
+for my $ev (qw/ Meal Lunch /) {
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'regexp' => "No.*$type" },
+            name  => { 'regexp' => "No.*$ev" },
             edate => { '>='   => today()->as_d8() },
         },
         {
@@ -83,7 +87,7 @@ for my $type (qw/ Meal Lunch /) {
     );
     for my $e (@events) {
         my ($sdate, $edate) = ($e->sdate_obj, $e->edate_obj);
-        my $lunch = $type eq 'Lunch'? 1: 0;
+        my $lunch = $ev eq 'Lunch'? 1: 0;
         push @date_ranges, [ $sdate, $edate, $lunch ];
         if (! $lunch) {
             my $d = $sdate;
@@ -97,8 +101,6 @@ for my $type (qw/ Meal Lunch /) {
 $stash{date_ranges} = \@date_ranges;
 $stash{disabled} = join ', ', map { qq!'$_'! } @disabled;
 
-my %params = $q->Vars();
-
 sub no_lunch {
     my ($dt, $dates_aref) = @_;
     for my $dr (@$dates_aref) {
@@ -109,7 +111,6 @@ sub no_lunch {
     return 0;
 }
 
-my $type = delete $params{type};
 $stash{dow_disabled} = '';
 if ($type) {
     # $type is either 'family' or 'guest'
