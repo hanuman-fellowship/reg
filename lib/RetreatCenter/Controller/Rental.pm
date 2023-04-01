@@ -1899,7 +1899,7 @@ sub contract : Local {
 
     my %stash = (
         string => \%string,
-        fee_table => _fee_table($rental->housecost),
+        fee_table => _fee_table($c, $rental->housecost),
         today   => tt_today($c),
         email   => $email,
         signer  => ($rental->cs_person_id()? $rental->contract_signer()
@@ -1991,15 +1991,25 @@ sub contract : Local {
 }
 
 sub _fee_table {
-    my ($hc) = @_;
-    my $table = "<table cellpadding=5>";
-    for my $ht (reverse housing_types(1)) {
-        my $cost = $hc->$ht;
+    my ($c, $hc) = @_;
+    my $table = "<table cellpadding=5 border=1>";
+    my @housing_types = sort {
+                            $a->ht_order <=> $b->ht_order
+                            # ht_order should have been integer not char
+                        }
+                        model($c, 'HousingType')->all();
+    my $col = 'white';
+    for my $ht (@housing_types) {
+        my $name = $ht->name;
+        my $cost = $hc->$name;
         if ($cost != 0) {
-            $table .= "<tr>"
-                   .  "<td>$string{$ht}</td>"
+            $table .= "<tr bgcolor=$col>"
+                   .  "<td>"
+                   .  $ht->short_desc_with_br
+                   .  "</td>"
                    .  "<td align=right>$cost</td>"
                    .  "</tr>";
+            $col = $col eq 'white'? 'lightgray': 'white';
         }
     }
     $table .= "</table>";
@@ -2736,21 +2746,28 @@ sub grid : Local {
 
     my $rental = model($c, 'Rental')->find($rental_id);
     my $hc = $rental->housecost;
+    my @housing_types = sort {
+                            $a->ht_order <=> $b->ht_order
+                            # ht_order should have been integer not char
+                        }
+                        model($c, 'HousingType')->all();
     my @htypes;
+    my $col = 'white';
     HTYPE:
-    for my $t (housing_types(1)) {
+    for my $ht (@housing_types) {
+        my $t = $ht->name;
         my $cost = $hc->$t;
         if (! $cost) {
             # don't display house cost if it's zero
             next HTYPE;
         }
         push @htypes, {
+            bgcolor => $col,
             cost => $cost,
-            desc => $string{$t},
+            desc => $ht->short_desc_with_br,
         };
+        $col = $col eq 'white'? 'lightgray': 'white';
     }
-    @htypes = sort { $b->{cost} <=> $a->{cost} } @htypes;
-
     my $sdate = $rental->sdate_obj();
     my $edate = $rental->edate_obj();
     my $d = $sdate;
@@ -2852,6 +2869,7 @@ sub grid : Local {
         nnights  => $edate - $sdate,
         data     => \%data,
         max      => \%max,      # for own van, commuting
+        housecost_type => $hc->type,
         coord_name => $coord_name,
         total    => commify($total),
         people   => \@people,

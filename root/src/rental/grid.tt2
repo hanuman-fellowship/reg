@@ -142,19 +142,19 @@ $days
 
 </td><td>
 
-<table cellpadding=3>
+<table cellpadding=3 border=1>
 <tr>
-<th align=left>Type</th><th align=right>Cost</th>
+<th align=left>Housing Type</th><th align=right>Cost</th>
 </tr>
 
 [% FOR ht IN htypes %]
-<tr>
+<tr bgcolor=$ht.bgcolor>
 <td>$ht.desc</td>
 <td align=right>$ht.cost</td>
 [% END %]
 <tr>
-<tr><td>&nbsp;</td></tr>
-<td>House Cost Type: $housecost_type</td>
+<tr><td colspan=2>&nbsp;</td></tr>
+<td>House Cost Type:</td><td>$housecost_type</td>
 </tr>
 </table>
 
