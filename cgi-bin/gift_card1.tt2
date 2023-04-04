@@ -48,7 +48,7 @@ Per Person Per Day for the various housing options:
 </tr>
 [% FOR ht IN htypes %]
     <tr class=$cl_row>
-    <td><a href="javascript:popup('https://akash2.mountmadonna.org/cgi-bin/show_ht/$ht.type/$ht.cost/$housecost_type',650,500);">$ht.short_desc</a></td>
+    <td><a href="javascript:popup('https://akash.mountmadonna.org/cgi-bin/show_ht/$ht.type/$ht.cost/$housecost_type',650,500);">$ht.short_desc</a></td>
     <td align=right>$ht.cost</td>
     </tr>
     [% IF cl_row == 'even' %]
