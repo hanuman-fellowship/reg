@@ -82,8 +82,7 @@ sub stripe_payment {
     # use it to form the success_url
     my $script = $0;
     $script =~ s{\A .*/}{}xms;  # strip any leading directories
-    #??JONakash or akash2 ???
-    my $cgi = 'https://akash2.mountmadonna.org/cgi-bin';
+    my $cgi = 'https://akash.mountmadonna.org/cgi-bin';
     my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
     my $cmd = <<"EOH";
 curl https://api.stripe.com/v1/checkout/sessions \\
