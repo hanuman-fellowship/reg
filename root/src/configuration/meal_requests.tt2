@@ -17,11 +17,12 @@ td.x {
 <ul>
 <table cellpadding=10 cellspacing=0>
 
+[% cgi = 'https://akash.mountmadonna.org/cgi-bin' %]
 <tr>
 <td class='bold tb'>&nbsp;</td>
-<td class='bold tb'><a target=_blank href='$S.cgi/meal_request'>Normal</a></td>
-<td class='bold tb'><a target=_blank href='$S.cgi/meal_request?type=family'>Family</a></td>
-<td class='bold tb'><a target=_blank href='$S.cgi/meal_request?type=guest'>Guest</a></td>
+<td class='bold tb'><a target=_blank href='$cgi/meal_request'>Normal</a></td>
+<td class='bold tb'><a target=_blank href='$cgi/meal_request?type=family'>Family</a></td>
+<td class='bold tb'><a target=_blank href='$cgi/meal_request?type=guest'>Guest</a></td>
 <td class='bold tb' style="font-size: 12pt;">Daily Max</td>
 </tr>
 
