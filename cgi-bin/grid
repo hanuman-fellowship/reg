@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-my $new_way = 0;        # to be removed when the time is right
+my $new_way = 1;        # to be removed when the time is right
 
 use lib '../lib';
 use Util qw/
