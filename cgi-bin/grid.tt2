@@ -97,6 +97,9 @@ h2 {
     font-weight: normal;
     color: green;
 }
+.lt {
+    text-align: left;
+}
 </style>
 </head>
 <body>
@@ -200,7 +203,7 @@ $days
 <tr><td valign=top>
 
 <table>
-<tr><th align=left colspan=2>Codes</th></tr>
+<tr><th class=lt colspan=2>Codes</th></tr>
 <tr><td>b</td><td> - bath</td></tr>
 <tr><td>c</td><td> - cabin</td></tr>
 <tr><td>o</td><td> - own tent</td></tr>

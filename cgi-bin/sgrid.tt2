@@ -25,6 +25,9 @@ a {
 .fixed {
     color: green;
 }
+.lt {
+    text-align: left;
+}
 </style>
 <script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
@@ -103,7 +106,7 @@ $days
 <table cellpadding=5>
 <tr><td valign=top>
 <table cellpadding=3>
-<tr><th colspan=2 align=left>Codes</th></tr>
+<tr><th class=lt colspan=2 align=left>Codes</th></tr>
 <tr><td>b</td><td> - bath</td></tr>
 <tr><td>c</td><td> - cabin</td></tr>
 <tr><td>o</td><td> - own tent</td></tr>
