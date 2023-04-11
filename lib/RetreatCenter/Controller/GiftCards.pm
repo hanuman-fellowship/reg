@@ -101,7 +101,6 @@ sub list : Local {
         count => (scalar keys %balance_for),
         total => $total,
         remaining => $remaining,
-        cgi        => get_string($c, 'cgi'),
         template   => "gift_cards/list.tt2",
     );
 }
@@ -138,9 +137,6 @@ sub add_do : Local {
         reg_id      => 0,
     });
     return if -f '/tmp/Reg_Dev';
-    # ??JON remove when we use akash for creating/using the gift card
-    # need the ' below - otherwise the & is interpreted by the shell :(
-    my $status = qx(/usr/bin/curl -k 'https://www.mountmadonna.org/cgi-bin/gift_add?code=$code&amount=$amount&passwd=soma' 2>/dev/null);
     $c->response->redirect($c->uri_for("/giftcards/list"));
 }
 
