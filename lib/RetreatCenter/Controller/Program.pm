@@ -2243,23 +2243,4 @@ sub del_file : Local {
     }
 }
 
-# export all
-# then redirect to registration (reg1) for this program
-#
-sub mmc_reg : Local {
-    my ($self, $c, $prog_id) = @_;
-    if (!_do_export($c)) {
-        return;
-    }
-    if ($prog_id eq 'pr') {
-        $c->response->redirect("$string{cgi}/regPR");
-    }
-    elsif ($prog_id eq 'me') {
-        $c->response->redirect("$string{cgi}/regME");
-    }
-    else {
-        $c->response->redirect("$string{cgi}/reg1?id=$prog_id");
-    }
-}
-
 1;
