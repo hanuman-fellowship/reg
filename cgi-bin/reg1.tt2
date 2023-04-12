@@ -448,7 +448,7 @@ If you only want a certificate of completion enter COMP for the license #.
         <label><input type=radio name=cabin_room id=cabin_room2 value=room $room>  
         <b>Room</b></label>
         <br>
-        <a href="javascript:popup('/static/help/cabin-room.html',500,700)">What's the difference?</a></p> 
+        <a href="javascript:popup('/static/help/cabin-room.html',900,700)">What's the difference?</a></p> 
         </ul>
     [% END %]
 
