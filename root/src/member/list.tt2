@@ -6,8 +6,6 @@
     <a href="/member/list/1">Exclude Lapsed</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
-<a href="/member/list_online">Online ($online)</a>
-&nbsp;&nbsp;&nbsp;
 <a href="https://akash.mountmadonna.org/cgi-bin/new_hfs_member">New HFS Member</a>
 <p class=p2>
 <a href="/member/voter_list">Voter List</a>

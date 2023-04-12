@@ -109,7 +109,7 @@ my $ftp;
 my $run_file = '/var/Reg/grab_running';
 my $nomp = 0;
 my ($now, $now_t24, $today_d8, $year_mon_dir);
-my ($temple_xaccount_id, $meals_xaccount_id, $gift_cards_xaccount_id);
+#my ($temple_xaccount_id, $meals_xaccount_id, $gift_cards_xaccount_id);
 my @kayakalpa;  # an array of hashrefs - these people requested
                 # information about bodywork.
 my @mlist_alerts;   # an array of hashrefs - who to send
@@ -185,49 +185,49 @@ sub initialize {
     $string{mmc_email} = $string{reception_email};  # see *1 below
 
     # for temple donations
-    my @xaccounts = model($c, 'XAccount')->search({
-                        descr => 'Temple',
-                    });
-    if (@xaccounts == 1) {
-        $temple_xaccount_id = $xaccounts[0]->id;
-    }
-    else {
-        quit("could not find the Temple Extra Account");
-    }
+#    my @xaccounts = model($c, 'XAccount')->search({
+#                        descr => 'Temple',
+#                    });
+#    if (@xaccounts == 1) {
+#        $temple_xaccount_id = $xaccounts[0]->id;
+#    }
+#    else {
+#        quit("could not find the Temple Extra Account");
+#    }
     # for meal requests
-    @xaccounts = model($c, 'XAccount')->search({
-                     descr => 'Meals',
-                 });
-    if (@xaccounts == 1) {
-        $meals_xaccount_id = $xaccounts[0]->id;
-    }
-    else {
-        quit("could not find the Meals Extra Account");
-    }
+    #@xaccounts = model($c, 'XAccount')->search({
+    #                 descr => 'Meals',
+    #             });
+    #if (@xaccounts == 1) {
+    #    $meals_xaccount_id = $xaccounts[0]->id;
+    #}
+    #else {
+    #    quit("could not find the Meals Extra Account");
+    #}
     # for gift cards
-    @xaccounts = model($c, 'XAccount')->search({
-                     descr => 'Gift Cards',
-                 });
-    if (@xaccounts == 1) {
-        $gift_cards_xaccount_id = $xaccounts[0]->id;
-    }
-    else {
-        quit("could not find the Gift Cards Extra Account");
-    }
+    #@xaccounts = model($c, 'XAccount')->search({
+    #                 descr => 'Gift Cards',
+    #             });
+    #if (@xaccounts == 1) {
+    #    $gift_cards_xaccount_id = $xaccounts[0]->id;
+    #}
+    #else {
+    #    quit("could not find the Gift Cards Extra Account");
+    #}
 
     my $dir = "/var/Reg";
     $online          = make_dir("$dir/online");
-    $temple          = make_dir("$dir/temple_done/$year_mon_dir");
+    #$temple          = make_dir("$dir/temple_done/$year_mon_dir");
     $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
-    $meal_requests_done = make_dir("$dir/meal_requests_done/$year_mon_dir");
-    $gift_cards_done = make_dir("$dir/gift_cards_done/$year_mon_dir");
+    #$meal_requests_done = make_dir("$dir/meal_requests_done/$year_mon_dir");
+    #$gift_cards_done = make_dir("$dir/gift_cards_done/$year_mon_dir");
     $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
     $req_mmc_dir     = make_dir("$dir/req_mmc/$year_mon_dir");
-    $omp_dir         = make_dir("$dir/omp");
+    #$omp_dir         = make_dir("$dir/omp");
     $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
     $rental_invoice_dir = make_dir("$dir/rental_invoice/$year_mon_dir");
-    $temple_donation = make_dir("$dir/temple_donation");
-    $new_hfs_dir     = make_dir("$dir/new_hfs/$year_mon_dir");
+    #$temple_donation = make_dir("$dir/temple_donation");
+    #$new_hfs_dir     = make_dir("$dir/new_hfs/$year_mon_dir");
     $covid_vax_dir   = make_dir("$dir/documents/covid_vax");
 }
 
@@ -326,6 +326,8 @@ sub check_transaction {
       ;
 }
 
+=comment
+
 sub temple_donation {
     my ($href, $f) = @_;
 
@@ -363,6 +365,8 @@ sub temple_donation {
     # email thank you again???
     # email temple people interested in what donations have come in???
 }
+
+=cut
 
 #
 #
@@ -412,6 +416,8 @@ EOH
     }
 }
 
+=comment
+
 sub nights_for {
     my ($month) = @_;
     return $month <= 3? 4
@@ -420,6 +426,10 @@ sub nights_for {
           :             1
           ;
 }
+
+=cut
+
+=comment
 
 #
 # what if someone become a member mid-year? or in December?
@@ -551,6 +561,8 @@ sub process_new_hfs {
       ;
 }
 
+=cut
+
 sub process_mlist {
     my ($get_dir, $f) = @_;
 
@@ -634,6 +646,8 @@ sub process_mlist {
     };
 }
 
+=comment 
+
 sub get_omp {
     my ($get_dir, $f) = @_;
 
@@ -643,6 +657,8 @@ sub get_omp {
     msg "membership payment of \$$amount for $name";
     ++$nomp;
 }
+
+=cut
 
 # ??JON - can remove when cgi-bin scripts
 # are styled effectively
@@ -719,6 +735,8 @@ sub get_rental_invoice {
     );
 }
 
+=comment
+
 sub omp_alert {
     if ($nomp) {
         email_letter($c,
@@ -730,6 +748,8 @@ sub omp_alert {
         );
     }
 }
+
+=cut
 
 # Both MMI and MMC requested payments.
 # $get_dir tells us which.
@@ -818,6 +838,8 @@ sub process_req_payments {
     msg "requested $org payment totaling \$$hash{total} for $hash{first} $hash{last}";
 }
 
+=comment
+
 sub process_meal_requests {
     my ($get_dir, $f) = @_;
     my $href = x_file_to_href("$get_dir/$f");
@@ -878,6 +900,10 @@ sub process_meal_requests {
       ;
 }
 
+=cut
+
+=comment
+
 sub process_gift_cards {
     my ($get_dir, $f) = @_;
     my $href = x_file_to_href("$get_dir/$f");
@@ -920,6 +946,8 @@ sub process_gift_cards {
       . $person->name . '</a>'
       ;
 }
+
+=cut
 
 # the incoming filename is either
 #
@@ -1034,6 +1062,8 @@ sub process_covid_vax {
     );
 }
 
+=comment
+
 #
 # obsolete - stopped doing this at some point...
 #
@@ -1078,6 +1108,8 @@ sub get_temple {
     msg sprintf "temple %s %s - %s",
                 $person->first, $person->last, $status;
 }
+
+=cut
 
 sub kayakalpa {
     return unless @kayakalpa;
@@ -1181,8 +1213,8 @@ sub main {
               $mlist_done, \&process_mlist);
 
     # Membership Payments
-    get_files($ftp, $string{ftp_omp_dir},
-              $omp_dir, \&get_omp);
+    #get_files($ftp, $string{ftp_omp_dir},
+    #          $omp_dir, \&get_omp);
 
     # Rental Deposit Payments
     get_files($ftp, $string{ftp_rental_deposit_dir_paid},
@@ -1197,16 +1229,16 @@ sub main {
               $req_mmc_dir, \&process_req_payments);
 
     # MMC Meal Requests
-    get_files($ftp, $string{ftp_meal_requests_dir},
-              $meal_requests_done, \&process_meal_requests);
+    #get_files($ftp, $string{ftp_meal_requests_dir},
+    #          $meal_requests_done, \&process_meal_requests);
 
     # New HFS Memberships
-    get_files($ftp, $string{ftp_new_hfs_dir},
-              $new_hfs_dir, \&process_new_hfs);
+    #get_files($ftp, $string{ftp_new_hfs_dir},
+    #          $new_hfs_dir, \&process_new_hfs);
 
     # Gift Cards
-    get_files($ftp, $string{ftp_gift_cards_dir},
-              $gift_cards_done, \&process_gift_cards);
+    #get_files($ftp, $string{ftp_gift_cards_dir},
+    #          $gift_cards_done, \&process_gift_cards);
 
     # COVID-19 Vaccinations
     get_files($ftp, $string{ftp_covid_vax_dir},
@@ -1235,7 +1267,7 @@ sub main {
 =cut
 
     mlist_alerts();
-    omp_alert();
+#    omp_alert();
     kayakalpa();
     finalities();
 }

@@ -4,11 +4,13 @@
 *mlist.ts           # change email address of reception...
 *new_hfs_member.ts  # remove Online(1) and associated methods
 *omp.ts             # check mem_email, no grab_new
+
 *regME.ts           # no export, no sending of ME parameters, no grab_new
 *regPR.ts           # no export, no sending of PR parameters, no grab_new
-reg1.ts
-rental_payment.ts
-req_pay.ts
+*reg1.ts
+*rental_payment.ts
+*req_pay.ts
+
 sutra.ts
 talk_search.ts
 update.ts

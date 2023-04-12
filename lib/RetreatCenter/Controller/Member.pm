@@ -182,45 +182,6 @@ sub list : Local {
     );
 }
 
-# show the current online files
-# get the Member's name, category of payment, etc
-sub list_online : Local {
-    my ($self, $c) = @_;
-
-    my @files = <$omp_dir/*>;
-    my @payments;
-    for my $f (@files) {
-        my $g = $f;
-        $g =~ s{$omp_dir/}{}xms;
-        my ($id, $amount, $trans_id) = split '_', $g;
-        my $m = model($c, 'Member')->find($id);
-        if ($m) {
-            my $p = $m->person;
-            if ($p) {
-                my $name = $p->first . ' ' . $p->last;
-                push @payments, {
-                    name     => $name,
-                    file     => $g,
-                    amount   => $amount,
-                    category => $m->category,
-                };
-            }
-        }
-    }
-    stash($c,
-        payments => \@payments,
-        template => "member/online.tt2",
-    );
-}
-
-sub get_online : Local {
-    my ($self, $c, $file) = @_;
-
-    my ($id, $amount, $trans_id) = split '_', $file;
-    __PACKAGE__->update($c, $id, $amount, $file);
-    return;
-}
-
 sub update : Local {
     my ($self, $c, $id, $amount, $file) = @_;
 
