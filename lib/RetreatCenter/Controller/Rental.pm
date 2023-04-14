@@ -1992,7 +1992,13 @@ sub contract : Local {
 
 sub _fee_table {
     my ($c, $hc) = @_;
-    my $table = "<table cellpadding=5 border=1>";
+    my $table = <<'EOH';
+<table cellpadding=5 border=1>";
+<tr>
+<th align=left>Housing Type</th>
+<th>Cost</th>
+</tr>
+EOH
     my @housing_types = sort {
                             $a->ht_order <=> $b->ht_order
                             # ht_order should have been integer not char

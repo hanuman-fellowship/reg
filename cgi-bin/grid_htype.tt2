@@ -1,7 +1,7 @@
 [% cl_row = 'even' %]
 <table cellpadding=3 border=1>
 <tr>
-<th class=lt>Type</th><th align=right>Cost</th>
+<th class=lt>Housing Type</th><th align=right>Cost</th>
 </tr>
 [% FOR ht IN htypes %]
     <tr class=$cl_row>
