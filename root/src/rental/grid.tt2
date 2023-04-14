@@ -142,7 +142,7 @@ $days
 
 </td><td>
 
-<table cellpadding=3 border=0>
+<table cellpadding=3 border=1>
 <tr>
 <th align=left>Housing Type</th><th align=right>Cost</th>
 </tr>
