@@ -131,7 +131,7 @@ sub notes_do : Local {
     $s =~ s{<[^>]*>}{}xmsg;
     if ($s =~ m{\A \s* duplicate}xmsi) {
         $inq->delete();
-        $c->response->redirect($c->uri_for("/inquiry/list"));
+        $c->response->redirect($c->uri_for("/inquiry/list/date"));
     }
     else {
         $inq->update({
