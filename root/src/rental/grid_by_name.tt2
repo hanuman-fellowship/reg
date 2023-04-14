@@ -71,7 +71,7 @@ Housing Assignment Grid
 [% END %]
 <tr>
 <tr><td colspan=2>&nbsp;</td></tr>
-<td>House Cost Type:</td><td>$housecost_type</td>
+<td>House Cost Type</td><td>$housecost_type</td>
 </tr>
 </table>
 

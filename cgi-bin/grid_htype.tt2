@@ -14,8 +14,8 @@
         [% cl_row = 'even' %]
     [% END %]
 [% END %]
-<tr><td>&nbsp;</td></tr>
+<tr><td colspan=2>&nbsp;</td></tr>
 <tr>
-<td>House Cost Type: $housecost_type</td>
+<td>House Cost Type</td><td>$housecost_type</td>
 </tr>
 </table>
