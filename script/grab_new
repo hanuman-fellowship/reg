@@ -224,8 +224,8 @@ sub initialize {
     $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
     $req_mmc_dir     = make_dir("$dir/req_mmc/$year_mon_dir");
     #$omp_dir         = make_dir("$dir/omp");
-    $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
-    $rental_invoice_dir = make_dir("$dir/rental_invoice/$year_mon_dir");
+    #$rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
+    #$rental_invoice_dir = make_dir("$dir/rental_invoice/$year_mon_dir");
     #$temple_donation = make_dir("$dir/temple_donation");
     #$new_hfs_dir     = make_dir("$dir/new_hfs/$year_mon_dir");
     $covid_vax_dir   = make_dir("$dir/documents/covid_vax");
@@ -660,6 +660,8 @@ sub get_omp {
 
 =cut
 
+=comment
+
 # ??JON - can remove when cgi-bin scripts
 # are styled effectively
 # and associated directories, etc
@@ -734,6 +736,8 @@ sub get_rental_invoice {
                       . " for <a href='$rlink'>" . $rental->name . "</a>",
     );
 }
+
+=cut
 
 =comment
 
@@ -1217,12 +1221,12 @@ sub main {
     #          $omp_dir, \&get_omp);
 
     # Rental Deposit Payments
-    get_files($ftp, $string{ftp_rental_deposit_dir_paid},
-              $rental_deposit_dir, \&get_rental_deposit);
+    #get_files($ftp, $string{ftp_rental_deposit_dir_paid},
+    #          $rental_deposit_dir, \&get_rental_deposit);
 
     # Rental Invoice Payments
-    get_files($ftp, $string{ftp_rental_invoice_dir_paid},
-              $rental_invoice_dir, \&get_rental_invoice);
+    #get_files($ftp, $string{ftp_rental_invoice_dir_paid},
+    #          $rental_invoice_dir, \&get_rental_invoice);
 
     # MMC Payment Requests
     get_files($ftp, $string{req_mmc_dir_paid},

@@ -495,6 +495,8 @@ sub balance_disp {
     return $cbal;
 }
 
+=comment 
+
 sub send_rental_deposit {
     my ($rental) = @_;
     my $code = $rental->grid_code();
@@ -570,6 +572,8 @@ sub send_invoice_balance {
     $ftp->quit();
     unlink "/tmp/$code";
 }
+
+=cut
 
 sub image_path {
     my ($self) = @_;
