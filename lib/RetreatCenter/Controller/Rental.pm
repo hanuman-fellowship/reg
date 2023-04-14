@@ -1894,7 +1894,7 @@ sub contract : Local {
     else {
         $deposit = $rental->deposit;
     }
-    $rental->send_rental_deposit();
+    #$rental->send_rental_deposit();
 
 
     my %stash = (
@@ -2197,7 +2197,7 @@ sub invoice : Local {
     }
     # send balance and info to mmc.org
     #
-    $rental->send_invoice_balance($balance);
+    #$rental->send_invoice_balance($balance);
     $rental->update({
         invoice_sent => today()->as_d8(),
     });

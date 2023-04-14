@@ -179,7 +179,7 @@ Depending on the rooms and amenities chosen the final obligation for payment wil
 The Presenter will pay a deposit of \$$deposit
 upon the signing of this contract.
 <p>
-This amount can be paid online with this <a href="${string.rental_deposit_url}?code=$rental.grid_code">payment link</a>.
+This amount can be paid online with this <a href="https://akash.mountmadonna.org/cgi-bin/rental_payment?type=deposit&code=$rental.grid_code">payment link</a>.
 [% END %]
 <p>
 Cancellation charges shall be as follows:

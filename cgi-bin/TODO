@@ -8,7 +8,7 @@
 *regME.ts           # no export, no sending of ME parameters, no grab_new
 *regPR.ts           # no export, no sending of PR parameters, no grab_new
 *reg1.ts
-*rental_payment.ts
+*rental_payment.ts  # can remove code that sends and grab_new the payments
 *req_pay.ts
 
 sutra.ts
