@@ -18,6 +18,10 @@ var fields = [
     { id: 'learn',  regexp: '\\S',
                     err: 'Missing How did you learn about Mount Madonna?' }
 ];
+function no_dbl() {
+    document.getElementById('submit').style.pointerEvents = 'none';
+    return true;
+}
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 <link rel="stylesheet" href="/static/cgi.css">
@@ -94,6 +98,6 @@ Anything else we should know?<br>
 <textarea name=what_else rows=4 cols=48>
 </textarea>
 <p>
-<input style="background: lightgreen" type=submit id=submit value='Submit'>
+<input style="background: lightgreen" type=submit id=submit onsubmit='return no_dbl();' value='Submit'>
 </form>
 <script>document.getElementById('leader_name').focus();</script>

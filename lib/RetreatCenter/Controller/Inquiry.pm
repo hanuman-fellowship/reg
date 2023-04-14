@@ -126,10 +126,19 @@ sub notes : Local {
 sub notes_do : Local {
     my ($self, $c, $inq_id) = @_;
     my $inq = model($c, 'Inquiry')->find($inq_id);
-    $inq->update({
-        notes => $c->request->params->{notes},
-    });
-    $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
+    my $notes = $c->request->params->{notes};
+    my $s = $notes;
+    $s =~ s{<[^>]*>}{}xmsg;
+    if ($s =~ m{\A \s* duplicate}xmsi) {
+        $inq->delete();
+        $c->response->redirect($c->uri_for("/inquiry/list"));
+    }
+    else {
+        $inq->update({
+            notes => $c->request->params->{notes},
+        });
+        $c->response->redirect($c->uri_for("/inquiry/view/$inq_id"));
+    }
 }
 
 sub change_status : Local {
