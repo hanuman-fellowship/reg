@@ -131,7 +131,7 @@ if ($office) {
     email_letter($c,
         to      => $office,
         from    => 'programs@mountmadonna.org',
-        subject => 'Meal Request for ' . $person->name",
+        subject => 'Meal Request for ' . $person->name,
         html    => $mr_desc,
     );
 }
