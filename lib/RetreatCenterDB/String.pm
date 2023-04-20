@@ -360,7 +360,7 @@ prepay_mmi_link - the URL for prepayment requests for MMI
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
 program_director - the name of the Program Director - for the contract
-program_inquiry_email - the person to notify when a program inquiry comes in
+program_inquiry_email - the people to notify when a program inquiry comes in
 quad - for housing type descriptions
 reception_email - who should be notified when an MMC mailing list request comes in?
 redirect_email - If empty, ALL outgoing email will be sent to these comma separated address(es).
@@ -368,7 +368,7 @@ reg_end - the default time of day for program registration to end
 reg_start - the default time of day for program registration to begin
 registrar_email - the email address of the registrar
 rental_arranged_color - the color of an arranged rental
-rental_coord_email - the person to notify when a rental deposit is received online
+rental_coord_email - the people to notify when a rental deposit is received online
 rental_late_in - the penalty for a late indoor rental
 rental_late_out - the penalty for a late outdoor rental
 rental_cancel_host_color - the color in the calendar of a Canceled by Host rental

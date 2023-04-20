@@ -218,7 +218,7 @@ sub initialize {
     my $dir = "/var/Reg";
     $online          = make_dir("$dir/online");
     #$temple          = make_dir("$dir/temple_done/$year_mon_dir");
-    $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
+    #$mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
     #$meal_requests_done = make_dir("$dir/meal_requests_done/$year_mon_dir");
     #$gift_cards_done = make_dir("$dir/gift_cards_done/$year_mon_dir");
     $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
@@ -366,8 +366,6 @@ sub temple_donation {
     # email temple people interested in what donations have come in???
 }
 
-=cut
-
 #
 #
 # send the admins (mmc and mmi) a letter telling them
@@ -416,8 +414,6 @@ EOH
     }
 }
 
-=comment
-
 sub nights_for {
     my ($month) = @_;
     return $month <= 3? 4
@@ -426,10 +422,6 @@ sub nights_for {
           :             1
           ;
 }
-
-=cut
-
-=comment
 
 #
 # what if someone become a member mid-year? or in December?
@@ -561,8 +553,6 @@ sub process_new_hfs {
       ;
 }
 
-=cut
-
 sub process_mlist {
     my ($get_dir, $f) = @_;
 
@@ -646,8 +636,6 @@ sub process_mlist {
     };
 }
 
-=comment 
-
 sub get_omp {
     my ($get_dir, $f) = @_;
 
@@ -657,10 +645,6 @@ sub get_omp {
     msg "membership payment of \$$amount for $name";
     ++$nomp;
 }
-
-=cut
-
-=comment
 
 # ??JON - can remove when cgi-bin scripts
 # are styled effectively
@@ -736,10 +720,6 @@ sub get_rental_invoice {
                       . " for <a href='$rlink'>" . $rental->name . "</a>",
     );
 }
-
-=cut
-
-=comment
 
 sub omp_alert {
     if ($nomp) {
@@ -903,10 +883,6 @@ sub process_meal_requests {
       . $mr_desc
       ;
 }
-
-=cut
-
-=comment
 
 sub process_gift_cards {
     my ($get_dir, $f) = @_;
@@ -1213,8 +1189,8 @@ sub main {
               $online, \&check_transaction, 'MMC');
 
     # MList Requests
-    get_files($ftp, $string{ftp_mlist_requests},
-              $mlist_done, \&process_mlist);
+    #get_files($ftp, $string{ftp_mlist_requests},
+    #          $mlist_done, \&process_mlist);
 
     # Membership Payments
     #get_files($ftp, $string{ftp_omp_dir},
@@ -1270,7 +1246,7 @@ sub main {
 
 =cut
 
-    mlist_alerts();
+#    mlist_alerts();
 #    omp_alert();
     kayakalpa();
     finalities();
