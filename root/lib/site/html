@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
+<meta charset='UTF-8'>
 <title>[% pg_title || 'newReg' %]</title>
 <style type="text/css">
 [% PROCESS ttsite.css %]
