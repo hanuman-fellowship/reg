@@ -32,7 +32,6 @@ use Util qw/
     refresh_table
     ensure_mmyy
     cf_expand
-    PR_progtable
     months_calc
     new_event_alert
     time_travel_class
@@ -50,14 +49,12 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
-use Net::FTP;
 use Global qw/
     %string
     @clusters
     $lunch_always_date
 /;
 use File::Copy;
-use JSON;
 use Data::Dumper;
 
 my $export_dir = '/var/Reg/export';
@@ -769,7 +766,6 @@ sub view : Local {
                                            $role->users);
     }
     stash($c,
-        cgi                 => $string{cgi},
         glnum_popup         => $glnum_popup,
         @acct_adm_name,
         UNreserved_clusters => $UNres,
@@ -1360,99 +1356,6 @@ sub access_denied : Private {
     );
 }
 
-#
-# generate the progtable for online registration
-#
-sub gen_progtable {
-    my ($programs_ref) = @_;
-    my %progs;
-    for my $p (@$programs_ref) {
-        my $ndays = $p->edate_obj - $p->sdate_obj;
-        my $month_day = $p->sdate_obj->format("%m%d");
-        my $housecost = $p->housecost();
-        my $PR = $p->PR();
-        my @fees;
-        HTYPE:
-        for my $t (reverse housing_types(1)) {
-            next HTYPE if $t eq 'commuting'   && !$p->commuting;
-            next HTYPE if $t eq 'economy'     && !$p->economy;
-            next HTYPE if $t eq 'single_bath' && !$p->sbath;
-            next HTYPE if $t eq 'single'      && !$p->single;
-            next HTYPE if $t eq 'single_cabin' && !$p->single;
-            next HTYPE if $t eq 'center_tent'
-                && !($PR
-                     || $p->name =~ m{tnt}i
-                     || ($string{center_tent_start} <= $month_day
-                         && $month_day <= $string{center_tent_end}));
-            next HTYPE if $PR && $t =~ m{triple|dormitory};
-            my $fees = $PR? $housecost->$t()
-                      :     $p->fees(0, $t);
-            next HTYPE if $fees == 0;   # this is another way
-                                        # to eliminate a housing option 
-            push @fees, "basic $t", $fees;
-            if ($p->extradays()) {
-                push @fees, "full $t", $p->fees(1, $t);
-            }
-        }
-        $progs{$p->id} = {
-            name     => $p->name,
-            ndays    => $ndays,
-            fulldays => $ndays + $p->extradays,
-            canpol   => $p->canpol->policy,
-            type     => $housecost->type(),
-            @fees,
-            tuition_name => ($p->tuition_name || 'tuition'),
-            map { $_ => $p->$_ } qw(
-                title
-                dates
-                sdate
-                edate
-                extradays
-                full_tuition
-                leader_names
-                footnotes
-                deposit
-                collect_total
-                reg_by_day
-                donation
-                donation_msg
-                donation_tiers
-                donation_minimum
-                donation_zero_msg
-                discount_code
-                discount_pct
-                reg_msg
-                req_pay
-                do_not_compute_costs
-                dncc_why
-                percent_tuition
-                tuition
-                tuition_rolled
-                reg_start
-                reg_end
-                prog_start
-                prog_end
-                waiver_needed
-                covid_vax
-                manual_reg_finance
-                housing_not_needed
-                kayakalpa
-                children_welcome
-                strangers_share
-                max
-                end_reg_date_time
-                confnote
-            ),
-        };
-    }
-    open my $progt, '>', "$export_dir/progtable"
-        or die "cannot create progtable: $!\n";
-    $Data::Dumper::Indent = 1;
-    $Data::Dumper::Sortkeys = 1;
-    print {$progt} Dumper(\%progs);
-    close $progt;
-}
-
 sub update_lunch : Local {
     my ($self, $c, $id) = @_;
 
@@ -1975,257 +1878,6 @@ sub cancel : Local {
         });
     }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
-}
-
-#
-# for the new web site where the generation of the program pages
-# happens in another way.
-#
-sub _do_export {
-    my ($c) = @_;
-
-    # clear the arena
-    system("/bin/rm -rf $export_dir/*");
-    mkdir "$export_dir/pics";       # for rental images
-    mkdir "$export_dir/pr";
-
-    # and make sure we have initialized %string.
-    Global->init($c);
-
-    #
-    # get all the future programs destined for the web into an array
-    # sorted by start date and then end date.
-    #
-    my @programs = RetreatCenterDB::Program->future_programs($c);
-
-    # ensure that all of these programs have at least one affiliation set
-    #
-    for my $pr (@programs) {
-        my @affils = $pr->affils();
-        unless (@affils) {
-            error($c,
-                "Program " . $pr->name . " has no affiliations!",
-                "program/error.tt2",
-            );
-            return 0;
-        }
-    }
-    gen_progtable(\@programs);      # writes to $export_dir/progtable
-    my $fmt = '%Y-%m-%d';
-    my @export_programs;
-    for my $p (@programs) {
-        my $mmi = $p->school->mmi();
-        my $pic_dir = $mmi? "mmi_pics": "pics";
-        my $doc_dir = $mmi? "mmi_docs": "docs";
-        my @leaders;
-        for my $l ($p->leaders()) {
-            push @leaders, {
-                map({ $_ => $l->$_ } qw/
-                    id
-                    public_email
-                    url
-                    biography
-                    l_order
-                /),
-                first => $l->person->first,
-                last => $l->person->last,
-            },
-        }
-        my $href = {
-            map({ $_ => $p->$_ } qw/
-                id
-
-                extradays
-                dates
-
-                title1
-                title2
-
-                url
-                footnotes
-                deposit
-                collect_total
-                reg_by_day
-                donation
-                donation_msg
-                donation_minimum
-                donation_tiers
-                donation_zero_msg
-                discount_code
-                discount_pct
-                reg_msg
-                cancellation_policy
-                reg_start
-                reg_end
-                prog_start
-                prog_end
-                
-                linked
-
-                do_not_compute_costs
-
-                confnote
-            /),
-            sdate => $p->sdate_obj->format($fmt),
-            edate => $p->edate_obj->format($fmt),
-            mmi   => $mmi,
-            leaders => \@leaders,
-            $p->fee_table_hash(),
-        };
-        push @export_programs, $href;
-    }
-    _json_put(\@export_programs, 'programs.json');
-    my $footnote_href = {
-        'footnotes_*'   => $string{'*'},
-        'footnotes_**'  => $string{'**'},
-        'footnotes_+'   => $string{'+'},
-        'footnotes_%'   => $string{'%'},
-    };
-    _json_put($footnote_href, 'footnotes.json');
-
-    my @rentals  = grep {
-                       $_->linked && ! $_->cancelled
-                   }
-                   RetreatCenterDB::Rental->future_rentals($c);
-    my @export_rentals;
-    for my $r (@rentals) {
-        push @export_rentals, {
-            map({ $_ => $r->$_ } qw/
-                id
-                title
-                subtitle
-                webdesc
-                phone
-                url
-                email
-                image
-            /),
-            sdate => $r->sdate_obj->format($fmt),
-            edate => $r->edate_obj->format($fmt),
-        };
-        if ($r->image()) {
-            copy $r->image_path(), "$export_dir/pics"
-              or die "no copy of " . $r->image_path() . ": $!\n";
-        }
-    }
-    _json_put(\@export_rentals, 'rentals.json');
-
-    # noPR events
-    my (@events) = model($c, 'Event')->search(
-        {
-            name  => { 'like' => 'No PR%' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    my @no_prs;
-    for my $ev (@events) {
-        push @no_prs, {
-            start => $ev->sdate(),
-            end   => $ev->edate(),
-            indoors => (($ev->name =~ m{indoors}xmsi)? "yes": ""),
-        };
-    }
-
-    # now for personal retreats
-    # we generate pr/pr.json and pr/progtable
-    my $pr_ref = {
-        disc_pr       => $string{disc_pr},
-        disc_pr_start => date($string{disc_pr_start})->format($fmt),
-        disc_pr_end   => date($string{disc_pr_end})->format($fmt),
-        pr_template   => $string{personal_template},
-                   # personal_getaway / personal
-        fee_table_headings => [
-            'Housing Type',
-            'Cost',
-        ],
-
-    };
-    my ($currHC, $nextHC, $change_date)
-        = PR_progtable($c, "$export_dir/pr/progtable");
-    TYPE:
-    for my $type (reverse housing_types(1)) {
-        next TYPE if $type =~ m{^economy|dormitory|triple$};
-        push @{$pr_ref->{curr_fee_table_rows}}, [
-            $string{"long_$type"}, 
-            $currHC->$type,
-        ];
-    }
-    if ($nextHC) {
-        # this IS optional - there may be no change in sight
-        $pr_ref->{on_and_before} = date($change_date)->prev->format($fmt);
-        $pr_ref->{on_and_after}  = date($change_date)->format($fmt);
-        TYPE:
-        for my $type (reverse housing_types(1)) {
-            next TYPE if $type =~ m{^economy|dormitory|triple$};
-            push @{$pr_ref->{next_fee_table_rows}}, [
-                $string{"long_$type"},
-                $nextHC->$type,
-            ];
-        }
-    }
-    _json_put($pr_ref, 'pr/pr.json');
-    copy 'root/static/README', $export_dir;
-
-    # tar it up
-    system("cd $export_dir; /bin/tar czf /tmp/exported_reg_data.tgz .");
-
-    # send it off
-    _send_export($c, 'mmc');
-    #_send_export($c, 'mmi');        # not needed any more???  nope.
-
-    add_activity($c, "Programs and Rentals exported");
-    return 1;
-}
-
-sub export : Local {
-    my ($self, $c) = @_;
-    if (!_do_export($c)) {
-        return;
-    }
-    stash($c,
-        ftp_export_site => $string{ftp_export_site},
-        template    => "program/exported.tt2",
-    );
-}
-
-sub _send_export {
-    my ($c, $where) = @_;
-    return if -f '/tmp/Reg_Dev';
-    my $place = $where eq 'mmi'? 'mmi_': '';
-    # MMC
-    my $site     = $string{"ftp_${place}site"};
-    my $login    = $string{"ftp_${place}login"};
-    my $password = $string{"ftp_${place}password"};
-    my $passive  = $string{"ftp_${place}passive"};
-    my $command  = $string{"curl_${place}command"};
-    my $ftp = Net::FTP->new(
-        $site,
-        Debug => 0,
-        Passive => $passive,
-    ) or die "Cannot connect: $@";
-    $ftp->login($login, $password)
-        or die "Cannot login ", $ftp->message;
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->binary();
-    $ftp->put('/tmp/exported_reg_data.tgz', 'exported_reg_data.tgz')
-    	or die 'could not put exported_reg_data.tgz';
-    $ftp->quit();
-    system("/usr/bin/curl --user $login:$password $command &");
-}
-
-my $json = JSON->new->utf8->pretty->canonical;
-sub _json_put {
-    my ($ref, $fname) = @_;
-    open my $out, '>', "$export_dir/$fname"
-        or die "no $export_dir/$fname!!\n";
-    print {$out} $json->encode($ref);
-    close $out;
 }
 
 sub del_file : Local {

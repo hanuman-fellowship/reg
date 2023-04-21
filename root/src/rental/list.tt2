@@ -10,8 +10,6 @@
 <a href="/rental/create"
        onclick="return confirm('If this new Rental has been at MMC before it would be better to use Duplicate.');"
 >Add</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/program/export">Export</a>
 [% END %]
 <span style="margin-left: 1.5in"><input text name=rent_pat size=10 value=$rent_pat> <input type=submit value="Search"></span></form>
 <ul>

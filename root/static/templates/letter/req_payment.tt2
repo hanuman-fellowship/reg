@@ -11,7 +11,7 @@ Greetings $name,
 You are requested to pay \$$total for the program '$program'.<br>
 <p>
 You can do this by clicking
-<a href='$cgi/req_pay?code=$req_code'>HERE</a>.
+<a href='https://akash.mountmadonna.org/cgi-bin/req_pay?code=$req_code'>HERE</a>.
 <p>
 Description of charges:
 <ul>

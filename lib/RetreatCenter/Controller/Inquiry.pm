@@ -88,7 +88,6 @@ sub list : Local {
     stash($c,
         st        => { $order => "style='color: green'" },
         order     => $order,
-        cgi       => $string{cgi},
         inquiries => \@inq,
         template  => "inquiry/list.tt2",
     );

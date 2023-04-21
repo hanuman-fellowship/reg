@@ -63,10 +63,10 @@ In the next 6 months there $verb $nprograms program${prog_pl} and $nrentals rent
 Click <a href="http://kali:3000/listing/gate_codes?gc_from=$today&gc_to=$six&missing_only=on">here</a>.
 EOH
 email_letter($c,
-    from => 'Reminder <reservations@mountmadonna.org>',
+    from => 'Reminder <programs@mountmadonna.org>',
     to => $string{gate_code_email},
     @opt,
-    bcc     => 'jonb@logicalpoetry.com',
+    bcc     => 'jon.bjornstad@gmail.com',
     subject => 'Gate Codes',
     html => $html,
 );

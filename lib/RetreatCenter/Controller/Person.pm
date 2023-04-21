@@ -46,10 +46,8 @@ use Global qw/
     %system_affil_id_for
 /;
 use USState;
-use LWP::Simple;
 use Template;
 use Data::Dumper;
-use Net::FTP;
 use File::Copy qw/
     copy
 /;
@@ -294,37 +292,6 @@ sub delete : Local {
     $c->response->redirect($c->uri_for('/person/search'));
 }
 
-sub _what_gender {
-    my ($name, $id) = @_;
-
-    my $html = get("http://www.gpeters.com/names/baby-names.php?"
-                  ."name=" . $name);
-    my ($likelihood, $gender) =
-        $html =~ m{popular usage, it is <b>([\d.]+).*?to be a (\w+)'s};
-    my %name = qw(
-        girl Female
-        boy  Male
-    );
-    if ($gender) {
-        my $sex = $name{$gender};
-        if ($id) {
-            return "$likelihood => <a href='/person/set_gender/$id/"
-                 . substr($sex, 0, 1)
-                 . "'>$sex";
-        }
-        else {
-            return "$likelihood => $sex";
-        }
-    }
-    if (($gender) = $html =~ m{It's a (.*?)!}) {
-        my $sex = $name{$gender};
-        return "<a href='/person/set_gender/$id/"
-                 . substr($sex, 0, 1)
-                 . "'>$sex";
-    }
-    return "Only God knows.";
-}
-
 sub view : Local {
     my ($self, $c, $id) = @_;
 
@@ -429,16 +396,6 @@ sub _get_data {
     if (empty($hash{first})) {
         push @mess, "First name cannot be blank.";
     }
-    # for data from the temple we don't know the gender
-    # it's only needed when doing a register.
-    #
-    #if ($hash{sex} ne 'F' && $hash{sex} ne 'M') {
-    #    push @mess, "You must specify Male or Female: $hash{first}"
-    #              # not really needed - hangs if no connection
-    #              # " - "
-    #              # . _what_gender($hash{first})
-    #              ;
-    #}
     if ($hash{addr1} && usa($hash{country}) && ! valid_state($hash{st_prov})) {
         push @mess, "Invalid state: $hash{st_prov}";
     }
@@ -1337,8 +1294,6 @@ sub send_requests : Local {
 # a file /tmp/$code with a Data::Dumper formatted structure
 # that includes the person's name, address, ... and the requested
 # total amount.
-# this file is ftp'ed to the global web (mmc or mmi) in
-# a well known place.
 # an email is sent (optionally) to the person giving them
 # a link to a CGI script along with the $code.  With this they
 # can pay the given total amount.
@@ -1422,7 +1377,6 @@ EOH
 EOH
     #
     # create the file with Data::Dumper
-    # and ftp it to the appropriate MMI/MMC site.
     #
     open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
     my $user = $c->user->obj;
@@ -1451,42 +1405,6 @@ EOH
     });
     close $out;
     copy("/tmp/$code", '/var/Reg/req_mmc_sent');
-
-    # and send it - we assume it will be sent properly
-    # ??? clean this up when we go live with Stripe, etc
-    if (! -f '/tmp/Reg_Dev') {
-    eval {
-        my $o = $org eq 'MMI'? 'mmi_': '';
-            # ftp_site was first, then ftp_mmi_site
-        my $ftp = Net::FTP->new($string{"ftp_${o}site"},
-                                Passive => $string{"ftp_${o}passive"})
-            or die qq!cannot connect to $string{"ftp_${o}site"}!;
-        $ftp->login($string{"ftp_${o}login"}, $string{"ftp_${o}password"})
-            or die "cannot login ", $ftp->message;
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        no warnings 'redefine';
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        my $dir = $string{$org eq 'MMI'? 'req_mmi_dir': 'req_mmc_dir'};
-        $ftp->cwd($dir) or die "cannot chdir to $dir";
-        $ftp->ascii();
-        $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
-        if ($resend_all) {
-            # delete any old code files
-            for my $old_code (@old_codes) {
-                $ftp->delete($old_code);
-            }
-        }
-        $ftp->quit();
-    };
-    if ($@ && ! -e '/tmp/testing_req_payments') {
-        # what to do???  it did not succeed.
-        # how to notify the user?
-        $c->log->info("failed to send payment: $@\n");
-        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
-        return;
-    }
-    }   # ! -f '/tmp/Reg_Dev'
 
     # mark the payment requests as sent - with the new code
     PAYMENT:
@@ -1522,7 +1440,6 @@ EOH
         program     => $program_name,
         resending   => $resend_all,
         signed      => $signed,
-        cgi         => $string{cgi},
     };
     my $html;
     $tt->process(
@@ -1568,23 +1485,6 @@ sub delete_req : Local {
             $req->delete();
         }
         $tot = commify($tot);
-        #
-        # delete the code file on the mmi web site.
-        # or maybe the MMC site???
-        # req_mmi_dir vs req_mmc_dir
-        my $ftp = Net::FTP->new($string{ftp_mmi_site},
-                                Passive => $string{ftp_mmi_passive})
-            or die "cannot connect to $string{ftp_mmi_site}";    # not die???
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        no warnings 'redefine';
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
-            or die "cannot login ", $ftp->message; # not die???
-        $ftp->cwd($string{req_mmi_dir})
-            or die "cannot chdir to $string{req_mmi_dir}";
-        $ftp->delete($code);
-        $ftp->quit();
         # 
         # send email notifying the person to ignore the request
         #
@@ -1947,7 +1847,7 @@ $first,
 To stay at Mount Madonna Center it is
 required that you be fully vaccinated against Covid-19.
 <p>
-Please click on <a href='$string{cgi}/covid_vax?person_id=$per_id&name=$name'>this link</a> and upload the image of your Covid-19 Vaccination Card.
+Please click on <a href='https://akash.mountmadonna.org/cgi-bin/covid_vax?person_id=$per_id&name=$name'>this link</a> and upload the image of your Covid-19 Vaccination Card.
 <p>
 Thank you
 EOH

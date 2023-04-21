@@ -7,10 +7,6 @@
        onclick="return confirm('If this new Program has been at MMC before it would be better to use Duplicate.');"
     >Add</a>
 [% END %]
-[% IF admin %]
-    &nbsp;&nbsp;&nbsp;
-    <a href="/program/export">Export<a>
-[% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/program/list/monthly">Monthly<a>
 &nbsp;&nbsp;&nbsp;

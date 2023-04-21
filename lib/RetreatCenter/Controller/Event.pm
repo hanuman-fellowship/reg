@@ -168,24 +168,7 @@ sub create_do : Local {
         $P{name}, 
         $c->uri_for("/event/view/$id"),
     );
-    check_no_PR_ME_Meals($c, $e);
     $c->response->redirect($c->uri_for("/event/view/$id"));
-}
-
-sub check_no_PR_ME_Meals {
-    my ($c, $e) = @_;
-    if ($e->name() =~ $no_PR_regex) {
-        _send_no_PRs($c);
-    }
-    if ($e->name() =~ $no_ME_regex) {
-        _send_no_MEs($c);
-    }
-    if ($e->name() =~ $no_Meals_regex) {
-        _send_no_Meals($c);
-    }
-    if ($e->name() =~ $yes_ME_regex) {
-        _send_yes_MEs($c);
-    }
 }
 
 sub view : Local {
@@ -338,7 +321,6 @@ sub update_do : Local {
         # ???
     }
     $e->update(\%P);
-    check_no_PR_ME_Meals($c, $e);
     if ($names) {
         stash($c,
             event    => $e,
@@ -390,7 +372,6 @@ sub delete : Local {
     my $name = $e->name();
     $e->delete();
     # $e the object still exists - the table row does not
-    check_no_PR_ME_Meals($c, $e);
     $c->response->redirect($c->uri_for('/event/list'));
 }
 
@@ -1810,136 +1791,6 @@ sub which_mp_do : Local {
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events
-}
-
-sub _send_no_PRs {
-    my ($c) = @_;
-    my (@events) = model($c, 'Event')->search(
-        {
-            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>:]]' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    open my $out, ">", "/tmp/noPR.txt"
-        or die "cannot write /tmp/noPR.txt: $!\n";
-    for my $ev (@events) {
-        print {$out} $ev->sdate() . "-" . $ev->edate()
-             . (($ev->name =~ m{\bindoors?\b}xmsi)? " indoors": "")
-             . "\n";
-    }
-    close $out;
-    _put_pr_dir($c, '/tmp/noPR.txt');
-    add_activity($c, "No PRs sent to web");
-}
-
-sub _put_pr_dir {
-    my ($c, $tmp_fname) = @_;
-
-    return if -f '/tmp/Reg_Dev';
-    my $fname = $tmp_fname;
-    $fname =~ s{/tmp/}{}xms;
-
-    #
-    # send the file to mountmadonna.org in the pr directory
-    #
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return(my_die($c, "cannot connect to $string{ftp_site}"));
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return(my_die($c, "cannot login " . $ftp->message));
-    $ftp->cwd($string{ftp_pr_dir})
-        or return(my_die($c, "cannot cwd to $string{ftp_pr_dir} " . $ftp->message));
-    $ftp->ascii();
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->put($tmp_fname, $fname)
-        or return (my_die($c, "cannot put $fname " . $ftp->message));
-    $ftp->quit();
-    unlink $tmp_fname unless -f '/tmp/Reg_Dev';
-}
-
-sub _send_no_MEs {
-    my ($c) = @_;
-    my (@events) = model($c, 'Event')->search(
-        {
-            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]MEs?[[:>:]]' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    open my $out, ">", "/tmp/noME.txt"
-        or die "cannot write /tmp/noME.txt: $!\n";
-    for my $ev (@events) {
-        print {$out} $ev->sdate() . "-" . $ev->edate()
-             . "\n";
-    }
-    close $out;
-    _put_pr_dir($c, '/tmp/noME.txt');
-    add_activity($c, "No MEs sent to web");
-}
-
-sub _send_yes_MEs {
-    my ($c) = @_;
-    my (@events) = model($c, 'Event')->search(
-        {
-            name  => { 'regexp' => '[[:<:]]Yes[[:>:]].*[[:<:]]MEs?[[:>:]]' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    open my $out, ">", "/tmp/yesME.txt"
-        or die "cannot write /tmp/yesME.txt: $!\n";
-    for my $ev (@events) {
-        print {$out} $ev->sdate() . "-" . $ev->edate()
-             . "\n";
-    }
-    close $out;
-    _put_pr_dir($c, '/tmp/yesME.txt');
-    add_activity($c, "Yes MEs sent to web");
-}
-
-sub _send_no_Meals {
-    my ($c) = @_;
-    my (@no_meal_events) = model($c, 'Event')->search(
-        {
-            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Meals?[[:>:]]' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    my (@no_lunch_events) = model($c, 'Event')->search(
-        {
-            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Lunch[[:>:]]' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    my $nm = "noMeals.txt";
-    open my $out, ">", "/tmp/$nm"
-        or die "cannot write /tmp/$nm: $!\n";
-    for my $ev (@no_meal_events) {
-        print {$out} $ev->sdate() . "-" . $ev->edate()
-                   . "\n";
-    }
-    for my $ev (@no_lunch_events) {
-        print {$out} $ev->sdate() . "-" . $ev->edate() . ' Lunch'
-                   . "\n";
-    }
-    close $out;
-    _put_pr_dir($c, '/tmp/noMeals.txt');
-    add_activity($c, "No Meals sent to web");
 }
 
 #

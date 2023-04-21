@@ -3,10 +3,6 @@ DBI_DSN="dbi:mysql:reg2"
 PERL5LIB=/var/www/cpan-lib/lib/perl5
 PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
-# at 1:00 am on December 1 push all membership data
-# to prepare for sending the lapsed reminders.
-0 1 1 12 * $REG/push_mem
-
 # at 1:00 am on December 10 send a reminder to people whose membership
 # will lapse soon.
 0 1 10 12 * $REG/lapse_soon_mem
@@ -31,9 +27,6 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 
 # at 4:00 am each day send a sutra from Babaji
 0 4 * * * $REG/sutra_send
-
-# Get online registrations and rental grid files (etc) every 15 minutes
-0,15,30,45 * * * * $REG/grab
 
 # Grid monitor - if needed
 # 0,15,30,45 * * * * $REG/grid_monitor
@@ -64,7 +57,7 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 30 2 1 * * $REG/add_PR_SG
 
 # at 1:00 am every Tuesday morning send an email about gate codes.
-0 1 * * 2 $REG/gate
+#0 1 * * 2 $REG/gate
 
 # at 1:05 am every morning send guest packets to people arriving in 48 hours.
 #5 1 * * * $REG/packet48
@@ -74,7 +67,8 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 
 # at noon every day see if any events ended the day before
 # and send a request to comment on Facebook and Yelp
-0 12 * * * $REG/faceyelp
+# disabled - check it out first!
+#0 12 * * * $REG/faceyelp
 
 # at 12:05 am on Jan 1st ensure that each member's status
 # and affiliations are correct.

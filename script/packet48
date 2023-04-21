@@ -54,7 +54,7 @@ for my $reg (@regs) {
         my @req_payments = $reg->req_payments();
         if (@req_payments) {
             my $code = $req_payments[0]->code();
-            $prepay_link = "https://www.mountmadonna.org/cgi-bin/"
+            $prepay_link = "https://akash.mountmadonna.org/cgi-bin/"
                          . "req_pay?code=$code"
                          ;
         }

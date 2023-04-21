@@ -18,14 +18,11 @@ use Util qw/
     set_cache_timestamp
     get_string
     put_string
-    put_pr_dir
 /;
 use Date::Simple qw/
     date
 /;
 use HLog;
-use Net::FTP;
-use JSON;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -103,65 +100,6 @@ sub update_do : Local {
     }
     elsif ($the_key eq 'housing_log') {
         hlog_toggle($c, $value);
-    }
-    elsif ($the_key =~ m{^center_tent_}) {
-        put_pr_dir("$string{center_tent_start}-$string{center_tent_end}",
-                    'CT.txt');
-    }
-    elsif ($the_key eq 'pr_max_nights') {
-        put_pr_dir($string{pr_max_nights}, 'max_nights.txt');
-    }
-    elsif ($the_key eq 'mountain_experience_cost') {
-        put_pr_dir($string{mountain_experience_cost}, 'ME_cost.txt');
-    }
-    elsif ($the_key eq 'pr_max') {
-        put_pr_dir($string{pr_max}, 'pr_max.txt');
-    }
-    elsif ($the_key eq 'me_max') {
-        put_pr_dir($string{me_max}, 'me_max.txt');
-    }
-    elsif ($the_key eq 'me_dow') {
-        put_pr_dir($string{me_dow}, 'me_dow.txt');
-    }
-    elsif ($the_key eq 'online_notify') {
-        # need to send this string up to mountmadonna.org
-        BLOCK: {
-        open my $out, '>', '/tmp/online_notify.txt'
-            or last BLOCK;
-        print {$out} "$value\n";
-        close $out;
-        # MMC
-        my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive})
-            or last BLOCK;
-        $ftp->login($string{ftp_login}, $string{ftp_password})
-            or last BLOCK;
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        no warnings 'redefine';
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->cwd($string{ftp_notify_dir})
-            or last BLOCK;
-        $ftp->ascii()
-            or last BLOCK;
-        $ftp->put("/tmp/online_notify.txt", "online_notify.txt")
-            or last BLOCK;
-        $ftp->quit();
-        # MMI
-        $ftp = Net::FTP->new($string{ftp_mmi_site},
-                             Passive => $string{ftp_mmi_passive})
-            or last BLOCK;
-        $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
-            or last BLOCK;
-        $ftp->cwd($string{ftp_notify_dir})
-            or last BLOCK;
-        $ftp->ascii()
-            or last BLOCK;
-        $ftp->put("/tmp/online_notify.txt", "online_notify.txt")
-            or last BLOCK;
-        $ftp->quit();
-        unlink "/tmp/online_notify.txt";
-        }
     }
     #
     # and where to go next?
@@ -301,45 +239,6 @@ sub meal_requests_update_do : Local {
     }
     if ($changed) {
         set_cache_timestamp($c);
-        # need to send all of these meal_request items
-        # up to mountmadonna.org
-        my %hash;
-        for my $x (qw/ breakfast lunch dinner /) {
-            my $k = "$x\_daily_max";
-            $hash{$k} = $string{$k};
-            for my $y (qw/ cost cost_5_12 /) {
-                for my $z ('', qw/ _family _guest /) {
-                    my $k = "$x\_$y$z";
-                    $hash{$k} = $string{$k};
-                }
-            }
-        }
-        $hash{meal_req_notify} = $string{meal_req_notify};
-        BLOCK: {
-        my $mrs = "meal_request_strings.txt";
-        open my $out, '>', "/tmp/$mrs"
-            or last BLOCK;
-        print {$out} encode_json(\%hash);
-        close $out;
-        # MMC
-        my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive})
-            or last BLOCK;
-        $ftp->login($string{ftp_login}, $string{ftp_password})
-            or last BLOCK;
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        no warnings 'redefine';
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->cwd('meal_request')   # not in %string
-            or last BLOCK;
-        $ftp->ascii()
-            or last BLOCK;
-        $ftp->put("/tmp/$mrs", $mrs)
-            or last BLOCK;
-        $ftp->quit();
-        unlink "/tmp/$mrs";
-        }
     }
     $c->forward("/string/meal_requests");
 }

@@ -1,3 +1,28 @@
+Report - DDUP - check out
+         never used but ...
+         no ftp, right?
+Event - public calendar - make sure it still works
+Strings for ftp purposes - purge them - except for calendar
+script faceyelp - still work?
+    vm@ Vishwamitra
+    disabled until verified
+sutra_send - from notifications@ not programs@
+covid card - send by email to registrar@
+if school is mmi (obsolete) then
+    conf letter is FROM MMIreservations@
+reservations machine is sent a list at 2:00 am every day
+    by script 'reserve_today'.   still needed?
+    ask Shantam and temple monitors
+only_temple - script in cron - needed?
+grid_backup - save the images - needed?
+packet48 - not happening - out of cron
+    resume? when? ask Lara.
+gate - gate codes - to whom every Tuesday? jamal@
+    is he still in charge of gate codes?
+    who is?
+    no gate in scripts - gate_code instead?
+    disabled in cron for now
+--------
 *gift_card1.ts
 *grid.ts
 *meal_request.ts

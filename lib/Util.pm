@@ -76,7 +76,6 @@ our @EXPORT_OK = qw/
     charges_and_payments_options
     @charge_type
     cf_expand
-    PR_progtable
     months_calc
     new_event_alert
     JON
@@ -94,7 +93,6 @@ our @EXPORT_OK = qw/
     check_alt_packet
     check_file_upload
     add_br
-    put_pr_dir
     add_membership_payment
     member_notify
     fee_types
@@ -2289,116 +2287,6 @@ sub cf_expand {
     $s;
 }
 
-#
-# generate a progtable for personal retreats
-# write it to the given file.
-# include the cancellation policy for Mountain Experience
-#
-# return currHC and nextHC and change_date
-#
-sub PR_progtable {
-    my ($c, $fname) = @_;
-
-    my $today = tt_today($c);
-    my $fom = $today - $today->day() + 1;     # first of month
-    my $fom_d8 = $fom->as_d8();
-    #
-    # find personal retreat programs now and in the future.
-    # get the housing cost for today and for the first PR
-    # in the future with a different housing cost.
-    #
-    # the only time this would not be correct is if
-    # there are two price changes within a period of time
-    # that someone would schedule a PR in advance.
-    # e.g. today's cost is $40.  In four months it changes to $45.
-    # in tens months it increases to $50.  today someone
-    # comes along and schedules a PR for a year hence.
-    # they would think the cost would be $45 whereas it is actually $50.
-    # this might make them unhappy.
-    #
-    # the past schedule of increases is every 2 years.
-    # If no one would schedule a PR more than 2 years in
-    # advance this mechanism will be fine and no one will
-    # be unhappy.  We should be okay.
-    #
-    my @PRs = model($c, 'Program')->search(
-                  {
-                      name  => { like => '%personal%retreat%' },
-                      sdate => { '>=' => $fom_d8 },
-                  },
-                  {
-                      order_by => 'sdate'
-                  },
-              );
-    if (! @PRs) {
-        die "No Personal Retreats are scheduled!";
-    }
-    my $currPR = shift @PRs;
-    my $curr_hc_id = $currPR->housecost->id();
-    my $currHC = $currPR->housecost();
-    my $next_hc = 0;        # boolean
-    my $nextHC;             # HousingCost
-    my $sdate = 0;
-    PR:
-    for my $pr (@PRs) {
-        if ($pr->housecost->id() != $curr_hc_id) {
-            $next_hc = 1;
-            $nextHC = $pr->housecost();
-            $sdate = $pr->sdate();
-            last PR;
-        }
-    }
-    my ($me_canpol) = model($c, 'CanPol')->search({
-                          name => 'Mountain Experience',
-                      });
-    my $href = {
-        title         => 'Personal Retreat',
-        dates         => '',
-        leader_names  => '',
-        name          => 'Personal Retreat',
-        canpol        => $currPR->cancellation_policy(),
-        me_canpol     => $me_canpol->policy(),
-        covid_vax     => $currPR->covid_vax(),
-        plink         => 'http://www.mountmadonna.org/personal',
-        image1        => '',
-        image2        => '',
-        basicfull     => '0',
-        ndays         => '0',
-        fulldays      => '0',
-        disc_pr       => $string{disc_pr},
-        disc_pr_start => $string{disc_pr_start},
-        disc_pr_end   => $string{disc_pr_end},
-        discount_code => $currPR->discount_code,
-        discount_pct  => $currPR->discount_pct,
-        footnotes     => '',
-        collect_total => 'yes',
-        do_not_compute_costs => '0',
-        dncc_why      => '',
-        next_hc       => $next_hc,
-        next_date     => $sdate,
-        type          => 'Per Day',
-        children_welcome => $string{pr_children},
-        kayakalpa     => 'yes',
-    };
-    TYPE:
-    for my $type (reverse housing_types(1)) {
-        next TYPE if $type =~ m{\A economy \z}xms;
-        next TYPE if $currHC->$type == 0;
-        $href->{"basic $type"} = $currHC->$type;
-        # need to rethink the next_hc thing...
-        if ($next_hc) {
-            $href->{"next $type"} = $nextHC->$type;
-        }
-    }
-    open my $out, '>', $fname
-        or die "cannot create $fname: $!\n";
-    $Data::Dumper::Indent = 1;
-    $Data::Dumper::Sortkeys = 1;
-    print {$out} Dumper({ 0 => $href });
-    close $out;
-    return $currHC, $nextHC, $sdate;
-}
-
 # how many months are included from start to end inclusive?
 sub months_calc {
     my ($start, $end) = @_;
@@ -2618,37 +2506,6 @@ sub add_br {
     my ($s) = @_;
     $s =~ s{$}{<br>}xmsg;
     return $s;
-}
-
-#??JON - will be obsolete
-# put the value in the file in the pr_dir on mountmadonna.org
-#
-sub put_pr_dir {
-    my ($value, $fname) = @_;
-    my $fn;
-    if (-f $value) {
-        $fn = $value;
-    }
-    else {
-        $fn = '/tmp/$fname.txt';
-        open my $out, ">", $fn or return;
-        print {$out} "$value\n";
-        close $out;
-    }
-    my $ftp = Net::FTP->new($string{ftp_site},
-                            Passive => $string{ftp_passive}) or return;
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
-    $ftp->cwd($string{ftp_pr_dir}) or return;
-    $ftp->ascii() or return;
-    $ftp->put($fn, $fname) or return;
-    $ftp->quit();
-    if ($fn =~ m{\A /tmp/}xms && ! -f '/tmp/Reg_Dev') {
-        unlink $fn;
-    }
 }
 
 #

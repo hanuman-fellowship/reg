@@ -571,15 +571,6 @@ sub create_from_inquiry : Local {
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
 
-    # send an email alert about this new rental
-    # TODO JON??
-    #new_event_alert(
-    #    $c,
-    #    1, 'Rental',
-    #    $P{name},
-    #    $c->uri_for("/rental/view/$rental_id"),
-    #);
-
     #
     # update the inquiry with the rental_id
     #
@@ -741,7 +732,6 @@ sub view : Local {
 
     stash($c,
         editable       => $is_editable,
-        cgi            => $string{cgi},
         nnights        => $nnights,
         rental         => $rental,
         pg_title       => $rental->name(),
@@ -1894,8 +1884,6 @@ sub contract : Local {
     else {
         $deposit = $rental->deposit;
     }
-    #$rental->send_rental_deposit();
-
 
     my %stash = (
         string => \%string,
@@ -2201,9 +2189,6 @@ sub invoice : Local {
         $c->res->output($html);
         return;
     }
-    # send balance and info to mmc.org
-    #
-    #$rental->send_invoice_balance($balance);
     $rental->update({
         invoice_sent => today()->as_d8(),
     });

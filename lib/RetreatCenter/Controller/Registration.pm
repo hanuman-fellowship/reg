@@ -79,7 +79,6 @@ use List::Util qw/
 /;
 
 my $rst = "/var/Reg";
-my $cgi = "https://www.mountmadonna.org/cgi-bin";
 
 my $TYPE_TUITION           = 1;
 my $TYPE_MEALS_AND_LODGING = 2;
@@ -1252,13 +1251,6 @@ sub create_do : Local {
         $pr->update({
             reg_count => $pr->reg_count + 1,
         });
-    }
-    if (exists $P{fname} && $P{fname} eq '') {
-        # a manual registration
-        # tell mountmadonna.org about it so we can enforce
-        # a maximum cap on registrations.
-        #
-        _prog_reg('add', $reg);
     }
 
     # remove a Website Subscriber affiliation, if any
@@ -2699,19 +2691,6 @@ sub cancel : Local {
     );
 }
 
-#
-# add or remove the record in the
-# prog_registrations table on mountmadonna.org
-#
-sub _prog_reg {
-    my ($action, $reg) = @_;
-    my $prog_id = $reg->program->id();
-    my $name = $reg->person->name();
-    system "/usr/bin/curl -k '$cgi/prog_reg?action=$action"
-         . "&prog_id=$prog_id&name=$name"
-         . "' 2>/dev/null";
-}
-
 sub cancel_do : Local {
     my ($self, $c, $id, $mmi) = @_;
 
@@ -2753,8 +2732,6 @@ sub cancel_do : Local {
         $pr->update({
             reg_count => \'reg_count - 1',
         });
-
-        _prog_reg('del', $reg);
 
         #
         # give credit
@@ -3922,7 +3899,6 @@ sub delete : Local {
     # what is a 'duplicated registration'?
     #
     if (!($reg->cancelled() || (@other_reg && ! $reg->program->PR()))) {
-        _prog_reg('del', $reg);
         model($c, 'Program')->find($prog_id)->update({
             reg_count => \'reg_count - 1',
         });
@@ -6656,8 +6632,6 @@ sub uncancel : Local {
     $pr->update({
         reg_count => \'reg_count + 1',
     });
-
-    _prog_reg('add', $reg);
 
     # add reg history record
     _reg_hist($c, $reg_id, "UNcancelled");

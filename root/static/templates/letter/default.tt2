@@ -172,7 +172,7 @@ stay on our beautiful mountain!
         to upload an image of your vaccination card.
         You can do this in two ways:
         <ol>
-        <li>Follow <a href='https://mountmadonna.org/cgi-bin/covid_vax?person_id=$person.id&name=$person.name'>this link</a> and upload the image.
+        <li>Follow <a href='https://akash.mountmadonna.org/cgi-bin/covid_vax?person_id=$person.id&name=$person.name'>this link</a> and upload the image.
         <li>Send us <a href="mailto:registrar@mountmadonna.org?subject=COVID Vaccination Card for $person.name in $program.title">an email</a>
         and attach the image.
         </ol>

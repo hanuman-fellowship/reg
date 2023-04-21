@@ -11,7 +11,6 @@ use Util qw/
     tt_today
     slurp
     JON
-    put_pr_dir
 /;
 use Date::Simple qw/
     date
@@ -270,7 +269,6 @@ sub date_ranges_do : Local {
     open my $out, '>', $dr_file;
     print {$out} map { "$_\n" } @lines;
     close $out;
-    put_pr_dir($dr_file, "date_ranges.txt");
     $c->response->redirect('/configuration/index');
 }
 

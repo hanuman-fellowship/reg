@@ -824,28 +824,6 @@ sub gate_code {
           :                  $self->summary->gate_code();
 }
 
-#
-# not good to put this HTML and styling in the code
-# need to move the <!-- T xxx --> mechanism into the template toolkit
-# and all styles to a .css file.
-# this is a maintenance of legacy software issue...
-#
-sub reg_link {
-    my ($self) = @_;
-
-    if ($self->cancelled) {
-        return <<'EOS';
-<IMG SRC="/Gif/registration_closed.png" STYLE="padding-top:25px;" ALT="Registration Closed" BORDER="0">
-EOS
-    }
-    else {
-        my $id = $self->id;
-        return <<"EOS";
-<A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=$id"><IMG SRC="/Gif/register_button.png" ALT="Register for this program" BORDER="0"></A>
-EOS
-    }
-}
-
 sub Bank_account {
     my ($self) = @_;
     my $b = $self->bank_account();
