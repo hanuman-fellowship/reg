@@ -27,7 +27,6 @@ for my $f (qw/
     rental_start_hour
     rental_end_hour
     extra_hours_charge
-    url_prefix
     rental_coord_email
 /) {
     $string{$f} = get_string($c, $f);
@@ -64,7 +63,7 @@ my $person = $rental->coordinator || $rental->contract_signer;
 #
 # notify the arrangements people in the office
 #
-my $rlink = "$string{url_prefix}/rental/view/$P{rental_id}/3";
+my $rlink = "https://akash.mountmadonna.org/rental/view/$P{rental_id}/3";
 my $amount = commify($P{amount});
 email_letter($c,
     to      => $string{rental_coord_email},

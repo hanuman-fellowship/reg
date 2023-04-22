@@ -25,3 +25,6 @@ echo
 echo '** Letter'
 cd $rc/root/static/templates
 grep -irl "$PAT" */*.tt2
+echo '** cgi-bin **'
+cd $rc/cgi-bin
+grep -ir "$PAT" *
