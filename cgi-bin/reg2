@@ -908,6 +908,7 @@ for my $f (qw/
     $metadata{$f} = $form{$f};
 }
 $metadata{title} = $stash{title};
+$metadata{slide_tuition} = $stash{slide_tuition};
 
 if ($prog->reg_by_day) {
     # ?? an aref instead
