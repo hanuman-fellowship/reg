@@ -917,7 +917,6 @@ if ($prog->reg_by_day) {
 
 if ($total == 0) {
     # no payment needed
-    $stash{cgi} = get_string($c, 'cgi');
     $stash{metadata} = Dumper(\%metadata);
 }
 else {

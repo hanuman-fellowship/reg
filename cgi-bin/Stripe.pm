@@ -75,7 +75,7 @@ sub stripe_payment {
     # insert the amount value into the metadata
     my $metadata = qq!-d "metadata[amount]"="$P{amount}" \\\n!;
     for my $k (keys %{$P{metadata}}) {
-        $metadata .= qq!-d "metadata[$k]"="$P{metadata}->{$k}" \\\n!;
+        $metadata .= qq!-d "metadata[$k]"="$P{metadata}{$k}" \\\n!;
     }
 
     # the current script name is in $0
@@ -84,6 +84,9 @@ sub stripe_payment {
     $script =~ s{\A .*/}{}xms;  # strip any leading directories
     my $cgi = 'https://akash.mountmadonna.org/cgi-bin';
     my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
+    if ($P{metadata}{last} =~ m{\A zz}xmsi) {
+        $stripe_key = $stripe_key{test_secret};
+    }
     my $cmd = <<"EOH";
 curl https://api.stripe.com/v1/checkout/sessions \\
   -u $stripe_key \\
