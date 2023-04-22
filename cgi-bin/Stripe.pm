@@ -75,7 +75,7 @@ sub stripe_payment {
     # insert the amount value into the metadata
     my $metadata = qq!-d "metadata[amount]"="$P{amount}" \\\n!;
     for my $k (keys %{$P{metadata}}) {
-        $metadata .= qq!-d "metadata[$k]"="$P{metadata}->{$k}" \\\n!;
+        $metadata .= qq!-d "metadata[$k]"="$P{metadata}{$k}" \\\n!;
     }
 
     # the current script name is in $0
