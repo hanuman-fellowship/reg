@@ -1,0 +1,1 @@
+delete from string where the_key in ('prepay_link', 'prepay_mmi_link');

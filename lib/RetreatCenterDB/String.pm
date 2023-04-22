@@ -321,8 +321,6 @@ pr_children - are children welcome in a PR?  1 or 0
 pr_max - the maximum number of PR registrations on any given day
 pr_max_nights - the maximum number of nights for a PR registration
 pre_craft - the date before which Reg generated the program web pages
-prepay_link - the URL for prepayment requests for MMC
-prepay_mmi_link - the URL for prepayment requests for MMI
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
 program_director - the name of the Program Director - for the contract

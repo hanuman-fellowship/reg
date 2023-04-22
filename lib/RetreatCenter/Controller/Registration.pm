@@ -2220,11 +2220,7 @@ sub send_conf : Local {
             1,      # no sending of email - we will include
                     # the prepayment link in the confirmation letter.
         );
-        $pre_pay_link = $string{ $org eq 'MMI'? 'prepay_mmi_link'
-                                :               'prepay_link'
-                               }
-                      . "?code=$code"
-                      ;
+        $pre_pay_link = "$string{cgi}/req_pay?code=$code";
     }
     my $cancel_policy = '';
     my $cp = $pr->canpol();
