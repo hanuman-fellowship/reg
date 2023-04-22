@@ -516,12 +516,6 @@ sub expand_footnotes {
     }
     $s;
 }
-sub weburl {
-    my ($self) = @_;
-    my $url = $self->url;
-    return "" unless $url;
-    return "<p>$string{weburl} <a href='http://$url' target='_blank'>$url</a>.";
-}
 
 sub fee_table_hash {
     my ($self) = @_;

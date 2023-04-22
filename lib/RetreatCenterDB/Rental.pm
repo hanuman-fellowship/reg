@@ -275,12 +275,6 @@ sub desc {
 	return "" unless $desc;
 	"<span class='event_desc'>$desc</span>";
 }
-sub weburl {
-    my ($self) = @_;
-    my $url = $self->url;
-    return "" unless $url;
-    return "<span class='event_website'>$string{website}: <a href='http://$url' target='_blank'>$url</a></span><br>";
-}
 sub email_str {
 	my ($self) = @_;
 	my $email = $self->email;

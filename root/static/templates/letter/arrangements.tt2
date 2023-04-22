@@ -43,7 +43,7 @@ where you will fill in the names and emails of
 your participants.
 <p>
 <ul>
-<a href='${string.grid_url}?code=${rental.grid_code}'>${string.grid_url}?code=$rental.grid_code
+<a href='${string.cgi}/grid?code=${rental.grid_code}'>${string.cgi}/grid?code=$rental.grid_code
 </a>
 <p>
 </ul>

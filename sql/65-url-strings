@@ -1,0 +1,1 @@
+delete from string where the_key in ('curl_command', 'curl_mmi_command','grid_url', 'omp_load_url', 'omp_pay_url', 'rental_deposit_url', 'rental_invoice_url', 'url_prefix', 'weburl');

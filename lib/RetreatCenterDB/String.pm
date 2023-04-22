@@ -139,8 +139,6 @@ credit_nonprog - The name of an extra account that is used only
     for non-program related credit card payments.
 credit_nonprog_people - The people to notify if a non-program related credit
     card payment is made.
-curl_command - the command to invoke after Export to mmc
-curl_mmi_command - the command to invoke after Export to mmi
 date_coming_going_printed - obsolete - used to be used for
     knowing when the coming/going listing had been printed - to determine
     what page to present when prog_staff first logs in.  now the coming/going
@@ -208,7 +206,6 @@ ftp_password - FTP info for mountmadonna.org
 ftp_site - FTP info for mountmadonna.org
 gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
 gate_code_email - who to email when sending the Tuesday morning gate code email reminder
-grid_url - the URL for opening up the Web Grid with the rental $code
 green_from - when someone makes a donation - who is the 
     acknowledgment letter from?
 green_glnum - the GL Number for Green Fund donations
@@ -309,8 +306,6 @@ nyears_forgiven - how many years before an outstanding balance is forgiven?
 online_notify - a list of email addresses to notify when
     an online registration happens.  This is different from the
     notify_on_reg column in the Program table.
-omp_load_url - for loading the online membership payment data
-omp_pay_url - for making online membership payments
 own_tent - for housing type descriptions
 own_van - for housing type descriptions
 password_security - what level of password security? 0, 1, or 2.
@@ -344,13 +339,11 @@ rental_late_in - the penalty for a late indoor rental
 rental_late_out - the penalty for a late outdoor rental
 rental_cancel_host_color - the color in the calendar of a Canceled by Host rental
 rental_cancel_mmc_color - the color in the calendar of a Canceled by MMC rental
-rental_deposit_url - the URL for paying the rental deposit
 rental_done - description for a rental status of Done
 rental_done_color - the color in the calendar of a Done rental
 rental_due - description for a rental status of Due
 rental_due_color - the color in the calendar of a Due rental
 rental_end_hour - the time of day that rentals normally end
-rental_invoice_url - the URL for paying the rental invoice balance
 rental_lunch_cost - how much do rentals pay for a lunch?
 rental_received - description for a rental status
 rental_received_color - the color in the calendar of a Received rental
@@ -387,8 +380,6 @@ triple - the display name for the housing type 'triple'
 tt_today - a place to do 'time travel'.  format: 'username mm/dd/yy'
 typehdr - the heading for the list of housing types
 unknown - the display name for the housing type 'unknown'
-url_prefix - the prefix for all URLs in Reg - like https://akash.mountmadonna.org
 website - the title for a Rental's website in the online row for the rental
-weburl - the web address for a Rental's website in the online row for the rental
 while_here - The While You're Here section of the default confirmation letter
 whole_cottage - for housing type descriptions

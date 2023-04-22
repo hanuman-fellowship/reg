@@ -1,6 +1,6 @@
 [% IF has_email %]
 <p>You can securely pay your membership dues online
-by <a href=${string.omp_pay_url}?code=$secure_code>clicking here</a>.</p>
+by <a href=${string.cgi}/omp?code=$secure_code>clicking here</a>.</p>
 <p>
 [% END %]
 If you would like to switch to one of the new payment categories

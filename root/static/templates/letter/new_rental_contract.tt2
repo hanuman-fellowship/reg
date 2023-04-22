@@ -153,7 +153,7 @@ $mp_table
 <p>
 $nnights days * \$$mp_cost_per_day per day = \$$deposit deposit
 <p>
-<b>This deposit is non-refundable and can be paid online with this <a href="${string.rental_deposit_url}?code=$rental.grid_code">payment link</a></b>.
+<b>This deposit is non-refundable and can be paid online with this <a href="${string.cgi}/rental_payment?type=deposit&code=$rental.grid_code">payment link</a></b>.
 <p>
 [% END %]
 <i>There will be a charge of
@@ -280,8 +280,7 @@ your "maximum" number noted in the contract. Please let us know how
 many and what types of additional rooms you want to reserve as soon as
 possible, and we will add them to the grid as reservations for your group.
 <ul>
-<a href='${string.grid_url}?code=${rental.grid_code}'>
-${string.grid_url}?code=$rental.grid_code</a>
+<a href='${string.cgi}/grid?code=${rental.grid_code}'>${string.cgi}/grid?code=$rental.grid_code</a>
 </ul>
 Please refer to your contract for housing rates and payment and
 cancellation policies. Your minimum housing commitment to MMC is defined
