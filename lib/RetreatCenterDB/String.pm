@@ -330,6 +330,7 @@ reception_email - who should be notified when an MMC mailing list request comes 
 redirect_email - If empty, ALL outgoing email will be sent to these comma separated address(es).
 reg_end - the default time of day for program registration to end
 reg_start - the default time of day for program registration to begin
+reg_url - the URL for the Catalyst top level of Reg
 registrar_email - the email address of the registrar
 rental_arranged_color - the color of an arranged rental
 rental_coord_email - the people to notify when a rental deposit is received online

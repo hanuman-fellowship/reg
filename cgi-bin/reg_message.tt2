@@ -64,9 +64,9 @@ If it is not there please call us at 408-846-4090.
         You requested to be housed with $withwhom_first ${withwhom_last}.
         They <b>MUST REGISTER SEPARATELY</b>.<br>
         [% IF pid == 0 %]
-            <a href="https://www.mountmadonna.org/cgi-bin/regPR">Click here to go back to the registration page</a> and register them.</p>
+            <a href="$cgi/regPR">Click here to go back to the registration page</a> and register them.</p>
         [% ELSE %]
-            <a href="https://www.mountmadonna.org/cgi-bin/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
+            <a href="$cgi/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
         [% END %]
     [% END %]
 [% END %]

@@ -1847,7 +1847,7 @@ $first,
 To stay at Mount Madonna Center it is
 required that you be fully vaccinated against Covid-19.
 <p>
-Please click on <a href='https://akash.mountmadonna.org/cgi-bin/covid_vax?person_id=$per_id&name=$name'>this link</a> and upload the image of your Covid-19 Vaccination Card.
+Please click on <a href='$string{cgi}/covid_vax?person_id=$per_id&name=$name'>this link</a> and upload the image of your Covid-19 Vaccination Card.
 <p>
 Thank you
 EOH

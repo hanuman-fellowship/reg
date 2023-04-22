@@ -16,6 +16,7 @@ use Util qw/
     add_activity
     email_letter
     db_init
+    get_string
     model
     JON
 /;
@@ -66,6 +67,7 @@ $P{edate} = date($P{edate});
 # send email to the person to confirm
 my $html;
 $P{sending_email} = 1;
+$P{cgi} = get_string($c, 'cgi');
 $tt->process(
     'reg_message.tt2',
     \%P,

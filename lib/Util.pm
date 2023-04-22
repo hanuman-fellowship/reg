@@ -2689,8 +2689,9 @@ sub member_notify {
     # if new, include intro, ky preference, and picture.
     # then delete pic
     #
+    my $reg_url = get_string($c, 'reg_url');
     my $html = $New . "$type Member: "
-             . '<a href=https://akash.mountmadonna.org/person/view/'
+             . '<a href=$reg_url/person/view/'
              . $person->id . '>' . $person->name . '</a>';
     if ($new_href) {
         if ($new_href->{intro}) {
