@@ -1457,8 +1457,6 @@ EOH
         # a nice HACK to force Extended Passive Mode:
         no warnings 'redefine';
         local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->cwd($string{ftp_dir})
-            or die "cannot cwd ", $ftp->message; # not die???
         $ftp->cwd($string{ftp_calendar_dir})
             or die "cannot cwd ", $ftp->message; # not die???
         for my $f ($ftp->ls()) {
