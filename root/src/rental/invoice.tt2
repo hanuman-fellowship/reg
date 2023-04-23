@@ -196,5 +196,5 @@ Mount Madonna Center<br>
 445 Summit Road<br>
 Watsonville, CA 9076
 <p>
-Or you can pay the balance online <a target=_blank href='https://akash.mountmadonna.org/cgi-bin/rental_payment?type=invoice&code=$rental.grid_code'>here</a>.
+Or you can pay the balance online <a target=_blank href='$string.cgi/rental_payment?type=invoice&code=$rental.grid_code'>here</a>.
 </ul>

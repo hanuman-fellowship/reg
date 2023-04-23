@@ -90,7 +90,6 @@ function UNreserve_cluster(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 [% name = program.name %]
 [% PR = name.match('(?i)personal.*retreat') %]
-[% cgi = 'https://akash.mountmadonna.org/cgi-bin' %]
 [% IF program.webready || PR %]
     [% IF PR %]
         <a target=_blank href='$cgi/regPR'>PR Reg</a>

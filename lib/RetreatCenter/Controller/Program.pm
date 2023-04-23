@@ -766,6 +766,7 @@ sub view : Local {
                                            $role->users);
     }
     stash($c,
+        cgi                 => $string{cgi},
         glnum_popup         => $glnum_popup,
         @acct_adm_name,
         UNreserved_clusters => $UNres,

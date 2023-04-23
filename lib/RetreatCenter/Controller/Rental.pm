@@ -666,43 +666,6 @@ sub view : Local {
         $bookings{$t} =~ s{, $}{};     # final comma
     }
 
-=comment
-
-    # not done any more...
-    # trying to do this automatically proved to be troublesome.
-
-    my $status;
-    if ($rental->tentative() || ! $rental->contract_sent()) {
-        $status = 'tentative';
-    }
-    if ($rental->contract_sent()) {
-        $status = 'sent';
-    }
-    if ($rental->contract_received() && $rental->payments() > 0) {
-        $status = 'received';
-        if ($rental->arrangement_sent()) {
-            $status = 'arranged';
-        }
-    }
-    if (tt_today($c)->as_d8() >= $rental->sdate()) {
-        if ($rental->balance() != 0) {
-            $status = 'due';
-        }
-        else {
-            $status = 'done';
-        }
-    }
-    # Is the above needed with each view?  Yes.
-    # A rental_booking may have been done
-    # housing costs could have changed...
-    # time might have advanced and the program might be finished.
-    $rental->update({
-        status  => $status,
-        tentative => $status eq 'tentative'? 'yes': '',
-    });
-
-=cut
-
     #
     # is there a proposal (as yet unlinked to a rental)
     # with the exact same name as this rental?

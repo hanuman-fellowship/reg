@@ -230,10 +230,10 @@ Web/Files
 [% IF editable %]
     <td colspan=2>
     <a target=_blank 
-       href=${string.cgi}/grid?code=$rental.grid_code>Web Grid</a>
+       href=$string.cgi/grid?code=$rental.grid_code>Web Grid</a>
        &nbsp;&nbsp;&nbsp;
        <a target=_blank
-       href=${string.cgi}/grid_ne?code=$rental.grid_code>Web Grid No Email</a>
+       href=$string.cgi/grid_ne?code=$rental.grid_code>Web Grid No Email</a>
     </td>
 [% END %]
 </tr>
@@ -637,9 +637,9 @@ Payments
 [% IF editable %]
     <a href="/rental/pay_balance/$id">New Payment</a>
     &nbsp; &nbsp; &nbsp; &nbsp;
-    <a target=_blank href='https://akash.mountmadonna.org/cgi-bin/rental_payment?code=$rental.grid_code&type=deposit'>Pay Deposit</a>
+    <a target=_blank href='$string.cgi/rental_payment?code=$rental.grid_code&type=deposit'>Pay Deposit</a>
     &nbsp; &nbsp; &nbsp; &nbsp;
-    <a target=_blank href='https://akash.mountmadonna.org/cgi-bin/rental_payment?code=$rental.grid_code&type=invoice'>Pay Invoice</a>
+    <a target=_blank href='$string.cgi/rental_payment?code=$rental.grid_code&type=invoice'>Pay Invoice</a>
 [% END %]
 </td>
 </tr>

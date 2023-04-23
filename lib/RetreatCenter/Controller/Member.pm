@@ -171,6 +171,7 @@ sub list : Local {
     }
     my @files = <$omp_dir/*>;
     stash($c,
+        cgi      => $string{cgi},
         pat      => $pat,
         excluded => $exclude_lapsed,
         online   => scalar(@files),
