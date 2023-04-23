@@ -31,7 +31,6 @@ while (my $line = <$in>) {
     $stripe_key{$code} = $key;
 }
 close $in;
-#my $stripe_key = $stripe_key{test_secret};
 my $stripe_key = $stripe_key{live_secret};
 
 #
@@ -83,8 +82,12 @@ sub stripe_payment {
     my $script = $0;
     $script =~ s{\A .*/}{}xms;  # strip any leading directories
     my $cgi = 'https://akash.mountmadonna.org/cgi-bin';
+    # a simple (but fragile) way to see if we are on akash2:
+    if (-f 'akash2') {
+        $cgi =~ s{akash}{akash2}xms;
+    }
     my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
-    if ($P{metadata}{last} =~ m{\A zz}xmsi) {
+    if (-f 'akash2' || $P{metadata}{last} =~ m{\A zz}xmsi) {
         $stripe_key = $stripe_key{test_secret};
     }
     my $cmd = <<"EOH";

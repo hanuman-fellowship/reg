@@ -1,0 +1,1 @@
+delete from string where the_key in ('req_mmc_dir', 'req_mmi_dir', 'req_mmc_dir_paid', 'req_mmi_dir_paid');
