@@ -930,6 +930,7 @@ else {
         email       => $form{email1},
     );
 }
+$stash{cgi} = get_string($c, 'cgi');
 
 $tt->process(
     'reg2.tt2',

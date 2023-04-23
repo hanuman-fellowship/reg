@@ -167,7 +167,7 @@ $country</dd>
 $payment
 <p>
 [% IF metadata %]
-    <form action=https://akash.mountmadonna.org/cgi-bin/reg2_hook method=POST>
+    <form action=$cgi/reg2_hook method=POST>
     <input type=hidden name=metadata value="$metadata">
     <button type=submit>Click Here to Complete Registration</button>
     </form>
