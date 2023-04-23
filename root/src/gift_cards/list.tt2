@@ -1,5 +1,4 @@
 <h2>Gift Cards</h2>
-[% cgi = 'https://akash.mountmadonna.org/cgi-bin' %]
 <style>
 .cmd {
     margin-left: 1in;

@@ -96,11 +96,12 @@ sub list : Local {
         @gift_cards = grep { $balance_for{$_->{code}} } @gift_cards;
     }
     stash($c,
-        all        => $all,
-        gift_cards  => \@gift_cards,
+        cgi   => get_string($c, 'cgi'),
+        all   => $all,
+        gift_cards => \@gift_cards,
         count => (scalar keys %balance_for),
         total => $total,
-        remaining => $remaining,
+        remaining  => $remaining,
         template   => "gift_cards/list.tt2",
     );
 }
