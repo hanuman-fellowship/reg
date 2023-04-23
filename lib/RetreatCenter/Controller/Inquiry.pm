@@ -86,6 +86,7 @@ sub list : Local {
                @inq;
     }
     stash($c,
+        cgi       => $string{cgi},
         st        => { $order => "style='color: green'" },
         order     => $order,
         inquiries => \@inq,
