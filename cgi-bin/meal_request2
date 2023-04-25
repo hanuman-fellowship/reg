@@ -32,9 +32,10 @@ print $q->header(-cookie => $cookie);
 $param{addr} = "$param{street1} $param{street2}";
 $param{description} = "$param{first} $param{last} meal request";
 
-use Util 'JON';
-use Data::Dumper;
-JON Dumper(\%param);
+use Util qw/
+    JON
+    styled
+/;
 
 # something is troublesome in the summary
 my $summary = $param{summary};
@@ -52,6 +53,6 @@ $param{summary} = $summary;
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    "meal_request3.tt2",
+    styled('meal_request3.tt2'),
     \%param,
 );

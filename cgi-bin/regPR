@@ -11,6 +11,7 @@ use Date::Simple qw/
 use Util qw/
     db_init
     model
+    styled
 /;
 my $c = db_init();
 my (@events) = model($c, 'Event')->search(
@@ -66,6 +67,6 @@ $stash{disabled} = join ', ', map { qq!'$_'! } @disabled;
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    'regpr.tt2',
+    styled('regpr.tt2'),
     \%stash,
 );

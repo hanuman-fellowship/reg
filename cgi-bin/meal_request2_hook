@@ -23,6 +23,7 @@ use Util qw/
     add_activity
     email_letter
     JON
+    styled
 /;
 my $c = db_init();
 use Date::Simple qw/
@@ -105,7 +106,7 @@ $mr_desc =~ s{\s+[|]\s+}{<br>}xmsg;
 $P{display_requests} = $mr_desc;
 my $html;
 $tt->process(
-    'meal_request_receipt.tt2',
+    styled('meal_request_receipt.tt2'),
     { %P, message => 1 },
     \$html,
 );
@@ -114,7 +115,7 @@ print $html;
 # send the same via email without the message at the bottom
 my $mail_msg;
 $tt->process(
-    'meal_request_receipt.tt2',
+    styled('meal_request_receipt.tt2'),
     \%P,
     \$mail_msg,
 );

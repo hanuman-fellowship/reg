@@ -1,0 +1,147 @@
+<html>
+<head>
+<link rel="stylesheet" href="/static/cgi.css">
+<style>
+body {
+    margin-left: .5in;
+    margin-top: .5in;
+    margin-bottom: .5in;
+    font-family: Lucida Grande, Verdana, Helvetica;
+}
+.dow {
+    color: red;
+}
+a {
+    color: blue;
+    text-decoration: none;
+}
+.special {
+    font-weight: bold;
+    color: red;
+}
+.normal {
+    /* nothing */
+}
+.fixed {
+    color: green;
+}
+.lt {
+    text-align: left;
+}
+</style>
+<script type='text/javascript' src='/static/js/popup.js'></script>
+</head>
+<body>
+<h2>
+$name
+<span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
+<b>To</b>
+$edate <span class=dow>${edate.format("%a")}</span>
+</span>
+<span style="margin-left: .5in; font-size: 15pt;">$first $last
+<p>
+Housing Assignment Grid
+<span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
+<span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code&by_name=1">By Name</a></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://akash.mountmadonna.org/static/hints.html',750,550)">Helpful Hints</a></span>
+</h2>
+<p>
+<table cellpadding=5 border=1>
+<tr>
+<th>Room/Site</th>
+<th align=right>Bed</th>
+<th align=left>Name</th>
+<th align=right>Cost</th>
+<th align=left>Notes</th>
+$days
+</tr>
+[% FOR h IN houses %]
+    [% max = h.max %]
+    [% bed = 1 %]
+    [% WHILE bed <= max %]
+        <tr>
+        [% IF bed == 1 %]
+            <th rowspan=$max align=left class=$h.class>&nbsp;&nbsp;$h.name
+                <span style="font-weight: normal">
+                [% IF h.bath %] - b
+                [% ELSIF h.tent && h.own %] - o
+                [% ELSIF h.cabin %] - c
+                [% END %]
+                </span>
+            </th>
+        [% END %]
+        <td align=right>$bed</td>
+        [% vname = 'p' _ h.id _ '_' _ bed %]
+        [% vnotes = 'x' _ h.id _ '_' _ bed %]
+        [% vc = 'c' _ h.id _ '_' _ bed %]
+        [% vcl = 'cl' _ h.id _ '_' _ bed %]
+        [% IF data.$vcl == 1 %]
+            <td class=special>${data.$vname}</td>
+        [% ELSE %]
+            <td>${data.$vname}</td>
+        [% END %]
+        <td align=right>${data.$vc}</td>
+        <td>${data.$vnotes}</td>
+        [% n = 1 %]
+        [% WHILE n <= nnights %]
+            [% v = 'n' _ h.id _ '_' _ bed _ '_' _ n %]
+            [% IF data.$v %]
+            <td bgcolor=green width=20>&nbsp;</td>
+            [% ELSE %]
+            <td width=20>&nbsp;</td>
+            [% END %]
+            [% n = n + 1 %]
+        [% END %]
+        [% bed = bed + 1 %]
+    [% END %]
+    </tr>
+[% END %]
+<tr>
+<tr>
+<th align=right colspan=3>Total</th><td align=right>\$$total</td>
+<td colspan=[% nnights + 1 %]>&nbsp;</td>
+</tr>
+</table>
+<p>
+<table cellpadding=5>
+<tr><td valign=top>
+<table cellpadding=3>
+<tr><th class=lt colspan=2 align=left>Codes</th></tr>
+<tr><td>b</td><td> - bath</td></tr>
+<tr><td>c</td><td> - cabin</td></tr>
+<tr><td>o</td><td> - own tent</td></tr>
+</table>
+</td><td>
+
+[% IF new_way %]
+    [% INCLUDE grid_htype.tt2 %]
+[% ELSE %]
+    <!-- OLD WAY -->
+    <table cellpadding=3>
+    <tr>
+    <th align=left>Type</th><th align=right>Cost</th>
+    </tr>
+    [% FOR ht IN htypes %]
+        <tr>
+        <td>$ht.desc</td>
+        <td align=right>$ht.cost</td>
+    [% END %]
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td>House Cost Type: $housecost_type</td>
+    </tr>
+    </table>
+[% END %]
+
+</td></tr>
+
+[% IF fixed_cost_houses %]
+<tr>
+<th>Fixed Cost Houses</th>
+<td>$fixed_cost_houses</td>
+</tr>
+[% END %]
+
+</table>
+</body>
+</html>

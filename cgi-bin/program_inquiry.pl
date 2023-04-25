@@ -20,6 +20,7 @@ use Util qw/
     model
     email_letter
     rand6
+    styled
 /;
 use Global qw/
     %string
@@ -120,7 +121,7 @@ if ($param{leader_name}) {
     if (! $no_email) {
         my $html;
         Template->new({INTERPOLATE => 1})->process(
-            'program_inquiry2.tt2',
+            styled('program_inquiry2.tt2'),
             \%param,
             \$html,
         );
@@ -144,7 +145,7 @@ if ($param{leader_name}) {
 }
 else {
     Template->new({INTERPOLATE => 1})->process(
-        'program_inquiry1.tt2',
+        styled('program_inquiry1.tt2'),
         { 
             cgi => $string{cgi},
         }

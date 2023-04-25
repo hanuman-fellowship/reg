@@ -13,6 +13,7 @@ use Stripe qw/
 /;
 use Util qw/
     commify
+    styled
 /;
 my $code = $q->param('code');
 if (! -f "/var/Reg/req_mmc_sent/$code") {
@@ -58,6 +59,6 @@ $stash{stripe_payment} = stripe_payment(
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    "req_pay.tt2",
+    styled('req_pay.tt2'),
     \%stash,
 );

@@ -12,6 +12,7 @@ use Util qw/
     db_init
     model
     get_string
+    styled
 /;
 my $c = db_init();
 
@@ -126,6 +127,6 @@ $stash{today} = $today->format("%m/%d/%Y");
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    'regme.tt2',
+    styled('regme.tt2'),
     \%stash,
 );

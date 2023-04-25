@@ -18,6 +18,7 @@ my $type = delete $params{type};
 use Util qw/
     db_init
     model
+    styled
 /;
 my $c = db_init();
 use Global qw/
@@ -58,7 +59,7 @@ sub oops {
     Template->new(
         INTERPOLATE => 1,
     )->process(
-        "mr_err.tt2",
+        styled('mr_err.tt2'),
         { err => $msg },
     );
     exit;
@@ -129,7 +130,7 @@ if (! %params) {
     Template->new(
         INTERPOLATE => 1,
     )->process(
-        "meal_request.tt2",
+        styled('meal_request.tt2'),
         {
             %string,
             %stash
@@ -261,6 +262,6 @@ for my $w (qw/
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    "meal_request2.tt2",
+    styled('meal_request2.tt2'),
     \%stash,
 );

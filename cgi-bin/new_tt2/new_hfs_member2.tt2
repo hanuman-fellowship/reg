@@ -1,0 +1,54 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<h2>Hanuman Fellowship Membership</h2>
+<img src=/static/images/hanuman.png width=100>        
+<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
+<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
+<p>
+Verify the following:
+<ul>
+$first $last<br>
+$addr1<br>
+[% IF addr2 %]
+    $addr2<br>
+[% END %]
+$city, $st_prov<br>
+$zip_post<br>
+$country
+<p>
+$cell<br>
+$email1
+<p>
+[% IF pic_thumb %]
+    <img src=$pic_thumb>
+[% END %]
+</ul>
+You want to enroll as a $Mem_Type in the Hanuman Fellowship.<br>
+The $prorated cost is \$${amount}.
+[% IF intro %]
+    <p>
+    Your introduction:
+    <ul>
+    $intro
+    </ul>
+[% END %]
+[% IF pic %]
+    <p>
+    Your picture:<p>
+    <img src=/static/images/$pic>
+[% END %]
+[% IF ky %]
+    <p>
+    Your preferred Karma Yoga areas:
+    <ul>
+    $ky
+    </ul>
+[% END %]
+$stripe_payment
+</form>
+</body>
+</html>

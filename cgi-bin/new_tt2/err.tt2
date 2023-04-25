@@ -1,0 +1,21 @@
+<html>
+<head>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+[% IF back %]
+Problems were found in the form:
+[% END %]
+<ul>
+$err
+</ul>
+<form>
+[% IF back %]
+    Please <button type="button" id=back onclick="history.go(-1); return false;">Go Back</button> and correct these things.
+[% END %]
+</form>
+<script type='text/javascript'>
+document.getElementById('back').focus();
+</script>	
+</body>
+</html>

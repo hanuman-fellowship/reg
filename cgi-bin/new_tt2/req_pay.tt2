@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<h3>Payment Request</h3>
+<dl>
+<dt>Name:</dt>
+<dd>$first $last</dd>
+
+<dt>Address:</dt>
+<dd>$addr<br>$city, $state $zip<br>$country</dd> 
+
+<dt>Phone:</dt>
+<dd>$phone</dd>
+
+<dt>Email:</dt>
+<dd>$email</dd>
+<dt>Total</dt>
+<dd>\$$amount_disp</dd>
+<dt>Program</dt>
+<dd>$program</dd>
+</dl>
+
+$tbl_py_desc
+
+<p>
+If you have any question about this request send an <a href='mailto:$quest_email'>email to $signed</a>.
+
+$stripe_payment
+</form>
+</body>
+</html>

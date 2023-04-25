@@ -16,12 +16,13 @@ use Util qw/
     email_letter
     JON
     get_string
+    styled
 /;
 my $c = db_init();
 if ($href->{name}) {
     # show the initial page
     $tt->process(
-        'covid_vax.tt2',
+        styled('covid_vax.tt2'),
         $href,
     );
     exit;
@@ -30,7 +31,7 @@ eval {
 my $person = model($c, 'Person')->find($href->{person_id});
 if (! $person) {
     $tt->process(
-        'err.tt2',
+        styled('err.tt2'),
         { err => "Cannot find person with id $href->{person_id}" },
     );
     exit;
@@ -38,7 +39,7 @@ if (! $person) {
 my $card = $q->upload('card');
 if (! $card) {
     $tt->process(
-        'err.tt2',
+        styled('err.tt2'),
         { err => "Missing Covid Vaccination card" },
     );
     exit;
@@ -50,7 +51,7 @@ $suffix = lc $suffix;
 $suffix = "jpg" if $suffix eq 'jpeg';
 if ($suffix !~ m{\A (jpg|png|gif|pdf) \z}xms) {
     $tt->process(
-        'err.tt2',
+        styled('err.tt2'),
         {
             err => "The vaccination card picture must be a"
                  . " proper image file.<br>"
@@ -69,7 +70,7 @@ my $cov_file = "$cov_dir/$name.$suffix";
 my $out;
 if (! open $out, '>', $cov_file) {
     $tt->process(
-        'err.tt2',
+        styled('err.tt2'),
         {
             err => "Could not open $cov_file",
         },
@@ -129,5 +130,5 @@ email_letter($c,
 );
 };  if ($@) { JON "error: $@" }
 $tt->process(
-    'covid_thanks.tt2',
+    styled('covid_thanks.tt2'),
 );

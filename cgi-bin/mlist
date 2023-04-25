@@ -11,7 +11,7 @@ my $tt = Template->new(
 my %P = $q->Vars();
 if (! exists $P{first}) {
     $tt->process(
-        'mlist.tt2'
+        styled('mlist.tt2'),
     );
     exit;
 }
@@ -24,6 +24,7 @@ use Util qw/
     get_string
     model
     JON
+    styled
 /;
 for my $k (keys %P) {
     $P{$k} =~ s{^\s*|\s*$}{}g;
@@ -130,5 +131,5 @@ email_letter($c,
 
 # Thank you message on the screen
 $tt->process(
-    'mlist_msg.tt2',
+    styled('mlist_msg.tt2'),
 );

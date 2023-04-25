@@ -15,6 +15,7 @@ use Util qw/
     email_letter
     get_string
     commify
+    styled
 /;
 my $c = db_init();
 #
@@ -80,7 +81,7 @@ use Template;
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    'rental_payment_message.tt2',
+    styled('rental_payment_message.tt2'),
     {
         first => $person->first,
         type  => $P{type},

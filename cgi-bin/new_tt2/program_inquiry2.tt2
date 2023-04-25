@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<table cellpadding=4>
+<tr><th>Leader name</th><td>$leader_name</td></tr>
+<tr><th>Phone</th><td>$phone</td></tr>
+<tr><th>Email</th><td><a href='mailto:$email'>$email</a></td></tr>
+<tr><th>Group name</th><td>$group_name</td></tr>
+<tr><th>Dates</th><td>$dates</td></tr>
+[% IF description %]
+    <tr><th>Description</th><td>$description</td></tr>
+[% END %]
+<tr><th>How many?</th><td>$how_many</td></tr>
+<tr><th>Vegetarian okay?</th><td>$vegetarian</td></tr>
+[% IF retreat_type %]
+    <tr><th>Retreat Type</th><td>$retreat_type</td></tr>
+[% END %]
+[% IF needs %]
+    <tr><th>Needs</th><td>$needs</td></tr>
+[% END %]
+<tr><th>How did you<br>learn about MMC?</th><td>$learn</td></tr>
+[% IF what_else %]
+    <tr><th>What else?</th><td>$what_else</td></tr>
+[% END %]
+</table>

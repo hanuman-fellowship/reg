@@ -10,6 +10,7 @@ use lib '../lib';
 use Util qw/
     db_init
     model
+    styled
 /;
 my $c = db_init();
 use Template;
@@ -25,7 +26,7 @@ if (! $person) {
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    'update.tt2',
+    styled('update.tt2'),
     {
         p => $person,
     },

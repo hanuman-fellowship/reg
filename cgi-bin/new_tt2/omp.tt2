@@ -1,0 +1,45 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+[% sans = person.sanskrit %]
+<img src=/static/images/hanuman.png width=100>        
+&nbsp;
+<img src=/static/images/hanuman.png width=100>        
+&nbsp;
+<img src=/static/images/hanuman.png width=100>        
+<div ><h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
+
+<dl>
+<dt>Name:</dt>
+<dd>$person.first $person.last [% IF sans %]($sans)[% END %]</dd>
+
+<dt>Address:</dt>
+<dd>$addr<br>$person.city, $person.st_prov $person.zip_post<br>$country</dd> 
+
+<dt>Phone:</dt>
+<dd>$phone</dd>
+
+<dt>Email:</dt>
+<dd>$person.email</dd>
+
+[% IF category == 'Sponsor' %]                       
+<dt>Previous Payment:</dt>
+<dd>\$$last_amount on $date_payment</dd>
+
+<dt>Total to Date:</dt>
+<dd>\$$total_paid</dd>
+[% END %]
+
+<dt>Today's Payment:</dt>
+<dd>\$$amount</dd>
+
+</dl>
+
+$stripe_payment
+
+</form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<html>
+<head>
+[% url = 'https://akash.mountmadonna.org' %]
+<link rel="stylesheet" href="$url/static/cgi.css">
+</head>
+<body>
+<img src='$url/static/images/hanuman.png' width=100>
+<h2>Thank you, ${first}.</h2>
+<h3>Your payment has been received.</h3>
+<p>
+Your credit card has been charged \$${amount}.<br>
+The id for this transaction is ${transaction_id}.
+<p>
+[% IF new %]
+    You are now a $type member of the Hanuman Fellowship.
+[% ELSE %]
+    Your $type membership in the Hanuman Fellowship has been renewed.
+[% END %]
+</body>
+</html>

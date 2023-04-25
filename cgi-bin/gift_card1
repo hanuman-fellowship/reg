@@ -12,6 +12,7 @@ use Util qw/
     db_init
     model
     fee_types
+    styled
 /;
 my $c = db_init();
 use Date::Simple qw/
@@ -52,6 +53,6 @@ $stash{email2} = $cookie{email1} || "";
 Template->new({
     INTERPOLATE => 1,
 })->process(
-    'gift_card1.tt2',
+    styled('gift_card1.tt2'),
     \%stash,
 ) or die "no template\n";

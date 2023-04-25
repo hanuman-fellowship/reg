@@ -1,0 +1,19 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+These people have no email address:<p>
+<ul>
+[% FOR ne IN need_email %]
+    $ne<br>
+[% END %]
+</ul>
+If these people really do have no email address
+please put 'no email' in their Email and Notes section.
+<p>
+Please go <input id='back' type=button value="Back" onclick="history.go(-1)"> to fix this.
+</body>
+</html>
+<script type='text/javascript'>document.getElementById('back').focus();</script>

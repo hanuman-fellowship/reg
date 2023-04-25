@@ -19,6 +19,7 @@ use Util qw/
     get_string
     model
     JON
+    styled
 /;
 my $c = db_init();
 
@@ -69,7 +70,7 @@ my $html;
 $P{sending_email} = 1;
 $P{cgi} = get_string($c, 'cgi');
 $tt->process(
-    'reg_message.tt2',
+    styled('reg_message.tt2'),
     \%P,
     \$html,
 ) or JON $tt->template_error;
@@ -82,6 +83,6 @@ email_letter($c,
 
 $P{sending_email} = 0;
 $tt->process(
-    'reg_message.tt2',
+    styled('reg_message.tt2'),
     \%P,
 ) or JON $tt->template_error;

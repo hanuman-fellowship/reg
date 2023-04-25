@@ -25,6 +25,7 @@ use Util qw/
     get_string
     fee_types
     JON
+    styled
 /;
 my $c = db_init();
 
@@ -45,7 +46,7 @@ $stash{pid}  = $pid;
 sub oops {
     my ($err, $back) = @_;
     Template->new(INTERPOLATE => 1)->process(
-        'err.tt2',
+        styled('err.tt2'),
         {
             back => $back,
             err  => $err 
@@ -565,6 +566,6 @@ my $tt = Template->new({
     ENCODING    => 'utf8',
 });
 $tt->process(
-    'reg1.tt2',
+    styled('reg1.tt2'),
     \%stash,
 ) or die $tt->error();

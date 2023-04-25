@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Daily Sutra from Babaji</title>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+
+<h2>Daily Sutra from Babaji</h2>
+<table cellpadding=5>
+
+<tr>
+<td colspan=2>
+To receive or not receive a Daily Sutra from Baba Hari Dass<BR>
+enter your email address below and press the appropriate button.
+</td>
+</tr>
+
+<form target=_blank action=/cgi-bin/sutra>
+<tr>
+<td align=right>Email Address</td>
+<td><input type=text name=email SIZE=40></td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<button type=submit name=sut_sub>Send Sutras</button>
+<button type=submit name=sut_unsub>Do NOT Send Sutras</button>
+</td>
+</tr>
+</form>
+
+<tr>
+<td colspan=2>
+To see all sutras containing a pattern enter it below and press Search.
+</td>
+</tr>
+
+<form target=_blank action=/cgi-bin/sutra>
+<tr>
+<td ALIGN=right>Pattern</td>
+<td>
+<input type=text name=pattern SIZE=40>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<button type=submit name=search>Search</button>
+&nbsp; &nbsp; &nbsp;Pattern can be part of a word 
+<input type=checkbox name=substring>
+</td>
+</tr>
+</form>
+
+<tr>
+<td colspan=2>
+Want to see <b>all</b> of the sutras?
+</td>
+</tr>
+
+<form target=_blank action=/cgi-bin/sutra>
+<tr>
+<td></td>
+<td>
+<button type=submit name=show_all>Show All Sutras</button>
+</td>
+</tr>
+</form>
+
+<tr><td colspan=2>
+To see a sutra chosen at random (or, if you wish, one <i>perfect</i> for <b>you</b> at <u>this</u> moment in time) press this button:</td></tr>
+<form target=_blank action=/cgi-bin/sutra>
+<tr>
+<td></td>
+<td>
+<button type=submit name="rand_sut">Random Sutra</button>
+</td>
+</tr>
+</form>
+<tr><td colspan=2>
+Once you see the sutra you can get another just by
+refreshing the browser screen.
+</td></tr>
+
+</table>
+</form>
+
+<p>If you are having a problem with anything on this page,
+please send a message to Sahadev by clicking <A HREF="mailto:sahadev@mountmadonna.org?subject=Daily Sutra from Babaji">here</A>.
+
+</body>
+</html>

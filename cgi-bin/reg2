@@ -22,6 +22,7 @@ use Util qw/
     model
     get_string
     JON
+    styled
 /;
 my $c = db_init();
 
@@ -933,6 +934,6 @@ else {
 $stash{cgi} = get_string($c, 'cgi');
 
 $tt->process(
-    'reg2.tt2',
+    styled('reg2.tt2'),
     \%stash,
 );

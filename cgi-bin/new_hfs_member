@@ -5,6 +5,7 @@ use lib '.', '../lib';
 use Util qw/
     db_init
     get_string
+    styled
 /;
 my $c = db_init();
 
@@ -47,7 +48,7 @@ if (! $form{first}) {
     }
     print $q->header();
     $tt->process(
-        'new_hfs_member.tt2',
+        styled('new_hfs_member.tt2'),
         \%stash,
     );
     exit;
@@ -110,6 +111,6 @@ my $cookie = $q->cookie(
 );
 print $q->header(-cookie => $cookie);
 $tt->process(
-    'new_hfs_member2.tt2',
+    styled('new_hfs_member2.tt2'),
     \%stash,
 );

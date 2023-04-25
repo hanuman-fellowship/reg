@@ -15,6 +15,7 @@ use Util qw/
     model
     add_activity
     JON
+    styled
 /;
 use Template;
 my $tt = Template->new(
@@ -62,7 +63,7 @@ if (@changes) {
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    'update2.tt2',
+    styled('update2.tt2'),
     {
         p         => \%P,
     },

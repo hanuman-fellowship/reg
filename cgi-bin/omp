@@ -11,6 +11,7 @@ use Util qw/
     db_init
     model
     get_string
+    styled
 /;
 my $c = db_init();
 use Stripe qw/
@@ -86,6 +87,6 @@ $stash{stripe_payment} = stripe_payment(
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    "omp.tt2",
+    styled('omp.tt2'),
     \%stash,
 );

@@ -1,0 +1,113 @@
+<html>
+<head>
+<link rel="stylesheet" href="/static/cgi.css">
+<style>
+body {
+    margin-left: .5in;
+    margin-top: .5in;
+    margin-bottom: .5in;
+    font-family: Lucida Grande, Verdana, Helvetica;
+}
+a {
+    color: blue;
+    text-decoration: none;
+}
+.dow {
+    color: red;
+}
+.special {
+    font-weight: bold;
+    color: red;
+}
+.normal {
+    /* nothing */
+}
+.fixed {
+    color: green;
+}
+.lt {
+    text-align: left;
+}
+</style>
+<script type='text/javascript' src='/static/js/popup.js'></script>
+</head>
+<body>
+<h2>
+$name
+<p>
+<span style="font-size: 15pt">$sdate <span class=dow>${sdate.format("%a")}</span>
+<b>To</b>
+$edate <span class=dow>${edate.format("%a")}</span>
+</span>
+<span style="margin-left: .5in; font-size: 15pt;">$first $last
+<p>
+Housing Assignment Grid
+<span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
+</h2>
+<p>
+<table cellpadding=5 border=1>
+<tr>
+<th align=left>&nbsp;&nbsp;Name</th>
+<th align=left>Room</th>
+<th align=right>Cost</th>
+<th align=right>Dates</th>
+<th align=left>Notes</th>
+</tr>
+[% FOR p IN people %]
+    <tr>
+    <td align=left>&nbsp;&nbsp;$p.name</td>
+    <td align=left>&nbsp;&nbsp;$p.house</td>
+    <td align=right>$p.cost</td>
+    <td align=right>$p.dates</td>
+    <td>$p.notes</td>
+    </tr>
+[% END %]
+<tr>
+<td>&nbsp;&nbsp;Total</td>
+<td>&nbsp;</td>
+<td>\$$total</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<p>
+<table cellpadding=5>
+<tr><td valign=top>
+<table cellpadding=3>
+<tr><th class=lt colspan=2>Codes</th></tr>
+<tr><td>b</td><td> - bath</td></tr>
+<tr><td>c</td><td> - cabin</td></tr>
+<tr><td>o</td><td> - own tent</td></tr>
+</table>
+</td><td>
+
+[% IF new_way %]
+    [% INCLUDE grid_htype.tt2 %]
+[% ELSE %]
+    <!-- OLD WAY -->
+    <table cellpadding=3>
+    <tr>
+    <th align=left>Type</th><th align=right>Cost</th>
+    </tr>
+    [% FOR ht IN htypes %]
+        <tr>
+        <td>$ht.desc</td>
+        <td align=right>$ht.cost</td>
+    [% END %]
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td>House Cost Type: $housecost_type</td>
+    </tr>
+    </table>
+[% END %]
+
+[% IF fixed_cost_houses %]
+<tr>
+<th>Fixed Cost Houses</th>
+<td>$fixed_cost_houses</td>
+</tr>
+[% END %]
+
+</table>
+</body>
+</html>

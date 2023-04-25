@@ -30,6 +30,7 @@ use Util qw/
     model
     get_string
     JON
+    styled
 /;
 my $c = db_init();
 my %P = metadata($q);
@@ -121,7 +122,7 @@ add_activity($c,
 my $html1;
 $P{cgi} = get_string($c, 'cgi');
 $tt->process(
-    'gift_card_email.tt2',
+    styled('gift_card_email.tt2'),
     \%P,
     \$html1,
 );
@@ -137,7 +138,7 @@ email_letter($c,
 # including the transaction id
 my $html2;
 $tt->process(
-    'gift_card_message.tt2',
+    styled('gift_card_message.tt2'),
     \%P,
     \$html2,
 );

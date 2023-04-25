@@ -9,6 +9,9 @@ use Template;
 use Stripe qw/
     stripe_payment
 /;
+use Util qw/
+    styled
+/;
 
 #
 # gather all the form elements into a hash
@@ -80,6 +83,6 @@ $stash{stripe_payment} = stripe_payment(
 Template->new(
     INTERPOLATE => 1,
 )->process(
-    'gift_card2.tt2',
+    styled('gift_card2.tt2'),
     \%stash,
 );

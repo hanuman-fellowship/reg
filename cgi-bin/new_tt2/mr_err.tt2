@@ -1,0 +1,16 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+Errors in the form:
+<ul>
+$err
+</ul>
+<form>
+Please go <button TYPE="button" id=back onclick="history.go(-1)">back</button> and correct this.
+</form>
+</body>
+</html>
+<script type='text/javascript'>document.getElementById('back').focus();</script>	

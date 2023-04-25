@@ -1,0 +1,106 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+<script>
+var fields = [
+    { id: 'first', regexp: '\\S',
+                   err: 'Missing First Name' },
+    { id: 'last',  regexp: '\\S',
+                   err: 'Missing Last Name' },
+    { id: 'addr1',  regexp: '\\S',
+                   err: 'Missing Street Address' },
+    { id: 'city',  regexp: '\\S',
+                   err: 'Missing City' },
+    { id: 'st_prov',  regexp: '\\S',
+                    err: 'Missing State' },
+    { id: 'zip_post',  regexp: '\\S',
+                  err: 'Missing Zip Code' },
+    { id: 'cell',  regexp: '^[0-9 -.()]+\$',
+                   err: 'Invalid Telephone' },
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
+                     err: 'Invalid Email address' },
+];
+</script>
+<script type='text/javascript' src='/static/js/check_fields.js'></script>
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<p>
+Meal Requests:
+<ul>
+$summary
+</ul>
+<p>
+<form action='/cgi-bin/meal_request2'
+      method=POST
+      onsubmit='return check_fields();'
+>
+<input type=hidden name=type value="$type">
+<input type=hidden name=summary value="$summary">
+<input type=hidden name=encoded_requests value='$encoded_requests'>
+<input type=hidden name=amount value='$total_cost'>
+<p>
+<table cellpadding=5>
+
+<tr>
+<th class=tbl> <span class=required>*</span> First</th>
+<td><input type=text name=first id=first value='$first' size=30 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl> <span class=required>*</span> Last</th>
+<td><input type=text name=last id=last value='$last' size=30 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl><span class=required>*</span> Street</th>
+<td><input type=text name=addr1 id=addr1 value='$addr1' size=50 class=input></td>
+</tr>
+<tr>
+<th></th>
+<td><input type=text name=addr2 id=addr2 value='$addr2' size=50 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl><span class=required>*</span> City</th>
+<td><input type=text name=city id=city value='$city' size=30 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl><span class=required>*</span> State</th>
+<td><input type=text name=st_prov id=st_prov value='$st_prov' size=20 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl><span class=required>*</span> Zip</th>
+<td><input type=text name=zip_post id=zip_post value='$zip_post' size=10 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl>Country</th>
+<td><input type=text name=country id=country value='$country' size=20 class=input>
+<span class=faint>Defaults to USA</span>
+</td>
+</tr>
+
+<tr>
+<th class=tbl><span class=required>*</span> Telephone</th>
+<td><input type=text name=cell id=cell value='$cell' size=15 class=input></td>
+</tr>
+
+<tr>
+<th class=tbl><span class=required>*</span> Email</th>
+<td><input type=text name=email1 id=email1 value='$email1' size=50 class=input></td>
+</tr>
+
+<tr>
+<th></th>
+<td><button class=teal>Submit</button>
+</tr>
+
+</table>
+</form>
+</body>
+</html>
+<script>document.getElementById('first').focus()</script>

@@ -13,6 +13,7 @@ use Util qw/
     add_activity
     fee_types
     JON
+    styled
 /;
 my $c = db_init();
 use Template;
@@ -282,8 +283,8 @@ if ($P{by_name}) {
         EVAL_PERL    => 0,
     });
     $tt->process(
-        "ngrid.tt2",  # template
-        $stash,       # variables
+        styled('ngrid.tt2'),
+        $stash,
     ) or die $tt->error;
     exit;
 }
@@ -520,7 +521,7 @@ if ($P{process}) {
             EVAL_PERL   => 0,
         });
         $tt->process(
-            "ram_conflict.tt2",  # template
+            styled('ram_conflict.tt2'),
             {
                 name => $cot3_name,
             },
@@ -536,7 +537,7 @@ if ($P{process}) {
             need_email => \@need_email,
         };
         $tt->process(
-            "need_email.tt2",  # template
+            styled('need_email.tt2'),
             $stash,       # variables
         ) or die $tt->error;
         exit;
@@ -624,8 +625,8 @@ if ($P{process}) {
     system("diff $before $after >>$grid_log");
     unlink $before, $after;
     $tt->process(
-        "sgrid.tt2",  # template
-        $stash,       # variables
+        styled('sgrid.tt2'),
+        $stash,
     ) or die $tt->error;
     exit;
 }
@@ -679,6 +680,6 @@ my $stash = {
 print {$log} "$tstamp edit            $rental_name\n";
 close $log;
 $tt->process(
-    "grid.tt2",   # template
-    $stash,       # variables
+    styled('grid.tt2'),
+    $stash,
 ) or die $tt->error;

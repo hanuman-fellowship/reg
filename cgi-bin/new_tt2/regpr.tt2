@@ -1,0 +1,97 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<title>Personal Retreat</title>
+<script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+<script type='text/javascript'>
+\$(function(){
+    \$('.input-daterange').datepicker({
+        autoclose: true,
+        startDate: '$startDate',
+        datesDisabled: [ $disabled ]
+    });
+});
+</script>
+<script>
+function check_dates() {
+    var arr = document.getElementById('arr_date');
+    if (arr.value == '') {
+        alert('No arrival date!');
+        return false;
+    }
+    var dep = document.getElementById('dep_date');
+    if (dep.value == '') {
+        alert('No departure date!');
+        return false;
+    }
+    if (arr.value == dep.value) {
+        alert('Cannot depart on the same day you arrive.');
+        return false;
+    }
+    return true;
+}
+</script>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<h1>Personal Retreats at Mount Madonna</h1>
+<p>
+<div class='container'>
+
+Please enter the dates of your personal retreat.
+<p>
+<form name=form action=reg1 method=get method=POST onsubmit="return check_dates()">
+<input type=hidden name=id value=0>
+
+<div class="input-daterange input-group"
+     id="datepicker"
+>
+<input type="text"
+       class="input-sm form-control"
+       name="arr_date"
+       id="arr_date"
+       placeholder="Arrival date"
+/>
+<span class="input-group-addon">to</span>
+<input type="text"
+       class="input-sm form-control"
+       name="dep_date"
+       id="dep_date"
+       placeholder="Departure date"
+/>
+</div>
+
+<button type="submit">Submit</button>
+</form>
+<p>
+Reservations must be made at least 48 hours in advance.
+[% IF noPR.0 %]
+    <p>
+    Due to other onsite programming,
+    the following nights are not available
+    for Personal Retreat bookings:
+    <ul>
+    [% FOR d IN noPR %]
+        <li>$d</li>
+    [% END %]
+    </ul>
+[% END %]
+[% IF noPRindoors.0 %]
+    <p>
+    On the following nights, there is no indoor housing available,
+    but you may stay in a tent or in your own vehicle:
+    <ul>
+    [% FOR d IN noPRindoors %]
+        <li>$d</li>
+    [% END %]
+    </ul>
+[% END %]
+
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+<script>
+var fields = [
+    { id: 'first', regexp: '\\S',
+                   err: 'Missing First Name' },
+    { id: 'last', regexp: '\\S',
+                   err: 'Missing Last Name' },
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
+                     err: 'Invalid Email address' },
+    { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
+                     err: 'Invalid Email address' }
+];
+function check_form() {
+    if (!check_fields()) {
+        return false;
+    }
+    var em1 = document.getElementById('email1').value;
+    var em2 = document.getElementById('email2').value;
+    if (em1 == em2) {
+        return true;
+    }
+    alert("Emails don't match.");
+    return false;
+}
+</script>
+<script type='text/javascript' src='/static/js/check_fields.js'></script>
+</head>
+<body>
+<img src='/static/images/mmi_logo.png' width=800>
+<h2>Mailing List</h2>  
+Fields marked with a <span class=required>*</span> are required.</P>
+<h3>Contact Information</h3>  
+<form action="/cgi-bin/mlist"
+      method="post"
+      onsubmit="return check_form()"
+>
+<table cellpadding=5>
+
+<tr>
+<th><span class=required>*</span> First Name</th>
+<td><input type=text name=first id=first size=30></td>
+</td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> Last Name</th>
+<td><input type=text name=last id=last size=30></td>
+</td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Email</th>
+<td><input type=text name=email1 id=email1 size=30></td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Email Again</th>
+<td><input type=text name=email2 id=email2 size=30> Repeated to be sure it is right</td>
+</tr>
+
+<tr>
+<th>Street Address</th>
+<td><input type=text name=addr1 id=addr1 size=30></td>
+</tr>
+
+<tr>
+<th>City</th>
+<td><input type=text name=city id=city size=30></td>
+</tr>
+
+<tr>
+<th>State/Province</th>
+<td><input type=text name=st_prov id=st_prov size=30></td>
+</tr>
+
+<tr>
+<th>Zip/Postal Code</th>
+<td><input type=text name=zip_post id=zip_post size=30></td>
+</tr>
+
+<tr>
+<th>Country</th>
+<td><input type=text name=country id=country size=30> Defaults to USA</td>
+</tr>
+
+<tr>
+<th>Telephone</th>
+<td><input type=text name=cell id=cellcountry size=30></td>
+</tr>
+</table>
+<h3>Preferences</h3>  
+<table cellpadding=5>
+
+<tr>
+<td><input type=checkbox name=e_mailings id=e_mailings value=yes checked ></td>
+<td>Yes, Send me occasional e-mail announcements about Mount Madonna Institute.</td>
+</tr>
+
+<tr>
+<td><input type=checkbox name=snail_mailings id=snail_mailings value=yes checked ></td>
+<td>Yes, Send me postcards and brochures in the mail about Mount Madonna Institute.</td>
+</tr>
+
+<tr>
+<td><input type=checkbox name=share_mailings id=share_mailings value=yes checked ></td>
+<td>Yes, You may share my information with MMI affiliates.</td>
+</table>
+<h3>Interests</h3>
+I am interested in:
+<SELECT name=interest>
+<OPTION value='All Schools'>All Schools</OPTION>
+<OPTION value='Ayurveda'>College of Ayurveda</OPTION>
+<OPTION value='Yoga'>School of Yoga</OPTION>
+<OPTION value='Community Studies'>Community Studies</OPTION>
+<OPTION value='Ayurveda World'>Ayurveda World Herbs</OPTION>
+<OPTION value='Kaya Kalpa'>Kaya Kalpa Wellness</OPTION>
+<OPTION value='AY Consultations'>Ayurveda Clinic</OPTION>
+</SELECT>
+<h3>Comments or Requests:</h3>  
+<textarea name="request" rows=10 cols=40 wrap=VIRTUAL></textarea>
+<p>
+Don't let our emails end up in your spam filter.<br>
+Add the following address to your address book:</p>
+<ul>
+programs@mountmadonna.org
+</ul>
+
+<input style="background: lightgreen" type=submit id=submit value='Submit'>
+</form>

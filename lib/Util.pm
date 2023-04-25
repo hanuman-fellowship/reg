@@ -96,6 +96,7 @@ our @EXPORT_OK = qw/
     add_membership_payment
     member_notify
     fee_types
+    styled
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2724,7 +2725,7 @@ sub member_notify {
     Template->new(
         INTERPOLATE => 1,
     )->process(
-        'member_message.tt2',
+        styled('member_message.tt2'),
         {
             first    => $person->first,
             amount   => $amount,
@@ -2779,6 +2780,11 @@ sub fee_types {
         }
         model($c, 'HousingType')->all();
     return \@fee_rows;
+}
+
+sub styled {
+    my ($fname) = @_;
+    return -f 'new_site'? "new_tt2/$fname": $fname;
 }
 
 1;

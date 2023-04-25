@@ -11,7 +11,10 @@ use Template;
 use JSON qw/
     decode_json
 /;
-use Util 'JON';
+use Util qw/
+    styled
+    JON
+/;
 use Data::Dumper;
 
 # see Net::Stripe on CPAN
@@ -118,7 +121,7 @@ EOH
         # could be an invalid email address...
         # or what?
         Template->new(INTERPOLATE => 1)->process(
-            'err.tt2',
+            styled('err.tt2'),
             {
                 back => 1,
                 err  => $href->{error}{message},
