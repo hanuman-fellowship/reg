@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use CGI;
+my $q = CGI->new();
+print $q->header();
+print <<'EOH';
+<style>
+body {
+    margin: .5in;
+    font-size: 30pt;
+}
+</style>
+EOH
+my $fname = '/tmp/new_site';
+if (-f $fname) {
+    unlink $fname or print "no unlink!!: $!";
+    print "Using Sahadev plain styling.";
+}
+else {
+    open my $out, '>', $fname;
+    close $out;
+    print "Using Enio, Lara, Robyn styling.";
+}

@@ -2784,7 +2784,7 @@ sub fee_types {
 
 sub styled {
     my ($fname) = @_;
-    return -f 'new_site'? "new_tt2/$fname": $fname;
+    return -f '/tmp/new_site'? "new_tt2/$fname": $fname;
 }
 
 1;
