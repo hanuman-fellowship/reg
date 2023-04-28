@@ -15,7 +15,7 @@ EOH
 my $fname = '/tmp/new_site';
 if (-f $fname) {
     unlink $fname or print "no unlink!!: $!";
-    print "Using Sahadev plain styling.";
+    print "Using Sahadev styling.";
 }
 else {
     open my $out, '>', $fname;
