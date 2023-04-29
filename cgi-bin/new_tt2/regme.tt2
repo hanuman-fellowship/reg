@@ -1,56 +1,46 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<script type='text/javascript'
-        src='//code.jquery.com/jquery-1.8.3.js'></script>
-<link rel="stylesheet"
-      href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
-<script type='text/javascript'
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's JS -->
 <script type='text/javascript'>
 \$(function(){
     \$('.input-group.date').datepicker({
         calendarWeeks: true,
         todayHighlight: true,
         autoclose: true,
-        startDate: '$startDate',
-        endDate: '$endDate',
+        startDate: '$start_date',
+        endDate: '$end_date',
         datesDisabled: [ $disabled ],
     });
 });
 </script>
-<link rel="stylesheet" href="/static/cgi.css">
+<!-- // page's JS -->
+
+
 </head>
 <body>
-<!--
-see this site:
-https://www.jquery-az.com/bootstrap-datepicker-set-up-guide-with-8-online-demos-and-code/
--->
-<img src='/static/images/mmc-teal.png' width=200>
-<p>
-<h1>Mountain Experience Registration</h1>
-The cost for the day is \$${ME_cost}.
-<br>
-Available only on ${weekdays} and some holidays.
-<br>
-Reservations must be made at least 48 hours in advance.
-<p>
-Mountain Experience bookings cannot be made
-more than 90 days in advance.
-[% IF noME.0 %]
-    Due to other onsite programming, the following dates
-    are not available for Mountain Experience bookings:
-    <p>
-    <ul>
-    [% FOR d IN noME %]
-        <li>$d</li>
-    [% END %]
-    </ul>
-[% END %]
-<form name=form action=reg1 method=get>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
+            <h1>Mountain Experience Registration</h1>
+            <div class="info-box">
+                <p>
+                    The cost for the day is \$${ME_cost}.<br>
+                    Available only on ${week_days} and some holidays.<br>
+                    Reservations must be made at least 48 hours in advance.<br>
+                    Mountain Experience bookings cannot be made more than 90 days in advance. Due to other onsite programming, the following dates are not available for Mountain Experience bookings:
+                </p>
+                <ul>
+                    [% FOR d IN noME %]
+                        <li>$d</li>
+                    [% END %]
+                </ul>
+            </div>
+
+
+<form name=form action=reg1 method=get class="regs-form">
 <input type=hidden name=id value=0>
 <input type=hidden name=dir value=pr>
 <input type=hidden name=mountain_experience value=1>
@@ -87,12 +77,23 @@ Guided Walk (11:30 am-12:30 pm)</label><br>
 <p>
 If you are bringing children enter their names and ages here:<br>
 <input type=text size=30 name=children_name_age>
-<span style="color: #aaaaaa">&nbsp;For example: Nandini 5, Elliott 8</span><br>
-Children 4 years and under are welcome free of charge;<br>
-for 5-12 years old, fees are discounted 50%.<br>
-Older children should be registered separately.
-<p>
-<button type="submit">Submit</button>
+<span style="color: #aaaaaa">&nbsp;For example: Nandini 5, Elliott 8</span>
+
+<!-- added a box for content -->
+<div class="info-box">
+    <p>
+        Children 4 years and under are welcome free of charge;<br>
+        for 5-12 years old, fees are discounted 50%.<br>
+        Older children should be registered separately.
+    </p>
+</div>
+
+<!-- ADDED a class to the button -->
+<input class="sub-button" type=submit id=submit value='Submit'>
 </form>
+
+
+            <!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

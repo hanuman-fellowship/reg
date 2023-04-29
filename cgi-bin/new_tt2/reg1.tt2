@@ -1,13 +1,12 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's JS -->
 <script>
 var fields = [
-[% IF basicfull %]
-    { id: 'radio', name: 'progchoice',
-                   err: 'How many days to attend?' },
-[% END %]
+
     { id: 'first', regexp: '\\S',
                    err: 'Missing First Name' },
     { id: 'last', regexp: '\\S',
@@ -30,13 +29,13 @@ var fields = [
                      err: 'Invalid Email address' },
     { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' }
-[% IF ! housing_not_needed %]
+
 ,
     { id: 'radio', name: 'house1',
                    err: 'Missing 1st Housing Choice' },
     { id: 'radio', name: 'house2',
                    err: 'Missing 2nd Housing Choice' }
-[% END %]
+
 ];
 function check_form() {
     if (!check_fields()) {
@@ -65,17 +64,28 @@ function check_form() {
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 <script type='text/javascript' src='/static/js/popup.js'></script>
+<!-- // page's JS -->
+
+
 </head>
 <body>
-<form autocomplete="off"
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
+
+            
+
+            <form autocomplete="off"
       method=POST
       action="/cgi-bin/reg2"
       onSubmit="return check_form();"
       enctype="multipart/form-data"
->
+      class="regs-form">
 
-<img src='/static/images/mmc-teal.png' width=200>
-<h3>Program Information</h3>  
+
+<h3>Program Information</h3>
+<!-- added a box to frame the info -->
+<div class="info-box">
 <span class=required>*</span> marks required fields<p>
 [% IF mountain_experience %]
     You are registering for a Mountain Experience.
@@ -146,6 +156,8 @@ function check_form() {
     <p>
     $reg_msg
 [% END %]
+
+</div>
 
 <input type=hidden value="$title" name=title>
 <input type=hidden value="$dates" name=dates>
@@ -223,7 +235,7 @@ function check_form() {
 
 <h3>Registrant Information</h3>  
 
-<table cellpadding=5>
+<table cellpadding=5 class="fields-table">
 
 <tr>
 <th><span class=required>*</span> First Name:</th>
@@ -464,10 +476,14 @@ If you only want a certificate of completion enter COMP for the license #.
     </ul>
 [% END %]
 
+
 <h3>Gift Card</h3>  
-<ul>
-<b>Gift Card code for Payment:</b>
-<input type=text name=gift_card id=gift_card> 
+<!-- CHANGED THE UL to add list items and a class -->
+<ul class="ul-fields">
+    <li>
+        <b>Gift Card code for Payment:</b>
+        <input type=text name=gift_card id=gift_card> 
+    </li>
 </ul>
 
 [% IF discount_code %]
@@ -499,31 +515,38 @@ If you only want a certificate of completion enter COMP for the license #.
 [% END %]
 
 <p>How did you <b>first hear</b> about this program?</p>
-<ul>
-<label><input type=radio name=howHeard id=howHeard1 value=mmc_mmi_newsletter>
-     Mount Madonna Center or Institute Newsletter</label><br>
-<label><input type=radio name=howHeard id=howHeard2 value=hfs_newsletter>
-     Hanuman Fellowship Newsletter</label><br>
-<label><input type=radio name=howHeard id=howHeard3 value=temple_newsletter>
-     Temple Newsletter</label><br>
-<label><input type=radio name=howHeard id=howHeard4 value=social_media>
-     Social Media</label><br>
-<label><input type=radio name=howHeard id=howHeard5 value=radio>
-     Radio</label><br>
-<label><input type=radio name=howHeard id=howHeard6 value=print_ad>
-     Print Ad or Poster</label><br>
-<label><input type=radio
-       name=howHeard
-       id=howHeard7
-       value=ad
-       onclick="document.getElementById('adsource').focus();"
-> Other:</label>
-<input name=adsource
-       id=adsource
-       type=text
-       size=30
-       onfocus="document.getElementById('howHeard7').checked = true;"
->
+<!-- CHANGED THE UL to add list items and a class -->
+<ul class="ul-radios">
+    <li>
+        <label><input type=radio name=howHeard id=howHeard1 value=mmc_mmi_newsletter>Mount Madonna Center or Institute Newsletter</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard2 value=hfs_newsletter>Hanuman Fellowship Newsletter</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard3 value=temple_newsletter>Temple Newsletter</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard4 value=social_media>Social Media</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard5 value=radio>Radio</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard6 value=print_ad>Print Ad or Poster</label>
+    </li>
+    <li>
+        <label><input type=radio
+           name=howHeard
+           id=howHeard7
+           value=ad
+           onclick="document.getElementById('adsource').focus();"> Other:</label>
+            <input name=adsource
+           id=adsource
+           type=text
+           size=30
+           onfocus="document.getElementById('howHeard7').checked = true;">
+    </li>
 </ul>
 
 <p>Shall we keep you <b>informed</b> of events at Mount Madonna Center?</p>
@@ -555,8 +578,9 @@ You may share my address with MMC affiliates.</label><br>
 
 <h3>Donation</h3>  
 <!-- used to be for ecological projects -->
-<ul>
-<div style="width: 700px">
+
+<!-- added a box to frame the info -->
+<div class="info-box">
 As we work to recover from Covid closures and related expenditures,
 we invite you to consider making a donation to Mount Madonna Center.
 Your gift will support stewardship of this vibrant learning community,
@@ -564,12 +588,18 @@ inspirational environment, and sacred land.
 Mount Madonna Center is a 501(c)(3) charitable organization.
 EIN #51-0174679.
 </div>
-<p>
-Amount:
-<input type=text name=green_amount id=green_amount class="input">
+
+<!-- CHANGED THE UL to add list items -->
+<ul class="ul-fields">
+    <li>
+        <b>Amount</b>
+        <input type=text name=green_amount id=green_amount class="input">
+    </li>
 </ul>
 
 <h3>Dietary Restrictions</h3>  
+
+<!-- CHANGED THE UL to add list items -->
 <ul>
 Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
 <p>
@@ -601,6 +631,8 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
 </div>
 
 <h3>Important Notes</h3>  
+<!-- added a box to frame the info -->
+<div class="info-box">
 <ul>
 [% IF ! children_welcome && ! housing_not_needed %]
     <li>This program is for adults only - please do not bring your children.
@@ -620,8 +652,14 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
 [% END %]
 </ul>
 
-<input style="background: lightgreen" type=submit id=submit value='Submit'>
+</div>
+
+<!-- ADDED a class to the button -->
+<input class="sub-button" type=submit id=submit value='Submit'>
 
 </form>
+
+            <!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

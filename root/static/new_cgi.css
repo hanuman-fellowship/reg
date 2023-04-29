@@ -413,7 +413,7 @@ a.ulwhite:hover::before {
   color:white; 
   text-align:right;
   padding-right: 2em;
-  background-image: url('2px-double-line-b.png');
+  background-image: url('/static/images/2px-double-line-b.png');
   background-repeat: repeat-y;
   background-position: right;
   }
@@ -450,12 +450,12 @@ a.ulwhite:hover::before {
   position:fixed;
   width:100%;
   height:100%;
- background:url('woods-tree-ground.jpg') center no-repeat transparent;
+ background:url('/static/images/woods-tree-ground.jpg') center no-repeat transparent;
   background-size:cover;
 }
 /* footer */
 .xfooter {
-    background: #FFFDF4 url("mm-footer-bg.svg");    
+    background: #FFFDF4 url("/static/images/mm-footer-bg.svg");    
     background-repeat: no-repeat;
     background-position: left top;
     background-size: cover;

@@ -1,0 +1,774 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<!-- styles -->
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" >
+<link rel="stylesheet" href="cgi.css">
+<!-- JS -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+
+<script type="text/javascript" src="app.js"></script>
+
+
+<!-- page's JS -->
+<script>
+var fields = [
+
+    { id: 'first', regexp: '\\S',
+                   err: 'Missing First Name' },
+    { id: 'last', regexp: '\\S',
+                   err: 'Missing Last Name' },
+    { id: 'radio', name: 'sex',
+                   err: 'Missing Gender Identity' },
+    { id: 'pronouns',  regexp: '\\S',
+                   err: 'Missing Pronouns' },
+    { id: 'addr1',  regexp: '\\S',
+                      err: 'Missing Street Address' },
+    { id: 'city',  regexp: '\\S',
+                   err: 'Missing City' },
+    { id: 'st_prov',  regexp: '\\S',
+                    err: 'Missing State' },
+    { id: 'zip_post',  regexp: '\\S',
+                    err: 'Missing Zip Code' },
+    { id: 'cell',    regexp: '^[0-9 -.()]+$',
+                     err: 'Invalid Phone number' },
+    { id: 'email1',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*$',
+                     err: 'Invalid Email address' },
+    { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*$',
+                     err: 'Invalid Email address' }
+
+,
+    { id: 'radio', name: 'house1',
+                   err: 'Missing 1st Housing Choice' },
+    { id: 'radio', name: 'house2',
+                   err: 'Missing 2nd Housing Choice' }
+
+];
+function check_form() {
+    if (!check_fields()) {
+        return false;
+    }
+
+    var em1 = document.getElementById('email1').value;
+    var em2 = document.getElementById('email2').value;
+    if (em1 == em2) {
+        return true;
+    }
+    alert("Emails don't match.");
+    return false;
+}
+</script>
+<script type='text/javascript' src='/static/js/check_fields.js'></script>
+<script type='text/javascript' src='/static/js/popup.js'></script>
+<!-- // page's JS -->
+
+
+</head>
+<body>
+    <!-- Back to top button -->
+    <a id="bttbutton"></a>
+    <!-- HEADER -->
+    <!-- top row -->
+    <div class="xlayer darkred">
+        <div class="container">
+            <ul class="top-menu">
+                <li><a href="#" class="ulwhite">Contact Us</a></li>
+                <li><a href="#" class="ulwhite">Newsletter Signup</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- / top row -->
+    <!-- top banner -->
+    <div>
+        <!-- banner -->
+        
+          <div id="banner-container">
+            <!-- the banner setup -->
+            <div id="banner-parallax"></div>
+
+            <div id="banner-text">
+              
+              <p class="h1">REGISTRATION</p>
+              <p class="h3">SUBMIT YOUR REGISTRATION HERE</p>
+              <p>at Mount Madonna, California</p>
+            </div>
+            <!-- // the banner setup -->
+            
+          </div>
+          
+        <!-- //banner -->
+        <!-- top nav -->
+                <div class="nav-holder navbg">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                                <!-- logo holder -->
+                                <div class="logo-holder">
+                                    <a href="https://mountmadonna.org"><img class="visible-xs visible-sm" src="mm-logo-mobile.png" alt="Mount Madonna Center" title="Mount Madonna Center"> <img class="visible-md visible-lg" src="mount-madonna-logo.png" alt="Mount Madonna Center" title="Mount Madonna Center"></a>
+                                </div>
+                                <!-- // logo holder -->
+                            </div>
+                            <div class="col-xs-6 col-sm-8 col-md-9 col-lg-9">
+                                <div class="visible-xs visible-sm" style="position: relative;">
+                                    <!-- mobile nav button -->
+                                    <a class="selectors">
+                                        <div class="icon-wrapper">
+                                            <span class="bar-icon"></span>
+                                            <span class="bar-icon"></span>
+                                            <span class="bar-icon"></span>
+                                        </div>
+                                    </a>
+                                    <!-- // mobile nav button -->
+                                    <!-- mobile nav -->
+                                    <div class="mobile-menu">
+                                        <ul>
+                                            <li class="slide-in"><a href="#">Visit</a></li>
+                                            <li class="slide-in"><a href="#">Study</a></li>
+                                            <li class="slide-in"><a href="#">Online</a></li>
+                                            <li class="slide-in"><a href="#">Venue</a></li>
+                                            <li class="slide-in"><a href="#">Calendar</a></li>
+                                            <li class="slide-in"><a href="#">About</a></li>
+                                            <li class="slide-in"><a href="#">Donate</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- // mobile nav -->
+                                </div>
+                                <div class="visible-md visible-lg">
+                                    <!-- desktop nav -->
+                                    <div class="desktop-menu">
+                                        <ul class="">
+                                            <li ><a href="#">Visit</a></li>
+                                            <li ><a href="#">Study</a></li>
+                                            <li ><a href="#">Online</a></li>
+                                            <li ><a href="#">Venue</a></li>
+                                            <li ><a href="#">Calendar</a></li>
+                                            <li ><a href="#">About</a></li>
+                                            <li ><a href="#">Donate</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- // desktop nav -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- // top nav ending -->
+    </div>
+    <!-- / top banner -->
+    <!-- // HEADER -->
+    <div class="body-content">
+        <div class="container">
+            <!-- PAGE CONTENT BEGINS HERE -->
+
+
+            
+
+            <form autocomplete="off"
+      method=POST
+      action="/cgi-bin/reg2"
+      onSubmit="return check_form();"
+      enctype="multipart/form-data"
+      class="regs-form">
+
+
+<h3>Program Information</h3>
+<!-- added a box to frame the info -->
+<div class="info-box">
+    <span class=required>*</span> marks required fields<p>
+
+    You are registering for:
+    <dl>
+    <dt><b>Program:</b></dt>
+    <dd>Tamalpa Experience with Daria Halprin</dd>
+
+    <dt><b>Dates:</b></dt>
+    <dd>June  4-8</dd>
+
+    
+    </dl>
+
+        <p>
+        The prices below are the Total charges for lodging, meals,
+        and use of facilities.</p>
+</div>
+
+    
+    
+
+
+
+
+
+<input type=hidden value="Tamalpa Experience with Daria Halprin" name=title>
+<input type=hidden value="June  4-8" name=dates>
+<input type=hidden value="" name=leader_names>
+<input type=hidden value="Tamalpa Experience with Daria Halprin  6/23" name=name>
+<input type=hidden value="4809" name=pid>
+<input type=hidden value="" name=mountain_experience>
+
+
+
+
+    <input type=hidden name=progchoice value=basic>
+    
+
+
+<input type=hidden name=covid_vax value=>
+
+
+
+<h3>Registrant Information</h3>  
+
+<table cellpadding=5 class="fields-table">
+
+<tr>
+<th><span class=required>*</span> First Name:</th>
+<td><input type="text" size=25 name="first" id="first" value=""></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> Last Name:</th>
+<td><input type="text" size=25 name="last" id="last" value=""></td>
+</tr>
+
+<tr>
+<th>Alternate Name:</th>
+<td><input type="text" size=25 name="sanskrit" id="sanskrit"
+           value=""
+           placeholder="For name tag"/>
+           <span class=help>Defaults to First</span>
+</td>
+</tr>
+
+<tr>
+<th valign=top>
+<span id=sex1></span>
+<span class=required>*</span> Gender Identity:</th> 
+<td>
+<label><input type=radio name="sex"  value="female"> Woman</label><br> 
+
+<label><input type=radio name="sex"  value="male"> Man</input></label><br>
+
+<label><input type=radio name="sex"  value="trans"> Transgender</label></label><br>
+
+<label><input type=radio name="sex"  value="non_binary"> Non-binary/non-conforming</label><br>
+
+<label><input type=radio name="sex"  value="no_resp"> Prefer not to respond</label><br>
+<a href="javascript:popup('/static/help/gender.html', 190, 350);">How does my choice affect my housing?</a>
+</td>
+</tr>
+<tr>
+<th valign=top>
+<span class=required>*</span> Pronouns:
+</th>
+<td>
+<input type=text size=25 name="pronouns" id="pronouns"
+       value=""
+       placeholder="To appear on name tag"> 
+<br><a href="javascript:popup('/static/help/pronouns.html', 220, 390);">Why pronouns matter</a>
+</td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> Street 1:</th>
+<td><input type="text"
+       size=25 name="addr1"
+       id="addr1"
+       value="">
+</td>
+</tr>
+
+<tr>
+<th>Street 2:</th>
+<td><input type="text" size=25 name="addr2" id="addr2" value=""></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> City:</th>
+<td><input type="text" size=25 name="city" id="city" value=""/></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> State/Province:</th>
+<td><input type="text" size=25 name="st_prov" id="st_prov" value=""/></td>
+</tr>
+
+<tr>
+<th><span class=required>*</span> Zip/Postal Code:</th>
+<td><input type="text" size=25 name="zip_post" id="zip_post" value=""/></td>
+</tr>
+
+<tr>
+<th>Country:</th>
+<td><input type="text" size=25 name="country" id="country" value=""/>
+<span class=help>Defaults to USA</span>
+</td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Telephone:</th>
+<td><input type="text" size=25 name="cell" id="cell" value=""/></td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Email:</th>
+<td><input type="text" size=25 name="email1" id="email1" value=""/></td>
+</tr>
+
+<tr>
+<th><span class="required">*</span> Email Again:</th>
+<td><input type="text" size=25 name="email2" id="email2" value=""/>
+<span class=help>Repeated to be sure it is right</span>
+</td>
+</tr>
+
+
+    <tr>
+    <th>Car License:</th>
+    <td><input type="text" size=25 name="car_license" id="car_license" value=""/>
+    <span class=help>If you are driving to MMC.</span></td>
+    </tr>
+
+</table>
+
+
+
+    
+    <h3>Housing Choice</h3>  
+    <!-- added a box to frame the info -->
+    <div class="info-box">
+        <ul>
+            <li>
+                <span class=required>*</span> Indicate your <b>first</b> <i>and</i> <b>second</b> choices for housing.
+            </li>
+            <li>
+                We will do our best to honor your choices. If neither is available, we will assign the next best option,     and waitlist you.
+            </li>
+            <li>
+                Prices are the Total charge including lodging, meals, and use of facilities.
+            </li>
+            <li>
+                Camp sites are walk-in style with parking nearby.
+            </li>
+            <li>
+                If you have a <b>physical disability</b> that limits where you can be housed, please note this in &ldquo;Additional Requests&rdquo; below.
+            </li>
+            <li>
+                All individuals must be registered separately.
+            </li>
+        </ul>
+    </div>
+    <div style='margin-left: .4in'>
+
+    <ul>
+    <span id=house11></span>
+    <span id=house21></span>
+
+    <!-- added two classes to this table with radio inputs -->
+
+    <table cellpadding=4 class="options-table reg-pricetb">
+
+    <tr>
+    <th>1st</th>
+    <th>2nd</th>
+    <th class=lt>Housing Type</th>
+    <th>Cost</th>
+    </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='single_cottage1' ></td>
+        <td><input type=radio name=house2 value='single_cottage1' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/single_cottage1/1070/Total',650,500)">Ram Cottage #1 - 2 Bedrooms, 1 full bath<br>Single occupancy per room</a></td>
+        <td align=right>1070</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='dble_cottage1' ></td>
+        <td><input type=radio name=house2 value='dble_cottage1' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/dble_cottage1/790/Total',650,500)">Ram Cottage #1, 2 Bedrooms, 1 full bath, Double occupancy per room </a></td>
+        <td align=right>790</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='single_cottage2' ></td>
+        <td><input type=radio name=house2 value='single_cottage2' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/single_cottage2/870/Total',650,500)">Ram Cottage #2 -  3 bedrooms, 1 full bath shared, Single occupancy per room </a></td>
+        <td align=right>870</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='dble_cottage2' ></td>
+        <td><input type=radio name=house2 value='dble_cottage2' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/dble_cottage2/670/Total',650,500)">Ram Cottage #2, 3 bedrooms, shared bath, double occupancy per room</a></td>
+        <td align=right>670</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='single_bath' ></td>
+        <td><input type=radio name=house2 value='single_bath' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/single_bath/1070/Total',650,500)">Conference Center - Single occupancy, Private Bath</a></td>
+        <td align=right>1070</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='single' ></td>
+        <td><input type=radio name=house2 value='single' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/single/870/Total',650,500)">Single, Shared Bath</a></td>
+        <td align=right>870</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='single_cabin' ></td>
+        <td><input type=radio name=house2 value='single_cabin' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/single_cabin/758/Total',650,500)">Single Cabin, Shared Bath</a></td>
+        <td align=right>758</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='dble_bath' ></td>
+        <td><input type=radio name=house2 value='dble_bath' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/dble_bath/790/Total',650,500)">Double, Private Bath</a></td>
+        <td align=right>790</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='dble' ></td>
+        <td><input type=radio name=house2 value='dble' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/dble/670/Total',650,500)">Double, Shared Bath</a></td>
+        <td align=right>670</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='dble_cabin' ></td>
+        <td><input type=radio name=house2 value='dble_cabin' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/dble_cabin/642/Total',650,500)">Double Cabin, Shared Bath</a></td>
+        <td align=right>642</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='triple' ></td>
+        <td><input type=radio name=house2 value='triple' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/triple/550/Total',650,500)">Triple, Shared Bath</a></td>
+        <td align=right>550</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='own_tent' ></td>
+        <td><input type=radio name=house2 value='own_tent' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/own_tent/362/Total',650,500)">Your Own Tent</a></td>
+        <td align=right>362</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='own_van' ></td>
+        <td><input type=radio name=house2 value='own_van' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/own_van/362/Total',650,500)">Your Own Vehicle</a></td>
+        <td align=right>362</td>
+        </tr>
+    
+        <tr>
+        <td><input type=radio name=house1 value='commuting' ></td>
+        <td><input type=radio name=house2 value='commuting' ></td>
+        <td><a href="javascript:popup('/cgi-bin/show_ht/commuting/314/Total',650,500)">Commuting</a></td>
+        <td align=right>314</td>
+        </tr>
+    
+    </table>
+    </ul>
+
+    <p>If you are <b>sharing</b> your housing with someone, put their name here:</p>
+    <!-- CHANGED THE UL to add list items and a class -->
+    <ul class="ul-fields">
+        <li>
+            <b>First:</b>
+            <input type=text name="withwhom_first" id="withwhom_first" value="">
+            <span>Make sure that they register <i>separately</i>.</span>
+        </li>
+        <li>
+            <b>Last:</b>
+            <input type=text name="withwhom_last" id="withwhom_last" value="">
+        </li>
+    </ul>
+
+    
+        <p>If given a <b>choice</b>, would you prefer a cabin or a room?
+        <ul class=space>
+        <input type=radio name=cabin_room id=cabin_room1 value=cabin 1>
+        <b>Cabin</b> - heat and electricity, but no indoor plumbing
+        <br>
+        <input type=radio name=cabin_room id=cabin_room2 value=room checked>  
+        <b>Room</b>
+        <br>
+        <a href="javascript:popup('/static/help/cabin-room.html',500,700)">What's the difference?</a></p> 
+        </ul>
+    
+
+    </div> <!-- indent for housing choice -->
+
+
+
+
+
+<h3>Gift Card</h3>  
+<!-- CHANGED THE UL to add list items and a class -->
+<ul class="ul-fields">
+    <li>
+        <b>Gift Card code for Payment:</b>
+        <input type=text name=gift_card id=gift_card> 
+    </li>
+</ul>
+
+
+
+<h3>Preferences</h3>  
+<div style='margin-left: .4in' class=space>
+
+
+    <b>Carpooling</b>
+    &nbsp;&nbsp;<a href="javascript:popup('/static/help/privacy.html',270,450)">Privacy Concerns?</a><p>
+    <ul>
+    <input type=checkbox name=hascar id=ride value=yes  onchange="toggle_from_where()">
+    I wish to offer a ride.<br>
+    <input type=checkbox name=carpool id=pool value=yes  onchange="toggle_from_where()">
+    I wish to carpool.<p>
+
+    <input type=radio name=from_where id=from_where1 value='Home' >
+    From Home</label><br>
+    <input type=radio name=from_where id=from_where2 value='SJC' >
+    From the San Jose airport<br>
+
+    <input type=radio name=from_where id=from_where3 value='SFO' >
+    From the San Francisco airport<br>
+    </ul>
+
+
+<p>How did you <b>first hear</b> about this program?</p>
+<!-- CHANGED THE UL to add list items and a class -->
+<ul class="ul-radios">
+    <li>
+        <label><input type=radio name=howHeard id=howHeard1 value=mmc_mmi_newsletter>Mount Madonna Center or Institute Newsletter</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard2 value=hfs_newsletter>Hanuman Fellowship Newsletter</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard3 value=temple_newsletter>Temple Newsletter</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard4 value=social_media>Social Media</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard5 value=radio>Radio</label>
+    </li>
+    <li>
+        <label><input type=radio name=howHeard id=howHeard6 value=print_ad>Print Ad or Poster</label>
+    </li>
+    <li>
+        <label><input type=radio
+           name=howHeard
+           id=howHeard7
+           value=ad
+           onclick="document.getElementById('adsource').focus();"> Other:</label>
+            <input name=adsource
+           id=adsource
+           type=text
+           size=30
+           onfocus="document.getElementById('howHeard7').checked = true;">
+    </li>
+</ul>
+
+<p>Shall we keep you <b>informed</b> of events at Mount Madonna Center?</p>
+<ul class=space>
+
+<label><input type=checkbox name=e_mailings id="e_mailings" value=yes > 
+Yes, send me occasional e-mail announcements.</label><br>
+
+<label><input type=checkbox name=snail_mailings id=snail_mailings value=yes >
+Yes, send me postcards and brochures in the mail.</label><br>
+
+<label><input type=checkbox name=share_mailings id=share_mailings value=yes >
+You may share my address with MMC affiliates.</label><br>
+</ul>
+
+
+    <b>Massage and other Bodywork</b><br>
+    <ul>
+    <!-- ?? move the image here -->
+    <a href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa' target=_blank><img src='/static/images/kkwc_logo.jpg'></a>
+
+    <br><input type=checkbox name=kayakalpa id=kayakalpa value='yes'>
+    Please contact me regarding 
+    <a target=_blank href='https://www.mountmadonnainstitute.org/health-services/kaya-kalpa'>massage and other bodywork</a> during my stay.
+    </ul>
+
+
+</div>  <!-- indent for preferences -->
+
+<h3>Donation</h3>  
+<!-- used to be for ecological projects -->
+
+<!-- added a box to frame the info -->
+<div class="info-box">
+As we work to recover from Covid closures and related expenditures,
+we invite you to consider making a donation to Mount Madonna Center.
+Your gift will support stewardship of this vibrant learning community,
+inspirational environment, and sacred land.
+Mount Madonna Center is a 501(c)(3) charitable organization.
+EIN #51-0174679.
+</div>
+
+<!-- CHANGED THE UL to add list items -->
+<ul class="ul-fields">
+    <li>
+        <b>Amount</b>
+        <input type=text name=green_amount id=green_amount class="input">
+    </li>
+</ul>
+
+<h3>Dietary Restrictions</h3>  
+
+<!-- CHANGED THE UL to add list items -->
+<ul>
+Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
+<p>
+<input type=text size=50 name=diet value="">
+</ul>
+
+<h3>Additional Requests</h3>  
+<div style='margin-left: .4in'>
+<!-- ?? confusing booleans here :( -->
+
+    
+        Include the following in your additional requests:
+    
+    <ul>
+    
+        <li>Arrival and/or departure dates if they differ from your program's.
+    
+    
+    </ul>
+
+<p>
+<textarea name="request" rows=5 cols=60  wrap=VIRTUAL></textarea>
+</div>
+
+<h3>Important Notes</h3>  
+<!-- added a box to frame the info -->
+<div class="info-box">
+    <ul>
+        <li>This program is for adults only - please do not bring your children.</li>
+        <li>Cancellations made at least 2 weeks before your reservation date are fully refundable. Cancellations made 2 weeks to 48 hours prior to arrival date will be charged a $50 processing fee and the remaining payment will be held as a credit toward a future personal retreat or program. There are no refunds for cancellations made less than 48 hours prior to your reservation date.</li>
+        <li>This form does not automatically reserve your spot for the program. If the program is full, your deposit will be refunded.</li>
+        <li>Housing is not always available. <b>Do not finalize your travel plans</b> until you have received a housing confirmation from Mount Madonna Center.</li>
+        <li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <i>programs@mountmadonna.org</i>. </li>
+    </ul>
+</div>
+
+<!-- ADDED a class to the button -->
+<input class="sub-button" type=submit id=submit value='Submit'>
+
+</form>
+
+
+
+
+
+            <!-- // PAGE CONTENT ENDS HERE -->
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="xfooter">
+        <!-- logo -->
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <a href="https://mountmadonna.org"><img class="logo" src="mm-logo-mobile.png" alt="Mount Madonna Center" title="Mount Madonna Center"></a>
+                </div>
+            </div>
+        </div>
+        <!-- // logo -->
+        <!-- contact - socials -->
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <div class="address">
+                        <p>Mount Madonna<br>
+                            445 Summit Road<br>
+                            Watsonville, CA 95076<br>
+                            United States<br>
+                            Overlooking the Monterey Bay<br>
+                            <span class="ftPhone">+1 408-847-0406</span><br>
+                            <span class="ftMail">reception@mountmadonna.org</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                    <h3>Enage with Us</h3>
+                    <!-- social media -->
+                    <ul class="socials">
+                        <li><a href="#"><img src="ic-smfb.svg" alt="Mount Madonna Facebook" title="Mount Madonna Facebook"></a></li>
+                        <li><a href="#"><img src="ic-smig.svg" alt="Mount Madonna Instagram" title="Mount Madonna Instagram"></a></li>
+                        <li><a href="#"><img src="ic-smli.svg" alt="Mount Madonna Linked In" title="Mount Madonna Linked In"></a></li>
+                        <li><a href="#"><img src="ic-smyt.svg" alt="Mount Madonna YouTube" title="Mount Madonna YouTube"></a></li>
+                        <li><a href="#"><img src="ic-corr.svg" alt="Contact Mount Madonna" title="Contact Mount Madonna"></a></li>
+                        <li><a href="#"><img src="ic-nlsg.svg" alt="Subscbribe to Newsletter" title="Subscbribe to Newsletter"></a></li>
+                    </ul>
+                    <!-- // social media -->
+                    <h4>380 Acres Serve as<br>
+                        The Touchstone for<br>
+                        Deepening your<br>
+                        Connection to Self.</h4>
+                </div>
+            </div>
+        </div>
+        <!-- // contact - socials -->
+        <!-- credits -->
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="credits">
+                        <p>© 1973 – 2023 | All rights reserved | <a class="ulwhite" href="#">Privacy Policy</a> | <a class="ulwhite" href="#">Terms of Use</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- // credits -->
+    </div>
+    <!-- // FOOTER -->
+
+    <!-- back to top JS -->
+
+    <script type="text/javascript">
+        // button back to top
+        var btn = $('#bttbutton');
+
+        $(window).scroll(function() {
+          if ($(window).scrollTop() > 300) {
+            btn.addClass('show');
+          } else {
+            btn.removeClass('show');
+          }
+        });
+
+        btn.on('click', function(e) {
+          e.preventDefault();
+          $('html, body').animate({scrollTop:0}, '300');
+        });
+
+        // parallax header effect
+
+        function parallax() {
+              var parallax = document.getElementById("banner-parallax");
+              parallax.style.top = -(window.pageYOffset / 2)+'px';
+            }
+
+            window.addEventListener("scroll", parallax, false);
+    </script>
+    
+</body>
+</html>
