@@ -12,13 +12,13 @@ body {
 }
 </style>
 EOH
-my $fname = '/tmp/new_site';
+my $fname = '/tmp/plain_style';
 if (-f $fname) {
     unlink $fname or print "no unlink!!: $!";
-    print "Using Sahadev styling.";
+    print "Using Enio, Lara, Robyn styling.";
 }
 else {
     open my $out, '>', $fname;
     close $out;
-    print "Using Enio, Lara, Robyn styling.";
+    print "Using Sahadev styling.";
 }
