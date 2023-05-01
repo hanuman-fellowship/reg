@@ -12,7 +12,7 @@ body {
 }
 </style>
 EOH
-my $fname = '/tmp/plain_style';
+my $fname = '/var/Reg/documents/plain_style';
 if (-f $fname) {
     unlink $fname or print "no unlink!!: $!";
     print "Using Enio, Lara, Robyn styling.";
