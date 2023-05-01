@@ -2784,7 +2784,7 @@ sub fee_types {
 
 sub styled {
     my ($fname) = @_;
-    return -f '/var/Reg/documents/plain_site'? $fname: "new_tt2/$fname";
+    return -f '/var/Reg/documents/plain_style'? $fname: "new_tt2/$fname";
 }
 
 1;
