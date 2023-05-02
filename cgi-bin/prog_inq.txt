@@ -1,0 +1,105 @@
+font family - Calibri?
+------
+
+<h1>Inquiry Form<h1>
+
+Are you interested in hosting your special event at Mount Madonna
+Center? Please share some useful information below so that we can best
+field your inquiry and co-create a meaningful and successful program.
+
+* indicates fields that are required
+
+<h2>Contact Information</h2>
+
+* First Name
+
+* Last Name
+
+* Email
+
+* Your phone
+
+* Organization/Company/Group name
+
+Website URL
+
+* Event Name _________________
+
+Number of participants anticipated (15-200)
+    ???tiers
+
+Short description of retreat
+
+<h2>* Preferred Method of Communication ~ check one</h2>
+    Phone
+    Zoom
+    ??? Email?
+
+<h2>Dates</h2>
+
+    * Requested Date(s) Please specify days/month/year _____________
+    * Are your dates flexible?
+        - Yes - we may consider alternate dates.
+        - No - these dates are fixed.
+    Optional Dates & Notes:
+        ??? A text area?
+
+<h2>* Group Type ~ check one</h2>
+    - Non-Profit 
+    - BIPOC Organizations
+    - Educational Institution
+    - Foundation
+    - Business/Corporation
+    - Private Group
+    - Other (please specify)  ____________________
+    ??? more than one?
+
+<h2>* Event Type ~ check one</h2> 
+    - Yoga/wisdom/meditation retreat
+    - Business/Corporate wellbeing
+    - Educational event
+    - Training 
+    - Special Event
+    - Cultural/Spiritual/Religious event
+    - Other (please specify)  ____________________ 
+    ??? more than one?
+
+<h2>* Technical and Materials Needs ~ check all that apply</h2>
+    - High speed wifi
+    - Projector and screen
+    - Audio setup
+    - AV equipment support
+    - Hybrid (in-person/remote) set-up
+    - Chairs and tables
+    - Easel and whiteboards
+    - Backjacks (floor chairs)
+    - Yoga props
+    - Breakout Rooms
+    - Other (please specify)  ____________________
+
+<h2>What additional services are you interested in? ~ check all that apply</h2>
+    - Elevated coffee service
+    - Guided nature walks
+    - Yoga class 
+    - Meditation class
+    - Wellness center offerings
+    - Other: ______________________
+
+* Mount Madonna Center is a strict vegetarian community
+and does not allow alcohol, except for weddings and limited
+ceremonial purposes. Is that okay with you?
+    - Yes
+    - No
+
+Is there anything else you'd like to tell us about your event?
+
+* How did you learn about Mount Madonna Center?
+
+* May we add you to our mailing list? (Contact info is never sold to a
+third party)
+    - Yes
+    - No
+
+Thank you for your interest in hosting your event at Mount Madonna
+Center! We will review your inquiry form and plan to contact you within
+3 business days.
