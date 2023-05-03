@@ -61,7 +61,9 @@ $stash{noPR} = \@noPR;
 $stash{noPRindoors} = \@noPRindoors;
 my $today = today();
 my $start = $today + 2;
+my $end = $today + 90;
 $stash{startDate} = $start->format("%m/%d/%Y");
+$stash{endDate} = $end->format("%m/%d/%Y");
 $stash{disabled} = join ', ', map { qq!'$_'! } @disabled;
 
 Template->new(

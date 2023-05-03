@@ -26,14 +26,13 @@ Website URL
 * Event Name _________________
 
 Number of participants anticipated (15-200)
-    ???tiers
+    ???tiers (no - just required one number)
 
 Short description of retreat
 
-<h2>* Preferred Method of Communication ~ check one</h2>
+<h2>* As a next step, we would like to set up a discovery call. Would you prefer a phone call or Zoom meeting? ~ check one</h2>
     Phone
     Zoom
-    ??? Email?
 
 <h2>Dates</h2>
 
@@ -42,7 +41,7 @@ Short description of retreat
         - Yes - we may consider alternate dates.
         - No - these dates are fixed.
     Optional Dates & Notes:
-        ??? A text area?
+        ??? A text area? yes.
 
 <h2>* Group Type ~ check one</h2>
     - Non-Profit 
@@ -52,7 +51,7 @@ Short description of retreat
     - Business/Corporation
     - Private Group
     - Other (please specify)  ____________________
-    ??? more than one?
+    ??? more than one? no
 
 <h2>* Event Type ~ check one</h2> 
     - Yoga/wisdom/meditation retreat
@@ -62,7 +61,7 @@ Short description of retreat
     - Special Event
     - Cultural/Spiritual/Religious event
     - Other (please specify)  ____________________ 
-    ??? more than one?
+    ??? more than one? no
 
 <h2>* Technical and Materials Needs ~ check all that apply</h2>
     - High speed wifi

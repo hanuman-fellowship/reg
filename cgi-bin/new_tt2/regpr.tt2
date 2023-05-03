@@ -12,6 +12,7 @@
     \$('.input-daterange').datepicker({
         autoclose: true,
         startDate: '$startDate',
+        endDate: '$endDate',
         datesDisabled: [ $disabled ]
     });
 });
@@ -69,7 +70,8 @@ Please enter the dates of your personal retreat.
 <button type="submit">Submit</button>
 </form>
 <p>
-Reservations must be made at least 48 hours in advance.
+Reservations must be made at least 48 hours in advance<br>
+and cannot be made more than 90 days in advance.
 [% IF noPR.0 %]
     <p>
     Due to other onsite programming,
