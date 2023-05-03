@@ -14,10 +14,17 @@ use Util qw/
     styled
 /;
 my $c = db_init();
+my %stash;
+my $today = today();
+my $start = $today + 2;
+my $end = $today + 90;
+$stash{startDate} = $start->format("%m/%d/%Y");
+$stash{endDate} = $end->format("%m/%d/%Y");
 my (@events) = model($c, 'Event')->search(
     {
         name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>:]]' },
-        edate => { '>='   => today()->as_d8() },
+        sdate => { '<='   => $end->as_d8() },
+        edate => { '>='   => $today->as_d8() },
     },
     {
         order_by => 'sdate',
@@ -34,9 +41,12 @@ for my $ev (@events) {
             $s = $sdate->format("%B %e '%q");
         }
         else {
+            # sometimes %e has an undesireable leading space
+            my $t = $edate->format("%e '%q");
+            $t =~ s{\A \s*}{}xms;
             $s = $sdate->format("%B %e")
                . "-"
-               . $edate->format("%e '%q")
+               . $t
                ;
         }
     }
@@ -56,14 +66,8 @@ for my $ev (@events) {
         }
     }
 }
-my %stash;
 $stash{noPR} = \@noPR;
 $stash{noPRindoors} = \@noPRindoors;
-my $today = today();
-my $start = $today + 2;
-my $end = $today + 90;
-$stash{startDate} = $start->format("%m/%d/%Y");
-$stash{endDate} = $end->format("%m/%d/%Y");
 $stash{disabled} = join ', ', map { qq!'$_'! } @disabled;
 
 Template->new(
