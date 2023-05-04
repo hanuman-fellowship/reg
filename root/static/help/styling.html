@@ -1,0 +1,178 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" type="text/css" href="help.css" />
+</head>
+<body>
+<h1>Styling the cgi-bin Scripts</h1>
+
+<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/style'>Toggle the Styling between plain and fancy</a>
+
+<h2>Commands for login 'enio'</h2>
+    % tt2 - change into the /var/www/src/cgi-bin/new_tt2 directory<br>
+    % ec - edit the new_cgi.css file<br>
+    % ej - edit the app.js file
+
+<h2>Including header, footer, top_css_js files</h2>
+
+    [% INCLUDE new_tt2/top_css_js.tt2 %]<br>
+    [% INCLUDE new_tt2/header.tt2 %]<br>
+    [% INCLUDE new_tt2/footer.tt2 %]
+
+<h2>Examples of Template Toolkit syntax</h2>
+    Be careful to NOT alter these things!<br>
+    Dollar signs and [% %] are special syntax.
+    <p>
+    <h3>Interpolation</h3>
+    <pre>
+    Date: ${sdate.format("%A, %B %e, %Y")}
+    Meals: $meals
+    Activities: $activities
+    </pre>
+    <h3>Conditionals</h3>
+    <pre>
+    [% IF tuition_rolled %]
+        A $tuition_name charge of \$$tuition is <i>included</i>
+        in the total fees.
+    [% ELSIF basicfull %]
+        A $tuition_name charge of \$$tuition
+        (or \$$full_tuition for $fdays days) will be added.
+    [% ELSE %]
+        A $tuition_name charge of \$$tuition will be added.
+    [% END %]
+    </pre>
+    <h3>Looping</h3>
+    <pre>
+    [% cl_row = 'even' %]
+    [% FOR r IN housing_fee_rows %]
+        &lt;tr class=$cl_row&gt;
+        &lt;td&gt;&lt;input type=radio name=house1 value='$r.type' $r.checked1&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;input type=radio name=house2 value='$r.type' $r.checked2&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;a href="javascript:popup('/cgi-bin/show_ht/${r.type}/$r.cost/$housecost_type',650,500)"&gt;$r.short_desc&lt;/a&gt;&lt;/td&gt;
+        &lt;td align=right&gt;$r.cost&lt;/td&gt;
+        &lt;/tr&gt;
+        [% IF cl_row == 'even' %]
+            [% cl_row = 'odd' %]
+        [% ELSE %]
+            [% cl_row = 'even' %]
+        [% END %]
+    [% END %]
+    </pre>
+
+<h2>Special Templates</h2>
+There are 39 templates in the new_tt2 directory.
+<p>
+The following 18 templates will probably not be styled in the your 'standard’ header/footer way.  They are not the typical static html that the new site is largely composed of.  They are either simple error messages, or responses to a request or payment, or email messages, or are included in other templates, or some other reason….   I don’t know how you might want to style them or if they even need to be styled at all.
+<pre>
+    err.tt2
+    covid_thanks.tt2
+    gift_card_message.tt2
+    meal_request_receipt.tt2
+    member_message.tt2
+    mlist_msg.tt2
+    mr_err.tt2
+    need_email.tt2
+    new_hfs_member.tt2
+    new_hfs_email.tt2
+    member_msg.tt2
+    program_inquiry2.tt2
+    ram_conflict.tt2
+    reg_message.tt2
+    rental_payment_message.tt2
+    req_pay_message.tt2
+    update2.tt2
+    grid_htype.tt2 (this one may require special handling)
+</pre>
+
+
+<h2>Gift Cards</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/gift_card1'>https://akash2.mountmadonna.org/cgi-bin/gift_card1</a>
+<ul>
+	gift_card1.tt2<br>
+	gift_card2.tt2<br>
+	gift_card_message.tt2<br>
+	gift_card_email.tt2<br>
+
+</ul>
+<h2>Rental Grid</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/grid?code=vbkxhf'>https://akash2.mountmadonna.org/cgi-bin/grid?code=vbkxhf</a>
+<ul>
+	grid.tt2<br>
+	ram_conflict.tt2<br>
+	need_email.tt2<br>
+	ngrid.tt2<br>
+	sgrid.tt2<br>
+
+</ul>
+<h2>Rental Payments (deposit, invoice)</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/rental_payment?code=vbkxhf&type=deposit'>https://akash2.mountmadonna.org/cgi-bin/rental_payment?code=vbkxhf&type=deposit </a>
+    <ul>
+	rental_payment.tt2<br>
+	rental_payment_message.tt2<br>
+
+</ul>
+<h2>Personal Retreats</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/regPR'>https://akash2.mountmadonna.org/cgi-bin/regPR</a>
+    <ul>
+	regpr.tt2<br>
+	reg1.tt2<br>
+	reg2.tt2<br>
+	err.tt2<br>
+	reg_message.tt2<br>
+<p>
+	Program registrations follow a similar path without the initial PR page.
+
+</ul>
+<h2>Mountain Experience</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/regME'>https://akash2.mountmadonna.org/cgi-bin/regME</a>
+    <ul>
+
+	regme.tt2<br>
+    <p>
+	and the above for registration
+
+</ul>
+<h2>New HFS Membership</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/new_hfs_member'>https://akash2.mountmadonna.org/cgi-bin/new_hfs_member</a>
+    <ul>
+
+	new_hfs_member.tt2<br>
+	new_hfs_member2.tt2<br>
+	member_message.tt2<br>
+
+</ul>
+<h2>Renewing HFS Membership</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/omp?code=hnawdp'>https://akash2.mountmadonna.org/cgi-bin/omp?code=hnawdp</a>
+    <ul>
+
+	omp.tt2<br>
+
+</ul>
+<h2>MMI Mailing List</h2>
+
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/mlist'>https://akash2.mountmadonna.org/cgi-bin/mlist</a>
+    <ul>
+
+	mlist.tt2<br>
+	mlist_msg.tt2<br>
+
+</ul>
+<h2>Requested Payments for registrations</h2>
+
+    <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/req_pay?code=nqkjzy'>https://akash2.mountmadonna.org/cgi-bin/req_pay?code=nqkjzy</a>
+    <ul>
+
+	req_pay.tt2<br>
+	req_pay_message.tt2<br>
+</ul>
+<p>
+<p>
+</body>
+</html>

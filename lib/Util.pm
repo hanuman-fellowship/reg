@@ -2784,7 +2784,9 @@ sub fee_types {
 
 sub styled {
     my ($fname) = @_;
-    return -f '/var/Reg/documents/plain_style'? $fname: "new_tt2/$fname";
+    return   -f '/var/Reg/documents/plain_style'? $fname 
+           : -f '/var/www/src/cgi-bin/akash2'   ? "new_tt2/$fname"
+           :                                      $fname;
 }
 
 1;

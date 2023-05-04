@@ -200,7 +200,7 @@ function check_form() {
         [% FOR d IN date_names %]
             <label><input type=checkbox id=date$i name=date$i value=$i> $d</label><br>
             [% i = i + 1 %]
-            [% END %]
+        [% END %]
         </ul>
         <p>
     [% END %]
