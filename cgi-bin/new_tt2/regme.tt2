@@ -10,8 +10,8 @@
         calendarWeeks: true,
         todayHighlight: true,
         autoclose: true,
-        startDate: '$start_date',
-        endDate: '$end_date',
+        startDate: '$startDate',
+        endDate: '$endDate',
         datesDisabled: [ $disabled ],
     });
 });
