@@ -118,8 +118,8 @@ if ($@) {
 # in case a flyer/mailing needs to be sent
 # or a special request was given
 email_letter($c,
-    to      => 'jon.bjornstad@gmail.com',
-    #to      => get_string($c, 'reception_email'),  # ?? mmi ??
+    #to      => 'jon.bjornstad@gmail.com',
+    to      => get_string($c, 'reception_email'),
     from    => 'Mount Madonna Center <programs@mountmadonna.org>',
     subject => 'Online Mailing List Request',
     html    => $html,
