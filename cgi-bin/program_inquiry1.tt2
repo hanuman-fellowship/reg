@@ -63,7 +63,7 @@ function other_check(n1, n2, msg) {
 <link rel="stylesheet" href="/static/cgi.css">
 <style>
 body, input, textarea {
-    font-family: Calibri;
+    font-family: Calibri, Arial;
 }
 input, textarea {
     background: #ffffbb;
