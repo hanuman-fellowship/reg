@@ -26,17 +26,25 @@ td {
 
 <tr><th>Status</th><td><a href='/inquiry/change_status/$inquiry.id'>$inquiry.status_disp</a></td></tr>
 <tr><th>Postmark</th><td>${inquiry.the_date_obj.format("%D")} ${inquiry.the_time_obj.ampm}</td></tr>
-<tr><th>Leader Name</th><td><a target=_blank href='/person/view/$inquiry.person_id'>$inquiry.leader_name</a></td></tr>
-<tr><th>Phone</th><td>$inquiry.phone</td></tr>
+<tr><th>Leader Name</th><td><a target=_blank href='/person/view/$inquiry.person_id'>$inquiry.first $inquiry.last</a></td></tr>
 <tr><th>Email</th><td><a href='mailto:$inquiry.email'>$inquiry.email</a></td></tr>
+<tr><th>Phone</th><td>$inquiry.phone</td></tr>
 <tr><th>Group Name</th><td>$inquiry.group_name</td></tr>
-<tr><th>Dates Requested</th><td>$inquiry.dates</td></tr>
-<tr><th>Description</th><td>$inquiry.description</td></tr>
+<tr><th>Website</th><td>$inquiry.website</td></tr>
+<tr><th>Event Name</th><td>$inquiry.event_name</td></tr>
 <tr><th>How Many?</th><td>$inquiry.how_many</td></tr>
+<tr><th>Description</th><td>$inquiry.description</td></tr>
+<tr><th>Discovery Call</th><td>$inquiry.comm</td></tr>
+<tr><th>Dates Requested</th><td>$inquiry.dates</td></tr>
+<tr><th>Dates are Flexible</th><td>$inquiry.flexdates</td></tr>
+<tr><th>Optional Dates<br>and Notes</th><td>$inquiry.optdates</td></tr>
+<tr><th>Group Type</th><td>$inquiry.group_type</td></tr>
+<tr><th>Event Type</th><td>$inquiry.retreat_type</td></tr>
+<tr><th>Technical and Materials<br>Needs</th><td>$inquiry.needs</td></tr>
+<tr><th>Additional Services</th><td>$inquiry.services</td></tr>
 <tr><th>Vegetarian Okay?</th><td>$inquiry.vegetarian</td></tr>
-<tr><th>Retreat Type</th><td>$inquiry.retreat_type</td></tr>
-<tr><th>Needs</th><td>$inquiry.needs</td></tr>
-<tr><th>How did you<br>learn about MMC?</th><td>$inquiry.learn</td></tr>
 <tr><th>What Else?</th><td>$inquiry.what_else</td></tr>
+<tr><th>How did you learn<br>about MMC?</th><td>$inquiry.learn</td></tr>
+<tr><th>Mailing List?</th><td>$inquiry.mailing_list</td></tr>
 </table>
 </ul>

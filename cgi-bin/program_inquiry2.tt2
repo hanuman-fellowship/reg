@@ -2,27 +2,40 @@
 <head>
 <meta charset='UTF-8'>
 <link rel="stylesheet" href="/static/cgi.css">
+<style>
+th {
+    text-align: right;
+}
+th, td {
+    vertical-align: top;
+}
+</style>
 </head>
 <body>
+<h2>New Program Inquiry</h2>
+[% IF inquiry_id %]
+    <a target=_blank href='$reg/inquiry/view/$inquiry_id'>View the Inquiry in Reg</a>
+[% END %]
 <table cellpadding=4>
-<tr><th>Leader name</th><td>$leader_name</td></tr>
+<tr><th>First</th><td>$first</td></tr>
+<tr><th>Last</th><td>$last</td></tr>
 <tr><th>Phone</th><td>$phone</td></tr>
 <tr><th>Email</th><td><a href='mailto:$email'>$email</a></td></tr>
 <tr><th>Group name</th><td>$group_name</td></tr>
+<tr><th>Website</th><td>$website</td></tr>
+<tr><th>Event Name</th><td>$event_name</td></tr>
+<tr><th>How many people?</th><td>$how_many</td></tr>
+<tr><th>Description</th><td>$description</td></tr>
+<tr><th>Discovery Call</th><td>$comm</td></tr>
 <tr><th>Dates</th><td>$dates</td></tr>
-[% IF description %]
-    <tr><th>Description</th><td>$description</td></tr>
-[% END %]
-<tr><th>How many?</th><td>$how_many</td></tr>
+<tr><th>Dates are Flexible?</th><td>$flexdates</td></tr>
+<tr><th>Optional Dates and Notes:</th><td>$optdates</td></tr>
+<tr><th>Group Type</th><td>$group_type</td></tr>
+<tr><th>Retreat Type</th><td>$retreat_type</td></tr>
+<tr><th>Technical and Materials Needs</th><td>$needs</td></tr>
+<tr><th>Additional Services</th><td>$services</td></tr>
 <tr><th>Vegetarian okay?</th><td>$vegetarian</td></tr>
-[% IF retreat_type %]
-    <tr><th>Retreat Type</th><td>$retreat_type</td></tr>
-[% END %]
-[% IF needs %]
-    <tr><th>Needs</th><td>$needs</td></tr>
-[% END %]
-<tr><th>How did you<br>learn about MMC?</th><td>$learn</td></tr>
-[% IF what_else %]
-    <tr><th>What else?</th><td>$what_else</td></tr>
-[% END %]
+<tr><th>What else?</th><td>$what_else</td></tr>
+<tr><th>How did you learn about MMC?</th><td>$learn</td></tr>
+<tr><th>Mailing List?</th><td>$mailing_list</td></tr>
 </table>

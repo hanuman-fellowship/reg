@@ -7,6 +7,7 @@ my $q = CGI->new();
 print $q->header();
 
 use Template;
+my $tt = Template->new(INTERPOLATE => 1);
 
 use lib '../lib';
 use Date::Simple qw/
@@ -21,6 +22,7 @@ use Util qw/
     email_letter
     rand6
     styled
+    JON
 /;
 use Global qw/
     %string
@@ -30,7 +32,10 @@ my $c = db_init();
 init_string($c);
 
 sub add_update {
-    my ($first, $last, $phone, $email) = @_;
+    my ($first, $last, $phone, $email, $on_list) = @_;
+
+    # we have either a brand new person
+    # or a new person with the same name as one we already have.
     my @per = model($c, 'Person')->search({
         first => $first,
         last  => $last,
@@ -47,20 +52,19 @@ sub add_update {
             $per->update({
                 tel_cell => $phone,
                 email    => $email,
+                e_mailings => $on_list,
             });
             return $per->id();
         }
     }
-    # we have either a brand new person
-    # or a new person with the same name as one we already have.
     my $per = model($c, 'Person')->create({
         first => $first,
         last => $last,
         email => $email,
         tel_cell => $phone,
-        e_mailings => 'yes',
-        snail_mailings => 'yes',
-        share_mailings => 'yes',
+        e_mailings => $on_list,
+        snail_mailings => '',
+        share_mailings => '',
         deceased => '',
         inactive => '',
         secure_code => rand6($c),
@@ -71,21 +75,38 @@ sub add_update {
 }
 
 my %param = %{ $q->Vars() };
-for my $n (qw/ description what_else /) {
+for my $n (qw/ description optdates what_else /) {
     $param{$n} =~ s{\n}{<br>}xmsg;
 }
-if ($param{leader_name}) {
+if ($param{first}) {
+eval {
     for my $f (keys %param) {
         if ($param{$f} =~ m{\0}xms) {
-            my @arr = split "\0", $param{$f};
-            my $key = "other_$f";
-            if ($param{$key}) {
-                push @arr, $param{$key};
-            }
-            $param{$f} = join(', ', @arr);
+            # multiple checkboxes were checked
+            $param{$f} = join ', ', split "\0", $param{$f};
         }
     }
+
+    # special handling of the two Other checkboxes
+    if ($param{other_needs}) {
+        $param{needs} = join ', ', $param{needs}, $param{other_needs};
+        delete $param{on};
+    }
+    if ($param{other_services}) {
+        $param{services} = join ', ', $param{services}, $param{other_services};
+        delete $param{os};
+    }
+
+    # these two are radio not checkbox
+    if ($param{other_group_type}) {
+        $param{group_type} = $param{other_group_type};
+    }
+    if ($param{other_retreat_type}) {
+        $param{retreat_type} = $param{other_retreat_type};
+    }
     delete $param{other_needs};
+    delete $param{other_services};
+    delete $param{other_group_type};
     delete $param{other_retreat_type};
 
     # fix up the phone number
@@ -97,30 +118,53 @@ if ($param{leader_name}) {
     }
 
     # ensure capitalized leader name
-    my @terms = split ' ', $param{leader_name};
-    my $last = ucfirst pop @terms;
-    my $first = ucfirst join ' ', @terms;
-    $param{leader_name} = "$first $last";
+    my $first = ucfirst lc $param{first};
+    my $last  = ucfirst lc $param{last};
 
     # a Person record
-    $param{person_id} = add_update($first, $last, $phone, $param{email});
+    $param{person_id} = add_update($first, $last,
+                                   $phone, $param{email},
+                                   $param{mailing_list});
 
-    # and finally, in case you're adding a record yourself...
+    # in case you're adding a record yourself...
+    # and don't want an email about it
     my $no_email = 0;
     if ($param{what_else} =~ s{no\s*email}{}xms) {
         $no_email = 1;
     }
+
+    $param{leader_name} = ''; # obsoleted
     my $inquiry = model($c, 'Inquiry')->create({
         the_date => today()->as_d8(),
         the_time => get_time->t24(),
         %param,
     });
+
     my $inq_id = $inquiry->id();
-    $param{inquiry_id} = $inq_id;
-    my $msg = "Program Inquiry by <a href='/inquiry/view/$inq_id'>$param{leader_name}</a>";
+
+    my $msg = "Program Inquiry by <a href='/inquiry/view/$inq_id'>$first $last</a>";
+
     if (! $no_email) {
         my $html;
-        Template->new({INTERPOLATE => 1})->process(
+        $tt->process(
+            styled('program_inquiry2.tt2'),
+            \%param,
+            \$html,
+        );
+        # confirmation to the person
+        email_letter($c,
+            from    => 'notifications@mountmadonna.org',
+            to      => "$param{first} $param{last} <$param{email}>",
+            subject => 'MMC Program Inquiry',
+            html    => $html,
+            activity_msg => $msg,
+        );
+        # and to the office - with a link
+        $param{inquiry_id} = $inq_id;
+        $param{reg} = $string{cgi};
+        $param{reg} =~ s{/cgi-bin}{}xms;
+        my $html;
+        $tt->process(
             styled('program_inquiry2.tt2'),
             \%param,
             \$html,
@@ -128,8 +172,7 @@ if ($param{leader_name}) {
         email_letter($c,
             from    => 'notifications@mountmadonna.org',
             to      => $string{program_inquiry_email},
-            cc      => "$param{leader_name} <$param{email}>",
-            subject => "Program Inquiry from $param{leader_name}",
+            subject => "Program Inquiry from $param{first} $param{last}",
             html    => $html,
             activity_msg => $msg,
         );
@@ -141,7 +184,14 @@ if ($param{leader_name}) {
             ctime => get_time->t24(),
         });
     }
-    print "<div style='font-size: 18pt; margin: .5in; font-family: Arial'>Thank you.  We will be in touch.</div>\n";
+    $tt->process(
+        styled('program_inquiry3.tt2'),
+        {},     # no stash
+    );
+};
+if ($@) {
+    JON "failure: $@";
+}
 }
 else {
     Template->new({INTERPOLATE => 1})->process(

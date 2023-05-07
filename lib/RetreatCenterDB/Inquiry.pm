@@ -32,6 +32,16 @@ __PACKAGE__->add_columns(qw/
    status
    person_id
    rental_id
+   comm
+   mailing_list
+   first
+   last
+   website
+   event_name
+   flexdates
+   optdates
+   group_type
+   services
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -96,23 +106,33 @@ sub csv {
 __END__
 overview - Inquiries are filled out online and then a row is entered
     into this database table.  Better than a Proposal in a way.
+comm - Discovery call communication choice
 dates - what dates (roughly) are requested?
 description - brief description of the retreat
 email - email of the leader
+event_name - name of their event
+first - first name of leader
+flexdates - Are the dates flexible?
 group_name - name of the group
+group_type - type of the group
 how_many - size of the group
 id - unique id
+last - last name of leader
 learn - how did they learn of MMC?
-leader_name - name of leader
+leader_name - name of leader - OBSOLETE - first/last
+mailing_list - Add to mailing list?
 needs - various things they need
 notes - added by MMC after receiving the inquiry
+optdates - Optional dates and notes
 person_id - id of the Person record for the leader
 phone - phone number of the leader
 rental_id - if converted - the id of the rental
 retreat_type - type of retreat - possibly more than one
+services - additional services
 status - integer index into status array
     New, Contacted, Engaged, Denied by Host, Denied by MMC, Tentative, Rental
 the_date - the date the inquiry came in
 the_time - the time the inquiry came in
 vegetarian - boolean yes/'' - must be 'yes'
+website - URL of their website
 what_else - what else did they want us to know?

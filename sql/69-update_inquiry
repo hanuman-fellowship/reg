@@ -1,0 +1,10 @@
+alter table inquiry add column first varchar(128);
+alter table inquiry add column last varchar(128);
+alter table inquiry add column mailing_list char(3);
+alter table inquiry add column website varchar(128);
+alter table inquiry add column event_name varchar(128);
+alter table inquiry add column comm varchar(16);
+alter table inquiry add column flexdates varchar(3);
+alter table inquiry add column optdates varchar(512);
+alter table inquiry add column group_type varchar(64);
+alter table inquiry add column services varchar(512);

@@ -3,101 +3,226 @@
 <meta charset='UTF-8'>
 <script>
 var fields = [
-    { id: 'leader_name', regexp: '\\S',
-                    err: 'Missing Leader Name' },
-    { id: 'phone',  regexp: '^[0-9 -.()]+\$',
-                    err: 'Invalid Phone number' },
+    { id: 'first', regexp: '\\S',
+                    err: 'Missing First Name' },
+    { id: 'last', regexp: '\\S',
+                    err: 'Missing Last Name' },
     { id: 'email',  regexp: '^\\s*\\S+[@]\\S+\\s*\$',
                     err: 'Invalid Email address' },
+    { id: 'phone',  regexp: '^[0-9 -.()]+\$',
+                    err: 'Invalid Phone number' },
     { id: 'group_name',  regexp: '\\S',
                          err: 'Missing Group Name' },
+    { id: 'event_name',  regexp: '\\S',
+                         err: 'Missing Event Name' },
+    { id: 'how_many',  regexp: '\\d+',
+                         err: 'Missing Number of Participants' },
+    { id: 'radio', name: 'comm', err: 'Phone or Zoom for Discovery Call?' },
     { id: 'dates',  regexp: '\\S',
                     err: 'Missing Dates' },
-    { id: 'radio', name: 'how_many',   err: 'How many participants?' },
+    { id: 'radio', name: 'flexdates', err: 'Are your dates flexible?' },
+    { id: 'radio', name: 'group_type', err: 'What is your Group Type?' },
+    { id: 'radio', name: 'retreat_type', err: 'What is the Event Type?' },
+    { id: 'radio', name: 'needs', err: 'What are your technical and materials needs?' },
     { id: 'radio', name: 'vegetarian', err: 'Is vegetarian food okay for you?' },
     { id: 'learn',  regexp: '\\S',
-                    err: 'Missing How did you learn about Mount Madonna?' }
+                    err: 'How did you learn about Mount Madonna?' },
+    { id: 'radio', name: 'mailing_list', err: 'May we add you to our mailing list?' }
 ];
-function no_dbl() {
-    document.getElementById('submit').style.pointerEvents = 'none';
+function check_others() {
+    return (
+        other_check('gt', 'other_group_type', 'Missing Other Group Type')
+        &&
+        other_check('rt', 'other_retreat_type', 'Missing Other Event Type')
+        &&
+        other_check('on', 'other_needs', 'Missing Other Technical Needs')
+        &&
+        other_check('os', 'other_services', 'Missing Other Services')
+        &&
+        disable_submit()
+    );
+}
+function disable_submit() {
+    document.getElementById('submit').disabled = true;
+    return true;
+}
+function other_check(n1, n2, msg) {
+    if (document.getElementById(n1).checked == true) {
+        var el = document.getElementById(n2);
+        var regexp = new RegExp('\\S');
+        if (! regexp.test(el.value)) {
+            alert(msg);
+            el.focus();
+            return false;
+        }
+    }
     return true;
 }
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 <link rel="stylesheet" href="/static/cgi.css">
+<style>
+body, input, textarea {
+    font-family: Calibri;
+}
+input, textarea {
+    background: #ffffbb;
+}
+.required {
+    color: red;
+    font-size: 14pt;
+}
+.paragraph {
+    width: 600px;
+}
+</style>
 </head>
 <body>
 <img src='/static/images/mmc-teal.png' width=200>
 <br>
-<h1>Program Inquiry Form</h1>
+<h1>Inquiry Form</h1>
 <form action='$cgi/program_inquiry.pl'
-      method=GET
-      onsubmit='return check_fields();'
+      method=POST
+      onsubmit='return (check_fields() && check_others());'
 >
-Fill out the form below and we will be in touch with you soon.
+<div class=paragraph>
+Are you interested in hosting your special event at Mount Madonna
+Center? Please share some useful information below so that we can best
+field your inquiry and co-create a meaningful and successful program.
+</div>
 <p>
 <span class=required>*</span> indicates fields that are required
-<p>
-Name of Group Leader <span class=required>*</span><br>
-<input type=text size=45 name=leader_name id=leader_name><p>
-Contact phone number <span class=required>*</span><br>
-<input type=text size=45 name=phone id=phone><p>
-Contact email address <span class=required>*</span><br>
+<h2>Contact Information</h2>
+First Name <span class=required>*</span><br>
+<input type=text size=45 name=first id=first><p>
+Last Name <span class=required>*</span><br>
+<input type=text size=45 name=last id=last><p>
+Email <span class=required>*</span><br>
 <input type=text size=45 name=email id=email><p>
-Name of Group <span class=required>*</span><br>
+Your Phone <span class=required>*</span><br>
+<input type=text size=45 name=phone id=phone><p>
+Organization/Company/Group Name <span class=required>*</span><br>
 <input type=text size=45 name=group_name id=group_name><p>
-What dates are you contemplating? <span class=required>*</span><br>
-<input type=text size=45 name=dates id=dates><p>
+Website URL<br>
+<input type=text size=45 name=website id=website><p>
+Event Name <span class=required>*</span><br>
+<input type=text size=45 name=event_name id=event_name><p>
+Number of participants anticipated (15-200) <span class=required>*</span><br>
+<input type=text size=45 name=how_many id=how_many><p>
 Short description of retreat<br>
 <textarea name=description rows=4 cols=48>
 </textarea>
-<span id=how_many1></span>
-<p>
-How many participants do you anticipate? <span class=required>*</span><br>
+<span id=comm1></span>
+<h2>Discovery Call</h2>
+As a next step, we would like to set up a call.<br>
+Would you prefer a phone call or Zoom meeting?
+<span class=required>*</span><p>
 <ul>
-<input type=radio name=how_many value='20-25'> 20-25<br>
-<input type=radio name=how_many value='25-40'> 25-40<br>
-<input type=radio name=how_many value='40-60'> 40-60<br>
-<input type=radio name=how_many value='60-80'> 60-80<br>
-<input type=radio name=how_many value='80-100'> 80-100<br>
-<input type=radio name=how_many value='100-150'> 100-150<br>
-<input type=radio name=how_many value='150+'> 150+<br>
+<label><input type=radio name=comm id=comm value='Phone'> Phone</label><br>
+<label><input type=radio name=comm id=comm value='Zoom'> Zoom</label><p>
 </ul>
-<span id=vegetarian1></span>
-<p>
-Mount Madonna Center is a strict vegetarian community.<br>
-Is that okay with you? <span class=required>*</span><br>
+<h2>Dates</h2>
+Requested Date(s). Please specify days/month/year. <span class=required>*</span><br>
+<input type=text size=45 name=dates id=dates><p>
+<span id=flexdates1></span>
+Are your dates flexible? <span class=required>*</span><br>
 <ul>
-<input type=radio name=vegetarian value='Yes'>Yes<br>
-<input type=radio name=vegetarian value='NO'>No<br>
+<label><input type=radio name=flexdates id=flexdates value='Yes'> Yes - we may consider alternate dates.</label><br>
+<label><input type=radio name=flexdates id=flexdates value='No'> No - these dates are fixed.</label>
 </ul>
 <p>
-Retreat Type<br>
+Optional Dates & Notes:<br>
+<textarea name=optdates rows=4 cols=48>
+</textarea>
+<p>
+<span id=group_type1></span>
+<h2>Group Type <span class=required>*</span></h2>
 <ul>
-<input type=checkbox name=retreat_type value='Yoga retreat'> Yoga retreat<br>
-<input type=checkbox name=retreat_type value='Meditation retreat'> Meditation retreat<br>
-<input type=checkbox name=retreat_type value='Offsite business retreat'> Offsite business retreat<br>
-<input type=checkbox name=retreat_type value='Educational training'> Educational training<br>
-Other: <input type=text size=33 name=other_retreat_type>
+<label><input type=radio name=group_type value='Non-Profit'> Non-Profit</label><br>
+<label><input type=radio name=group_type value='BIPOC Organizations'> BIPOC Organizations</label><br>
+<label><input type=radio name=group_type value='Educational Institution'> Educational Institution</label><br>
+<label><input type=radio name=group_type value='Foundation'> Foundation</label><br>
+<label><input type=radio name=group_type value='Business/Corporation'> Business/Corporation</label><br>
+<label><input type=radio name=group_type value='Private Group'> Private Group</label><br>
+<label><input type=radio name=group_type id=gt value='Other'> Other:</label>
+<input type=text size=40 name=other_group_type id=other_group_type onclick="document.getElementById('gt').checked = true;"></label>
+<br>
+</ul>
+<span id=retreat_type1></span>
+<h2>Event Type <span class=required>*</span></h2>
+<ul>
+<label><input type=radio name=retreat_type value='Yoga retreat'> Yoga/Wisdom/Meditation retreat</label><br>
+<label><input type=radio name=retreat_type value='Offsite business retreat'> Offsite business retreat</label><br>
+<label><input type=radio name=retreat_type value='Educational training'> Educational training</label><br>
+<label><input type=radio name=retreat_type value='Training'> Training</label><br>
+<label><input type=radio name=retreat_type value='Special Event'> Special Event</label><br>
+<label><input type=radio name=retreat_type value='Cultural/Spiritual/Religious event'> Cultural/Spiritual/Religious event</label><br>
+<label><input type=radio name=retreat_type id=rt value='Other'> Other:</label>
+<input type=text size=40 name=other_retreat_type id=other_retreat_type onclick="document.getElementById('rt').checked = true;">
 <br>
 </ul>
 <p>
-What needs do you have?<br>
+<span id=needs1></span>
+<h2>Technical and Materials Needs <span class=required>*</span></h2>
+Check all that apply.
 <ul>
-<input type=checkbox name=needs value='Yoga props'> Yoga props<br>
-<input type=checkbox name=needs value='Wifi'> Wifi<br>
-<input type=checkbox name=needs value='Projector and screen'> Projector and screen<br>
-<input type=checkbox name=needs value='Audio setup'> Audio setup<br>
-Other: <input type=text size=33 name=other_needs>
+<label><input type=checkbox name=needs value='High Speed Wifi'> High Speed WiFi</label><br>
+<label><input type=checkbox name=needs value='Projector and screen'> Projector and screen</label><br>
+<label><input type=checkbox name=needs value='Audio Setup'> Audio Setup</label><br>
+<label><input type=checkbox name=needs value='AV Equipment Support'> AV Equipment Support</label><br>
+<label><input type=checkbox name=needs value='Hybrid (in-person/remote)'> Hybrid (in-person/remote) set-up</label><br>
+<label><input type=checkbox name=needs value='Chairs and Tables'> Chairs and Tables</label><br>
+<label><input type=checkbox name=needs value='Easel and Whiteboards'> Easel and Whiteboards</label><br>
+<label><input type=checkbox name=needs value='Backjacks (floor chairs)'> Backjacks (floor chairs)</label><br>
+<label><input type=checkbox name=needs value='Yoga Props'> Yoga Props</label><br>
+<label><input type=checkbox name=needs value='Breakout Rooms'> Breakout Rooms</label><br>
+<label><input type=checkbox name=on id='on' value=1> Other:</label> <input type=text size=40 name=other_needs id=other_needs onclick="document.getElementById('on').checked = true;">
 </ul>
-<p> 
-How did you learn about Mount Madonna Center? <span class=required>*</span><br>
-<input type=text size=45 name=learn id=learn><p>
+<h2>Additional Services</h2>
+What other services are you interested in? Check all that apply.
+<ul>
+<label><input type=checkbox name=services value='Elevated coffee service'> Elevated coffee service</label><br>
+<label><input type=checkbox name=services value='Guided nature walks'> Guided nature walks</label><br>
+<label><input type=checkbox name=services value='Yoga class'> Yoga class</label><br>
+<label><input type=checkbox name=services value='Meditation class'> Meditation class</label><br>
+<label><input type=checkbox name=services value='Wellness center offerings'> Wellness center offerings</label><br>
+<label><input type=checkbox name=os id=os value=1> Other:</label> <input type=text name=other_services id=other_services size=40 onclick="document.getElementById('os').checked = true;">
+</ul>
+<span id=vegetarian1></span>
 <p>
-Anything else we should know?<br>
+<div class=paragraph>
+Mount Madonna Center is a strict vegetarian community and does not allow
+alcohol, except for weddings and limited ceremonial purposes.
+Is that okay with you? <span class=required>*</span><br>
+</div>
+
+<ul>
+<label><input type=radio name=vegetarian value='Yes'> Yes</label><br>
+<label><input type=radio name=vegetarian value='No'> No</label><br>
+</ul>
+<p>
+<p>
+Is there anything else you'd like to tell us about your event?<br>
 <textarea name=what_else rows=4 cols=48>
 </textarea>
 <p>
-<input style="background: lightgreen" type=submit id=submit onsubmit='return no_dbl();' value='Submit'>
+How did you learn about Mount Madonna Center? <span class=required>*</span><br>
+<input type=text size=45 name=learn id=learn><p>
+<span id=mailing_list1></span>
+<p>
+May we add you to our mailing list? <span class=required>*</span><br>
+Contact info is never sold to a third party.
+<ul>
+<label><input type=radio name=mailing_list value='Yes'> Yes</label><br>
+<label><input type=radio name=mailing_list value='No'> No</label>
+</ul>
+<p>
+<div class=paragraph>
+Thank you for your interest in hosting your event at Mount Madonna
+Center! We will review your inquiry form and plan to contact you within
+3 business days.
+</div>
+<p>
+<input style="background: #99f599" type=submit id=submit value='Submit'>
 </form>
-<script>document.getElementById('leader_name').focus();</script>
+<script>document.getElementById('first').focus();</script>

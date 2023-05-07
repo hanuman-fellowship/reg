@@ -1,0 +1,26 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use feature 'say';
+
+use lib 'lib';
+use Util qw/
+    db_init
+    model
+/;
+my $c = db_init();
+my @inqs = model($c, 'Inquiry')->all();
+for my $inq (@inqs) {
+    my $per = model($c, 'Person')->find($inq->person_id);
+    if ($per) {
+        $inq->update({
+            first => $per->first,
+            last  => $per->last,
+        });
+    }
+    else {
+        say "got name " . $inq->leader_name;
+        say "person_id " . $inq->person_id;
+        say "no person for " . $inq->person_id;
+    }
+}

@@ -34,7 +34,14 @@ sub list : Local {
 
     my @inq = model($c, 'Inquiry')->all();
     if ($order eq 'leader') {
-        @inq = sort { $a->leader_name cmp $b->leader_name } @inq;
+        @inq = sort {
+                   $a->first cmp $b->first
+                   ||
+                   $a->last  cmp $b->last
+               } @inq;
+    }
+    elsif ($order eq 'group_name') {
+        @inq = sort { $a->group_name cmp $b->group_name } @inq;
     }
     elsif ($order eq 'date') {
         @inq = sort { $b->the_date <=> $a->the_date } @inq;
@@ -47,7 +54,7 @@ sub list : Local {
                    $b->[0] <=> $a->[0];
                }
                map {
-                   [ $_->how_many =~ m{\A (\d+)}xms, $_ ] 
+                   [ $_->how_many =~ m{(\d+)}xms, $_ ] 
                }
                @inq
                ;
