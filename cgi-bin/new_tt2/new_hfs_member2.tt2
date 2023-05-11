@@ -48,6 +48,7 @@ The $prorated cost is \$${amount}.
     $ky
     </ul>
 [% END %]
+<p>
 $stripe_payment
 </form>
 </body>

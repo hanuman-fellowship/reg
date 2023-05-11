@@ -52,7 +52,11 @@ $stash{stripe_payment} = stripe_payment(
     name        => $data{program},
     description => "Registration for $data{first} $data{last}",
     amount      => $data{total},
-    metadata    => { code => $code },
+    metadata    => {
+                        code => $code,
+                        last => $data{last},
+                        # include last to maybe skip the CC payment
+                   },
     email       => $data{email},
 );
 

@@ -84,6 +84,7 @@ $stash{payment}
           metadata    => {
             rental_id => $rental_id, 
             type      => $type,
+            last      => $person->last,
           },
           email       => $email,
       );

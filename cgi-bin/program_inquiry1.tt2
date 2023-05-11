@@ -142,7 +142,8 @@ Optional Dates & Notes:<br>
 <label><input type=radio name=group_type value='BIPOC Organizations'> BIPOC Organizations</label><br>
 <label><input type=radio name=group_type value='Educational Institution'> Educational Institution</label><br>
 <label><input type=radio name=group_type value='Foundation'> Foundation</label><br>
-<label><input type=radio name=group_type value='Business/Corporation'> Business/Corporation</label><br>
+<label><input type=radio name=group_type value='Small Business'> Small Business</label><br>
+<label><input type=radio name=group_type value='Large Business/Corporation'> Large Business/Corporation</label><br>
 <label><input type=radio name=group_type value='Private Group'> Private Group</label><br>
 <label><input type=radio name=group_type id=gt value='Other'> Other:</label>
 <input type=text size=40 name=other_group_type id=other_group_type onclick="document.getElementById('gt').checked = true;"></label>

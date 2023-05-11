@@ -74,12 +74,6 @@ sub stripe_payment {
     }
     my $amount100 = $P{amount}*100;    # dollars to cents
 
-    # insert the amount value into the metadata
-    my $metadata = qq!-d "metadata[amount]"="$P{amount}" \\\n!;
-    for my $k (keys %{$P{metadata}}) {
-        $metadata .= qq!-d "metadata[$k]"="$P{metadata}{$k}" \\\n!;
-    }
-
     # the current script name is in $0
     # use it to form the success_url
     my $script = $0;
@@ -89,10 +83,30 @@ sub stripe_payment {
     if (-f 'akash2') {
         $cgi =~ s{akash}{akash2}xms;
     }
-    my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
-    if (-f 'akash2' || $P{metadata}{last} =~ m{\A zz}xmsi) {
-        $stripe_key = $stripe_key{test_secret};
+    if ($P{metadata}{last} =~ m{\A zz}xmsi) {
+        # skip the credit card - for testing
+        my $time = time();
+        my $hidden = <<"EOH";
+<input type=hidden name=session_id value='ZZ$time'>
+<input type=hidden name=amount value='$P{amount}'>
+EOH
+        for my $k (sort keys %{$P{metadata}}) {
+            $hidden .= "<input type=hidden name=$k value='$P{metadata}{$k}'>\n";
+        }
+        return <<"EOH";
+<form action=$cgi/${script}_hook>
+$hidden<button type=submit>SKIP the Credit Card payment</button>
+</form>
+EOH
     }
+    # a real Stripe credit card session ...
+    my $success = "$cgi/${script}_hook?session_id={CHECKOUT_SESSION_ID}";
+    # insert the amount value into the metadata
+    my $metadata = qq!-d "metadata[amount]"="$P{amount}" \\\n!;
+    for my $k (keys %{$P{metadata}}) {
+        $metadata .= qq!-d "metadata[$k]"="$P{metadata}{$k}" \\\n!;
+    }
+
     my $cmd = <<"EOH";
 curl https://api.stripe.com/v1/checkout/sessions \\
   -u $stripe_key \\
@@ -106,6 +120,8 @@ curl https://api.stripe.com/v1/checkout/sessions \\
   -d success_url="$success" \\
   -d cancel_url="https://mountmadonna.org"
 EOH
+    # the ${metadata}-d above looks weird but
+    # note that the $metadata has a newline at the end
 #JON "cmd = $cmd";
     my $json = `$cmd`;
 #JON "json = $json";
@@ -141,6 +157,12 @@ sub metadata {
     my $session_id = $q->param('session_id');
     if (!$session_id) {
         return error => 'no session id';
+    }
+    if ($session_id =~ m{\A ZZ}xms) {
+        # testing mode - skip the Stripe credit card charges
+        my %metadata = $q->Vars();
+        $metadata{transaction_id} = $metadata{session_id};
+        return %metadata;
     }
     my $cmd = "curl https://api.stripe.com/v1/checkout/sessions/$session_id"
             . " -u $stripe_key";

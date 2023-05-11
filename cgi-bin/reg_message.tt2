@@ -40,7 +40,7 @@ Thank you, ${first}.
 [% END %]
 <p>
 [% IF ! sending_email %]
-The above information has been sent to you via an email to ${email}.<br>
+The above information has been sent to you via an email to ${email}.<p>
 [% END %]
 You will soon receive <i>another</i> letter from programs@mountmadonna.org
 with confirmation of your

@@ -59,6 +59,10 @@
     [% END %]
     </pre>
 
+<p>
+Note that the suffix .tt2 is used because this is the 2nd version of
+the Template Toolkit.
+
 <h2>Special Templates</h2>
 There are many templates in the new_tt2 directory.
 <p>
@@ -85,6 +89,17 @@ The following templates will probably not be styled in the 'standard' header/foo
     grid_htype.tt2 (this one may require special handling)
 </pre>
 
+<h2>Credit Card Payments with Stripe OR NOT</h2>
+The full thorough complete test of these many things would include making
+a credit card payment - via Stripe.  This is awkward because you then
+need to <u>refund</u> that payment on the Stripe dashboard.  Instead,
+if the last name of the person <u>begins</u> with 'zz' (or 'Zz' or 'ZZ') then the
+credit card payment will be skipped.  The “payment” will still be recorded
+in Reg.  After the tests it is best to "clear the field" by deleting the
+registration / payment / gift card / etc AND also delete the person.  If the
+tests happen on the development machine akash2 it's not as critical to
+do this clearing as the accounting office will not be trying to do a
+reconciliation.  Note that you can search for all ZZ people by last name.
 
 <h2>Gift Cards</h2>
 
@@ -98,6 +113,9 @@ The following templates will probably not be styled in the 'standard' header/foo
 </ul>
 <h2>Rental Grid</h2>
 
+    Does this <i>really</i> need to be styled?  Maybe not.<br>
+    Ask Sahadev and Lara and the DSG (Director of Guest Services).
+<p>
 	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/grid?code=vbkxhf'>https://akash2.mountmadonna.org/cgi-bin/grid?code=vbkxhf</a>
 <ul>
 	grid.tt2<br>
@@ -110,6 +128,8 @@ The following templates will probably not be styled in the 'standard' header/foo
 <h2>Rental Payments (deposit, invoice)</h2>
 
 	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/rental_payment?code=vbkxhf&type=deposit'>https://akash2.mountmadonna.org/cgi-bin/rental_payment?code=vbkxhf&type=deposit </a>
+    <p>
+	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/rental_payment?code=vbkxhf&type=invoice'>https://akash2.mountmadonna.org/cgi-bin/rental_payment?code=vbkxhf&type=invoice</a>
     <ul>
 	rental_payment.tt2<br>
 	rental_payment_message.tt2<br>
@@ -124,19 +144,46 @@ The following templates will probably not be styled in the 'standard' header/foo
 	reg2.tt2<br>
 	err.tt2<br>
 	reg_message.tt2<br>
-<p>
-	Program registrations follow a similar path without the initial PR page.
+</ul>
+<h2>Program Registration</h2>
+	Program registrations follow a similar path to PRs but without the initial PR page.
+    <ul>
+	reg1.tt2<br>
+	reg2.tt2<br>
+	err.tt2<br>
+	reg_message.tt2
+    </ul>
+    <p>
+    Here are two examples - with differing configurations:
+    <p>
+    Reg By Day, Covid Vax required, Alert message at top<br>
+    <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/reg1?id=4823'>https://akash2.mountmadonna.org/cgi-bin/reg1?id=4823</a>
+    <p>
+    Sliding Scale Donation<br>
+    <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/reg1?id=4824'>https://akash2.mountmadonna.org/cgi-bin/reg1?id=4824</a>
 
+<p>
+The following two templates are special.  Ask Sahadev.
+<p>
+A meal information page linked from meal requests and registrations:<br>
+/var/www/src/root/static/meals_at_mmc.html
+<p>
+The registration confirmation letter:<br>
+/var/www/src/root/static/templates/letter/default.tt2
+<p>
 </ul>
 <h2>Mountain Experience</h2>
 
+MEs are similar to PRs.
+<p>
 	<a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/regME'>https://akash2.mountmadonna.org/cgi-bin/regME</a>
     <ul>
 
 	regme.tt2<br>
-    <p>
-	and the above for registration
-
+	reg1.tt2<br>
+	reg2.tt2<br>
+	err.tt2<br>
+	reg_message.tt2
 </ul>
 <h2>Meal Requests</h2>
 <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/meal_request'>https://akash2.mountmadonna.org/cgi-bin/meal_request</a>
@@ -145,6 +192,9 @@ meal_request.tt2<br>
 meal_request2.tt2<br>
 meal_request_receipt.tt2<br>
 mr_err.tt2
+<p>
+There is also a linked page to be styled separately:<br>
+/static/meals_at_mmc.html
 </ul>
 
 <h2>Program Inquiry</h2>
@@ -183,13 +233,28 @@ program_inquiry3.tt2<br>
 </ul>
 <h2>Requested Payments for registrations</h2>
 
-    <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/req_pay?code=nqkjzy'>https://akash2.mountmadonna.org/cgi-bin/req_pay?code=nqkjzy</a>
+    <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/req_pay?code=vszgxx'>https://akash2.mountmadonna.org/cgi-bin/req_pay?code=vszgxx</a>
     <ul>
 
 	req_pay.tt2<br>
 	req_pay_message.tt2<br>
+<p>
+If this payment is tested through to completion
+it cannot be done again.  A new code will have to be generated.
+Ask Sahadev.
 </ul>
-<p>
-<p>
+
+<h2>Daily Sutra</h2>
+    <a target=_blank href='https://akash2.mountmadonna.org/sutra'>https://akash2.mountmadonna.org/sutra</a>
+    <p>
+    This leads to a page where one can sign up for a daily Sutra from Babaji
+    by email.  And where you can peruse the many sutras in a variety
+    of ways.
+<h2>Talks With Babaji</h2>
+    <a target=_blank href='https://akash2.mountmadonna.org/talks'>https://akash2.mountmadonna.org/talks</a>
+    <p>
+    The text for these talks is kept in a database on akash.<br>
+    The pages are generated by a script.<br>
+    On the index page there is a search function as well.
 </body>
 </html>

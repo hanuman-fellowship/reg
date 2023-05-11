@@ -917,7 +917,7 @@ if ($prog->reg_by_day) {
 }
 
 if ($total == 0) {
-    # no payment needed
+    # no payment needed or was made
     $stash{metadata} = Dumper(\%metadata);
 }
 else {

@@ -62,6 +62,14 @@ add_activity($c,
       . " for <a href='/program/view/$P{pid}'>$P{title}</a>"
 );
 
+if ($P{pid}) {
+    # not a personal retreat or mountain experience
+    # we need to set sdate and edate from the program
+    my $prog = model($c, 'Program')->find($P{pid});
+    $P{sdate} = $prog->sdate;
+    $P{edate} = $prog->edate;
+}
+# make them objects so we can format them
 $P{sdate} = date($P{sdate});
 $P{edate} = date($P{edate});
 

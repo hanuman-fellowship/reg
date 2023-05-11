@@ -574,6 +574,8 @@ Amount:
 Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
 <p>
 <input type=text size=50 name=diet value="$diet">
+<p>
+<a target=_blank href=/static/meals_at_mmc.html>Meal Information</a>
 </ul>
 
 <h3>Additional Requests</h3>  
