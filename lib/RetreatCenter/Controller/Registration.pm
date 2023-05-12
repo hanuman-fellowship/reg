@@ -6659,12 +6659,6 @@ sub duplicate : Local {
                  $reg->pref1(), $reg->pref2(), $reg->cabin_room());
 }
 
-sub grab_new : Local {
-    my ($self, $c) = @_;
-    system("/var/www/src/grab wait");
-    $c->response->redirect($c->uri_for("/registration/list_online"));
-}
-
 sub receipt : Local {
     my ($self, $c, $reg_id, $type) = @_;
 
