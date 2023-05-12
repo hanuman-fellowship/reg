@@ -146,7 +146,7 @@ Optional Dates & Notes:<br>
 <label><input type=radio name=group_type value='Large Business/Corporation'> Large Business/Corporation</label><br>
 <label><input type=radio name=group_type value='Private Group'> Private Group</label><br>
 <label><input type=radio name=group_type id=gt value='Other'> Other:</label>
-<input type=text size=40 name=other_group_type id=other_group_type onclick="document.getElementById('gt').checked = true;"></label>
+<input type=text size=40 name=other_group_type id=other_group_type onfocus="document.getElementById('gt').checked = true;"></label>
 <br>
 </ul>
 <span id=retreat_type1></span>
@@ -159,7 +159,7 @@ Optional Dates & Notes:<br>
 <label><input type=radio name=retreat_type value='Special Event'> Special Event</label><br>
 <label><input type=radio name=retreat_type value='Cultural/Spiritual/Religious event'> Cultural/Spiritual/Religious event</label><br>
 <label><input type=radio name=retreat_type id=rt value='Other'> Other:</label>
-<input type=text size=40 name=other_retreat_type id=other_retreat_type onclick="document.getElementById('rt').checked = true;">
+<input type=text size=40 name=other_retreat_type id=other_retreat_type onfocus="document.getElementById('rt').checked = true;">
 <br>
 </ul>
 <p>
@@ -177,7 +177,7 @@ Check all that apply.
 <label><input type=checkbox name=needs value='Backjacks (floor chairs)'> Backjacks (floor chairs)</label><br>
 <label><input type=checkbox name=needs value='Yoga Props'> Yoga Props</label><br>
 <label><input type=checkbox name=needs value='Breakout Rooms'> Breakout Rooms</label><br>
-<label><input type=checkbox name=on id='on' value=1> Other:</label> <input type=text size=40 name=other_needs id=other_needs onclick="document.getElementById('on').checked = true;">
+<label><input type=checkbox name=on id='on' value=1> Other:</label> <input type=text size=40 name=other_needs id=other_needs onfocus="document.getElementById('on').checked = true;">
 </ul>
 <h2>Additional Services</h2>
 What other services are you interested in? Check all that apply.
@@ -187,7 +187,7 @@ What other services are you interested in? Check all that apply.
 <label><input type=checkbox name=services value='Yoga class'> Yoga class</label><br>
 <label><input type=checkbox name=services value='Meditation class'> Meditation class</label><br>
 <label><input type=checkbox name=services value='Wellness center offerings'> Wellness center offerings</label><br>
-<label><input type=checkbox name=os id=os value=1> Other:</label> <input type=text name=other_services id=other_services size=40 onclick="document.getElementById('os').checked = true;">
+<label><input type=checkbox name=os id=os value=1> Other:</label> <input type=text name=other_services id=other_services size=40 onfocus="document.getElementById('os').checked = true;">
 </ul>
 <span id=vegetarian1></span>
 <p>
