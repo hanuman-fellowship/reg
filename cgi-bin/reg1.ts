@@ -157,3 +157,6 @@ Mail opt in/out preferences
 zz last name - skip payment
 
 Reg2/1 Cookies - remember info
+
+If sharing with someone - the confirming email and on-screen
+    message includes a link for the other person to register.

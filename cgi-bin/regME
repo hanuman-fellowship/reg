@@ -42,7 +42,7 @@ $weekdays =~ s{,([^,]*)\z}{$comma or $1}xmsg;    # how fun is that? :)
 $stash{weekdays} = $weekdays;
 
 my $today = today();
-my $start = $today + 2;
+my $start = $today + 1;
 my $end   = $today + 90;
 $stash{startDate} = $start->format("%m/%d/%Y");
 $stash{endDate} = $end->format("%m/%d/%Y");

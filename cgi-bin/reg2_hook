@@ -89,6 +89,7 @@ email_letter($c,
     html    => $html,
 );
 
+# and a similar message on the screen
 $P{sending_email} = 0;
 $tt->process(
     styled('reg_message.tt2'),
