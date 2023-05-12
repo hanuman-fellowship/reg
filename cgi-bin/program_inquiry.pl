@@ -40,6 +40,7 @@ sub add_update {
         first => $first,
         last  => $last,
     });
+    my $person_id;
     for my $per (@per) {
         if ($per->email eq $email
             ||
@@ -54,24 +55,45 @@ sub add_update {
                 email    => $email,
                 e_mailings => $on_list,
             });
-            return $per->id();
+            $person_id = $per->id();
         }
     }
-    my $per = model($c, 'Person')->create({
-        first => $first,
-        last => $last,
-        email => $email,
-        tel_cell => $phone,
-        e_mailings => $on_list,
-        snail_mailings => '',
-        share_mailings => '',
-        deceased => '',
-        inactive => '',
-        secure_code => rand6($c),
-        covid_vax => '',
-        vax_okay => '',
-    });
-    return $per->id,
+    if (! $person_id) {
+        my $per = model($c, 'Person')->create({
+            first => $first,
+            last => $last,
+            email => $email,
+            tel_cell => $phone,
+            e_mailings => $on_list,
+            snail_mailings => '',
+            share_mailings => '',
+            deceased => '',
+            inactive => '',
+            secure_code => rand6($c),
+            covid_vax => '',
+            vax_okay => '',
+        });
+        $person_id = $per->id();
+    }
+    # does this person have the affiliation named
+    # MMC Proposal Submitter?
+    my ($affil) = model($c, 'Affil')->search({
+                      descrip => 'MMC Proposal Submitter',
+                  });
+    if (my ($ap) = model($c, 'AffilPerson')->search({
+                       a_id => $affil->id,
+                       p_id => $person_id,
+                   })
+    ) {
+        # yes, it's okay
+    }
+    else {
+        model($c, 'AffilPerson')->create({
+            a_id => $affil->id,
+            p_id => $person_id,
+        });
+    }
+    return $person_id;
 }
 
 my %param = %{ $q->Vars() };
@@ -79,7 +101,8 @@ for my $n (qw/ description optdates what_else /) {
     $param{$n} =~ s{\n}{<br>}xmsg;
 }
 if ($param{first}) {
-eval {
+    # process the form
+    eval {
     for my $f (keys %param) {
         if ($param{$f} =~ m{\0}xms) {
             # multiple checkboxes were checked
@@ -157,24 +180,24 @@ eval {
             to      => "$param{first} $param{last} <$param{email}>",
             subject => 'MMC Program Inquiry',
             html    => $html,
-            activity_msg => $msg,
+            activity_msg => "$msg - notify submitter",
         );
         # and to the office - with a link
         $param{inquiry_id} = $inq_id;
         $param{reg} = $string{cgi};
         $param{reg} =~ s{/cgi-bin}{}xms;
-        my $html;
+        my $html2;
         $tt->process(
             styled('program_inquiry2.tt2'),
             \%param,
-            \$html,
+            \$html2,
         );
         email_letter($c,
             from    => 'notifications@mountmadonna.org',
             to      => $string{program_inquiry_email},
             subject => "Program Inquiry from $param{first} $param{last}",
-            html    => $html,
-            activity_msg => $msg,
+            html    => $html2,
+            activity_msg => "$msg - notify staff",
         );
     }
     else {
@@ -188,12 +211,13 @@ eval {
         styled('program_inquiry3.tt2'),
         {},     # no stash
     );
-};
-if ($@) {
-    JON "failure: $@";
-}
+    };  # end of eval
+    if ($@) {
+        JON "failure: $@";
+    }
 }
 else {
+    # show the form to be filled in
     Template->new({INTERPOLATE => 1})->process(
         styled('program_inquiry1.tt2'),
         { 
