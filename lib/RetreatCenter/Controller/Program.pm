@@ -174,8 +174,8 @@ sub create : Local {
             <root/static/templates/web/*.html>
         ],
         cl_template_opts => [
-            map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
-            <root/static/templates/letter/*.tt2>
+            map { s{^.*templates/letter/conf/(.*)[.]tt2$}{$1}; $_ }
+            <root/static/templates/letter/conf/*.tt2>
         ],
         cat_opts       => _opts($c, 'Category', 1),
         school_opts    => _opts($c, 'School', 1),
@@ -1051,8 +1051,8 @@ sub update : Local {
             <root/static/templates/web/*.html>
         ],
         cl_template_opts => [
-            map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
-            <root/static/templates/letter/*.tt2>
+            map { s{^.*templates/letter/conf/(.*)[.]tt2$}{$1}; $_ }
+            <root/static/templates/letter/conf/*.tt2>
         ],
         webdesc_rows => lines($p->webdesc()) + 5,
         cat_opts     => _opts($c, 'Category', $p->category_id()),

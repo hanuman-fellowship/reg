@@ -860,6 +860,7 @@ if ($gc_used) {
     $metadata{gc_balance} = $gc_balance;
 }
 # max of 50 here!
+# groups of 10 below...
 for my $f (qw/
     prog_choice
     first
@@ -882,8 +883,8 @@ for my $f (qw/
     edate
     e_mailings
     share_mailings
-    snail_mailings
 
+    snail_mailings
     request
     covid_vax
     house1
@@ -892,8 +893,8 @@ for my $f (qw/
     green_amount
     howHeard
     from_where
-
     activities
+
     meals
     mountain_experience
     children_name_age
@@ -901,10 +902,11 @@ for my $f (qw/
     withwhom_last
     carpool
     has_car
-
     discount_amt
     ceu_license
     housing_not_needed
+
+    kayakalpa
 /) {
     $metadata{$f} = $form{$f};
 }

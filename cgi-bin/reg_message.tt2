@@ -23,15 +23,15 @@ Thank you, ${first}.
 [% IF title == 'Personal Retreat' %]
     [% IF mountain_experience %]
         We have received your online registration for a Mountain Experience
-        on ${sdate.format("%A %B %e, %Y")}.
+        ${dates}.
     [% ELSE %]
         We have received your online registration for a Personal Retreat
-        from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
+        ${dates}.
     [% END %]
 [% ELSE %]
     We have received your online registration for the
     $title program[% IF leader_names %] with $leader_names[% END %]
-    from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
+    ${dates}.
 [% END %]
 [% IF amount %]
     <p>
@@ -57,16 +57,16 @@ If it is not there please call us at 408-846-4090.
 [% IF ! housing_not_needed %]
     <p>
     Do <b>not</b> make travel plans until you have received
-    your housing confirmation letter.
+    your confirmation letter.
     <p>
     [% IF withwhom_last || withwhom_first %]
         <p>
         You requested to be housed with $withwhom_first ${withwhom_last}.
         They <b>MUST REGISTER SEPARATELY</b>.<br>
         [% IF pid == 0 %]
-            <a href="$cgi/regPR">Click here to go back to the registration page</a> and register them.</p>
+            Click <a href="$cgi/regPR">HERE</a> to go back to the registration page and register them.</p>
         [% ELSE %]
-            <a href="$cgi/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
+            Click <a href="$cgi/reg1?id=$pid">HERE</a> to go back to the registration page and register them.</p>
         [% END %]
     [% END %]
 [% END %]

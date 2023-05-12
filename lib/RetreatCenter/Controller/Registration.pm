@@ -2139,9 +2139,9 @@ sub send_conf : Local {
     my $ME = $reg->mountain_experience;
     my $today = tt_today($c);
     my $pr = $reg->program;
-    my $fname = "root/static/templates/letter/"
-              . ($ME? 'me_conf': $pr->cl_template())
-              . '.tt2';
+    my $fname = ($ME? "root/static/templates/letter/me_conf"
+               :     "root/static/templates/letter/conf/" . $pr->cl_template());
+    $fname .= '.tt2';
     if (! -r $fname) {
         error($c,
               "Sorry, cannot open confirmation letter template.",

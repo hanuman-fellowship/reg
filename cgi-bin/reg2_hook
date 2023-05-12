@@ -56,15 +56,21 @@ open my $out, '>', "/var/Reg/online/$f";
 print {$out} $d;
 close $out;
 
+my $first = $P{first};
+my $last  = $P{last};
+my $email = $P{email};
+my $title = $P{title};
+
 add_activity($c,
       "Online reg <a href='/registration/get_online/$f'>"
-      . "$P{first} $P{last}</a>"
-      . " for <a href='/program/view/$P{pid}'>$P{title}</a>"
+      . "$first $last</a>"
+      . " for <a href='/program/view/$P{pid}'>$title</a>"
 );
 
+my $prog;
 if ($P{pid}) {
     # not a personal retreat or mountain experience
-    # we need to set sdate and edate from the program
+    # we need to get sdate and edate from the program
     my $prog = model($c, 'Program')->find($P{pid});
     $P{sdate} = $prog->sdate;
     $P{edate} = $prog->edate;
@@ -73,7 +79,70 @@ if ($P{pid}) {
 $P{sdate} = date($P{sdate});
 $P{edate} = date($P{edate});
 
-# send email to the person to confirm
+my $dates;
+my $fmt = '%A %B %e, %Y';
+if ($P{sdate} == $P{edate}) {
+    $dates = 'on '
+           . $P{sdate}->format($fmt);
+}
+else {
+    $dates = 'from '
+           . $P{sdate}->format($fmt) 
+           . ' to '
+           . $P{edate}->format($fmt) 
+}
+$P{dates} = $dates;
+
+# If they checked Kaya Kalpa
+# send two emails - one to them and
+# another to the Kaya Kalpa people.
+if ($P{kayakalpa}) {
+    my $kkem = get_string($c, 'kayakalpa_email');
+    my $kk_email = "Kaya Kalpa <$kkem>";
+    my $html;
+    $tt->process(
+        'kayakalpa.tt2',
+        {
+            first => $first,
+            title => $title,
+            dates => $dates,
+            kkem  => $kkem,
+        },
+        \$html,
+    ) or JON $tt->error();
+    email_letter($c,
+        to       => "$first $last <$email>",
+        from     => $kk_email,
+        subject  => "Massage/Bodywork Request during '$title' $dates",
+        html     => $html,
+        activity_msg => "Email $first $last about Kaya Kalpa",
+    );
+    # and a separate shorter letter to Kaya Kalpa
+    # about this person
+    # including their email address and phone number
+    $html = '';
+    $tt->process(
+        'kayakalpa2.tt2',
+        {
+            first => $first,
+            last  => $last,
+            email => $email,
+            cell  => $P{cell},
+            title => $title,
+            dates => $dates,
+        },
+        \$html,
+    ) or JON $tt->error();
+    email_letter($c,
+        to       => $kk_email,
+        from     => $kk_email,
+        subject  => "$first $last - '$title' $dates",
+        html     => $html,
+        activity_msg => "Email Kaya Kalpa about $first $last",
+    );
+}
+
+# send email to the person to confirm their registration
 my $html;
 $P{sending_email} = 1;
 $P{cgi} = get_string($c, 'cgi');
@@ -81,17 +150,18 @@ $tt->process(
     styled('reg_message.tt2'),
     \%P,
     \$html,
-) or JON $tt->template_error;
+) or JON $tt->error;
 email_letter($c,
-    to      => "$P{first} $P{last} <$P{email}>",
+    to      => "$first $last <$email>",
     from    => 'programs@mountmadonna.org',
-    subject => "Online Registration for $P{title}",
+    subject => "Online Registration for $title",
     html    => $html,
 );
+
 
 # and a similar message on the screen
 $P{sending_email} = 0;
 $tt->process(
     styled('reg_message.tt2'),
     \%P,
-) or JON $tt->template_error;
+) or JON $tt->error;

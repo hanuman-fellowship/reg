@@ -50,6 +50,8 @@ Test Suite for Reg1 and Reg2
             and get error at online registration time
 
     Covid Vaccination required or not
+        Requesting after the fact.
+        Marking them as Okay or Not Okay.
 
     - Housing Not Needed
     - Housing Needed
