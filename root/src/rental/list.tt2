@@ -30,7 +30,7 @@
     <td><a href="/rental/view/$r.id">$r.name</a></td>
     <td>$r.sdate_obj</td>
     <td>$r.edate_obj</td>
-    <td>$r.grid_max</td>
+    <td align=right>$r.grid_max</td>
     <td align=left><a href=/summary/view/rental/$r.summary_id>Sum</a>
     [% IF r.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
     </td>
