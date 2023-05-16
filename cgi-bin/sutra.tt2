@@ -48,8 +48,8 @@ To see all sutras containing a pattern enter it below and press Search.
 <td></td>
 <td>
 <button type=submit name=search>Search</button>
-&nbsp; &nbsp; &nbsp;Pattern can be part of a word 
-<input type=checkbox name=substring>
+&nbsp; &nbsp; &nbsp;<label>Pattern can be part of a word 
+<input type=checkbox name=substring></label>
 </td>
 </tr>
 </form>
