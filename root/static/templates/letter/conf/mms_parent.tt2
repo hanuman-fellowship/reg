@@ -167,16 +167,44 @@ Here are your reservation details:
 This email contains important information about your shared workspace package.
 <p>
 <h2>Benefits of the the MMS Parent Shared Workspace Package</h2>
-MMS Parents have access to both indoor and outdoor shared remote workspace at the Community Building Monday-Friday from 9am-3pm, including the west and east deck areas. Adjacent to these shared work spaces is Anjaneya's World Cafe providing beverages and snacks and Ocean View Books and Gifts. You can reserve in advance daily vegetarian lunches served between 12:30pm and 1:30pm in the Community Building cafeteria.  In addition, enjoy the beautiful hiking trails on the 380 acre property,  and use of the hot tub and deck overlooking the redwood forest at the Wellness Center.  Adjacent to the hot tub area is  Ayurveda World Herbs for organic teas, oil and herbal remedies, and the Kaya Kalpa Wellness Spa offering massage, ayurvedic treatments and health consultations. Parents can also access the Center Garden adjacent to the MMS children's garden, and are welcome to visit the Sankat Mochan Hanuman Temple as a space for spiritual reflection. 
+MMS Parents have access to both indoor and outdoor shared remote workspace
+at the Community Building Monday-Friday from 9am-3pm, including the
+west and east deck areas. Adjacent to these shared work spaces is
+Anjaneya's World Cafe providing beverages and snacks and Ocean View
+Books and Gifts. You can reserve in advance daily vegetarian lunches
+served between 12:30pm and 1:30pm in the Community Building cafeteria.
+In addition, enjoy the beautiful hiking trails on the 380 acre property,
+and use of the hot tub and deck overlooking the redwood forest at the
+Wellness Center.  Adjacent to the hot tub area is  Ayurveda World Herbs
+for organic teas, oil and herbal remedies, and the Kaya Kalpa Wellness Spa
+offering massage, ayurvedic treatments and health consultations. Parents
+can also access the Center Garden adjacent to the MMS children's garden,
+and are welcome to visit the Sankat Mochan Hanuman Temple as a space
+for spiritual reflection.
 <h2>Exceptions to Availability</h2>
-Please be aware that availability of all facilities is subject to change depending on special events or large programs held at Mount Madonna. This may result in the closing of some or all center facilities.  In that case, access to shared work spaces and other facilities could be relocated or canceled during select dates. Whenever possible, you will be informed in advance of changes to
+Please be aware that availability of all facilities is subject to change
+depending on special events or large programs held at Mount Madonna. This
+may result in the closing of some or all center facilities.  In that case,
+access to shared work spaces and other facilities could be relocated or
+canceled during select dates. Whenever possible, you will be informed
+in advance of changes to
 shared workspace location and/or expected dates of unavailability, either during registration and/or via email. 
 <h2>Orientation</h2>
-If this is your first time registering for the Shared Workspace Package, you will be invited through a separate email to a one time orientation to Mount Madonna Center, and a tour of the facilities. In the future, you will also be invited to give feedback to improve the overall experience for MMS parents. Please keep an eye out for your orientation invite. 
+If this is your first time registering for the Shared Workspace Package,
+you will be invited through a separate email to a one time orientation to
+Mount Madonna Center, and a tour of the facilities. In the future, you
+will also be invited to give feedback to improve the overall experience
+for MMS parents. Please keep an eye out for your orientation invite.
 <p>
-Guest Services will provide you with an information packet, lanyard,  map of the Center and can answer any additional questions. Please wear your lanyard while using Mount Madonna facilities.
+Guest Services will provide you with an information packet, lanyard,
+map of the Center and can answer any additional questions. Please wear
+your lanyard while using Mount Madonna facilities.
 <h2>Additional Services</h2>
-You are invited to schedule a wellness appointment at our  Ayurvedic Wellness Center. For information and to book an appointment for a variety of treatment options, including Massage, Reiki, Yoga Therapy, and more: Phone 408-846-4078, email <a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>,
+You are invited to schedule a wellness appointment at our
+Ayurvedic Wellness Center. For information and to book an
+appointment for a variety of treatment options, including Massage,
+Reiki, Yoga Therapy, and more: Phone 408-846-4078, email <a
+href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>,
 or visit
 <a href='https://www.mountmadonnainstitute.org/wellnesscenter'>www.mountmadonnainstitute.org/wellnesscenter</a>. 
          [% IF reg.balance > 0 %]
@@ -232,19 +260,36 @@ or visit
       </div>
       [% END %]
 <h2>Meals</h2>
-Lunch is served in the Community Building from 12:30-1:30. Reservations for lunch must be made a minimum of 48 hours in advance by emailing
-<a href='mailto:meals@mountmadonna.org'>meals@mountmadonna.org</a>
-. Lunch is \$15. No refunds and no cancellations for meals. Payment can be made at the Guest Services office in the community building. 
+Lunch is served in the Community Building from 12:30-1:30. Reservations
+for lunch must be made a minimum of 48 hours in advance by emailing
+<a href='mailto:meals@mountmadonna.org'>meals@mountmadonna.org</a>.
+Lunch is \$15. No refunds and no cancellations for meals. Payment can
+be made at the Guest Services office in the community building.
 <p>
-Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs. Vegan and gluten free options are available at all meals. Please do not bring any outside food. If you have any dietary restrictions please discuss with Guest Service.
+Our food service is strictly vegetarian &ndash; no meat, fish, or
+fowl. Vegan and gluten free options are available at all meals. Please do
+not bring any outside food. If you have any dietary restrictions please
+discuss with Guest Service.
 <h2>Packing</h2>
-We recommend that you bring a water bottle (can be refilled with filtered water), walking or hiking shoes, yoga mat (these are also available onsite), a bathing suit and towel (if you plan to use the hot tub), a sun hat and clothing layers for variable weather.
-We ask that you leave the following at home: drugs, alcohol, pets, scented body products, and all fire hazards (candles, incense, kerosene lamps, etc.). Please note that outside food may not be brought into Mount Madonna property. 
+We recommend that you bring a water bottle (can be refilled with filtered
+water), walking or hiking shoes, yoga mat (these are also available
+onsite), a bathing suit and towel (if you plan to use the hot tub),
+a sun hat and clothing layers for variable weather.
+We ask that you leave the following at home: drugs, alcohol, pets,
+scented body products, and all fire hazards (candles, incense, kerosene
+lamps, etc.). Please note that outside food may not be brought into
+Mount Madonna property.
 For your convenience, current weather at Mount Madonna can be viewed using this site:
 <a href='https://ambientweather.net'>https://ambientweather.net</a>.
 Search for "Mount Madonna School".
 <h2>Cancellations/Refunds</h2>
-The Shared Workspace Package includes access to center services and facilities (similar to a gym membership). Cancellations and refunds are unavailable. Availability of all facilities is subject to change depending on special events or large programs held at Mount Madonna. There may be days when all or some Center facilities are closed due to capacity issues or inclement weather. There is no reimbursement for specific days that you choose not to use center facilities or days that fall on school holidays. 
+The Shared Workspace Package includes access to center services and
+facilities (similar to a gym membership). Cancellations and refunds are
+unavailable. Availability of all facilities is subject to change depending
+on special events or large programs held at Mount Madonna. There may be
+days when all or some Center facilities are closed due to capacity issues
+or inclement weather. There is no reimbursement for specific days that you
+choose not to use center facilities or days that fall on school holidays.
 <h2>Questions?</h2>
 Please email Guest Service Office at: 
 <a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>
