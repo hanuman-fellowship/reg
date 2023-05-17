@@ -30,7 +30,7 @@ You may use this <a href="${string.cgi}/rental_payment?type=deposit&code=${renta
 <p>
 Thank you and best wishes,
 <p>
-$program_director<br>
-Guest Services Director<br>
+$string.program_director<br>
+Business Development Consultant<br>
 Mount Madonna Center
 <p>
