@@ -48,6 +48,7 @@ p {
 [% IF super %]
     <a href=/configuration/counts>Counts</a><p>
 [% END %]
+<a target=_blank href=https://akash.mountmadonna.org/sutra>Daily Sutra from Babaji</a><p>
 [% IF web_des %]
     <a href=/configuration/date_ranges>Date Ranges ME/PR</a><p>
 [% END %]
@@ -89,6 +90,7 @@ p {
 [% IF web_des %]
     <a href=/string/list>Strings</a><p>
 [% END %]
+<a target=_blank href=https://akash.mountmadonna.org/talks>Talks with Babaji</a><p>
 [% IF time_traveler %]
     <a href=/string/time_travel>Time Travel</a><p>
 [% END %]

@@ -106,7 +106,7 @@ function UNreserve_cluster(cluster_id) {
 [% END %]
 <a href=/registration/early_late/$id>Early/Late</a>
 &nbsp;&nbsp;&nbsp;
-<a href=/registration/name_addr/$id>Lists</a>
+<a target=_blank href=/registration/name_addr/$id>Lists</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/tally/$id>Tally</a>
 [% IF program.PR %]
