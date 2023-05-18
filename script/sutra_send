@@ -3,37 +3,46 @@ use strict;
 use warnings;
 
 use lib 'lib';
-use Slurp qw/
-    slurp
-/;
 use Util qw/
-    db_init
     email_letter
+    db_init
 /;
 my $c = db_init();
-
-my $dir = '/var/www/src/cgi-bin/sutras';
-
-my @remaining;
-if (open my $in, "$dir/remaining") {
-    my $s = <$in>;
-    @remaining = $s =~ m{(\d+)}g;
-    close $in;
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $sutra;
+SUTRA:
+while (1) {
+    my $sth_rand_sut = $dbh->prepare(<<'EOS');
+    SELECT id, content
+      FROM sutra
+     WHERE chosen = 0
+  ORDER BY RAND()
+     LIMIT 1
+EOS
+    $sth_rand_sut->execute();
+    my $href = $sth_rand_sut->fetchrow_hashref();
+    if (! $href) {
+        # reset them all and loop
+        my $sth_reset = $dbh->prepare(<<'EOS');
+            UPDATE sutra
+               SET chosen = 0
+EOS
+        $sth_reset->execute();
+    }
+    else {
+        $sutra = $href->{content};        
+        # mark it as chosen
+        my $sth_mark = $dbh->prepare(<<'EOS');
+            UPDATE sutra
+               SET chosen = 1
+             WHERE id = ?
+EOS
+        $sth_mark->execute($href->{id});
+        last SUTRA;
+    }
 }
-if (! @remaining) {
-    @remaining = map { s{.*/}{}; $_ }
-                    <$dir/[0-9]*>;
-}
-
-my $the_one = splice @remaining, rand @remaining, 1;
-$the_one = "$dir/$the_one";
-
-open my $out, ">", "$dir/remaining" or die "no write remaining";
-print {$out} "@remaining\n";
-close $out;
-
-my $sutra = slurp($the_one);;
-
 #
 # html version for sending
 #
@@ -76,26 +85,25 @@ To unsubscribe and for other sutra related activities click here:<br>
 </html>
 EOH
 
-open my $addrs, "<", "$dir/addresses" or die "no addresses";
-my @addrs = <$addrs>;
-close $addrs;
-chomp @addrs;
-
 my $n = 0;
-ADDR:
-for my $em (@addrs) {
+my $sth_all_addr = $dbh->prepare(<<'EOS');
+    SELECT email
+      FROM address
+EOS
+$sth_all_addr->execute();
+while (my $href = $sth_all_addr->fetchrow_hashref()) {
     ++$n;
     if ($n % 10 == 0) {
        sleep 60;
        # otherwise we get an authentication error?
     }
-
+    my $email = $href->{email};
     email_letter($c,
-        to => $em,
+        to => $email,
         from => 'Daily Sutra <notifications@mountmadonna.org>',
         subject => 'Daily Sutra from Babaji',
         html => $html,
         activity_msg => 'none',
     );
-    print "sutra sent to $em\n" 
+    print "sutra sent to $email\n" 
 }

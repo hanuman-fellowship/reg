@@ -1,0 +1,11 @@
+drop table if exists sutra;
+create table sutra (
+    id smallint,
+    content varchar(1024),
+    chosen tinyint default 0
+);
+drop table if exists address;
+create table address (
+    id int(11) primary key auto_increment,
+    email varchar(1024)
+);

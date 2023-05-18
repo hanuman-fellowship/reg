@@ -13,9 +13,6 @@ my $tt = Template->new(
     INTERPOLATE => 1,
 );
 use lib '../lib';
-use Slurp qw/
-    slurp
-/;
 use Util qw/
     trim
 /;
@@ -50,16 +47,21 @@ body {
     margin-top: .2in;
     color: gray;
 }
+.hl {
+    background-color: #FFFFA0;
+}
 </style>
 </head>
 <body>
 EOH
 
-my $dir = '/var/www/src/cgi-bin/sutras';
-my %addrs;
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
 
 sub show {
-    my ($t) = @_;
+    my ($t, $p) = @_;
+    $t =~ s{$p}{<span class=hl>$p</span>}xmsg if $p;
     chomp $t;
     if (substr($t, 0, 1) eq '^') {
         $t =~ s{^\^}{<pre>};
@@ -73,29 +75,11 @@ $t
 EOH
 }
 
-sub get_addrs {
-    open my $addrs, "<", "$dir/addresses" or die "no addresses";
-    while (my $line = <$addrs>) {
-        chomp $line;
-        $addrs{$line} = 1;
-    }
-    close $addrs;
-}
-
-sub put_addrs {
-    open my $addrs, ">", "$dir/addresses" or die "no put";
-    for my $a (sort keys %addrs) {
-        print {$addrs} "$a\n";
-    }
-    close $addrs;
-}
-
 sub valid_email {
     my ($em) = @_;
     return $em =~ m{\@};
 }
 
-my $email = trim($P{email});
 if (exists $P{search}) {
     my $pattern = trim($P{pattern});
     if (! $pattern) {
@@ -103,21 +87,26 @@ if (exists $P{search}) {
         exit;
     }
     my $substring = $P{substring};
-    my $pat = $substring? qr/$pattern/i
-              :           qr/\b$pattern\b/i
-              ;
-    my $n = 0;
-    for my $s (<$dir/[0-9]*>) {
-        my $t = slurp($s);
-        if ($t =~ $pat) {
-            ++$n;
-            $t =~ s{($pat)}{<span style="color: red">$1</span>}g;
-            print show($t);
-            print "<hr class=hr width=370 align=left>\n";
-        }
+    my $start = "[[:<:]]";
+    my $end   = "[[:>:]]";
+    if ($substring) {
+        $start = $end = '';
     }
-    if ($n == 0) {
-        print "No sutra matched '$pattern'.";
+    my $sth_search = $dbh->prepare(<<"EOS");
+        SELECT content
+          FROM sutra
+         WHERE content regexp ?
+      ORDER BY id
+EOS
+    $sth_search->execute("$start$pattern$end");
+    my $n = 0;
+    while (my $href = $sth_search->fetchrow_hashref) {
+        ++$n;
+        print show($href->{content}, $pattern);
+        print "<hr class=hr width=370 align=left>\n";
+    }
+    if (! $n) {
+        print "No sutra matches '$pattern'.";
     }
 }
 elsif (exists $P{sut_sub}) {
@@ -130,17 +119,27 @@ elsif (exists $P{sut_sub}) {
         print "Invalid email address: $email";
         exit;
     }
-    get_addrs();
-    if (exists $addrs{$email}) {
-        print "$email is <i>already</i> receiving the sutras."
+    my $sth_addr_search = $dbh->prepare(<<"EOS");
+        SELECT *
+          FROM address
+         WHERE email = ?
+EOS
+    $sth_addr_search->execute($email);
+    if ($sth_addr_search->fetchrow_hashref()) {
+        print "$email was already receiving the sutras.";
     }
     else {
-        $addrs{$email} = 1;
-        put_addrs();
+        my $sth_addr_ins = $dbh->prepare(<<"EOS");
+            INSERT
+              INTO address
+                   (email)
+            VALUES (?)
+EOS
+        $sth_addr_ins->execute($email);
         print "$email will now receive the sutras.";
     }
 }
-elsif ($email && exists $P{sut_unsub}) {
+elsif (exists $P{sut_unsub}) {
     my $email = trim($P{email});
     if (! $email) {
         print "Missing email address.";
@@ -150,30 +149,51 @@ elsif ($email && exists $P{sut_unsub}) {
         print "Invalid email address: $email";
         exit;
     }
-    get_addrs();
-    if (exists $addrs{$email}) {
-        delete $addrs{$email};
-        put_addrs();
-        print "$email will no longer receive the sutras.";
+    my $sth_addr_search = $dbh->prepare(<<"EOS");
+        SELECT *
+          FROM address
+         WHERE email = ?
+EOS
+    $sth_addr_search->execute($email);
+    if (! $sth_addr_search->fetchrow_hashref()) {
+        print "$email is <i>not</i> receiving the sutras."
     }
     else {
-        print "$email is <i>not</i> receiving the sutras."
+        my $sth_addr_del = $dbh->prepare(<<"EOS");
+            DELETE
+              FROM address
+             WHERE email = ?
+EOS
+        $sth_addr_del->execute($email);
+        print "$email will no longer receive the sutras.";
     }
 }
 elsif (exists $P{show_all}) {
-    for my $s (<$dir/[0-9]*>) {
-        my $x = slurp($s);
-        print show($x);
-        print "<hr width=370 align=left>\n";
+    my $sth_search = $dbh->prepare(<<"EOS");
+        SELECT content
+          FROM sutra
+      ORDER BY id
+EOS
+    $sth_search->execute();
+    while (my $href = $sth_search->fetchrow_hashref) {
+        print show($href->{content});
+        print "<hr class=hr width=370 align=left>\n";
     }
 }
-else {
-    my @sutras = <$dir/[0-9]*>;
+elsif (exists $P{rand_sut}) {
+    # choose random sutra
     my @pics = <../root/static/images/sutra_pics/*>;
     my $pic = $pics[ rand @pics ];
     $pic =~ s{.*/}{}xms;
-    my $x = slurp($sutras[ rand @sutras ]);
-    my $t = show($x);
+    my $sth_rand_sut = $dbh->prepare(<<'EOS');
+        SELECT content
+          FROM sutra
+      ORDER BY RAND()
+         LIMIT 1;
+EOS
+    $sth_rand_sut->execute();
+    my $href = $sth_rand_sut->fetchrow_hashref();
+    my $t = show($href->{content});
     print <<"EOH";
 <table>
 <tr>
