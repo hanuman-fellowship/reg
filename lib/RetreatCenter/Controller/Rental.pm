@@ -1944,7 +1944,7 @@ sub contract : Local {
 sub _fee_table {
     my ($c, $hc) = @_;
     my $table = <<'EOH';
-<table cellpadding=5 border=1>";
+<table cellpadding=5 border=1>
 <tr>
 <th align=left>Housing Type</th>
 <th>Cost</th>
