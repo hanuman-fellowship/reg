@@ -1,10 +1,12 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
+[% INCLUDE new_tt2/header.tt2 %]
+
 <h1>MMC Online Payment Request</h1>
 <table cellpadding=5>
 <tr><th>Name</th><td> $first $last</td></tr>
@@ -14,7 +16,12 @@
 <tr><th>Total</th><td> \$$amount_disp</td></tr>
 <tr><th>Program</th><td> $name</td></tr>
 </table>
-<p>
+
+<div class="btn-holder">
 $payment
+</div>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

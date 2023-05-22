@@ -1,15 +1,15 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
-<p>
-Thank you.<br>
-Please confirm the following and then choose the Pay Securely button below.
-<p>
-You are sending a gift card for \$$amount for meals and lodging at Mount Madonna Center to:
+[% INCLUDE new_tt2/header.tt2 %]
+
+<h2>Thank you!</h2>
+<p>Please confirm the following and then choose the Pay Securely button below.</p>
+<p>You are sending a gift card for \$$amount for meals and lodging at Mount Madonna Center to:</p>
 <h3>Recipient</h3>
 <dl>
 <dt>Name:</dt>
@@ -41,6 +41,7 @@ $country</dd>
 <p>
 $stripe_payment
 
-</form>
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

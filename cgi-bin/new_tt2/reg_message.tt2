@@ -8,16 +8,24 @@
 [% END %]
 </head>
 <body>
+
+<div class="mail-box-a">
+    <div class="mail-box-b">
+        
 [% IF sending_email %]
     <img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=200>
 [% ELSE %]
     <img src='/static/images/mmc-teal.png' width=200>
 [% END %]
+
+
 <p>
 Thank you, ${first}.
+</p>
 [% IF amount %]
     <p>
     Your payment has been received.
+</p>
 [% END %]
 <p>
 [% IF title == 'Personal Retreat' %]
@@ -33,10 +41,12 @@ Thank you, ${first}.
     $title program[% IF leader_names %] with $leader_names[% END %]
     from ${sdate.format("%A %B %e, %Y")} to ${edate.format("%A %B %e, %Y")}.
 [% END %]
+</p>
 [% IF amount %]
     <p>
     Your credit card has been charged \$${amount}.<br>
     The id for this transaction is ${transaction_id}.
+</p>
 [% END %]
 <p>
 [% IF ! sending_email %]
@@ -50,16 +60,20 @@ with confirmation of your
     housing and all the details you will need to know
     prior to coming to Mount Madonna Center.
 [% END %]
+</p>
 <p>
 If you do not receive this other letter within 3 days check your
 spam/junk email folder.
 If it is not there please call us at 408-846-4090.
+</p>
 [% IF ! housing_not_needed %]
     <p>
     Do <b>not</b> make travel plans until you have received
     your housing confirmation letter.
-    <p>
+</p>
+    
     [% IF withwhom_last || withwhom_first %]
+
         <p>
         You requested to be housed with $withwhom_first ${withwhom_last}.
         They <b>MUST REGISTER SEPARATELY</b>.<br>
@@ -68,7 +82,11 @@ If it is not there please call us at 408-846-4090.
         [% ELSE %]
             <a href="$cgi/reg1?id=$pid">Click here to go back to the registration page</a> and register them.</p>
         [% END %]
+   
     [% END %]
 [% END %]
+</div>
+</div>
+
 </body>
 </html>

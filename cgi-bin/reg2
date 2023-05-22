@@ -472,15 +472,6 @@ elsif (! $prog->housing_not_needed) {
                 push @by_days, $i;
             }
         }
-        # if no days chosen?
-        if ($ndays == 0) {
-            oops("Please choose the days that you want to attend.", 1);
-        }
-        if ($by_days[-1] - $by_days[0] + 1 > @by_days) {
-            # for example: @by_days is (2, 4)  so we have 4 - 2 + 1 > 2
-            oops("Sorry, you cannot come, go, and then come back.<br>"
-               . "Please register twice.");
-        }
         if ($by_days[0] == $by_days[-1]) {
             $payment .= "You are staying "
                      .  ($sd + $by_days[0] - 1)->format("%A %B %e")
@@ -490,11 +481,12 @@ elsif (! $prog->housing_not_needed) {
             $payment .= "You are staying "
                      .  ($sd + $by_days[0] - 1)->format("%A %B %e")
                      .  " through "
-                     .  ($sd + $by_days[-1] - 1)->format("%A %B %e")
+                     .  ($sd + $by_days[-1])->format("%A %B %e")
+                        # not -1 here since they leave the next day
                      . ".<br>";
         }
         my $pl = $ndays == 1? '': 's';
-        $payment .= "This is $ndays day$pl at a cost of \$$h_cost Per Day.<br>";
+        $payment .= "This is $ndays night$pl at a cost of \$$h_cost Per Night.<br>";
         $total = $h_cost * $ndays;
         $payment .= "The total is \$$total.<br>";
     }

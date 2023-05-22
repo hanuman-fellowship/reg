@@ -1,7 +1,8 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 <script>
 var fields = [
     { id: 'rec_fname', regexp: '\\S',
@@ -34,15 +35,16 @@ var fields = [
 <script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
+[% INCLUDE new_tt2/header.tt2 %]
+
 <h1>Gift Cards</h1>
-It is very kind of you to send your friend the
-gift of meals and lodging at Mount Madonna Center.
-For a Personal Retreat in $month here are the costs
-Per Person Per Day for the various housing options:
+<div class="info-box">  
+  <p>It is very kind of you to send your friend the gift of meals and lodging at Mount Madonna Center. For a Personal Retreat in $month here are the costs Per Person Per Day for the various housing options:</p>
+</div>
+
 <ul>
 [% cl_row = 'even' %]
-<table cellpadding=3>
+<table cellpadding=3 class="options-table reg-priceac">
 <tr>
 <th class=lt>Type</th><th align=right>Cost</th>
 </tr>
@@ -63,10 +65,11 @@ Per Person Per Day for the various housing options:
 <form autocomplete="off"
       method=POST
       action="/cgi-bin/gift_card2"
-      onSubmit="return check_fields();">
+      onSubmit="return check_fields();"
+      class="regs-form">
 
 <h3>Gift Recipient Information</h3>  
-<table cellpadding=5>
+<table cellpadding=5 class="fields-table">
 
 <tr>
 <th><span class="required">*</span> First Name:</th>
@@ -92,11 +95,11 @@ Per Person Per Day for the various housing options:
 <p>
 We will be sending your friend an email notifying them of your gift.
 If you would like to include a personal note to them, you may write it here:
-<p>
+</p>
 <textarea name="personal_note" rows='5' cols='50' font-family: Times;"></textarea>
 <h3>Your Information</h3>  
 
-<table cellpadding=5>
+<table cellpadding=5 class="fields-table">
 
 <tr>
 <th><span class=required>*</span> First Name:</th>
@@ -155,18 +158,20 @@ If you would like to include a personal note to them, you may write it here:
 </tr>
 
 <tr>
-<th>&nbsp;</th><td><button type=submit>Submit</button></td>
+<th>&nbsp;</th><td><button class="sub-button" type=submit>Submit</button></td>
 </tr>
 
 </table>
-<p>
-
-We will be sending you a confirmation email. 
+<div class="info-box">
+<p>We will be sending you a confirmation email. 
 To prevent it from going to your spam folder, 
 kindly add the following address to your list
 of acceptable emails: <em>programs@mountmadonna.org</em>. </li>
-<p>
+</p>
+</div>
 
 </form>
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

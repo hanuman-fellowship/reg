@@ -1,13 +1,20 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
-<p>
+[% INCLUDE new_tt2/header.tt2 %]
+
+<h3>
 Thank you, ${first}.
+</h3>
 <p>
 Your $type payment has been credited to ${rental_name}.
+</p>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

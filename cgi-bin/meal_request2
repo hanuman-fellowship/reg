@@ -38,6 +38,7 @@ use Util qw/
 /;
 
 # something is troublesome in the summary
+# so store and restore it while requesting the payment.
 my $summary = $param{summary};
 $param{summary} = '';
 

@@ -371,19 +371,6 @@ if ($pid) {
     }
 }
 
-if ($prog->reg_by_day) {
-    # prepare the date_names array
-    my $sdate = $prog->sdate_obj;
-    my $edate = $prog->edate_obj;
-    my $ndays = $edate - $sdate;
-    $stash{ndays} = $ndays;
-    my @date_names;
-    for my $i (1 .. $ndays) {
-        push @date_names, ($sdate + $i - 1)->format("%A, %B %e");
-    }
-    $stash{date_names} = \@date_names;
-}
-
 # ?? plink, type cancellation policy ??
 for my $w (qw/
     title dates leader_names name
@@ -443,13 +430,13 @@ if ($stash{basicfull}) {
 }
 
 if ($prog->reg_by_day) {
+    # prepare the date_names array
     my $sdate = $prog->sdate_obj;
-    $stash{last_index} = $ndays - 1;
     my @date_names;
     for my $i (1 .. $ndays) {
         push @date_names, ($sdate + $i - 1)->format("%A, %B %e");
     }
-    $stash{ndates} = scalar(@date_names);
+    $stash{ndays} = scalar(@date_names);
     $stash{date_names} = \@date_names;
 }
 

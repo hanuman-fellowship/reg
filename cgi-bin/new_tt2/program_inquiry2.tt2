@@ -39,3 +39,5 @@ th, td {
 <tr><th>How did you learn about MMC?</th><td>$learn</td></tr>
 <tr><th>Mailing List?</th><td>$mailing_list</td></tr>
 </table>
+</body>
+</html>

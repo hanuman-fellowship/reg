@@ -1,14 +1,16 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
-<h3>Program Information</h3>  
+[% INCLUDE new_tt2/header.tt2 %]
+
+<h2>Program Information</h2>  
 [% IF mountain_experience %]
     <h4>You are registering for a Mountain Experience on ${dates}.</h4>
-    Meals: $meals<br>
+    <p>Meals: $meals<br>
     Activities: $activities
     [% IF children_name_age %]
         <br>Children: $children_name_age
@@ -99,6 +101,7 @@ $country</dd>
     <p>
     You prefer a ${cabin_room}, if available, 
     instead of a ${other_cabin_room}.
+    </p>
 [% END %]
 
 [% IF carpool_verbose != ''
@@ -118,21 +121,25 @@ $country</dd>
 
 [% IF waiver_needed %]
     <h3>Yoga Instruction and Liability Waiver and Release</h3>
-    Yoga as taught at Mount Madonna Center and Institute is primarily
+    <div class="info-box">
+    <p>Yoga as taught at Mount Madonna Center and Institute is primarily
     intended to cultivate peace, self development, and well being. Practices
     within this ancient discipline include right action, physical postures,
     breathing exercises, and various types of meditation.
+</p>
     <p>
     Any person participating in a yoga class at Mount Madonna
     Center has been asked to agree to the terms below at the time of
     registration. Participation in any yoga class offered at Mount Madonna
     Center includes agreement with all of the following:
+</p>
     <p>
     I understand that yoga is an ancient Indian system designed to make the
     body strong and flexible. I realize that it is important never to do any
     practice to the point of pain or discomfort. I am aware that there is
     some risk involved in all physical exercise and that I am responsible
     for recognizing my own physical limits.
+</p>
     <p>
     I understand that yoga is not a substitute for medical attention,
     examination, diagnosis or treatment, and that practicing yoga is not
@@ -144,6 +151,7 @@ $country</dd>
     presently cause pain or limitations of movement and I will communicate
     with the instructor(s) information regarding such conditions before
     participating in practices taught in classes at Mount Madonna Center.
+</p>
     <p>
     I hereby agree to irrevocably waive, release and discharge any and
     all claims and liabilities against Mount Madonna Center, Mount Madonna
@@ -153,26 +161,35 @@ $country</dd>
     Understanding that there is always some risk in participating in any
     physical exercise, I assume the risk of injury from my participation in
     yoga classes at Mount Madonna Center.
-    <p>
+</p>
+    </div>
+    <hr>
+    <div class="regs-form">
     <span style="color: red; font-size: 14pt;">
     By checking this box:
     <input type=checkbox id=waiver>
     I affirm that
     I have read, understand, and accept the above. <!-- liability waiver and release. -->
     </span>
+</div>
 [% END %]
 
 <h3>Payment</h3>
 <p>
 $payment
+</p>
 <p>
 [% IF metadata %]
     <form action=$cgi/reg2_hook method=POST>
     <input type=hidden name=metadata value="$metadata">
-    <button type=submit>Click Here to Complete Registration</button>
+    <button class="sub-button" type=submit>Click Here to Complete Registration</button>
     </form>
+</p>
 [% ELSE %]
     $stripe_payment
 [% END %]
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

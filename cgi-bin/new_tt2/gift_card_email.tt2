@@ -1,31 +1,37 @@
 <html>
 <head>
-<link rel="stylesheet" href="https://akash.mountmadonna.org/static/cgi.css">
+<meta charset='UTF-8'>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
 </head>
 <body>
-<img src="https://akash.mountmadonna.org/static/images/mmc-teal.png" width=200>
-<p>
+[% INCLUDE new_tt2/header.tt2 %]
+
+<h3>
 Greetings $rec_fname,
+</h3>
+<p>Your friend has sent you a gift card for meals and lodging at Mount Madonna Center.
+It has a value of \$${amount}.</p>
 <p>
-Your friend has sent you a gift card for meals and lodging at Mount Madonna Center.
-It has a value of \$${amount}.
-<p>
-It was sent to you by $first ${last}.
+It was sent to you by $first ${last}.</p>
 <p>
 You can redeem it (in whole or in part) by registering
-for a Personal Retreat (or any other program) at <a target=_blank href='https://www.mountmadonna.org'>mountmadonna.org</a>.
+for a Personal Retreat (or any other program) at <a target=_blank href='https://www.mountmadonna.org'>mountmadonna.org</a>.</p>
 <p>
 When paying for your registration use this gift card code: <span style="font-size: 15pt">$code</span>
 [% IF personal_note %]
+</p>
 <p>
-${first}'s message to you is this:
+${first}'s message to you is this:</p>
 <ul>
 $personal_note_verbose
 </ul>
 [% END %]
 <p>
-You can check on the status of your card with <a href='$cgi/gift_card_status?code=$code'>this link</a>.
-<p>
-Thank you
+You can check on the status of your card with <a href='$cgi/gift_card_status?code=$code'>this link</a>.<br>
+<strong>Thank you</strong>
+</p>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>
