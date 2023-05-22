@@ -241,9 +241,9 @@ function check_form() {
     <span class=covid_must>must</span> be fully vaccinated.
     -->
     <p>
-    Please take a picture of your vaccination card and upload it here:
+    <span class=required>*</span> Please take a picture of your vaccination card and upload it here:
     <p>
-    <span class=required>*</span> <input type=file name=card>
+    <input type=file name=card>
 [% END %]
 
 <h3>Registrant Information</h3>  
