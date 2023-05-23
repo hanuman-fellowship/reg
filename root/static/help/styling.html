@@ -159,6 +159,7 @@ reconciliation.  Note that you can search for all ZZ people by last name.
     <ul>
 	regpr.tt2<br>
 	reg1.tt2<br>
+    meals_at_mmc.html<br>
 	reg2.tt2<br>
 	err.tt2 <span class=special>**</span><br>
 	reg_message.tt2 <span class=special>**</span><br>
@@ -169,6 +170,7 @@ reconciliation.  Note that you can search for all ZZ people by last name.
 	Program registrations follow a similar path to PRs but without the initial PR page.
     <ul>
 	reg1.tt2<br>
+    meals_at_mmc.html<br>
 	reg2.tt2<br>
 	err.tt2 <span class=special>**</span><br>
 	reg_message.tt2 <span class=special>**</span><br>
@@ -185,13 +187,15 @@ reconciliation.  Note that you can search for all ZZ people by last name.
     <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/reg1?id=4824'>https://akash2.mountmadonna.org/cgi-bin/reg1?id=4824</a>
 
 <p>
-The following two templates are special.  Ask Sahadev.
-<p>
-A meal information page linked from meal requests and registrations:<br>
-/var/www/src/root/static/meals_at_mmc.html
-<p>
-The registration confirmation letter:<br>
-/var/www/src/root/static/templates/letter/default.tt2
+The following templates are special.  Ask Sahadev.<br>
+The registration confirmation letters:<br>
+In /var/www/src/root/static/templates/letter/conf:
+<ul>
+default.tt2<br>
+mms_parent.tt2<br>
+one_day.tt2<br>
+online_default.tt2
+</ul>
 <p>
 </ul>
 <h2>Mountain Experience</h2>
@@ -203,6 +207,7 @@ MEs are similar to PRs.
 
 	regme.tt2<br>
 	reg1.tt2<br>
+    meals_at_mmc.html<br>
 	reg2.tt2<br>
 	err.tt2 <span class=special>**</span><br>
 	reg_message.tt2 <span class=special>**</span><br>
@@ -213,13 +218,13 @@ MEs are similar to PRs.
 <a target=_blank href='https://akash2.mountmadonna.org/cgi-bin/meal_request'>https://akash2.mountmadonna.org/cgi-bin/meal_request</a>
 <ul>
 meal_request.tt2<br>
+meals_at_mmc.html<br>
 meal_request2.tt2<br>
 meal_request3.tt2 <span class=special>**</span><br>
 meal_request_receipt.tt2 <span class=special>**</span><br>
 mr_err.tt2 <span class=special>**</span>
 <p>
 There is also a linked page to be styled separately:<br>
-/static/meals_at_mmc.html
 </ul>
 
 <h2>Program Inquiry</h2>
