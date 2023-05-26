@@ -28,7 +28,7 @@
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <h3>Enage with Us</h3>
+                    <h3>Engage with Us</h3>
                     <!-- social media -->
                     <ul class="socials">
                         <li><a href="#"><img src="/static/images/ic-smfb.svg" alt="Mount Madonna Facebook" title="Mount Madonna Facebook"></a></li>
@@ -62,13 +62,14 @@
     <!-- // FOOTER -->
 
     <!-- back to top JS -->
+    
 
     <script type="text/javascript">
         // button back to top
-        var btn = $('#bttbutton');
+        var btn = \$('#bttbutton');
 
-        $(window).scroll(function() {
-          if ($(window).scrollTop() > 300) {
+        \$(window).scroll(function() {
+          if (\$(window).scrollTop() > 300) {
             btn.addClass('show');
           } else {
             btn.removeClass('show');
@@ -88,4 +89,6 @@
             window.addEventListener("scroll", parallax, false);
     </script>
      
+     
     
+ 

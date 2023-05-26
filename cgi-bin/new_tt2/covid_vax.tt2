@@ -1,25 +1,33 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
-<p>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
+<h3>
 Greetings $name,
+</h3>
 <p>
 We require that everyone at Mount Madonna Center be fully vaccinated
 against COVID-19.
-<p>
+</p>
 <form action=/cgi-bin/covid_vax
       name=form
       method=post
       enctype="multipart/form-data"
+      class="regs-form"
 >
 <input type=hidden name=person_id value=$person_id>
 Please choose your vaccination card image file here: <input type=file name=card>
 <p>
-And then press: <button type=submit>Upload</button>
+And then press: <button class="sub-button" type=submit>Upload</button>
 </form>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

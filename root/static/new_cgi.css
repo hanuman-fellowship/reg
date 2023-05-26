@@ -40,6 +40,7 @@ h1, h2, h3 {
     margin-bottom: 1em;
     margin-top: 1.5em;
     text-transform: uppercase;
+    letter-spacing: 0.25em;
 }
 li {
     margin-bottom: 3mm;
@@ -72,14 +73,17 @@ h1, h2, h3, h4, h5, h6 {
 .h1 {
     font-family: 'Marcellus', serif;
     font-size: 2.5em;
+    letter-spacing: 0.25em;
 }
 .h2 {
     font-family: 'Marcellus', serif;
     font-size: 2em;
+    letter-spacing: 0.25em;
 }
 .h3 {
     font-family: 'Marcellus', serif;
     font-size: 1.2em;
+    letter-spacing: 0.25em;
 }
 
 .darkred {
@@ -653,6 +657,15 @@ a.ulwhite:hover::before {
 .reg-pricetb td:nth-child(4)::before {
     content: "$ ";
 }
+.reg-priceac td:nth-child(2)::before {
+    content: "$ ";
+    padding: 0 1em;
+}
+.reg-pricebc td:nth-child(3)::before {
+    content: "$ ";
+    padding: 0 1em;
+}
+
 
 
 /* checkboxes and radio inputs setup */
@@ -733,7 +746,7 @@ a.ulwhite:hover::before {
 }
 
 /* button setup */
-.sub-button {
+.sub-button, .btn-holder button {
     line-height: 25px;
     font-size: 18px;
     border: 1px solid #b1713c;
@@ -749,7 +762,7 @@ a.ulwhite:hover::before {
     bottom: 0;
     margin-top: 2em;
 }
-.sub-button:hover {
+.sub-button:hover, .btn-holder button:hover {
     box-shadow: 6px 6px 8px 8px rgba(150, 150, 150, 0.1);
     bottom: 3px;
     background-color: #BB8355!important;
@@ -763,6 +776,30 @@ a.ulwhite:hover::before {
     position: relative;
     margin: 1em 0;
 }
+.mail-box-a, .message-box-a {
+  width: 100%;
+  padding: 1em 2.5em;
+}
+.mail-box-b {
+  background: #FFFDF4;
+  color: #4E2222;
+  font-family: "Montserrat", Helvetica, sans-serif;
+  padding: 2em;
+  border: 2px solid #E3D2C8;
+  border-radius: 6px;
+}
+.mail-box-b h3 {
+  font-family: 'Marcellus', serif;
+  letter-spacing: 0.25em;
+}
+.mail-box-c, .message-box-c {
+  background: #F4EAE6;
+  border-radius: 6px;
+  padding: 2em;
+  font-family: "Montserrat", Helvetica, sans-serif;
+  color: #4E2222;
+}
+
 
 
 /* MEDIA */

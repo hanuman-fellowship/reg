@@ -186,7 +186,9 @@ $payment
     </form>
 </p>
 [% ELSE %]
+<div class="btn-holder">
     $stripe_payment
+</div>
 [% END %]
 
 <!-- // PAGE CONTENT ENDS HERE -->

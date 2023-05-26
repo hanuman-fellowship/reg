@@ -12,6 +12,9 @@ th, td {
 </style>
 </head>
 <body>
+	<div class="mail-box-a">
+    	<div class="mail-box-b">
+    		
 <h2>New Program Inquiry</h2>
 [% IF inquiry_id %]
     <a target=_blank href='$reg/inquiry/view/$inquiry_id'>View the Inquiry in Reg</a>
@@ -39,5 +42,8 @@ th, td {
 <tr><th>How did you learn about MMC?</th><td>$learn</td></tr>
 <tr><th>Mailing List?</th><td>$mailing_list</td></tr>
 </table>
+
+	</div>
+	</div>
 </body>
 </html>

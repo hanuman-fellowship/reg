@@ -1,7 +1,9 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's JS -->
 <script>
 var fields = [
     { id: 'first', regexp: '\\S',
@@ -29,7 +31,9 @@ function check_form() {
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
 <body>
-<img src='/static/images/mmi_logo.png' width=800>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+            
 <h2>Mailing List</h2>  
 Fields marked with a <span class=required>*</span> are required.</P>
 <h3>Contact Information</h3>  
@@ -130,3 +134,8 @@ programs@mountmadonna.org
 
 <input style="background: lightgreen" type=submit id=submit value='Submit'>
 </form>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
+</body>
+</html>

@@ -1,21 +1,26 @@
 <html>
 <head>
-<title>Daily Sutra from Babaji</title>
-<link rel="stylesheet" href="/static/cgi.css">
+<meta charset='UTF-8'>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
 
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
 <h2>Daily Sutra from Babaji</h2>
-<table cellpadding=5>
+<table cellpadding=5 class="fields-table">
 
 <tr>
 <td colspan=2>
-To receive or not receive a Daily Sutra from Baba Hari Dass<BR>
+<p>To receive or not receive a Daily Sutra from Baba Hari Dass<br>
 enter your email address below and press the appropriate button.
+</p>
 </td>
 </tr>
 
-<form target=_blank action=/cgi-bin/sutra>
+<form target=_blank action=/cgi-bin/sutra class="regs-form">
 <tr>
 <td align=right>Email Address</td>
 <td><input type=text name=email SIZE=40></td>
@@ -32,7 +37,7 @@ enter your email address below and press the appropriate button.
 
 <tr>
 <td colspan=2>
-To see all sutras containing a pattern enter it below and press Search.
+<p>To see all sutras containing a pattern enter it below and press Search.</p>
 </td>
 </tr>
 
@@ -64,18 +69,21 @@ Want to see <b>all</b> of the sutras?
 <tr>
 <td></td>
 <td>
-<button type=submit name=show_all>Show All Sutras</button>
+<button class="sub-button" type=submit name=show_all>Show All Sutras</button>
 </td>
 </tr>
 </form>
 
-<tr><td colspan=2>
-To see a sutra chosen at random (or, if you wish, one <i>perfect</i> for <b>you</b> at <u>this</u> moment in time) press this button:</td></tr>
+<tr>
+	<td colspan=2>
+		<p>To see a sutra chosen at random (or, if you wish, one <i>perfect</i> for <b>you</b> at <u>this</u> moment in time) press this button:</p>
+	</td>
+</tr>
 <form target=_blank action=/cgi-bin/sutra>
 <tr>
 <td></td>
 <td>
-<button type=submit name="rand_sut">Random Sutra</button>
+<button class="sub-button" type=submit name="rand_sut">Random Sutra</button>
 </td>
 </tr>
 </form>
@@ -90,5 +98,7 @@ refreshing the browser screen.
 <p>If you are having a problem with anything on this page,
 please send a message to Sahadev by clicking <A HREF="mailto:sahadev@mountmadonna.org?subject=Daily Sutra from Babaji">here</A>.
 
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

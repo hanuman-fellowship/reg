@@ -4,13 +4,17 @@
 <link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
-Errors in the form:
+	<div class="message-box-a">
+		<div class="message-box-c">
+<strong>Errors in the form:</strong>
 <ul>
 $err
 </ul>
 <form>
-Please go <button TYPE="button" id=back onclick="history.go(-1)">back</button> and correct this.
+Please go <button class="sub-button" TYPE="button" id=back onclick="history.go(-1)">back</button> and correct this.
 </form>
+</div>
+</div>
 </body>
 </html>
 <script type='text/javascript'>document.getElementById('back').focus();</script>	

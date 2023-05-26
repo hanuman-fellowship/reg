@@ -1,10 +1,9 @@
 <html>
 <head>
-<script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
-<script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+<meta charset='UTF-8'>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's JS -->
 <script type='text/javascript'>
 \$(function(){
     \$('.input-group.date').datepicker({
@@ -16,11 +15,13 @@
     });  
 });
 </script>
-<link rel="stylesheet" href="/static/cgi.css">
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
-<p>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
+
 <h1>
 [% IF type == 'family' %]
 Meals for HFS Members/Affilates (MMI, MMC, Temple)
@@ -32,10 +33,10 @@ Meals at Mount Madonna Center
 </h1>
 <p>
 You must request meals at least $advance days in advance.
-<span style="margin-left: 1in"><a target=_blank href="/cgi-bin/meals_at_mmc">Meal Information</a></span>
+<span style="margin-left: 1in"><a target=_blank href="/static/meals_at_mmc.html">Meal Information</a></span>
 <br>
 Enter dates and the number of meals you wish on those dates.<br>
-If the meals are for a child (ages 5-12) check the Child column checkbox.
+If the meals are for a child (ages 5-12) check the Child column checkbox.</p>
 <p>
 [% dr = date_ranges.0 %]
 [% IF type == 'family' %]
@@ -45,6 +46,7 @@ If the meals are for a child (ages 5-12) check the Child column checkbox.
 [% END %]
 [% IF dr %]
     <br>nor meals on these dates:
+  </p>
     <ul>
     [% FOR dr IN date_ranges %]
         [% one_day = dr.0 == dr.1 %]
@@ -64,10 +66,11 @@ If the meals are for a child (ages 5-12) check the Child column checkbox.
       action=/cgi-bin/meal_request
       method=POST
       name=form
+      class="regs-form"
 >
 <input type=hidden name=type value='$type'>
 <p>
-<table cellpadding=3 border=1 style="width: 60%">
+<table class="fields-table" cellpadding=3 border=1 style="width: 60%">
 
 <tr>
 <th class=tbl>Date</th>
@@ -146,8 +149,11 @@ If the meals are for a child (ages 5-12) check the Child column checkbox.
 </tr>
 </table>
 <br>
-<button class="button teal">Submit</button>
+<button class="sub-button button teal">Submit</button>
 <p>
 </form>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

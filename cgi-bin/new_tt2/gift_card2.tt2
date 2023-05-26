@@ -38,9 +38,9 @@ $country</dd>
 <dd>$email</dd>
 </dl>
 
-<p>
+<div class="btn-holder">
 $stripe_payment
-
+</div>
 <!-- // PAGE CONTENT ENDS HERE -->
 [% INCLUDE new_tt2/footer.tt2 %]
 </body>

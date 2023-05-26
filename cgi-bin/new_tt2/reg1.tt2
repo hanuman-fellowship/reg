@@ -6,10 +6,7 @@
 <!-- page's JS -->
 <script>
 var fields = [
-[% IF basicfull %]
-    { id: 'radio', name: 'progchoice',
-                   err: 'How many days to attend?' },
-[% END %]
+
     { id: 'first', regexp: '\\S',
                    err: 'Missing First Name' },
     { id: 'last', regexp: '\\S',
@@ -32,53 +29,28 @@ var fields = [
                      err: 'Invalid Email address' },
     { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' }
-[% IF ! housing_not_needed %]
+
 ,
     { id: 'radio', name: 'house1',
                    err: 'Missing 1st Housing Choice' },
     { id: 'radio', name: 'house2',
                    err: 'Missing 2nd Housing Choice' }
-[% END %]
+
 ];
 function check_form() {
     if (!check_fields()) {
         return false;
     }
 [% IF date_names %]
-    // we have a 'reg_by_day' program.
-    // make sure that at least one day was chosen
-    // and that the chosen dates are consecutive.
-    var chosen = [];
-    var start_dt = 0;
-    var end_dt = 0;
-    for (let i = 1; i <= $$ndays; ++i) {
+    var prev = 0;
+    for (let i = 1; i < $$ndates; ++i) {
         if (document.getElementById('date' + i).checked) {
-            if (! start_dt) {
-                start_dt = i;
+            if (prev != 0 && i != prev + 1) {
+                alert('You cannot come, go, and come back!');
+                return false;
             }
-            chosen.push(i);
-            end_dt = i;
+            prev = i;
         }
-    }
-    var ndays_el = document.getElementById('ndays1');
-    if (start_dt == 0) {
-        alert('Please choose the days you wish to attend.');
-        setTimeout(function() {
-            ndays_el.focus();
-            ndays_el.scrollIntoView();
-        }, 100);
-        return false;
-    }
-    // are the dates consecutive?
-    if (end_dt - start_dt + 1 > chosen.length) {
-        alert('Sorry, there is a gap in your chosen days.\n'
-            + ' You cannot come, go, and then come back.\n'
-            + ' Please register twice.');
-        setTimeout(function() {
-            ndays_el.focus();
-            ndays_el.scrollIntoView();
-        }, 100);
-        return false;
     }
 [% END %]
     var em1 = document.getElementById('email1').value;
@@ -212,7 +184,6 @@ function check_form() {
 [% ELSE %]
     <input type=hidden name=progchoice value=basic>
     [% IF date_names %]
-        <span id=ndays1></span>
         <input type=hidden value="$ndays" name=ndays>
         <!-- program is reg_by_day -->
         <h3>When will you attend?</h3>
@@ -257,14 +228,14 @@ function check_form() {
     <span class=covid_must>must</span> be fully vaccinated.
     -->
     <p>
-    <span class=required>*</span> Please take a picture of your vaccination card and upload it here:
+    Please take a picture of your vaccination card and upload it here:
     <p>
-    <input type=file name=card>
+    <span class=required>*</span> <input type=file name=card>
 [% END %]
 
 <h3>Registrant Information</h3>  
 
-<table cellpadding=5 class="fields-table">
+<table cellpadding=5 class="fields-table reg-pricetb">
 
 <tr>
 <th><span class=required>*</span> First Name:</th>
@@ -444,7 +415,7 @@ If you only want a certificate of completion enter COMP for the license #.
     <ul>
     <span id=house11></span>
     <span id=house21></span>
-    <table cellpadding=4>
+    <table cellpadding=4 class="options-table reg-pricetb">
 
     <tr>
     <th>1st</th>
@@ -470,14 +441,17 @@ If you only want a certificate of completion enter COMP for the license #.
     </ul>
 
     <p>If you are <b>sharing</b> your housing with someone, put their name here:</p>
-    <ul>
-    <b>First:</b>
-    <input type=text name="withwhom_first" id="withwhom_first" value="$withwhom_first">
-    <span>Make sure that they register <i>separately</i>.</span>
-    <br>
+    <ul class="ul-fields">
+        <li>
+            <b>First:</b>
+            <input type=text name="withwhom_first" id="withwhom_first" value="$withwhom_first">
+            <span>Make sure that they register <i>separately</i>.</span>
+        </li>
+        <li>
+            <b>Last:</b>
+            <input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last">
+        </li>
 
-    <b>Last:</b>
-    <input type=text name="withwhom_last" id="withwhom_last" value="$withwhom_last">
     </ul>
 
     [% IF ! outdoors && cabin %]
@@ -633,8 +607,6 @@ EIN #51-0174679.
 Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
 <p>
 <input type=text size=50 name=diet value="$diet">
-<p>
-<a target=_blank href='/cgi-bin/meals_at_mmc'>Meal Information</a>
 </ul>
 
 <h3>Additional Requests</h3>  

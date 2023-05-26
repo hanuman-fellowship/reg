@@ -1,8 +1,11 @@
 <html>
 <head>
-<link rel="stylesheet" href="/static/cgi.css">
+<meta charset='UTF-8'>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's CSS -->
 <style>
-body {
+/*body {
     margin-left: .5in;
     margin-top: .5in;
     margin-bottom: .5in;
@@ -11,7 +14,7 @@ body {
 a {
     color: blue;
     text-decoration: none;
-}
+}*/
 .dow {
     color: red;
 }
@@ -32,20 +35,27 @@ a {
 <script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
+    [% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
 <h2>
 $name
+</h2>
 <p>
 <span style="font-size: 15pt">$sdate <span class=dow>${sdate.format("%a")}</span>
 <b>To</b>
 $edate <span class=dow>${edate.format("%a")}</span>
 </span>
+</p>
+<p>
 <span style="margin-left: .5in; font-size: 15pt;">$first $last
+</p>
 <p>
-Housing Assignment Grid
+<h3>
+Housing Assignment Grid 
 <span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
-</h2>
-<p>
-<table cellpadding=5 border=1>
+</h3>
+
+<table class="options-table" cellpadding=5 border=1>
 <tr>
 <th align=left>&nbsp;&nbsp;Name</th>
 <th align=left>Room</th>
@@ -70,8 +80,9 @@ Housing Assignment Grid
 <td>&nbsp;</td>
 </tr>
 </table>
-<p>
-<table cellpadding=5>
+
+
+<table class="options-table" cellpadding=5>
 <tr><td valign=top>
 <table cellpadding=3>
 <tr><th class=lt colspan=2>Codes</th></tr>
@@ -109,5 +120,8 @@ Housing Assignment Grid
 [% END %]
 
 </table>
+
+           <!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

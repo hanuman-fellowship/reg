@@ -1,14 +1,17 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
-<p>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
 
-Thank you.  Your information now looks like this:
-<table cellpadding=5>
+<p> Thank you.  Your information now looks like this:
+</p>
+
+<table cellpadding=5 class="fields-table">
 
 <tr>
 <th>First</th>
@@ -67,14 +70,16 @@ Thank you.  Your information now looks like this:
 
 </table>
 
-<form action="/cgi-bin/update" method=POST>
+<form action="/cgi-bin/update" method=POST class="regs-form">
 <input type=hidden name=code value="$p.secure_code">
-<button type=submit>Re-Edit</button>
+<button type=submit class="sub-button">Re-Edit</button>
 </form>
 
 <form action='https://www.mountmadonna.org' method=post>
-<button type=submit>Looks Good</button>
+<button type=submit class="sub-button">Looks Good</button>
 </form>
 
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

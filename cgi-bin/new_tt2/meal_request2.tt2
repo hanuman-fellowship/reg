@@ -1,7 +1,9 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's JS -->
 <script>
 var fields = [
     { id: 'first', regexp: '\\S',
@@ -25,7 +27,9 @@ var fields = [
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
 <p>
 Meal Requests:
 <ul>
@@ -33,6 +37,7 @@ $summary
 </ul>
 <p>
 <form action='/cgi-bin/meal_request2'
+      class='regs-form'
       method=POST
       onsubmit='return check_fields();'
 >
@@ -41,7 +46,7 @@ $summary
 <input type=hidden name=encoded_requests value='$encoded_requests'>
 <input type=hidden name=amount value='$total_cost'>
 <p>
-<table cellpadding=5>
+<table class="fields-table" cellpadding=5>
 
 <tr>
 <th class=tbl> <span class=required>*</span> First</th>
@@ -101,6 +106,9 @@ $summary
 
 </table>
 </form>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>
 <script>document.getElementById('first').focus()</script>

@@ -1,17 +1,19 @@
 <html>
 <head>
-<style>
-body {
-    font-size: 18pt;
-}
-</style>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="https://akash.mountmadonna.org/static/cgi.css">
 </head>
 <body>
-$first $last has requested information about body work.
-<p>
-Email: <a href="mailto:$email?subject=Massage/Bodywork Request during '$title' $dates">$email</a><br>
-Phone: $cell<br>
-Program: $title<br>
-Dates: $dates
+	<div class="mail-box-a">
+		<div class="mail-box-b">
+			<p>$first $last has requested information about body work.</p>
+			<p>
+			Email: <a href="mailto:$email?subject=Massage/Bodywork Request during '$title' $dates">$email</a><br>
+			Phone: $cell<br>
+			Program: $title<br>
+			Dates: $dates
+			</p>
+		</div>
+	</div>
 </body>
 </html>

@@ -1,10 +1,13 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
 </head>
 <body>
-<img src='/static/images/mmc-teal.png' width=200>
+[% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
 <h3>Payment Request</h3>
 <dl>
 <dt>Name:</dt>
@@ -28,8 +31,14 @@ $tbl_py_desc
 
 <p>
 If you have any question about this request send an <a href='mailto:$quest_email'>email to $signed</a>.
+</p>
 
+<div class="btn-holder">
 $stripe_payment
 </form>
+</div>
+
+<!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

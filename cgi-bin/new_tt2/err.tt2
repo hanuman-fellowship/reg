@@ -1,21 +1,30 @@
 <html>
 <head>
-<link rel="stylesheet" href="/static/cgi.css">
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/new_cgi.css">
+
 </head>
 <body>
-[% IF back %]
-Problems were found in the form:
-[% END %]
-<ul>
-$err
-</ul>
-<form>
-[% IF back %]
-    Please <button type="button" id=back onclick="history.go(-1); return false;">Go Back</button> and correct these things.
-[% END %]
-</form>
+	<div class="message-box-a">
+		<div class="message-box-c">
+			[% IF back %]
+			<p>Problems were found in the form:</p>
+			[% END %]
+			<ul>
+			$err
+			</ul>
+			<form>
+			[% IF back %]
+			    Please <button class="sub-button" type="button" id=back onclick="history.go(-1); return false;">Go Back</button> and correct these things.
+			[% END %]
+			</form>
+		</div>
+	</div>
+
+
 <script type='text/javascript'>
 document.getElementById('back').focus();
-</script>	
+</script>
+
 </body>
 </html>

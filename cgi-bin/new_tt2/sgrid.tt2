@@ -1,20 +1,23 @@
 <html>
 <head>
-<link rel="stylesheet" href="/static/cgi.css">
+<meta charset='UTF-8'>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
+
+<!-- page's CSS -->
 <style>
-body {
+/*body {
     margin-left: .5in;
     margin-top: .5in;
     margin-bottom: .5in;
     font-family: Lucida Grande, Verdana, Helvetica;
-}
+}*/
 .dow {
     color: red;
 }
-a {
+/*a {
     color: blue;
     text-decoration: none;
-}
+}*/
 .special {
     font-weight: bold;
     color: red;
@@ -32,21 +35,29 @@ a {
 <script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
+        [% INCLUDE new_tt2/header.tt2 %]
+            <!-- PAGE CONTENT BEGINS HERE -->
+
 <h2>
 $name
+</h2>
+<p>
 <span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
 <b>To</b>
 $edate <span class=dow>${edate.format("%a")}</span>
 </span>
-<span style="margin-left: .5in; font-size: 15pt;">$first $last
+</p>
 <p>
+<span style="margin-left: .5in; font-size: 15pt;">$first $last
+</p>
+<h3>
 Housing Assignment Grid
 <span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
 <span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code&by_name=1">By Name</a></span>
 <span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://akash.mountmadonna.org/static/hints.html',750,550)">Helpful Hints</a></span>
-</h2>
-<p>
-<table cellpadding=5 border=1>
+</h3>
+
+<table class="options-table" cellpadding=5 border=1>
 <tr>
 <th>Room/Site</th>
 <th align=right>Bed</th>
@@ -102,8 +113,8 @@ $days
 <td colspan=[% nnights + 1 %]>&nbsp;</td>
 </tr>
 </table>
-<p>
-<table cellpadding=5>
+
+<table class="options-table" cellpadding=5>
 <tr><td valign=top>
 <table cellpadding=3>
 <tr><th class=lt colspan=2 align=left>Codes</th></tr>
@@ -143,5 +154,8 @@ $days
 [% END %]
 
 </table>
+
+           <!-- // PAGE CONTENT ENDS HERE -->
+[% INCLUDE new_tt2/footer.tt2 %]
 </body>
 </html>

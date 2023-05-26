@@ -4,16 +4,21 @@
 <link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
-These people have no email address:<p>
-<ul>
-[% FOR ne IN need_email %]
-    $ne<br>
-[% END %]
-</ul>
-If these people really do have no email address
-please put 'no email' in their Email and Notes section.
-<p>
-Please go <input id='back' type=button value="Back" onclick="history.go(-1)"> to fix this.
+	<div class="message-box-a">
+		<div class="message-box-c">
+			<p>These people have no email address:</p>
+			<ul>
+			[% FOR ne IN need_email %]
+			    $ne<br>
+			[% END %]
+			</ul>
+			<p>If these people really do have no email address, <br>
+			please put 'no email' in their Email and Notes section.
+			</p>
+			<p>Please go <input class="sub-button" id='back' type=button value="Back" onclick="history.go(-1)"> to fix this.</p>
+		</div>
+	</div>
+
 </body>
 </html>
 <script type='text/javascript'>document.getElementById('back').focus();</script>

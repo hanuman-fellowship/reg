@@ -1,26 +1,31 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-[% INCLUDE new_tt2/top_css_js.tt2 %]
+<link rel="stylesheet" href="https://akash.mountmadonna.org/static/cgi.css">
 </head>
 <body>
-[% INCLUDE new_tt2/header.tt2 %]
 
-<h3>Thank you, ${first}.</h3>
-<p>Your payment has been received.</p>
-<p>
-Your credit card has been charged \$${amount}.
-The id for this transaction is ${transaction_id}.<br>
-<p>
-$rec_fname has been sent an email that explains how they can 
-use the gift you have given.  You are Cc'ed on that email.
-</p>
-<p>
-If you did not receive this email check your spam/junk email folder.
-If it is not there please call us at <strong>408-846-4090</strong>.
-</p>
-<!-- // PAGE CONTENT ENDS HERE -->
-[% INCLUDE new_tt2/footer.tt2 %]
+
+<div class="mail-box-a">
+	<div class="mail-box-b">
+		<img src="https://akash.mountmadonna.org/static/images/mmc-teal.png" width=200>
+		<h3>Thank you, ${first}.</h3>
+		<p>Your payment has been received.</p>
+		<p>
+		Your credit card has been charged \$${amount}.
+		The id for this transaction is ${transaction_id}.<br>
+		<p>
+		$rec_fname has been sent an email that explains how they can 
+		use the gift you have given.  You are Cc'ed on that email.
+		</p>
+		<p>
+		If you did not receive this email check your spam/junk email folder.
+		If it is not there please call us at <strong>408-846-4090</strong>.
+		</p>
+	</div>
+</div>
+
+
 </body>
 </html>
 

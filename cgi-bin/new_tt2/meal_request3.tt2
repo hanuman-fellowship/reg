@@ -4,14 +4,17 @@
 <link rel="stylesheet" href="/static/cgi.css">
 </head>
 <body>
+	<div class="message-box-a">
+    	<div class="message-box-c">
 <img src='/static/images/mmc-teal.png' width=200>
 <ul>
-Meal Requests:
-<br><br>
+<h3>Meal Requests:</h3>
+
 <ul>
 $summary
 </ul>
-<br>$first $last
+<p>
+$first $last
 <br>$addr1
 [% IF addr2 %]
 <br>$addr2
@@ -21,7 +24,11 @@ $zip_post<br>
 $country<br>
 $cell<br>
 $email1
+</p>
 <p>
 $stripe_payment
+</p>
+</div>
+</div>
 </body>
 </html>
