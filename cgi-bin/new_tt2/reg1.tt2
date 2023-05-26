@@ -607,6 +607,8 @@ EIN #51-0174679.
 Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
 <p>
 <input type=text size=50 name=diet value="$diet">
+<p>
+<a target=_blank href='/cgi-bin/meals_at_mmc'>Meal Information</a>
 </ul>
 
 <h3>Additional Requests</h3>  
