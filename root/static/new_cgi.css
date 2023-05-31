@@ -605,6 +605,12 @@ a.ulwhite:hover::before {
     padding: .8em .5em;
 }
 
+.padding-table td {
+  padding: .5em;
+}
+.padding-table td input[type=checkbox] {
+  margin: -6px 0 0 0;
+}
 
 .ul-fields, .ul-radios {
     list-style: none;

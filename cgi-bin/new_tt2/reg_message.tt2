@@ -4,7 +4,7 @@
 [% IF sending_email %]
     <link rel="stylesheet" href="https://akash.mountmadonna.org/static/cgi.css">
 [% ELSE %]
-    <link rel="stylesheet" href="/static/cgi.css">
+    <link rel="stylesheet" href="/static/new_cgi.css">
 [% END %]
 </head>
 <body>

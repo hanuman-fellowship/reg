@@ -1,5 +1,5 @@
 [% cl_row = 'even' %]
-<table class="options-table" cellpadding=3 border=1>
+<table class="options-table reg-priceac" cellpadding=3 border=1>
 <tr>
 <th class=lt>Housing Type</th><th align=right>Cost</th>
 </tr>
