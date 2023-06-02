@@ -882,7 +882,6 @@ for my $f (qw/
     house1
     house2
     cabin_room
-    green_amount
     howHeard
     from_where
     activities
@@ -903,6 +902,7 @@ for my $f (qw/
     $metadata{$f} = $form{$f};
 }
 $metadata{title} = $stash{title};
+$metadata{green_amount} = $stash{green_amount};
 $metadata{slide_tuition} = $stash{slide_tuition};
 
 if ($prog->reg_by_day) {
