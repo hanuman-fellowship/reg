@@ -13,8 +13,8 @@ var fields = [
                    err: 'Missing Last Name' },
     { id: 'radio', name: 'sex',
                    err: 'Missing Gender Identity' },
-    { id: 'pronouns',  regexp: '\\S',
-                   err: 'Missing Pronouns' },
+//    { id: 'pronouns',  regexp: '\\S',
+//                   err: 'Missing Pronouns' },
     { id: 'addr1',  regexp: '\\S',
                       err: 'Missing Street Address' },
     { id: 'city',  regexp: '\\S',
@@ -275,7 +275,7 @@ function check_form() {
 </tr>
 <tr>
 <th valign=top>
-<span class=required>*</span> Pronouns:
+Pronouns:
 </th>
 <td>
 <input type=text size=25 name="pronouns" id="pronouns"
