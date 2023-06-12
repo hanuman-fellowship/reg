@@ -1702,10 +1702,7 @@ sub arrangements : Local {
         subject => $subject,
         html    => $html,
         files_to_attach => [
-            "$dir/Main Area Map.pdf",
-            ($rental->program_id? ()
-            :                     "$dir/Program Guest Confirmation Letter.pdf"),
-            "$dir/Info Sheet.pdf"
+            "$dir/MMC Guest Packet.pdf"
         ],
         activity_msg => "Arrangements sent for <a href='/rental/view/$rental_id'>$rental_name</a>",
     );

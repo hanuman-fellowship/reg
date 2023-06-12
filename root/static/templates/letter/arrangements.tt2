@@ -93,6 +93,12 @@ All the rooms in the Seminar House are included in
 the preliminary web grid.
 [% END %]
 [% END %]  <!-- if not hybrid -->
+<h3>GENERAL INFORMATION/MAPS</h3>
+Our Guest Packets (attached) include a campus map, a trail map as well
+as a General Information Sheet which lists meal times, amenities, and our
+center's services and policies. When you and/or your program coordinator
+arrive at the center, please come to the Guest Services Office where
+you can pick up your participants' information packets and lanyards.
 <h3>GATE CODE</h3>
 Our main entrance gate closes at 6:00 pm daily.
 For any arrivals after 6:00 pm, the following gate code will
@@ -111,67 +117,59 @@ phones do not typically get reception
 and there is no wireless connectivity
 in the campgrounds. MMC does not
 currently provide tents for guests.
-[% IF ! rental.program_id %]
-<h3>GUEST CONFIRMATION TEMPLATE</h3>
-We've attached a template document modeled after the confirmation
-note that we automatically send to Mount Madonna guests when they
-register for our programs and retreats.  You can modify this document
-to fill in the gate codes, particular times and dates of your
-program, and include it with information that you provide to your
-guests when they register with you.
-[% END %]
 <h3>SCHEDULE</h3>
 Please send us your Program Schedule as soon as you can,
 taking into consideration our center's meal times,
 Arati, and Orientation.  This will help our staff to be
 mindful of when you will be in or out of session.
 <ul>
-<li><b>Mealtimes</b>:
-Breakfast 8:30-9:30 am, lunch 12:30-1:30 pm, and dinner 5:15-6:15 pm with the following exceptions: On Saturdays brunch is at 10:00-11:00 am and snack (no lunch) at 1:00-2:00 pm.
+<li><b>Meal times</b>:
+Our meal times are fixed.
+Breakfast 8:30-9:30 am, lunch 12:30-1:30 pm, and dinner 5:15-6:15 pm
+with the following exceptions: On Saturdays brunch is at 10:00-11:00 am
+and a light snack is served in your meeting space (no lunch)
+around 1:00-2:00 pm.
 <li><b>Arati</b> (Ceremony of light): 6:30am and 6:00pm daily at the Temple.
 <li><b>Orientation</b>: As part of your schedule, we will arrange a time for one of our staff to give a brief fifteen minute orientation on your start date. The orientation provides valuable information about our center's services, amenities, and policies.
 </ul>
-<h3>ARRANGEMENTS</h3>
+<h3>MEETING SPACE ARRANGEMENTS</h3>
 Your meeting space will be in the ${rental.meeting_spaces}.
 To help us set-up your meeting space, please fill out
-the information below.  Please mark the items desiredd with
-an X, and write in the quantities needed to the right.
-You may copy and paste this into a separate email.
+the information below.
 <p>
 Meeting Equipment:<br>
-__  Flipcharts _______<br>
-__  Whiteboards _______<br>
-__  Easels _______<br>
-__  Tables (standard folding tables?, altar table?, presenter side table?) Please specify types.<br>
-__  Backjacks_______<br>
-__  Chairs _______<br>
-__  Pillows _______<br>
+__  Standing Whiteboard with Flipcharts<br>
+__  Easels<br>
+__  Tables (6 ft long standard folding tables, altar table, presenter side table) Please specify.<br>
+__  Backjacks<br>
+__  Chairs<br>
+__  Pillows<br>
+__  Riser platform<br>
+__  Lecturn<br>
+__  Other ____________________________________<br>
 <p>
 Yoga props:<br>
-__ Mats_______<br>
-__ Bolsters_______<br>
-__ Blankets_______<br>
-__ Yoga blocks_______<br>
-__ Straps _______<br>
+__ Mats<br>
+__ Bolsters<br>
+__ Blankets<br>
+__ Yoga blocks<br>
+__ Straps
+<p>
+Please indicate how to arrange the items in the room, or if you prefer
+us to leave all items stacked on the side of the room for you to arrange.
 <p>
 Audio/Visual Equipment:<br>
 Please share with us any specific audio/visual needs related to your contract.
 <p>
+________________________________________________________________
+<p>
 We ask you to be as specific as possible about any
 preferences for set-up
 and seating so that we may most closely meet your needs.
-All requests must be submitted no later than 10 days before
+All requests must be submitted no later than 14 days before
 your start date. We cannot guarantee fulfilling any requests
-made less than 10 days in advance of your start date,
+made less than 14 days in advance of your start date,
 but we will always do our best.
-<h3>MAP</h3>
-Also attached is a map of our "downtown" area where you can locate
-your meeting space. When you and/or your program coordinator arrive
-please come to the Guest Services Office in the Community Building. We
-will provide each of your guests an information packet, which will
-include this map as well as an information sheet (also attached for
-your reference) that lists meal and yoga times and our center's
-services and policies.
 <h3>FURTHER QUESTIONS</h3>
 <ol>
 <li>Please provide the names of all staff for your program;
