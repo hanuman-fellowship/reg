@@ -82,16 +82,6 @@ still incur a charge for those beds.
 <p>
 If you have questions about the above, please
 contact the Guest Services Director at 408-846-4009.
-<p>
-[% IF rental.seminar_house_sleeping %]
-<p>
-Since your group is meeting in the Seminar
-House, you are committed to paying for at least
-11 spaces in that building. The Seminar House
-has 16 beds total.
-All the rooms in the Seminar House are included in
-the preliminary web grid.
-[% END %]
 [% END %]  <!-- if not hybrid -->
 <h3>GENERAL INFORMATION/MAPS</h3>
 Our Guest Packets (attached) include a campus map, a trail map as well
@@ -145,7 +135,7 @@ __  Backjacks<br>
 __  Chairs<br>
 __  Pillows<br>
 __  Riser platform<br>
-__  Lecturn<br>
+__  Lectern<br>
 __  Other ____________________________________<br>
 <p>
 Yoga props:<br>
