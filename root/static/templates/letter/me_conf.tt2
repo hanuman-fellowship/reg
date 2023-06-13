@@ -24,8 +24,8 @@
          </tr>
       </table>
       <div class=indent>
-         <b>This email and the attached Guest Packet contains important information to help you prepare
-         for your visit to beautiful Mount Madonna.</b>
+         This email and the attached Guest Packet contains important information to help you prepare
+         for your visit to beautiful Mount Madonna.
       </div>
       [% IF reg.confnote_not_empty %]
           <h2>Notes</h2>
@@ -97,7 +97,7 @@ a self-guided personal retreat before or after your visit. Please email
 or call (408) 846-4090 to inquire
 about an overnight stay.
 
-[% INCLUDE while_pack.tt2 %]
+[% INCLUDE ../while_pack.tt2 %]
 
 </body>
 </html>
