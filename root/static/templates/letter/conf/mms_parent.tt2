@@ -1,197 +1,47 @@
-<html>
-   <head>
-   <meta name="viewport" content="width=device-width" />
-
-      <style>
-         .after {
-         margin-top: .5in;
-         }
-         body {
-         font-size: 14pt;
-         }
-         #container {
-         max-width: 660px;
-         margin: 0 auto;
-         }
-         .invoice {
-         margin-left: 20px;
-         }
-         .rt {
-         text-align: right;
-         }
-         /* I need to learn more about CSS so I don't have the repetition... */
-         .lt2 {
-         text-align: left;
-         font-size: 14pt;
-         }
-         .rt2 {
-         text-align: right;
-         font-size: 14pt;
-         }
-         img {
-         margin: 7px;
-         }
-         h2 {
-         font-size: 16pt;
-         margin-bottom: 5px;
-         }
-         h3 {
-         font-size: 14pt;
-         margin-bottom: 5px;
-         }
-         .indent {
-         margin-left: 0mm;
-         margin-bottom: 5mm;
-         }
-         p {
-         }
-         .hours {
-         font-size: 12pt;
-         text-align: right;
-         }
-         td {
-         font-size: 12pt;
-         }
-         .logo {
-         width: 280px;
-         }
-         .top {
-					padding-bottom: 40px;
-					width: 100%;
-					margin-bottom: 70px;
-					border-bottom: 1px solid rgb(178, 178, 178);
-         }
-         .column {
-        	display: inline-block;
-         }
-
-         .column img {
-         width: 100%;
-         max-width: 220px;
-         }
-         .name {
-         font-weight: bold;
-         margin-left: .25in;
-         }
-         .addr {
-         font-weight: normal;
-         margin-left: .25in;
-         color: red;
-         }
-         .contact {
-         font-weight: normal;
-         margin-left: .25in;
-         margin-bottom: .2in;
-         }
-
-				@media only screen and (max-width: 480px) {
-					#container {
-					margin: 20px;			
-					}
-					.column {
-					display: block !important;
-					width: 100% !important;
-					}
-				}
-      </style>
-
-
-   </head>
-   <body>
-      <div id="container">
-
-           [% mmi = program.school.mmi %]
-
-
-
-      <table class=top width="100%">
-         <tr>
-					 <td>
-            <div width="300" class="column" style="text-align: center;">
-							<img class=logo src='https://www.mountmadonna.org/assets/img/mmc-teal2.png'>
-            </div>
-
-						<table width="280" class="hours column" align="right">
-							<tr>
-									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
-							 </tr>
-							 <tr>
-									<td>Monday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Tuesday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Wednesday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Thursday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Friday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Saturday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Sunday</td>
-									<td class=rt>11:00 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td colspan=2 align=center><b>408-846-4090</b></td>
-							 </tr>
-							 <tr>
-									<td colspan=2 align=center><b><a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a></b></td>
-							 </tr>
-						</table>
-            </td>
-         </tr>
-      </table>
-
-      <div class=indent>
-Dear $person.first,
+[% INCLUDE ../conf_top.tt2 %]
 <p>
-Thank you for joining our Shared Workspace Package for parents of Mount Madonna School provided by the Mount Madonna Center. 
+Thank you for joining our Shared Workspace Package for
+parents of Mount Madonna School!
 <p>
 Here are your reservation details:
 <p>
 <b>Program</b>: $program.parent_package_name<br>
 <b>Amount Paid for access</b>: \$${reg.deposit_disp}
 <p>
-This email contains important information about your shared workspace package.
-<p>
+<b>This email contains important information about
+your shared workspace package.</b>
 <h2>Benefits of the the MMS Parent Shared Workspace Package</h2>
-MMS Parents have access to both indoor and outdoor shared remote workspace
-at the Community Building Monday-Friday from 9am-3pm, including the
-west and east deck areas. Adjacent to these shared work spaces is
-Anjaneya's World Cafe providing beverages and snacks and Ocean View
-Books and Gifts. You can reserve in advance daily vegetarian lunches
-served between 12:30pm and 1:30pm in the Community Building cafeteria.
-In addition, enjoy the beautiful hiking trails on the 380 acre property,
-and use of the hot tub and deck overlooking the redwood forest at the
-Wellness Center.  Adjacent to the hot tub area is  Ayurveda World Herbs
-for organic teas, oil and herbal remedies, and the Kaya Kalpa Wellness Spa
-offering massage, ayurvedic treatments and health consultations. Parents
-can also access the Center Garden adjacent to the MMS children's garden,
-and are welcome to visit the Sankat Mochan Hanuman Temple as a space
-for spiritual reflection.
-<h2>Exceptions to Availability</h2>
-Please be aware that availability of all facilities is subject to change
-depending on special events or large programs held at Mount Madonna. This
-may result in the closing of some or all center facilities.  In that case,
-access to shared work spaces and other facilities could be relocated or
-canceled during select dates. Whenever possible, you will be informed
-in advance of changes to
-shared workspace location and/or expected dates of unavailability, either during registration and/or via email. 
+During your day at Mount Madonna Center please enjoy:
+<ul>
+<li> Access to both indoor and outdoor shared remote workspace at the Community Building Monday-Friday from 9am-3pm, including the west and east deck areas.
+<li>Daily vegetarian lunches served between 12:30pm and 1:30pm in
+the Community Building cafeteria.
+
+??Advance reservations are required a minimum of 48 hours in advance
+by emailing meals@mountmadonna.org. No
+refunds will be given. Payment can be made at the Guest Services office
+in the Community Building.
+
+Food served at Mount Madonna is
+vegetarian and contains no meat, fish, or fowl.
+Please do not bring any outside food.
+If you have any dietary restrictions please discuss with Guest Services.
+<li>Anjaneya's World Cafe, which provides beverages and snacks
+<li>Ocean View Books and Gifts
+<li>Beautiful hiking trails and places for self reflection on the 380 acre property
+<li>Use of the hot tub and deck overlooking the redwood forest at the Kaya Kalpa
+Wellness Center
+<li>Sankat Mochan Hanuman Temple
+<li>You may also book a massage or other bodywork at Kaya Kalpa Wellness
+Center for an additional fee. Day-of appointments are usually available
+but are not guaranteed. It is recommended that you book your appointment
+48 hours in advance. For a detailed list of our current services and
+to book online please click here. For questions or to book, please call
+408-846-4078 or email
+<a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>.
+</ul>
 <h2>Orientation</h2>
-If this is your first time registering for the Shared Workspace Package,
-you will be invited through a separate email to a one time orientation to
+You will be invited through a separate email to a one time orientation to
 Mount Madonna Center, and a tour of the facilities. In the future, you
 will also be invited to give feedback to improve the overall experience
 for MMS parents. Please keep an eye out for your orientation invite.
@@ -199,77 +49,6 @@ for MMS parents. Please keep an eye out for your orientation invite.
 Guest Services will provide you with an information packet, lanyard,
 map of the Center and can answer any additional questions. Please wear
 your lanyard while using Mount Madonna facilities.
-<h2>Additional Services</h2>
-You are invited to schedule a wellness appointment at our
-Ayurvedic Wellness Center. For information and to book an
-appointment for a variety of treatment options, including Massage,
-Reiki, Yoga Therapy, and more: Phone 408-846-4078, email <a
-href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>,
-or visit
-<a href='https://www.mountmadonnainstitute.org/wellnesscenter'>www.mountmadonnainstitute.org/wellnesscenter</a>. 
-         [% IF reg.balance > 0 %]
-      <h2>Payments</h2>
-      <p>
-         You are welcome to pay your balance of \$$reg.balance
-         before arrival to expedite the
-         check-in process.
-         [% IF pre_payment_link %]
-         You may pay in advance
-         with a credit card online at
-         <a target=_blank href='$pre_payment_link'>this link</a>.
-         [% END %]
-      <div class=invoice>
-         <table>
-            <tr>
-               <th align=left colspan=2>Charges</th>
-            </tr>
-            [% tot = 0 %]
-            [% FOR ch IN reg.charges %]
-            <tr>
-               <td align=right valign=top>[% penny(ch.amount) %]</td>
-               <td>$ch.what</td>
-            </tr>
-            [% tot = tot + ch.amount %]
-            [% END %]
-            <tr>
-               <td align=right><span style="border-top: solid thin">\$$tot</span></td>
-               <td>Total</td>
-            </tr>
-            <tr>
-               <th align=left colspan=2>Payments</th>
-            </tr>
-            [% tot = 0 %]
-            [% FOR p IN reg.payments %]
-            <tr>
-               <td align=right>[% penny(p.amount) %]</td>
-               <td>$p.what</td>
-            </TR>
-            [% tot = tot + p.amount %]
-            [% END %]
-            <tr>
-               <td align=right><span style="border-top: solid thin">\$$tot</span></td>
-               <td>Total</td>
-            </tr>
-            <tr>
-               <th align=left colspan=2>Balance Due</th>
-            </tr>
-            <tr>
-               <td align=right width=60>\$$reg.balance</td>
-            </tr>
-         </table>
-      </div>
-      [% END %]
-<h2>Meals</h2>
-Lunch is served in the Community Building from 12:30-1:30. Reservations
-for lunch must be made a minimum of 48 hours in advance by emailing
-<a href='mailto:meals@mountmadonna.org'>meals@mountmadonna.org</a>.
-Lunch is \$15. No refunds and no cancellations for meals. Payment can
-be made at the Guest Services office in the community building.
-<p>
-Our food service is strictly vegetarian &ndash; no meat, fish, or
-fowl. Vegan and gluten free options are available at all meals. Please do
-not bring any outside food. If you have any dietary restrictions please
-discuss with Guest Service.
 <h2>Packing</h2>
 We recommend that you bring a water bottle (can be refilled with filtered
 water), walking or hiking shoes, yoga mat (these are also available
@@ -282,23 +61,31 @@ Mount Madonna property.
 For your convenience, current weather at Mount Madonna can be viewed using this site:
 <a href='https://ambientweather.net'>https://ambientweather.net</a>.
 Search for "Mount Madonna School".
+<h2>Exceptions to Availability</h2>
+Please be aware that availability of all facilities is subject to change
+during select dates due to a large event or program. This
+may result in the unavailability of some or all Center facilities.
+In this case,
+access to shared work spaces and other facilities could be relocated or
+canceled. You will be informed in advance of any changes to
+the shared workspace location.
 <h2>Cancellations/Refunds</h2>
 The Shared Workspace Package includes access to center services and
 facilities (similar to a gym membership). Cancellations and refunds are
-unavailable. Availability of all facilities is subject to change depending
-on special events or large programs held at Mount Madonna. There may be
-days when all or some Center facilities are closed due to capacity issues
-or inclement weather. There is no reimbursement for specific days that you
+unavailable. 
+There is no reimbursement for specific days that you
 choose not to use center facilities or days that fall on school holidays.
-<h2>Questions?</h2>
-Please email Guest Service Office at: 
+<h2>Have Additional Questions?</h2>
+If you require additional assistance,
+please do not hesitate to contact the Guest Services Office
+to call us at 408-846-4090 or email
 <a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>
-or call us at 408-846-4090.
 <p>
 We look forward to seeing you at the center!
 <p>
 Sincerely,<br>
-The Guest Services team
+$user.first $user.last
+and the Guest Services Office team.
 </div>
 </body>
 </html>

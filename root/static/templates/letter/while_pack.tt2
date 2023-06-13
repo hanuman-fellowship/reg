@@ -1,0 +1,63 @@
+<h2>While You're Here</h2>
+[% IF while_here %]
+    $while_here
+[% ELSE %]
+    Meals are served in the Community Building. For a meal schedule, please
+    refer to the Guest Packet.
+    <p>
+    Food served at Mount Madonna is vegetarian and contains no meat,
+    fish, or fowl. Please do not bring any outside food. With advanced
+    notice, we will do our best to accommodate dietary restrictions. If
+    you have serious allergies, contact your retreat coordinator and/or the
+    Guest Services Office to discuss available options.
+    <p>
+    For more information about our offerings, including yoga
+    classes, the Kaya Kalpa Wellness Center,
+    the Sankat Mochan Hanuman Temple, Anjaneya's World Cafe,
+    Oceanview Books & Gifts, and the hot tub, please
+    refer to the attached Guest Packet.
+    <p>
+    Please note that if you wish to book a massage or bodywork at Kaya
+    Kalpa Wellness Center, day-of appointments are usually available
+    but are not guaranteed. It is recommended that you book
+    your appointment 48 hours in advance. See Guest Packet for information.
+[% END %]
+
+<h2>Packing & Weather</h2>
+A detailed packing list can be found on our <a target=_blank
+href='https://www.mountmadonna.org/explore/faqs'>Frequently Asked
+Questions</a> page.
+<p>
+We ask that you leave the following at home: food, drugs, alcohol, pets,
+scented body products, and all fire hazards (candles, incense, kerosene
+lamps etc.)
+<p>
+To see the weather forecast, please go to
+<a target=_blank href='https://ambientweather.net'>ambientweather.net</a>
+and enter "Mount Madonna School".
+
+<h2>Getting Here</h2>
+Maps, directions, and shuttle
+listings are available at our <a target=_blank
+href='https://www.mountmadonna.org/transportation-directions'>Transportations
+& Directions</a> page. We do not recommend relying on GPS as it sometimes
+will direct you to roads that are undeveloped and/or impassable.  You may
+want to print out directions from the link above, as cell service can
+be unreliable as you travel up the mountain.
+
+<h2>Cancellations</h2>
+${program.canpol.policy}
+
+<h2>Have Additional Questions?</h2>
+The Mount Madonna <a href='https://www.mountmadonna.org/explore/faqs'>Frequently Asked Questions</a> page
+has answers to many questions not answered here.
+If you require additional assistance, please do not hesitate
+to contact the Guest Services Office at 408-846-4090 or
+email
+<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>.
+<p>
+We look forward to seeing you here soon!
+<p>
+Sincerely,<br>
+$user.first $user.last and the Guest Services Office team
+

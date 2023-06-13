@@ -1,162 +1,5 @@
-<html>
-   <head>
-   <meta name="viewport" content="width=device-width" />
+[% INCLUDE conf/top.tt2 %]
 
-      <style>
-         .after {
-         margin-top: .5in;
-         }
-         body {
-         font-size: 14pt;
-         }
-         #container {
-         max-width: 660px;
-         margin: 0 auto;
-         }
-         .invoice {
-         margin-left: 20px;
-         }
-         .rt {
-         text-align: right;
-         }
-         /* I need to learn more about CSS so I don't have the repetition... */
-         .lt2 {
-         text-align: left;
-         font-size: 14pt;
-         }
-         .rt2 {
-         text-align: right;
-         font-size: 14pt;
-         }
-         img {
-         margin: 7px;
-         }
-         h2 {
-         font-size: 16pt;
-         margin-bottom: 5px;
-         }
-         h3 {
-         font-size: 14pt;
-         margin-bottom: 5px;
-         }
-         .indent {
-         margin-left: 0mm;
-         margin-bottom: 5mm;
-         }
-         p {
-         }
-         .hours {
-         font-size: 12pt;
-         text-align: right;
-         }
-         td {
-         font-size: 12pt;
-         }
-         .logo {
-         width: 280px;
-         }
-         .top {
-					padding-bottom: 40px;
-					width: 100%;
-					margin-bottom: 70px;
-					border-bottom: 1px solid rgb(178, 178, 178);
-         }
-         .column {
-        	display: inline-block;
-         }
-
-         .column img {
-         width: 100%;
-         max-width: 220px;
-         }
-         .name {
-         font-weight: bold;
-         margin-left: .25in;
-         }
-         .addr {
-         font-weight: normal;
-         margin-left: .25in;
-         color: red;
-         }
-         .contact {
-         font-weight: normal;
-         margin-left: .25in;
-         margin-bottom: .2in;
-         }
-
-				@media only screen and (max-width: 480px) {
-					#container {
-					margin: 20px;			
-					}
-					.column {
-					display: block !important;
-					width: 100% !important;
-					}
-				}
-      </style>
-
-
-   </head>
-   <body>
-      <div id="container">
-
-           [% mmi = program.school.mmi %]
-
-
-
-      <table class=top width="100%">
-         <tr>
-					 <td>
-            <div width="300" class="column" style="text-align: center;">
-							<img class=logo src='https://www.mountmadonna.org/assets/img/mmc-teal2.png'>
-            </div>
-
-						<table width="280" class="hours column" align="right">
-							<tr>
-									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
-							 </tr>
-							 <tr>
-									<td>Monday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Tuesday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Wednesday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Thursday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Friday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Saturday</td>
-									<td class=rt>10:30 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Sunday</td>
-									<td class=rt>11:00 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td colspan=2 align=center><b>408-846-4090</b></td>
-							 </tr>
-							 <tr>
-									<td colspan=2 align=center><b><a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a></b></td>
-							 </tr>
-						</table>
-            </td>
-         </tr>
-      </table>
-
-      <div class=indent>
-         Dear $person.first,
-      </div>
       <div class=indent>
          We look forward to your visit to Mount Madonna Center!
       </div>
@@ -166,23 +9,23 @@
       <p>
       <table>
          <tr>
-            <th class=rt2>Program</th>
-            <td class=lt2>Mountain Experience - ${reg.date_start_obj.format("%B %e")}
+            <th class=rt valign=top>Program</th>
+            <td class=lt>Mountain Experience - ${reg.date_start_obj.format("%B %e")}<br>
+            10:00 am - 7:00 pm
             </td>
          </tr>
          <tr>
-            <th class=rt2>Amount Paid</th>
-            <td class=lt2>&nbsp;\$$reg.deposit_disp</td>
+            <th class=rt>Amount Paid</th>
+            <td class=lt>&nbsp;\$$reg.deposit_disp</td>
          </tr>
          <tr>
-            <th class=rt2>Balance remaining</th>
-            <td class=lt2>&nbsp;\$$reg.balance</td>
+            <th class=rt>Balance remaining</th>
+            <td class=lt>&nbsp;\$$reg.balance</td>
          </tr>
       </table>
       <div class=indent>
-         This email contains important information to help you prepare
-         for your visit to beautiful Mount Madonna.
-         The attached file contains a housing map, yoga class and meal schedules, and other important details about our facilities. You may want to download and/or print this file prior to your arrival.
+         <b>This email and the attached Guest Packet contains important information to help you prepare
+         for your visit to beautiful Mount Madonna.</b>
       </div>
       [% IF reg.confnote_not_empty %]
           <h2>Notes</h2>
@@ -244,84 +87,17 @@
       [% END %]
 
 <h2>Arrival and Departure</h2>
-Please plan to arrive and check in between 10:00 am and 12:00 pm
-(note that on Saturdays, brunch starts at 10:00 am).
-You will be greeted on arrival at the main gate at 445 Summit Road
-where you will be directed to check in at the Community Building.
-Guest Services Staff will provide you with your information packet,
-a map of the Center, and can answer any additional questions. 
+When you arrive at Mount Madonna Center's main gate at 445 Summit
+Road, you will be greeted by our staff who will direct you to
+Registration. Check-in is from 10:00 am and check-out is at 7:00 pm.
 <p>
-Departure time is 7:00 pm. 
+Overnight Stay Option: It may be possible to extend your stay by booking
+a self-guided personal retreat before or after your visit. Please email
+<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
+or call (408) 846-4090 to inquire
+about an overnight stay.
 
-<h2>While You're Here</h2>
-$while_here
+[% INCLUDE while_pack.tt2 %]
 
-<h2>Before You Come</h2>
-You are invited to schedule a wellness appointment at our
-Ayurvedic Wellness Center.
-For information and to book an appointment for a variety of treatment
-options, including Massage, Reiki, Yoga Therapy, and more,
-phone 408-846-4078, email 
-<a href='mailto:kayakalpa@mountmadonna.org'>kayakalpa@mountmadonna.org</a>,
-or visit <a href='https://www.mountmadonnainstitute.org/wellnesscenter'>Ayurveda Wellness Center</a>.
-Must be booked 48 hours in advance.
-
-<h2>Packing</h2>
-We recommend that you bring a water bottle (can be refilled with
-filtered water), walking or hiking shoes, yoga mat
-(these are also available onsite), a bathing suit and towel
-(if you plan to use the hot tub), a sun hat, and clothing layers
-for variable weather.
-<p>
-We ask that you leave the following at home: food, drugs, alcohol, pets, scented body products, and all fire hazards (candles, incense, kerosene lamps, etc.). 
-<p>
-To help guide your packing decisions, use this Weather Station site:
-<a href='https://ambientweather.net'>ambientweather.net</a>
-and enter 'Mount Madonna School'.
-
-<h2>Meals</h2>
-Meals are served in the Community Building at these times:
-<style>
-td, th {
-    font-size: 14pt;
-}
-</style>
-<ul>
-<table cellpadding=8><tr><td>
-          <b>Weekdays</b><br>
-          Lunch 12:30-1:30 pm<br>
-          Dinner 5:15-6:15 pm
-</td><td>
-          <b>Saturday</b><br>
-          Brunch 10:00-11:00 am<br>
-          Dinner 5:15-6:15 pm
-</tr></table>
-</ul>
-      <p>
-      Our food service is strictly vegetarian - no meat,
-      fish, fowl, or eggs. Please do not bring any outside food.
-      With advanced notice, we do our best to accommodate dietary
-      restrictions.  If you have serious allergies,
-      contact the
-      Guest Services Office to discuss available options.
-
-<h2>Getting Here</h2>
-Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportation & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain.
-
-<h2>Cancellations</h2>
-$me_cancellation_policy
-
-<h2>Questions?</h2>
-Our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions not answered here.
-If you have a question about your visit that is still not answered, please call the Guest Services Office at 408-846-4090 or email us at <a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>.
-
-      <div class=indent>
-         We look forward to seeing you here soon!
-      </div>
-      <div class=indent>
-         Sincerely,<br>
-         $me_coordinator<br>
-         and the Guest Services Office team
-      </div>
-   </body>
+</body>
 </html>

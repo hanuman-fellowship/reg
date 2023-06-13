@@ -50,8 +50,8 @@
          font-size: 12pt;
          text-align: right;
          }
-         td {
-         font-size: 12pt;
+         td, th {
+         font-size: 14pt;
          }
          .logo {
          width: 280px;
@@ -68,7 +68,7 @@
          
          .column img {
          width: 100%;
-         max-width: 220px;
+         max-width: 380px;
          }
          .name {
          font-weight: bold;
@@ -100,100 +100,60 @@
    </head>
    <body>
       <div id="container">
-      
-           [% mmi = program.school.mmi %]
 
+<div width="500" class="column" style="text-align: center;">
+    <img class=logo src='https://akash2.mountmadonna.org/static/images/learn_practice_logo.png'>
+</div>
+<p>
+Guest Services Office: 408-846-4090,
+<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
 
-
-      <table class=top width="100%">
-         <tr>
-					 <td>
-            <div width="300" class="column" style="text-align: center;">
-							<img class=logo src='https://www.mountmadonna.org/assets/img/press/logos/MMC_Logo_Teal.png'>
-            </div>
-
-						<table width="280" class="hours column" align="right">
-							<tr>
-									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
-							 </tr>
-							 <tr>
-									<td>Monday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Tuesday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Wednesday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Thursday</td>
-									<td class=rt>9:00 am - 5:30 pm</td>
-							 </tr>
-							 <tr>
-									<td>Friday</td>
-									<td class=rt>10:00 am - 6:00 pm</td>
-							 </tr>
-							 <tr>
-									<td>Saturday</td>
-									<td class=rt>10:00 am - 6:00 pm</td>
-							 </tr>
-							 <tr>
-									<td>Sunday</td>
-									<td class=rt>10:00 am - 3:30 pm</td>
-							 </tr>
-							 <tr>
-									<td colspan=2 align=center><b>408-846-4090</b></td>
-							 </tr>
-						</table>
-            </td>
-         </tr>
-      </table>
-      
-      
-      
-      
       <div class=indent>
          Dear $person.first,
       </div>
       <div class=indent>
-         This message confirms your registration for:
-      </div>
-         <ul>
-            <b>$program.title_trimmed</b> - $reg.att_prog_dates
-         </ul>
+      Thank you for joining us for this online program.
+      We look forward to seeing you!
       <p>
-         [% IF    reg.confnote_not_empty
-         || program.confnote_not_empty
-         %]
-         <p>
+      Here are your reservation details:
+      <p>
+<table>
+<tr>
+    <th class=rt>Program</th>
+    <td class=lt>&nbsp;$program.title_trimmed
+    $reg.att_prog_dates
+    </td>
+</tr>
+<tr>
+    <th class=rt>Amount Paid</th>
+    <td class=lt>&nbsp;\$$reg.deposit_disp</td>
+</tr>
+</table>
+
+      <p>
+
+Since this is an ONLINE program we will be sending you an Information
+Packet with Zoom links prior to the start date of the program.
+         [% IF    reg.confnote_not_empty || program.confnote_not_empty %]
+         <h2>Notes</h2>
             [% IF reg.confnote_not_empty %]
             $reg.confnote
-         <p>
             [% END %]
             [% IF program.confnote_not_empty %]
             $program.confnote
             [% END %]
         [% END %]    <!-- if Note -->
 
-    Since this is an ONLINE program we will be sending you a link to the ZOOM meeting a few days prior to the start date of the program.
-
-[% rem = registrar_email %]
-      [% IF cancel_policy %]
-      <p>
+      <h2>Cancellations</h2>
       $cancel_policy
-      [% ELSE %]
-      <p>
-         If you need to cancel or change your reservation, please refer to our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>cancellation policy</a> and contact our registrar at 
-         <a href='mailto:$rem'>$rem</a>.
-         [% END %]
+
          <p>
-         If you have any questions please call the Guest Services Office at 408-846-4090 or email the registrar at <a href='mailto:$rem'>$rem</a>.
+If you require additional assistance, please do not hesitate to call the Guest Services Office at 408-846-4090 or email us at <a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>.
       <div class=indent>
+      We look forward to seeing you soon.
+      <p>
          Sincerely,<br>
-         $user.first $user.last<br>
+         $user.first $user.last
          and the Guest Services Office team
       </div>
    </body>

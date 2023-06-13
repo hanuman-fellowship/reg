@@ -1,0 +1,106 @@
+<html>
+<head>
+<meta charset='UTF-8'>
+<meta name="viewport" content="width=device-width" />
+
+<style>
+a {
+    color: blue;
+}
+.after {
+     margin-top: .5in;
+}
+body {
+    font-size: 14pt;
+}
+#container {
+    max-width: 660px;
+    margin: 0 auto;
+}
+.invoice {
+    margin-left: 20px;
+}
+.lt {
+    text-align: left;
+    font-size: 14pt;
+}
+.rt {
+    text-align: right;
+    font-size: 14pt;
+}
+td, th {
+    font-size: 14pt;
+}
+img {
+    margin: 7px;
+}
+h2 {
+    font-size: 16pt;
+    margin-bottom: 5px;
+}
+h3 {
+    font-size: 14pt;
+    margin-bottom: 5px;
+}
+.indent {
+    margin-left: 0mm;
+    margin-bottom: 5mm;
+}
+.hours {
+    font-size: 12pt;
+    text-align: right;
+}
+.logo {
+    width: 280px;
+}
+.top {
+    padding-bottom: 40px;
+    width: 100%;
+    margin-bottom: 70px;
+    border-bottom: 1px solid rgb(178, 178, 178);
+}
+.column {
+    display: inline-block;
+}
+.column img {
+    width: 100%;
+    max-width: 380px;
+}
+.name {
+    font-weight: bold;
+    margin-left: .25in;
+}
+.addr {
+    font-weight: normal;
+    margin-left: .25in;
+    color: red;
+}
+.contact {
+    font-weight: normal;
+    margin-left: .25in;
+    margin-bottom: .2in;
+}
+@media only screen and (max-width: 480px) {
+    #container {
+        margin: 20px;			
+    }
+    .column {
+        display: block !important;
+        width: 100% !important;
+    }
+}
+</style>
+</head>
+<body>
+<div id="container">
+
+<div width="500" class="column" style="text-align: center;">
+    <img class=logo src='https://akash2.mountmadonna.org/static/images/learn_practice_logo.png'>
+</div>
+<p>
+Guest Services Office: 408-846-4090,
+<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
+
+<div class=indent>
+Dear $person.first,
+</div>

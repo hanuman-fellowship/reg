@@ -53,10 +53,12 @@ use Util qw/
     @charge_type
     cf_expand
     months_calc
-    slurp
     time_travel_class
     kid_badge_names
     JON
+/;
+use Slurp qw/
+    slurp
 /;
 use POSIX qw/
     ceil
@@ -2181,7 +2183,17 @@ sub send_conf : Local {
     # then create a single pre-payment record for the total balance.
     #
     my $amount = $reg->balance();
+JON "0 $fname";
     my $conf_template = slurp($fname);
+JON "1 $conf_template";
+    # to process the INCLUDES
+    $conf_template =~ s{
+        \[\%
+        \s+ INCLUDE \s+
+        (\S*)
+        \s+ \%\]
+    }{slurp("root/static/templates/letter/conf/$1")}xmsge;
+JON "2 $conf_template";
     my $pre_pay_link = '#';     # so that the preview will have
                                 # the pre-payment section
     my $need_pre_pay_link = $conf_template =~ m{pre_payment_link}xms;
@@ -2222,11 +2234,8 @@ sub send_conf : Local {
         );
         $pre_pay_link = "$string{cgi}/req_pay?code=$code";
     }
-    my $cancel_policy = '';
     my $cp = $pr->canpol();
-    if (lc $cp->name ne 'default') {
-        $cancel_policy = $cp->policy();
-    }
+    my $cancel_policy = $cp->policy();
     my @me_opts = ();
     if ($ME) {
         my ($me_cancel) = model($c, 'CanPol')->search({
@@ -2261,6 +2270,7 @@ sub send_conf : Local {
     };
     my $html = "";
     my $tt = Template->new({
+        INCLUDE      => 'root/static/templates/letter',
         INTERPOLATE  => 1,
         EVAL_PERL    => 0,
     });

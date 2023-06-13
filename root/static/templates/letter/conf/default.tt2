@@ -1,109 +1,4 @@
-<html>
-<head>
-<meta charset='UTF-8'>
-<meta name="viewport" content="width=device-width" />
-
-<style>
-a {
-    color: blue;
-}
-.after {
-     margin-top: .5in;
-}
-body {
-    font-size: 14pt;
-}
-#container {
-    max-width: 660px;
-    margin: 0 auto;
-}
-.invoice {
-    margin-left: 20px;
-}
-.lt {
-    text-align: left;
-    font-size: 14pt;
-}
-.rt {
-    text-align: right;
-    font-size: 14pt;
-}
-img {
-    margin: 7px;
-}
-h2 {
-    font-size: 16pt;
-    margin-bottom: 5px;
-}
-h3 {
-    font-size: 14pt;
-    margin-bottom: 5px;
-}
-.indent {
-    margin-left: 0mm;
-    margin-bottom: 5mm;
-}
-.hours {
-    font-size: 12pt;
-    text-align: right;
-}
-td {
-    font-size: 12pt;
-}
-.logo {
-    width: 280px;
-}
-.top {
-    padding-bottom: 40px;
-    width: 100%;
-    margin-bottom: 70px;
-    border-bottom: 1px solid rgb(178, 178, 178);
-}
-.column {
-    display: inline-block;
-}
-.column img {
-    width: 100%;
-    max-width: 220px;
-}
-.name {
-    font-weight: bold;
-    margin-left: .25in;
-}
-.addr {
-    font-weight: normal;
-    margin-left: .25in;
-    color: red;
-}
-.contact {
-    font-weight: normal;
-    margin-left: .25in;
-    margin-bottom: .2in;
-}
-@media only screen and (max-width: 480px) {
-    #container {
-        margin: 20px;			
-    }
-    .column {
-        display: block !important;
-        width: 100% !important;
-    }
-}
-</style>
-</head>
-<body>
-<div id="container">
-
-<div width="300" class="column" style="text-align: center;">
-    <img class=logo src='https://akash.mountmadonna.org/static/images/mmc-teal.png'>
-</div>
-<p>
-Guest Services Office: 408-846-4090,
-<a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>
-
-<div class=indent>
- Dear $person.first,
-</div>
+[% INCLUDE ../conf_top.tt2 %]
 <div class=indent>
  We look forward to your visit to Mount Madonna Center!
 </div>
@@ -136,14 +31,9 @@ Guest Services Office: 408-846-4090,
 </tr>
 </table>
 <div class=indent>
-This email contains important information regarding the check-in
-process and payments, meals, packing suggestions, transportation and
-cancellations.  The attached Guest Packet
-file contains a housing map, meal and yoga class
-schedules, and other important details about our facilities. You
-may want to download and/or print this email and the attached file
-prior to your arrival.  Please read on to prepare for your
-stay on our beautiful mountain!
+This email and the attached Guest Packet contains important
+information to help you prepare for your visit to
+beautiful Mount Madonna!
 </div>
 <p>
 [% IF   reg.confnote_not_empty
@@ -179,19 +69,21 @@ stay on our beautiful mountain!
     [% END %]
 [% END %]
 <h2>Arrival and Departure</h2>
-After you arrive and pass through Mount Madonna Center's main gate at
-445 Summit Road, you will drive to the Community Building (it is the 2nd
-large building on the campus main road - refer to the campus map). Inside
-the Community Building, please go to the Guest Services Office. The
-Guest Services Staff will provide you with an updated Guest Information
-Packet and help with any additional questions. Check-in is from
-${program.reg_start_obj.ampm} to ${program.reg_end_obj.ampm} and
-check-out is at ${program.prog_end_obj.ampm}. Please note, you are more than welcome
-to stay for lunch on the day of departure after vacating your room.
-
+When you arrive at Mount Madonna Center's main gate at
+445 Summit Road, you will be greeted by our staff who will
+direct you to Registration.  Check-in is from
+3:00 pm to 5:30 pm and check-out is at 12:00 pm.
+Please note, you are more than welcome to stay for lunch on the day
+of departure after vacating your room.
+<p>
+Extended Stay Option: It may be possible to extend your stay by booking
+a self-guided personal retreat before or after your visit. Please email 
+<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
+or call (408) 846-4090 to inquire
+about an overnight stay.
 <h2>Late Arrivals</h2>
-The campus entrance has a gate that is only open during business hours
-and the gate closes at 6:00pm. <i><b>Please call the Guest Services Office
+The campus entrance gate is open during business hours
+and closes at 6:00pm. <i><b>Please call the Guest Services Office
 if you are unable to arrive by 5:30 pm</b></i>. After hours, please refer to
 the Gate Code listed above in this document. You will pick up your
 arrival packet and key on the 'After-Hours Arrivals' bulletin board
@@ -251,66 +143,7 @@ located in the Community Building next to the Reception Office window.
     </div>
 [% END %]
 
-<h2>While You're Here</h2>
-[% IF while_here %]
-    $while_here
-[% ELSE %]
-    Meals are served in the Community Building. For a meal schedule, please
-    refer to the Guest Packet.
-    <p>
-    Food served at Mount Madonna is strictly vegetarian and contains no meat,
-    fish, or fowl. Please do not bring any outside food. With advanced
-    notice, we will do our best to accommodate dietary restrictions. If
-    you have serious allergies, contact your retreat coordinator and/or the
-    Guest Services Office to discuss available options.
-    <p>
-    For meal times and more information about our offerings, including yoga
-    classes, the Kaya Kalpa Wellness Center,
-    the Sankat Mochan Hanuman Temple, Anjaneya's World Cafe,
-    the Wellness Center, Oceanview Books & Gifts, and the hot tub, please
-    refer to the attached Guest Packet.
-    <p>
-    <i>**Please note that if you wish to book a massage or bodywork at Kaya
-    Kalpa Wellness Center, day-of appointments are usually available
-    but are not guaranteed. It is recommended that you book
-    your appointment 48 hours in advance. See Guest Packet for information.**</i>
-[% END %]
-
-<h2>Packing & Weather</h2>
-A detailed packing list can be found on our <a target=_blank
-href='https://www.mountmadonna.org/explore/faqs'>Frequently Asked
-Questions</a> page.
-<p>
-We ask that you leave the following at home: food, drugs, alcohol, pets,
-scented body products, and all fire hazards (candles, incense, kerosene
-lamps etc.)
-<p>
-To see the weather forecast, please go to
-<a target=_blank href='https://ambientweather.net/'>https://ambientweather.net/</a>
-and enter "Mount Madonna School".
-
-<h2>Getting Here</h2>
-Maps, directions, and shuttle
-listings are available at our <a target=_blank
-href='https://www.mountmadonna.org/transportation-directions'>Transportations
-& Directions</a> page. We do not recommend relying on GPS as it sometimes
-will direct you to roads that are undeveloped and/or impassable.  You may
-want to print out directions from the link above, as cell service can
-be unreliable as you travel up the mountain.
-
-<h2>Cancellations</h2>
-${program.canpol.policy}
-
-<h2>Still have questions?</h2>
-The Mount Madonna <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>Frequently Asked Questions</a> page has answers to many questions not answered here.
-<p>
-If you require additional assistance, please do not hesitate to call the Guest Services Office at 408-846-4090 or email us at <a href='mailto:programs@mountmadonna.org'>programs@mountmadonna.org</a>.
-<p>
-We look forward to seeing you here soon!
-<p>
-Sincerely,<br>
-$user.first $user.last
-and the Guest Services Office team
+[% INCLUDE ../while_pack.tt2 %]
 
 [% IF carpoolers %]
     <h2 class=after>Carpool List</h2>
