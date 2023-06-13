@@ -2183,9 +2183,7 @@ sub send_conf : Local {
     # then create a single pre-payment record for the total balance.
     #
     my $amount = $reg->balance();
-JON "0 $fname";
     my $conf_template = slurp($fname);
-JON "1 $conf_template";
     # to process the INCLUDES
     $conf_template =~ s{
         \[\%
@@ -2193,7 +2191,6 @@ JON "1 $conf_template";
         (\S*)
         \s+ \%\]
     }{slurp("root/static/templates/letter/conf/$1")}xmsge;
-JON "2 $conf_template";
     my $pre_pay_link = '#';     # so that the preview will have
                                 # the pre-payment section
     my $need_pre_pay_link = $conf_template =~ m{pre_payment_link}xms;

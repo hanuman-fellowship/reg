@@ -1,4 +1,4 @@
-[% INCLUDE conf/top.tt2 %]
+[% INCLUDE ../conf_top.tt2 %]
 
       <div class=indent>
          We look forward to your visit to Mount Madonna Center!
