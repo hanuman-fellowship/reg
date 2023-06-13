@@ -46,18 +46,18 @@ sub calc_sections {
     internal_comm|Internal_Communications
     leader_housing|Leader_Housing
     signage|Signage
-    flowers|Flowers
-    field_staff_std_setup|Field_Staff_Standard_Setup
-    snack|Snack
-    field_staff_setup|Field_Staff_Setup
-    workshop_schedule|Workshop_Schedule
+    flowers|Registration_Info
+    field_staff_std_setup|Tea_Bar
+    field_staff_setup|Meeting_Space_Setup
     sound_setup|A/V_Setup
-    food_service|CB_Food_Service
-    feedback|Feedback
-    miscellaneous|Miscellaneous
+    snack|Snack
+    food_service|Food_Service
+    workshop_schedule|Workshop_Schedule
     workshop_description|Workshop_Description
     check_list|Check_List
+    miscellaneous|Miscellaneous
     breakdown|Breakdown
+    feedback|Feedback
     !;
 }
 
