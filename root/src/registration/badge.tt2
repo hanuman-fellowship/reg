@@ -38,12 +38,14 @@
     [% END %]
 <td>
 <div class=center>
+<!--
 <div class=emergency_lab>
 After Hours Contact
 </div>
 <div class=emergency_txt>
 408-475-0095
 </div>
+-->
 [% housing = (data.$i.room != 'No Housing') %]
 [% IF housing %]
 <div class=room_lab>
