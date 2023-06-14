@@ -61,7 +61,7 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
 
 sub show {
     my ($t, $p) = @_;
-    $t =~ s{$p}{<span class=hl>$p</span>}xmsg if $p;
+    $t =~ s{($p)}{<span class=hl>$1</span>}xmsgi if $p;
     chomp $t;
     if (substr($t, 0, 1) eq '^') {
         $t =~ s{^\^}{<pre>};
@@ -165,8 +165,7 @@ EOS
              WHERE email = ?
 EOS
         $sth_addr_del->execute($email);
-        print "$email will no longer receive the sutras.";
-    }
+        print "$email will no longer receive the sutras."; }
 }
 elsif (exists $P{show_all}) {
     my $sth_search = $dbh->prepare(<<"EOS");

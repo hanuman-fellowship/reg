@@ -17,9 +17,6 @@ gen_files/
 output/
 grab_running
 output/
-cgi-bin/sutras/addresses
-cgi-bin/sutras/sent_log
-cgi-bin/sutras/remaining
 cgi-bin/by_day/
 cgi-bin/diff_talks
 cgi-bin/diff_title_q_a
