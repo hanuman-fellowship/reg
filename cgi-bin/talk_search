@@ -5,9 +5,10 @@ use CGI;
 my $q = CGI->new();
 print $q->header;
 my $pattern = $q->param('pattern');
+$pattern =~ s{\A \s*|\s* \z}{}xmsg;
 my $start = "[[:<:]]";
 my $end   = "[[:>:]]";
-if ($pattern =~ s{\A s \s+}{}xms) {
+if ($pattern =~ s{\A s \s+}{}xmsi) {
     $start = $end = '';
 }
 use DBI;
