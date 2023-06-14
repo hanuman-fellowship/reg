@@ -2263,6 +2263,7 @@ sub send_conf : Local {
         cancel_policy => $cancel_policy,
         covid_vax => $pr->covid_vax && ! $reg->person->covid_vax,
         while_here => get_string($c, 'while_here'),
+        cgi => get_string($c, 'cgi'),
         @me_opts,
     };
     my $html = "";
