@@ -47,6 +47,9 @@ body {
     margin-top: .2in;
     color: gray;
 }
+.gray {
+    color: gray;
+}
 .hl {
     background-color: #FFFFA0;
 }
@@ -60,7 +63,7 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "cannot connect to database\n";
 
 sub show {
-    my ($t, $p) = @_;
+    my ($t, $p, $n) = @_;
     $t =~ s{($p)}{<span class=hl>$1</span>}xmsgi if $p;
     chomp $t;
     if (substr($t, 0, 1) eq '^') {
@@ -70,7 +73,7 @@ sub show {
     $t =~ s{\n}{<br>\n}g;
     return <<"EOH";
 <div class=sutra>
-$t
+$n$t
 </div>
 EOH
 }
@@ -168,14 +171,16 @@ EOS
         print "$email will no longer receive the sutras."; }
 }
 elsif (exists $P{show_all}) {
+    # Undocumented - show_all=n to prepend each with the id
+    my $n = $P{show_all} eq 'n';
     my $sth_search = $dbh->prepare(<<"EOS");
-        SELECT content
+        SELECT id, content
           FROM sutra
       ORDER BY id
 EOS
     $sth_search->execute();
     while (my $href = $sth_search->fetchrow_hashref) {
-        print show($href->{content});
+        print show($href->{content}, undef, $n? "<span class=gray>$href->{id}</span><p>": '');
         print "<hr class=hr width=370 align=left>\n";
     }
 }
