@@ -69,7 +69,7 @@ Oaks Gate Code:
 </div>
 <div class=return>
 <span class=lan>RETURN LANYARDS</span>
-and keys to the Programs Office[% IF housing %] or leave in your room[% END %].
+and keys to the Guest Services Office[% IF housing %] or leave in your room[% END %].
 </div>
 </div>
 </td>
