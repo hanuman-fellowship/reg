@@ -229,7 +229,7 @@ house_sum_reserved - the 'weight' of a room that is reserved
 house_width - the width of a bed in a room - used when drawing the DailyPic and ClusterView
 housing_log - shall we keep a log of housing activity in 'hlog'?  See lib/HLog.pm
 kayakalpa_email - the email address of the Kaya Kalpa person who is
-    notified when a massage request comes in - see script/grab_new.
+    notified when a massage request comes in
 kid_disc - how much of a lodging discount for children?
 last_deposit_date - when was the last MMC deposit made?
     filled in automatically.   Must use get_string and put_string to access.

@@ -19,35 +19,41 @@ th, td {
 <p>
 Dear $first,
 <p>
-Thank you for your interest in receiving a relaxing bodywork
-and wellness treatment at Kaya Kalpa Wellness Center
+Thank you for your interest in receiving a holistic
+and rejuvenating session at Kaya Kalpa Wellness Center
 during your stay at Mount Madonna.
 <p>
-We offer a variety of Ayurvedic therapies, traditional massage, and other
-body therapies to enhance your experience.
-For a detailed list of our services and booking online please visit <a href='https://www.mountmadonnainstitute.org/wellnesscenter'>www.mountmadonnainstitute.org/wellnesscenter</a>.
+We offer a variety of Ayurvedic therapies and consultations,
+traditional massage, Rolfing &reg;, Cranial Sacral Therapy, and other
+healing arts to enhance your experience.
+For a detailed list of our services and booking online please visit 
+<a href='https://mmi.as.me/schedule.php'>https://mmi.as.me/schedule.php</a>.
 <p>
-We highly advise you to schedule your appointment
-at least one week in advance, as appointments tend to fill up quickly.
-Sessions are available for booking at least 24 hours ahead
-of time, and walk-ins can be accomodated based on availability.
+We recommend that you book your preferred services at the Wellness Center
+in advance.  However, we are happy to accommodate same-day appointments when possible.
 <p>
-If you have any questions or do not see a time available on our schedule,
-please call 408-846-4078 or email <a href="mailto:$kkem?subject=Massage/Bodywork Request during '$title' $dates">$kkem</a>
+A member of our staff will follow up with you.
+If we miss you and you have any questions or do not see
+a time available on our schedule, please call 408-846-4078
+or 
+email <a href="mailto:$kkem?subject=Massage/Bodywork Request during '$title' $dates">$kkem</a>
 and we will be happy to help you!
 <p>
 We look forward to facilitating your exploration of health
 at the Kaya Kalpa Wellness Center at Mount Madonna.
 <p>
 Warmly,<br>
-Kaya Kalpa Wellness Center<br>
+Kaya Kalpa Wellness Center Staff<br>
 408-846-4078<br>
 <a href='https://www.mountmadonnainstitute.org/wellnesscenter'>mountmadonnainstitute.org/wellnesscenter</a>
 
 <h3>Reservation Policy</h3>
-We require a credit card number or gift certificate number to reserve an appointment.
+A credit card number or gift certificate number is required 
+to reserve an appointment.
 <p>
-We kindly request 24 hours notice on canceling or rescheduling appointments.  If a 24-hour notice is not given a full charge will be applied.
+We kindly request 24 hours notice on canceling or rescheduling appointments.
+If a 24-hour notice is not provided, you will be charged for the full
+amount of the services selected.
 
 <h3>Late Policy</h3>
 If you are late for an appointment, a modified service will be performed
