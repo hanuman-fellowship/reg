@@ -2313,6 +2313,9 @@ sub send_conf : Local {
     my $pr_title = $pr->title();
     $pr_title =~ s{\A .* (Special \s+ Guest) .*}{$1}xms;
     $pr_title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
+    if ($ME) {
+        $pr_title = 'Mountain Experience';
+    }
 
     my $to = $reg->person->name_email();
     my $name = $reg->person->name;
@@ -2320,7 +2323,7 @@ sub send_conf : Local {
     my $attached_file_aref
         = $pr->alt_packet?
               [ $docdir . $pr->alt_packet ]
-         :$reg->mountain_experience()?
+         :$ME?
               [ $docdir . 'Guest-Packet_MountainExperience.pdf' ]
          :$pr->housing_not_needed()?
               []
