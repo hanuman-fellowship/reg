@@ -111,7 +111,7 @@ for my $prog (@progs) {
         email_letter($c,
             from    => "$string{from_title} <$string{from}>",
             to      => (join ", ", @emails),
-            cc      => 'POStaff@mountmadonna.org, jon.bjornstad@gmail.com',
+            cc      => 'POStaff@mountmadonna.org',
             subject => "Carpool List for " . $prog->name,
             html    => $let,
             activity_msg => "Sent carpool list for "
