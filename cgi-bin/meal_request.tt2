@@ -23,7 +23,8 @@
 <p>
 <h1>
 [% IF type == 'family' %]
-Meals for HFS Members/Affilates (MMI, MMC, Temple)
+Meals for HFS Members<br>
+and Affilates (MMC, MMI, MMS, Temple)
 [% ELSIF type == 'guest' %]
 Meals for MMC Resident Guests and Offland Staff
 [% ELSE %]
