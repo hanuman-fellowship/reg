@@ -641,7 +641,7 @@ Please note any dietary restrictions you have such as vegan, gluten free, allerg
     [% IF ! collect_total %]
         You are not registered until we receive your deposit.
     [% END %]
-    If the program is full, your deposit will be refunded.</li>
+    If the program is full, your payment will be refunded.</li>
     <li>Housing is not always available. <b>Do not finalize your travel plans</b> until you have received a housing confirmation from Mount Madonna Center.</li>
     <li>We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <i>programs@mountmadonna.org</i>. </li>
 [% END %]
