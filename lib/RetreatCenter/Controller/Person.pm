@@ -798,6 +798,11 @@ sub mkpartner : Local {
         date_entrd  => $today,
         date_updat  => $today,
         secure_code => rand6($c),
+        deceased => '',
+        inactive => '',
+        e_mailings => '',
+        snail_mailings => '',
+        share_mailings => '',
     });
     $p1->update({
         id_sps     => $p2->id,
@@ -811,7 +816,6 @@ sub mkpartner : Local {
                          . ".";
     $c->response->redirect($c->uri_for("/person/search"));
 }
-
 # show all future (and current - up to today) programs
 # in alphabetical order and allow one to be chosen.
 # if one of your roles is mmi_admin include
