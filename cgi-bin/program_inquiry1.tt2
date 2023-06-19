@@ -182,7 +182,7 @@ Check all that apply.
 <h2>Additional Services</h2>
 What other services are you interested in? Check all that apply.
 <ul>
-<label><input type=checkbox name=services value='Elevated coffee service'> Elevated coffee service</label><br>
+<label><input type=checkbox name=services value='Coffee service'> Coffee service</label><br>
 <label><input type=checkbox name=services value='Guided nature walks'> Guided nature walks</label><br>
 <label><input type=checkbox name=services value='Yoga class'> Yoga class</label><br>
 <label><input type=checkbox name=services value='Meditation class'> Meditation class</label><br>
