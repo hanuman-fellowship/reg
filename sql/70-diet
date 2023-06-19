@@ -1,0 +1,1 @@
+alter table people modify column diet varchar(1024);
