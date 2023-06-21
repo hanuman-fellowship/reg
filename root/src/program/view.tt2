@@ -215,7 +215,7 @@ Web/Files
 
 <tr>
 <th align=right>Housing Cost</th>
-<td><a href=/housecost/view/$program.housecost.id>$program.housecost.name</a></td>
+<td><a target=_blank href=/housecost/view/$program.housecost.id>$program.housecost.name</a></td>
 
 [% IF lunch_table %]
 <td rowspan=5>

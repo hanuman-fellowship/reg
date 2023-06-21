@@ -169,7 +169,7 @@ Web/Files
 
 <tr>
 <th align=right valign=top>Housing Cost</th>
-<td colspan=2><a href="/housecost/view/$rental.housecost.id">$rental.housecost.name</a></td>
+<td colspan=2><a target=_blank href="/housecost/view/$rental.housecost.id">$rental.housecost.name</a></td>
 </tr>
 
 <tr>
