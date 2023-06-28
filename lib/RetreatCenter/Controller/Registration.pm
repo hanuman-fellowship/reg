@@ -2239,7 +2239,7 @@ sub send_conf : Local {
                               name => 'Mountain Experience',
                           });
             # it will be there...
-        push @me_opts, 'me_cancellation_policy', $me_cancel->policy;
+        push @me_opts, 'cancel_policy', $me_cancel->policy; # will override
         push @me_opts, 'me_coordinator', $string{me_coordinator};
     }
     my $stash = {

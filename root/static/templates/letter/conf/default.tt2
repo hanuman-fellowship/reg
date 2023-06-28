@@ -72,7 +72,7 @@ beautiful Mount Madonna!
 When you arrive at Mount Madonna Center's main gate at
 445 Summit Road, you will be greeted by our staff who will
 direct you to Registration.  Check-in is from
-3:00 pm to 5:30 pm and check-out is at 12:00 pm.
+${program.reg_start_obj.ampm} to ${program.reg_end_obj.ampm} and check-out is at ${program.prog_end_obj.ampm}.
 Please note, you are more than welcome to stay for lunch on the day
 of departure after vacating your room.
 <p>
@@ -83,7 +83,7 @@ or call (408) 846-4090 to inquire
 about an overnight stay.
 <h2>Late Arrivals</h2>
 The campus entrance gate is open during business hours
-and closes at 6:00pm. <i><b>Please call the Guest Services Office
+and closes at 6:00 pm. <i><b>Please call the Guest Services Office
 if you are unable to arrive by 5:30 pm</b></i>. After hours, please refer to
 the Gate Code listed above in this document. You will pick up your
 arrival packet and key on the 'After-Hours Arrivals' bulletin board

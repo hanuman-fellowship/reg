@@ -46,7 +46,7 @@ want to print out directions from the link above, as cell service can
 be unreliable as you travel up the mountain.
 
 <h2>Cancellations</h2>
-${program.canpol.policy}
+$cancel_policy
 
 <h2>Have Additional Questions?</h2>
 The Mount Madonna <a href='https://www.mountmadonna.org/explore/faqs'>Frequently Asked Questions</a> page

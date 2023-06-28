@@ -98,8 +98,7 @@ h3 {
     <img class=logo src='https://akash2.mountmadonna.org/static/images/learn_practice_logo.png'>
 </div>
 <p>
-Guest Services Office: 408-846-4090,
-<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
+Guest Services Office: 408-846-4090, <a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
 
 <div class=indent>
 Dear $person.first,
