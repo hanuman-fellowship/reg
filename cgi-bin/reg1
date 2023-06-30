@@ -366,7 +366,7 @@ if ($pid) {
         }
     }
 
-    if ($today > $prog->sdate_obj) {
+    if (! $erdt && $today > $prog->sdate_obj) {
         oops "The program $title has finished.<br>You cannot register for it today.";
     }
 }
