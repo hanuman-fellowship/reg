@@ -32,7 +32,7 @@ Meals at Mount Madonna Center
 [% END %]
 </h1>
 <p>
-You must request meals at least $advance days in advance.
+You must request meals at least $advance day in advance.
 <span style="margin-left: 1in"><a target=_blank href="/cgi-bin/meals_at_mmc">Meal Information</a></span>
 <br>
 Enter dates and the number of meals you wish on those dates.<br>
