@@ -116,9 +116,10 @@ $stash{dow_disabled} = '';
 if ($type) {
     # $type is either 'family' or 'guest'
     $stash{type} = $type;
-    if ($type eq 'family') {
-        $stash{dow_disabled} = "daysOfWeekDisabled: '0',";
-    }
+# temporary!
+#    if ($type eq 'family') {
+#        $stash{dow_disabled} = "daysOfWeekDisabled: '0',";
+#    }
     # overwrite the strings we use below with the
     # proper family or guest cost.
     for my $m (@meals) {

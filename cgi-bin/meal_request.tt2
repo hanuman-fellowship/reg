@@ -39,11 +39,12 @@ Enter dates and the number of meals you wish on those dates.<br>
 If the meals are for a child (ages 5-12) check the Child column checkbox.
 <p>
 [% dr = date_ranges.0 %]
-[% IF type == 'family' %]
+<!-- temporary -->
+<!-- [% IF type == 'family' %]
     We do not offer meals on Sunday or lunch on Saturdays[% IF ! dr %].[% END %]
-[% ELSE %]
+[% ELSE %] -->
     We do not offer lunch on Saturdays[% IF ! dr %].[% END %]
-[% END %]
+<!-- [% END %] -->
 [% IF dr %]
     <br>nor meals on these dates:
     <ul>
