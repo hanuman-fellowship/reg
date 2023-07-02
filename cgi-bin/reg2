@@ -647,11 +647,11 @@ if ($covid_vax) {
 # create a readable description for the user
 #
 my %gender_desc = (
-    female     => 'Woman',
-    male       => 'Man',
-    non_binary => 'Non-binary/non-conforming',
-    trans      => 'Transgender',
-    no_resp    => 'Prefer not to respond',
+    F => 'Woman',
+    M => 'Man',
+    T => 'Transgender',
+    N => 'Non-binary/non-conforming',
+    R => 'Prefer not to respond',
 );
 $stash{sex} = $gender_desc{$form{sex}};
 

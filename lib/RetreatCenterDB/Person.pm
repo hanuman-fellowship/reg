@@ -143,9 +143,9 @@ sub sex_disp {
     my $sex = $self->sex || '';
     return ($sex eq 'M')? "Man"
           :($sex eq 'F')? "Woman"
-          :($sex eq 'X')? "Non-binary/non-conforming"
+          :($sex eq 'N')? "Non-binary/non-conforming"
           :($sex eq 'T')? "Transgender"
-          :($sex eq 'N')? "Prefer not to respond"
+          :($sex eq 'R')? "Prefer not to respond"
           :               "Person of Unreported Gender"
           ;
 }

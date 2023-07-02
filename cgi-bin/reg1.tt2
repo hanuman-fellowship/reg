@@ -274,15 +274,15 @@ function check_form() {
 <span id=sex1></span>
 <span class=required>*</span> Gender Identity:</th> 
 <td>
-<label><input type=radio name="sex" $female value="female"> Woman</label><br> 
+<label><input type=radio name="sex" $female value="F"> Woman</label><br> 
 
-<label><input type=radio name="sex" $male value="male"> Man</input></label><br>
+<label><input type=radio name="sex" $male value="M"> Man</input></label><br>
 
-<label><input type=radio name="sex" $trans value="trans"> Transgender</label></label><br>
+<label><input type=radio name="sex" $trans value="T"> Transgender</label></label><br>
 
-<label><input type=radio name="sex" $non_binary value="non_binary"> Non-binary/non-conforming</label><br>
+<label><input type=radio name="sex" $non_binary value="N"> Non-binary/non-conforming</label><br>
 
-<label><input type=radio name="sex" $no_resp value="no_resp"> Prefer not to respond</label><br>
+<label><input type=radio name="sex" $no_resp value="R"> Prefer not to respond</label><br>
 <a href="javascript:popup('/static/help/gender.html', 190, 350);">How does my choice affect my housing?</a>
 </td>
 </tr>
