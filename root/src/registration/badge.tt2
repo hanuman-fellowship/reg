@@ -62,7 +62,7 @@ Main Gate Code:
 #[% IF data.$i.code %]${data.$i.code}[% ELSE %]$code[% END %]
 </div>
 <div class=oaks_lab>
-Oaks Gate Code:
+School Gate Code:
 </div>
 <div class=oaks_txt>
 1[% IF data.$i.code %]${data.$i.code}[% ELSE %]$code[% END %]
