@@ -1,32 +1,88 @@
-[% INCLUDE top.tt2 %]
+<html>
+<head>
+<style>
+body {
+    width: 80%;
+    font-family: Georgia, Times;
+    font-size: 12pt;
+    margin-left: 6mm;
+}
+td {
+    font-family: Georgia, Times;
+    font-size: 12pt;
+}
+li {
+    margin-bottom: 3mm;
+}
+</style>
+</head>
+<body>
+<img style="margin-left: 6in"
+     height=150
+     src="http://www.hanumanfellowship.org/files/hanuman.png">
+<p>
 Dear $sanskrit,
 <p>
-We are reaching out to you as a former member of the
-Hanuman Fellowship to ask you to consider rejoining the Fellowship.
+We are reaching out to you as a former member of the Hanuman Fellowship
+to ask you to consider rejoining the Fellowship for the coming year. We
+sincerely value our relationship with all members of the Fellowship
+satsang and respectfully request your continued commitment and
+participation as a member of the Hanuman Fellowship.
 <p>
-Whether your membership recently expired or
-expired long ago, we sincerely value our relationship with all members
-of the Fellowship satsang and respectfully request your continued
-commitment as a member of the Hanuman Fellowship.
+The Hanuman Fellowship is "A thriving community of spiritual practice
+that honors our yogic roots and inspires peaceful transformation in
+ourselves and the world". Your continued participation  contributes
+to the long term sustainability of our mission, our community, and our
+ability to ensure the legacy of Baba Hari Dass' teachings. Membership
+dues, along with general donations, support a wide variety of needs,
+including staff livelihoods, land stewardship, and Hanuman Fellowship
+offerings of peace, self-inquiry, and selfless service. We look forward
+to welcoming you back as a member of the Hanuman Fellowship!
 <p>
-As you may know from our previous correspondence, we are in process
-of revising our by-laws.  If you would like to vote on the upcoming
-ballot that will consider the restated bylaws, please renew
-your membership in the coming week, prior to July 18th.
+While this has been a challenging time for us financially, there is so
+much energy and opportunity within the Fellowship. Guests, students and
+satsang have returned to Mount Madonna Center and our Temple, children
+are thriving at Mount Madonna School, and Mount Madonna Institute is
+offering a whole host of programs, all inspired by the life and teachings
+of our beloved guru Babaji.
 <p>
-If you would like to be included as a voting member and vote for the
-HFS Board of Directors at the Annual Meeting, you must renew
-your membership by August 15th.
-Our Annual General Meeting will be held on Saturday, October 8th, 2022.
+As you may know, in August 2022, the Hanuman Fellowship Bylaws were
+revised creating two broad categories of membership: Statutory (voting)
+Members and Supporting (non-voting) Members. As a recent member of
+Hanuman Fellowship, we are offering you the option of restarting your
+2023 membership as a Statutory (voting) member by paying your membership
+dues. This option will only be available this year, after which time,
+you would be able to either rejoin the Fellowship as a Supporting member
+or complete the new member application and be approved to rejoin as a
+Statutory (voting) member.
 <p>
-The Fellowship is a self-supportive community dedicated to the
-attainment of peace. We recognize that in order to attain this mission
-and carry forward the teachings of Baba Hari Dass through sadhana,
-satsang, and karma yoga, a membership based on commitment and service
-is essential. Your membership dues provide the needed funding and pledge
-of support to projects inspired by the guidance of Babaji such as
-Mount Madonna Center, Sankat Mochan Hanuman Temple and Mount Madonna Institute.
+<b>
+If you would like to be included as a voting member and vote for
+the HFS Board of Directors at the Annual Meeting, you must renew your
+membership by September 26th. Our Annual General Meeting will be held
+on Saturday, October 21st, 2023.
+</b>
 <p>
-We look forward to welcoming you back as a member of the Hanuman Fellowship. 
+Please submit your payment of \$50. You can pay your membership dues
+securely online by <a href='https://akash.mountmadonna.org/cgi-bin/omp?code=$secure_code'>clicking here</a>.
+If you wish to pay with a personal
+check, please mail your payment to the address listed below.
+In addition to membership dues, we gratefully accept <a href='https://www.mountmadonna.org/donate'>donations</a> of any size.
 <p>
-[% INCLUDE info.tt2 %]
+Please note:
+<ul>
+<li>We communicate primarily by email, so please make sure that we have your
+current email address and other contact information.
+<li>To claim a tax deduction for this donation, you must deduct the value
+of any benefits you receive. Our federal tax identification number is
+51-0174679. This organization is a 501c (3) tax exempt organization,
+IRS Section 170(b (2)(iii) for both federal and state tax purposes.
+</ul>
+<p>
+In Peace,<br>
+The Hanuman Fellowship<br>
+Membership Secretary<br>
+445 Summit Road, Watsonville, CA 95076<br>
+<a href='mailto:memberships@mountmadonna.org'>memberships@mountmadonna.org</a>
+</body>
+</html>
