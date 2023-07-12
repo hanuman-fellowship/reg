@@ -42,7 +42,7 @@ my @meals = qw/
 
 my %stash;
 my $today = today();
-my $advance = ($type eq 'guest')? 3: 1;
+my $advance = ($type eq 'guest')? 3: 2;
 my $start = $today + $advance;
 $stash{advance} = $advance;
 $stash{startDate} = $start->format("%m/%d/%Y");
@@ -116,10 +116,9 @@ $stash{dow_disabled} = '';
 if ($type) {
     # $type is either 'family' or 'guest'
     $stash{type} = $type;
-# temporary!
-#    if ($type eq 'family') {
-#        $stash{dow_disabled} = "daysOfWeekDisabled: '0',";
-#    }
+    if ($type eq 'family') {
+        $stash{dow_disabled} = "daysOfWeekDisabled: '0',";
+    }
     # overwrite the strings we use below with the
     # proper family or guest cost.
     for my $m (@meals) {
