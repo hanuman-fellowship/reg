@@ -3018,8 +3018,8 @@ a {
 <tr>
 <td>Name</td>
 <td># Registrations</td>
-<td>ME was First Reg</td>
-<td>ME was not Last Reg</td>
+<td>ME was<br>First Reg</td>
+<td>ME was<br>Not Last Reg</td>
 </tr>
 EOH
     my $tot = @mes;
@@ -3040,8 +3040,10 @@ EOH
             $emails .= "$per_name <$per_email>, ";
         }
         $tot_not_last += $not_last;
+        my $first_check = $first? '&check;': '';
+        my $not_last_check = $not_last? '&check;': '';
         $html .= "<tr><td><a target=_blank href='/person/view/$per_id'>$per_name</a></td>"
-              .  '<td align=center>' . scalar(@regs) . "</td><td align=center>$first</td><td align=center>$not_last</td></tr>\n";
+              .  '<td align=center>' . scalar(@regs) . "</td><td align=center>$first_check</td><td align=center>$not_last_check</td></tr>\n";
     }
     $html .= <<"EOH";
 </table>
