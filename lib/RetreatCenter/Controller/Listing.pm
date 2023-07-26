@@ -3027,6 +3027,7 @@ EOH
     my $tot = @mes;
     my $tot_first = 0;
     my $tot_not_last = 0;
+    my $n_first_only = 0;
     my $emails = "";
     for my $r (@mes) {
         my $id = $r->id;
@@ -3039,6 +3040,7 @@ EOH
         $tot_first += $first;
         my $not_last = ($id != $regs[0]->id)? 1: '';
         if ($first && ! $not_last) {
+            ++$n_first_only;
             $emails .= "$per_name <$per_email>, ";
         }
         $tot_not_last += $not_last;
@@ -3053,7 +3055,8 @@ EOH
 Total ME: $tot<br>
 ME was first registration: $tot_first<br>
 ME was not last registration: $tot_not_last<br>
-<a href='mailto:?bcc=$emails'>Email All ME was First and Only</a>
+ME was first and <b>only</b> registration: $n_first_only<br>
+<a href='mailto:?bcc=$emails'>Bcc Email All First and <b>Only</b></a>
 EOH
     $c->res->output($html);
 }
