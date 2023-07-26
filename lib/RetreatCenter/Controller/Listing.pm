@@ -3006,7 +3006,9 @@ sub me_info : Local {
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: 0;
         my $last = ($id == $regs[0]->id)? 1: 0;
-        $html .= $per->name . ' #' . scalar(@regs) . " $first $last<br>\n";
+        $html .= "<a target=_blank href='/registration/view/$id'>"
+              .  $per->name . "</a>"
+              .  ' #' . scalar(@regs) . " $first $last<br>\n";
     }
     $c->res->output($html);
 }
