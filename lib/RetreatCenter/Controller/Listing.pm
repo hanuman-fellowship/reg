@@ -3003,6 +3003,7 @@ sub me_info : Local {
 <style>
 body {
     font-size: 16pt;
+    margin: .5in;
 }
 a {
     text-decoration: none;
@@ -3010,6 +3011,13 @@ a {
 }
 </style>
 <h1>Mountain Experience from $from to $to</h1>
+<table cellpadding=5>
+<tr>
+<td>Name</td>
+<td># Registrations</td>
+<td>ME was First Reg</td>
+<td>ME was not Last Reg</td>
+</tr>
 EOH
     my $tot = @mes;
     my $tot_first = 0;
@@ -3022,17 +3030,18 @@ EOH
         my $per_name = $per->name;
         my $per_email = $per->email;
         my @regs = $per->registrations();
-        my $first = ($id == $regs[-1]->id)? 1: 0;
+        my $first = ($id == $regs[-1]->id)? 1: '';
         $tot_first += $first;
-        my $not_last = ($id != $regs[0]->id)? 1: 0;
+        my $not_last = ($id != $regs[0]->id)? 1: '';
         if ($first && ! $not_last) {
             $emails .= "$per_name <$per_email>, ";
         }
         $tot_not_last += $not_last;
-        $html .= "<a target=_blank href='/person/view/$per_id'>$per_name</a>"
-              .  ' #' . scalar(@regs) . " $first $not_last<br>\n";
+        $html .= "<tr><td><a target=_blank href='/person/view/$per_id'>$per_name</a></td>"
+              .  '<td align=center>' . scalar(@regs) . "</td><td align=center>$first</td><td align=center>$not_last</td></tr>\n";
     }
     $html .= <<"EOH";
+</table>
 <p>
 Total ME: $tot<br>
 ME was first registration: $tot_first<br>
