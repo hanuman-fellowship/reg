@@ -2999,20 +2999,36 @@ sub me_info : Local {
                       order_by => 'date_start',
                   }
               );
-    my $html = "Mountain Experience from $from to $to:";
+    my $html = <<"EOH";
+<style>
+body {
+    font-size: 16pt;
+}
+a {
+    text-decoration: none;
+    color: blue;
+}
+</style>
+<h1>Mountain Experience from $from to $to</h1>
+EOH
     my $tot = @mes;
     my $tot_first = 0;
     my $tot_not_last = 0;
+    my $emails = "";
     for my $r (@mes) {
         my $id = $r->id;
         my $per = $r->person;
         my $per_id = $per->id;
         my $per_name = $per->name;
+        my $per_email = $per->email;
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: 0;
         $tot_first += $first;
         my $not_last = ($id != $regs[0]->id)? 1: 0;
-        $tot_not_last += ! $not_last;
+        if ($first && ! $not_last) {
+            $emails .= "$per_name <$per_email>, ";
+        }
+        $tot_not_last += $not_last;
         $html .= "<a target=_blank href='/person/view/$per_id'>$per_name</a>"
               .  ' #' . scalar(@regs) . " $first $not_last<br>\n";
     }
@@ -3021,6 +3037,7 @@ sub me_info : Local {
 Total ME: $tot<br>
 ME was first registration: $tot_first<br>
 ME was not last registration: $tot_not_last<br>
+<a href='mailto:?bcc=$emails'>Email All ME was First and Only</a>
 EOH
     $c->res->output($html);
 }
