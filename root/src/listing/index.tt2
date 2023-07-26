@@ -22,7 +22,7 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit id=sub value="
 </form>
 <p class=p2>
 <form action="/listing/me_info" method=POST>
-<span class=mount_exp>ME Info</span> from <input type=text size=10 name=me_from>
+<span class=mount_exp>ME Info</span> From <input type=text size=10 name=me_from>
 To <input type=text size=10 name=me_to>
 <input type=submit id=sub value="Go">
 </form>
