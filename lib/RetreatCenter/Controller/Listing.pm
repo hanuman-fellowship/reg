@@ -2996,7 +2996,9 @@ sub me_info : Local {
                       cancelled => { '!=' => 'yes' },
                   },
                   {
-                      order_by => 'date_start',
+                     join     => [qw/ person /],
+                     prefetch => [qw/ person /],
+                     order_by => 'person.first, person.last',
                   }
               );
     my $html = <<"EOH";
