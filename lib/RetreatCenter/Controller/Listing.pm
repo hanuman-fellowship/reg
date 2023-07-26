@@ -2991,11 +2991,12 @@ sub me_info : Local {
     my @mes = model($c, 'Registration')->search(
                  {
                      mountain_experience => { '!=' => '' },
-                     date_start => { between => [ $from, $to ] },
+                     date_start =>
+                         { between => [ $from->as_d8(), $to->as_d8() ] },
                      cancelled => { '!=' => 'yes' },
                  },
               );
-    $c->res->output("$me_from to $me_to: " . scalar(@mes));
+    $c->res->output("$from to $to: " . scalar(@mes));
 }
 
 sub mountain_experience : Local {
