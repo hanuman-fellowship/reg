@@ -3007,7 +3007,7 @@ body {
     font-size: 16pt;
     margin: .5in;
 }
-td {
+td, th {
     font-size: 16pt;
 }
 a {
@@ -3018,7 +3018,7 @@ a {
 <h1>Mountain Experience from $from to $to</h1>
 <table cellpadding=3>
 <tr>
-<th valign=bottom>Name</th>
+<th align=left valign=bottom>Name</th>
 <th valign=bottom># Registrations</th>
 <th valign=bottom>ME was<br>First Reg</th>
 <th valign=bottom>ME was<br>Not Last Reg</th>
