@@ -1,3 +1,20 @@
+
+login https://hanuman-fellowship.signin.aws.amazon.com/console
+account id: hanuman-fellowship
+IAM User name: sahadev
+Password: *
+search EC2
+    region US West 1 Northern California
+    instances
+    click on retreat center
+    choose instance state - reboot
+    actions - create image
+        then create instance from image
+    or right click, reboot
+search S3
+search SES
+    Oregon region
+----------------------
 ME
 #transaction id?
 #    $q->param('session_id')

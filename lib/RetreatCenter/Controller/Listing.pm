@@ -2977,6 +2977,27 @@ sub _email_all {
          . "'>email all</a>";
 }
 
+sub me_info : Local {
+    my ($self, $c) = @_;
+    my $me_from = trim($c->request->params->{me_from});
+    my $me_to = trim($c->request->params->{me_to});
+    my $from = date($me_from);
+    my $to = date($me_to);
+    if (! $from || ! $to || $from > $to) {
+        $c->stash->{mess} = "Date problem";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my @mes = model($c, 'Registration')->search(
+                 {
+                     mountain_experience => { '!=' => '' },
+                     date_start => { between => [ $from, $to ] },
+                     cancelled => { '!=' => 'yes' },
+                 },
+              );
+    $c->res->output("$me_from to $me_to: " . scalar(@mes));
+}
+
 sub mountain_experience : Local {
     my ($self, $c) = @_;
     my $me_date = trim($c->request->params->{me_date});
