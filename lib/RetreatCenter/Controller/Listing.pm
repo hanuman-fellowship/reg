@@ -3005,7 +3005,8 @@ sub me_info : Local {
         my $per = $r->person;
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: 0;
-        $html .= $per->name . ' ' . scalar(@regs) . " $first<br>\n";
+        my $last = ($id == $regs[0]->id)? 1: 0;
+        $html .= $per->name . ' #' . scalar(@regs) . " $first $last<br>\n";
     }
     $c->res->output($html);
 }
