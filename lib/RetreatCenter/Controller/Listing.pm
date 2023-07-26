@@ -3018,10 +3018,10 @@ a {
 <h1>Mountain Experience from $from to $to</h1>
 <table cellpadding=3>
 <tr>
-<td>Name</td>
-<td># Registrations</td>
-<td>ME was<br>First Reg</td>
-<td>ME was<br>Not Last Reg</td>
+<th valign=bottom>Name</th>
+<th valign=bottom># Registrations</th>
+<th valign=bottom>ME was<br>First Reg</th>
+<th valign=bottom>ME was<br>Not Last Reg</th>
 </tr>
 EOH
     my $tot = @mes;
