@@ -2999,18 +2999,29 @@ sub me_info : Local {
                       order_by => 'date_start',
                   }
               );
-    my $html;
+    my $html = "Mountain Experience from $from to $to:";
+    my $tot = @mes;
+    my $tot_first = 0;
+    my $tot_not_last = 0;
     for my $r (@mes) {
         my $id = $r->id;
         my $per = $r->person;
         my $per_id = $per->id;
-        my $per_name = $per->id;
+        my $per_name = $per->name;
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: 0;
-        my $last = ($id == $regs[0]->id)? 1: 0;
+        $tot_first += $first;
+        my $not_last = ($id != $regs[0]->id)? 1: 0;
+        $tot_not_last += ! $not_last;
         $html .= "<a target=_blank href='/person/view/$per_id'>$per_name</a>"
-              .  ' #' . scalar(@regs) . " $first $last<br>\n";
+              .  ' #' . scalar(@regs) . " $first $not_last<br>\n";
     }
+    $html .= <<"EOH";
+<p>
+Total ME: $tot<br>
+ME was first registration: $tot_first<br>
+ME was not last registration: $tot_not_last<br>
+EOH
     $c->res->output($html);
 }
 
