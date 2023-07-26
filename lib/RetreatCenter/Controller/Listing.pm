@@ -3005,13 +3005,16 @@ body {
     font-size: 16pt;
     margin: .5in;
 }
+td {
+    font-size: 16pt;
+}
 a {
     text-decoration: none;
     color: blue;
 }
 </style>
 <h1>Mountain Experience from $from to $to</h1>
-<table cellpadding=5>
+<table cellpadding=3>
 <tr>
 <td>Name</td>
 <td># Registrations</td>
