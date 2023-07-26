@@ -2989,14 +2989,25 @@ sub me_info : Local {
         return;
     }
     my @mes = model($c, 'Registration')->search(
-                 {
-                     mountain_experience => { '!=' => '' },
-                     date_start =>
-                         { between => [ $from->as_d8(), $to->as_d8() ] },
-                     cancelled => { '!=' => 'yes' },
-                 },
+                  {
+                      mountain_experience => { '!=' => '' },
+                      date_start =>
+                          { between => [ $from->as_d8(), $to->as_d8() ] },
+                      cancelled => { '!=' => 'yes' },
+                  },
+                  {
+                      order_by => 'date_start',
+                  }
               );
-    $c->res->output("$from to $to: " . scalar(@mes));
+    my $html;
+    for my $r (@mes) {
+        my $id = $r->id;
+        my $per = $r->person;
+        my @regs = $per->registrations();
+        my $first = ($id == $regs[-1]->id)? 1: 0;
+        $html .= $per->name . ' ' . scalar(@regs) . " $first<br>\n";
+    }
+    $c->res->output($html);
 }
 
 sub mountain_experience : Local {
