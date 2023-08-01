@@ -27,7 +27,7 @@ th, .rt {
     text-align: left;
 }
 a {
-    text-decoration: none;
+    text-decoration: underline;
     color: #b1713c;
     transition: all .2s ease-in-out;
 }
@@ -547,6 +547,10 @@ a.ulwhite:hover::before {
     top:-4px;
     font-size: 14px;
 }
+.botsvg-logo {
+  height: 46px;
+}
+
 /* back to top */
 #bttbutton {
     display: inline-block;
@@ -640,6 +644,7 @@ a.ulwhite:hover::before {
     position: relative;
     bottom: -9px;
     font-size: 12px;
+    text-decoration: underline;
 }
 .options-table tr {
     height: 3.4em;
@@ -671,7 +676,9 @@ a.ulwhite:hover::before {
     content: "$ ";
     padding: 0 1em;
 }
-
+.regdla dd {
+  padding-bottom: 1.2em;
+}
 
 
 /* checkboxes and radio inputs setup */
@@ -773,7 +780,28 @@ a.ulwhite:hover::before {
     bottom: 3px;
     background-color: #BB8355!important;
 }
-
+.med-button{
+    line-height: 15px;
+    font-size: 16px;
+    border: 1px solid #b1713c;
+    text-transform: uppercase;
+    font-family: 'Marcellus', serif;
+    /*color: #FFF;*/
+    position: relative;
+    background-color: #e9d4cc;
+    border-radius: 3px;
+    padding: .5em 1em;
+    letter-spacing: .2em;
+    transition: all 0.25s ease-in-out;
+    bottom: 0;
+    margin-top: 2em;
+}
+.med-button:hover {
+    box-shadow: 6px 6px 8px 8px rgba(150, 150, 150, 0.1);
+    bottom: 3px;
+    background-color: #BB8355!important;
+    color: #FFF;
+}
 /* info boxes */
 .info-box {
     background: #F4EAE6;
@@ -783,7 +811,6 @@ a.ulwhite:hover::before {
     margin: 1em 0;
 }
 .mail-box-a, .message-box-a {
-  width: 100%;
   padding: 1em 2.5em;
 }
 .mail-box-b {

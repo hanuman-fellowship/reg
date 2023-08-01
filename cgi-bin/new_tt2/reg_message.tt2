@@ -13,9 +13,9 @@
     <div class="mail-box-b">
         
 [% IF sending_email %]
-    <img src='https://akash.mountmadonna.org/static/images/mmc-teal.png' width=200>
+    <img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
 [% ELSE %]
-    <img src='/static/images/mmc-teal.png' width=200>
+    <img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
 [% END %]
 
 

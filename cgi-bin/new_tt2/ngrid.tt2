@@ -51,9 +51,10 @@ $edate <span class=dow>${edate.format("%a")}</span>
 </p>
 <p>
 <h3>
-Housing Assignment Grid 
-<span style="margin-left: 1in; font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
-</h3>
+Housing Assignment Grid </h3>
+<div class="info-box">
+<span style="font-size: 12pt;"><a href="$action?code=$code" class="med-button">ReEdit</a></span>
+</div>
 
 <table class="options-table" cellpadding=5 border=1>
 <tr>

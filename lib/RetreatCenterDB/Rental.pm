@@ -712,7 +712,7 @@ sub compute_balance {
             min_cost       => $min_cost,
 
             # new contract:
-            mp_table       => $mp_table,
+            mp_table        => $mp_table,
             mp_cost_per_day => $mp_cost_per_day,
             mp_total_cost   => $mp_total_cost,
 

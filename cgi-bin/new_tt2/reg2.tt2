@@ -23,7 +23,7 @@
     </dl>
 [% ELSE %]
 You are registering for:
-    <dl>
+    <dl  class="regdla">
     <dt>Program:</dt>
     <dd>$title</dd>
     <dt>Dates:</dt>
@@ -39,7 +39,7 @@ You are registering for:
     </dl>
 [% END %]
 <h3>Personal Information</h3> 
-<dl>
+<dl class="regdla">
 <dt>Name:</dt>
 <dd>$first $last</dd>
 [% IF aname %]
@@ -91,7 +91,7 @@ $country</dd>
 
 [% IF ! staff_housing && ! housing_not_needed && ! mountain_experience %]
     <h3>Housing Choice</h3>
-    <dl>
+    <dl  class="regdla">
     <dt>First choice:</dt>
     <dd>$house1_verbose (\$$house1_cost[% IF pr %] per night[% END %])</dd>
     <dt>Second choice:</dt>

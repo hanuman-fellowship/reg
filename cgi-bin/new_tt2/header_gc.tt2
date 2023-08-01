@@ -1,0 +1,93 @@
+    <!-- Back to top button 
+    <a id="bttbutton"></a>-->
+    <!-- HEADER -->
+    <!-- top row -->
+    <div class="xlayer darkred">
+        <div class="container">
+            <ul class="top-menu">
+                <li><a href="#" class="ulwhite">Contact Us</a></li>
+                <li><a href="#" class="ulwhite">Newsletter Signup</a></li>
+            </ul>
+        </div>
+    </div>
+    <!-- / top row -->
+    <!-- top banner -->
+    <div>
+        <!-- banner -->
+        
+          <div id="banner-container">
+            <!-- the banner setup -->
+            <div id="banner-parallax"></div>
+
+            <div id="banner-text">
+              
+              <p class="h1">GIFT CARD</p>
+              <p class="h3">SUBMIT YOUR GIFT CERTIFICATE HERE</p>
+              <p>at Mount Madonna, California</p>
+            </div>
+            <!-- // the banner setup -->
+            
+          </div>
+         
+        <!-- //banner -->
+        <!-- top nav -->
+                <div class="nav-holder navbg">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
+                                <!-- logo holder -->
+                                <div class="logo-holder">
+                                    <a href="https://mountmadonna.org"><img class="visible-xs visible-sm" src="/static/images/mm-logo-mobile.png" alt="Mount Madonna Center" title="Mount Madonna Center"> <img class="visible-md visible-lg" src="/static/images/mm-logo.svg" alt="Mount Madonna Center" title="Mount Madonna Center"></a>
+                                </div>
+                                <!-- // logo holder -->
+                            </div>
+                            <div class="col-xs-6 col-sm-8 col-md-9 col-lg-9">
+                                <div class="visible-xs visible-sm" style="position: relative;">
+                                    <!-- mobile nav button -->
+                                    <a class="selectors">
+                                        <div class="icon-wrapper">
+                                            <span class="bar-icon"></span>
+                                            <span class="bar-icon"></span>
+                                            <span class="bar-icon"></span>
+                                        </div>
+                                    </a>
+                                    <!-- // mobile nav button -->
+                                    <!-- mobile nav -->
+                                    <div class="mobile-menu">
+                                        <ul>
+                                            <li class="slide-in"><a href="#">Visit</a></li>
+                                            <li class="slide-in"><a href="#">Study</a></li>
+                                            <li class="slide-in"><a href="#">Online</a></li>
+                                            <li class="slide-in"><a href="#">Venue</a></li>
+                                            <li class="slide-in"><a href="#">Calendar</a></li>
+                                            <li class="slide-in"><a href="#">About</a></li>
+                                            <li class="slide-in"><a href="#">Donate</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- // mobile nav -->
+                                </div>
+                                <div class="visible-md visible-lg">
+                                    <!-- desktop nav -->
+                                    <div class="desktop-menu">
+                                        <ul class="">
+                                            <li ><a href="#">Visit</a></li>
+                                            <li ><a href="#">Study</a></li>
+                                            <li ><a href="#">Online</a></li>
+                                            <li ><a href="#">Venue</a></li>
+                                            <li ><a href="#">Calendar</a></li>
+                                            <li ><a href="#">About</a></li>
+                                            <li ><a href="#">Donate</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- // desktop nav -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- // top nav ending -->
+    </div>
+    <!-- / top banner -->
+    <!-- // HEADER -->
+    <div class="body-content">
+        <div class="container">

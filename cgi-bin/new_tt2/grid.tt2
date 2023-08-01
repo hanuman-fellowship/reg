@@ -79,7 +79,10 @@ function add_more(id) {
 }
 a {
     color: blue;
-    text-decoration: none;
+    text-decoration: underline;
+}
+a:hover {
+    padding-left: 4px;
 }
 .name, .notes {
     font-size: 13pt;
@@ -216,7 +219,8 @@ $days
 <p>
 </form>
 <table class="fields-table" style="margin-bottom: 2em;">
-<tr><td valign=top>
+<tr>
+    <td valign=top style=" padding-right: 1.5em;">
 
 <table class="fields-table">
 <tr><th class=lt colspan=2>Codes</th></tr>
