@@ -3029,12 +3029,14 @@ EOH
     my $tot_not_last = 0;
     my $n_first_only = 0;
     my $emails = "";
+    my @day_of_week;
     for my $r (@mes) {
         my $id = $r->id;
         my $per = $r->person;
         my $per_id = $per->id;
         my $per_name = $per->name;
         my $per_email = $per->email;
+        ++$day_of_week[$r->date_start_obj->day_of_week];
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: '';
         $tot_first += $first;
@@ -3056,6 +3058,17 @@ Total ME: $tot<br>
 ME was first registration: $tot_first<br>
 ME was not last registration: $tot_not_last<br>
 ME was first and <b>only</b> registration: $n_first_only<br>
+<ul>
+<table border=1 cellpadding=3>
+<tr><td>Sun</td><td align=right>$day_of_week[0]</td></tr>
+<tr><td>Mon</td><td align=right>$day_of_week[1]</td></tr>
+<tr><td>Tue</td><td align=right>$day_of_week[2]</td></tr>
+<tr><td>Wed</td><td align=right>$day_of_week[3]</td></tr>
+<tr><td>Thu</td><td align=right>$day_of_week[4]</td></tr>
+<tr><td>Fri</td><td align=right>$day_of_week[5]</td></tr>
+<tr><td>Sat</td><td align=right>$day_of_week[6]</td></tr>
+</table>
+</ul>
 <a href='mailto:?bcc=$emails'>Bcc Email All First and <b>Only</b></a>
 EOH
     $c->res->output($html);
@@ -3126,7 +3139,7 @@ sub mountain_experience : Local {
         push @bcc_emails, $r->person->email;
         push @me_rows,
              Tr(
-                 td($r->date_start_obj->format("%b %e")),
+                 td($r->date_start_obj->format("%s %b %e")),
                  td("<a target='_blank' href='/registration/view/"
                     . $r->id
                     . "'>"
