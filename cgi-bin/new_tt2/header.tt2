@@ -1,5 +1,5 @@
-    <!-- Back to top button -->
-    <a id="bttbutton"></a>
+    <!-- Back to top button 
+    <a id="bttbutton"></a>-->
     <!-- HEADER -->
     <!-- top row -->
     <div class="xlayer darkred">
@@ -37,7 +37,7 @@
                             <div class="col-xs-6 col-sm-4 col-md-3 col-lg-3">
                                 <!-- logo holder -->
                                 <div class="logo-holder">
-                                    <a href="https://mountmadonna.org"><img class="visible-xs visible-sm" src="/static/images/mm-logo-mobile.png" alt="Mount Madonna Center" title="Mount Madonna Center"> <img class="visible-md visible-lg" src="/static/images/mount-madonna-logo.png" alt="Mount Madonna Center" title="Mount Madonna Center"></a>
+                                    <a href="https://mountmadonna.org"><img class="visible-xs visible-sm" src="/static/images/mm-logo-mobile.png" alt="Mount Madonna Center" title="Mount Madonna Center"> <img class="visible-md visible-lg" src="/static/images/mm-logo.svg" alt="Mount Madonna Center" title="Mount Madonna Center"></a>
                                 </div>
                                 <!-- // logo holder -->
                             </div>

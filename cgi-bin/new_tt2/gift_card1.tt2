@@ -35,7 +35,7 @@ var fields = [
 <script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
-[% INCLUDE new_tt2/header.tt2 %]
+[% INCLUDE new_tt2/header_gc.tt2 %]
 
 <h1>Gift Cards</h1>
 <div class="info-box">  

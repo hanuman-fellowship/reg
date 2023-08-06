@@ -253,7 +253,7 @@ Contact info is never sold to a third party.
 Thank you for your interest in hosting your event at Mount Madonna Center! We will review your inquiry form and plan to contact you within 3 business days.
 </div>
 <p>
-<input class="sub-button" style="background: #99f599" type=submit id=submit value='Submit'>
+<input class="sub-button button tealn" style="" type=submit id=submit value='Submit'>
 </p>
 </form>
 <script>document.getElementById('first').focus();</script>

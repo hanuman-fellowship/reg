@@ -5,7 +5,7 @@
 
 </head>
 <body>
-[% INCLUDE new_tt2/header.tt2 %]
+[% INCLUDE new_tt2/header_gc.tt2 %]
 
 <h2>Thank you!</h2>
 <p>Please confirm the following and then choose the Pay Securely button below.</p>

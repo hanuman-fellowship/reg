@@ -13,9 +13,9 @@
     <div class="mail-box-b">
         
 [% IF sending_email %]
-    <img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
+    <img src='/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
 [% ELSE %]
-    <img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
+    <img src='/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
 [% END %]
 
 
@@ -44,8 +44,8 @@ Thank you, ${first}.
 </p>
 [% IF amount %]
     <p>
-    Your credit card has been charged \$${amount}.<br>
-    The id for this transaction is ${transaction_id}.
+    Your credit card has been charged <strong> \$${amount} </strong>.<br>
+    The id for this transaction is <strong> ${transaction_id} </strong>.
 </p>
 [% END %]
 <p>

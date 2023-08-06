@@ -7,6 +7,7 @@
 <body>
 	<div class="message-box-a">
 		<div class="message-box-c">
+			<img src='/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
 			[% IF back %]
 			<p>Problems were found in the form:</p>
 			[% END %]
