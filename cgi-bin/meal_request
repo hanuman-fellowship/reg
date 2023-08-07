@@ -42,7 +42,7 @@ my @meals = qw/
 
 my %stash;
 my $today = today();
-my $advance = ($type eq 'guest')? 3: 2;
+my $advance = 2;   # ($type eq 'guest')? 3: 2;
 my $start = $today + $advance;
 $stash{advance} = $advance;
 $stash{startDate} = $start->format("%m/%d/%Y");
