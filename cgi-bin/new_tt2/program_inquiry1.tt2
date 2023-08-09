@@ -148,7 +148,7 @@ Would you prefer a phone call or Zoom meeting?
 </ul>
 <h2>Dates</h2>
 <p>
-Requested Date(s). Please specify days/month/year. <span class=required>*</span><br>
+Requested Date(s). Please specify days/month <b style="color: red">and year</b>. <span class=required>*</span><br>
 <input type=text size=45 name=dates id=dates>
 </p>
 <p>

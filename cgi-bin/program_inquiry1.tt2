@@ -122,7 +122,7 @@ Would you prefer a phone call or Zoom meeting?
 <label><input type=radio name=comm id=comm value='Zoom'> Zoom</label><p>
 </ul>
 <h2>Dates</h2>
-Requested Date(s). Please specify days/month/year. <span class=required>*</span><br>
+Requested Date(s). Please specify days/month <b style="color: red">and year</b>. <span class=required>*</span><br>
 <input type=text size=45 name=dates id=dates><p>
 <span id=flexdates1></span>
 Are your dates flexible? <span class=required>*</span><br>
