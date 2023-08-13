@@ -14,7 +14,8 @@
         <h2>[% h.cluster.name %]</h2><ul>
         [% prev_clust = h.cluster_id %]
     [% END %]
-    [% h.name %]<br>
+    [% x = h.id %]
+    [% h.name %] ${arriving_stars.$x}<br>
 [% END %]
 </ul>
 </ul>
@@ -31,7 +32,8 @@
         <h2>[% h.cluster.name %]</h2><ul>
         [% prev_clust = h.cluster_id %]
     [% END %]
-    [% name %][% next_needed.$name %]<br>
+    [% x = h.id %]
+    [% h.name %] ${departing_stars.$x} [% next_needed.$name %]<br>
 [% END %]
 </ul>
 </ul>

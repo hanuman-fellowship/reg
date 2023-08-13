@@ -1502,7 +1502,10 @@ sub housekeeping : Local {
     }
     my $d8_1 = (date($d8)-1)->as_d8();      # for RentalBookings
 
+    my $red_star = "<span style='color: red; font-size: 20pt;'>*</span>";
+
     my %seen = ();
+    my %arriving_stars;
     my %cluster_name = map {
                            $_->id => $_->name
                        }
@@ -1512,7 +1515,10 @@ sub housekeeping : Local {
             !$seen{$_->id}++
         }
         map {
-            $_->house
+            if ($_->rental_before) {
+                $arriving_stars{$_->house_id} = $red_star;
+            }
+            $_->house;
         }
         model($c, 'Registration')->search(
             {
@@ -1572,11 +1578,15 @@ sub housekeeping : Local {
     # and now for the rooms vacated today
     # start things over.
     %seen = ();
+    my %departing_stars;
     my @departing_houses =
         grep {
             !$seen{$_->id}++
         }
         map {
+            if ($_->rental_after) {
+                $departing_stars{$_->house_id} = $red_star;
+            }
             $_->house
         }
         model($c, 'Registration')->search(
@@ -1688,6 +1698,8 @@ sub housekeeping : Local {
         prev_date        => (date($d8)-1)->as_d8(),
         arriving_houses  => \@arriving_houses,
         departing_houses => \@departing_houses,
+        arriving_stars   => \%arriving_stars,
+        departing_stars  => \%departing_stars,
         next_needed      => \%next_needed,
         template         => "listing/housekeeping.tt2",
     );
