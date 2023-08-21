@@ -69,32 +69,6 @@ if (! $coord) {
     exit;
 }
 my $rental_name = $rental->name_trimmed;
-my $tstamp = substr(scalar(localtime()), 4, 15);
-
-sub get_t {
-    my ($s) = @_;
-    my ($hour, $min, $sec) = $s =~ m{(\d\d):(\d\d):(\d\d)}xms;
-    return $hour*60*60 + $min*60 + $sec;
-}
-
-my $grid_log = '/var/Reg/output/grid.log';
-open my $log, '>>', $grid_log;
-my $last_line = `tail -1 $grid_log`;
-if ($last_line =~ m{edit.*$rental_name}) {
-    if (get_t($tstamp) - get_t($last_line) <= 2) {
-        print <<'EOH';
-<style>
-body { font-size: 18pt; margin: .5in; }
-</style>
-Please do not double click to bring up your housing grid!<br>
-A single click is enough!
-EOH
-        print {$log} "$tstamp dble            $rental_name\n";
-        close $log;
-        exit;
-    }
-}
-
 
 my (@houses, %fixed_cost_for_house);
 
@@ -546,15 +520,6 @@ if ($P{process}) {
     #
     # all is okay.
     # time to add the accumulated records to the Grid table.
-    #
-    # create a tmp file of the existing state
-    # clear all rows for this rental
-    # add the new rows
-    # create another tmp file of the new state
-    # later place a diff of these two files in the grid log.
-    #
-    my $before = "/tmp/$rental_id-before";
-    dump_grid($before);
 
     model($c, 'Grid')->search({
         rental_id => $rental_id,
@@ -566,8 +531,6 @@ if ($P{process}) {
             @$aref,
         });
     }
-    my $after = "/tmp/$rental_id-after";
-    dump_grid($after);
 
     # now to update three fields in the Rental
     #
@@ -619,11 +582,6 @@ if ($P{process}) {
         htypes  => $htypes,
         action  => $grid_cgi,
     };
-    my $cksum = `$bin/grid_cksum $rental_id`;
-    print {$log} "$tstamp done $cksum $rental_name\n";
-    close $log;
-    system("diff $before $after >>$grid_log");
-    unlink $before, $after;
     $tt->process(
         styled('sgrid.tt2'),
         $stash,
@@ -677,8 +635,6 @@ my $stash = {
     code    => $code,
     action  => $grid_cgi,
 };
-print {$log} "$tstamp edit            $rental_name\n";
-close $log;
 $tt->process(
     styled('grid.tt2'),
     $stash,
