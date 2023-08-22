@@ -119,7 +119,7 @@ if ($@) {
 # or a special request was given
 email_letter($c,
     #to      => 'jon.bjornstad@gmail.com',
-    to      => get_string($c, 'reception_email'),
+    to      => 'marketing@mountmadonna.org',
     from    => 'Mount Madonna Center <programs@mountmadonna.org>',
     subject => 'Online Mailing List Request',
     html    => $html,
