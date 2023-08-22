@@ -537,6 +537,10 @@ If you only want a certificate of completion enter COMP for the license #.
      Radio</label><br>
 <label><input type=radio name=howHeard id=howHeard6 value=print_ad>
      Print Ad or Poster</label><br>
+<label><input type=radio name=howHeard id=howHeard7 value=online_search>
+     Online Search</label><br>
+<label><input type=radio name=howHeard id=howHeard8 value=word_of_mouth>
+     Word of Mouth</label><br>
 <label><input type=radio
        name=howHeard
        id=howHeard7

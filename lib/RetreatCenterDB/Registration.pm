@@ -153,6 +153,7 @@ my %ref_disp = (
     web => 'Web',
     brochure => 'Brochure',
     flyer => 'Flyer',
+    online_search => 'Online Search',
     word_of_mouth => 'Word of Mouth',
     other => 'Other',
 );
