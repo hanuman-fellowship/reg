@@ -1,0 +1,1298 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+local $/;
+my $terms = <DATA>;
+my @words = $terms =~ m{[a-z][a-z'-]*}xmsgi;
+print scalar(@words), "\n";
+while (my @chunk = splice @words, 0, 10) {
+    print "@chunk\n";
+}
+__DATA__
+Terms of Service
+
+Last modified: August 03, 2023
+
+Retreat Guru Enterprises Inc. (“Retreat Guru”, “we”, “us”, “our”) provides its Services including its online Retreat Booking Guru™ service and other related services to businesses and individuals (“Commercial Users” and “Retail Users” collectively the “Users”, “You”, or “Your”) through the Retreat Guru Platform, subject to the terms and conditions of this Agreement. 
+
+BY SUBSCRIBING TO, ACCESSING, USING, OR VIEWING ALL OR ANY PART OF THE RETREAT GURU SERVICES OR RETREAT GURU PLATFORM, OR DOWNLOADING ANY MATERIALS, OR BY COMPLETING ANY SUBSCRIPTION OR REGISTRATION PROCESS VIA THE PLATFORM, YOU ARE ACCEPTING THE TERMS OF SERVICE AS A LEGALLY BINDING AGREEMENT BETWEEN YOU AND RETREAT GURU (“AGREEMENT”). IF YOU ARE ENTERING INTO THIS AGREEMENT ON BEHALF OF A COMPANY OR OTHER LEGAL ENTITY, YOU REPRESENT THAT YOU HAVE THE AUTHORITY TO BIND SUCH ENTITY AND ITS AFFILIATES TO THESE TERMS AND CONDITIONS, IN WHICH CASE THE TERMS “YOU” OR “YOUR” SHALL REFER TO SUCH ENTITY AND ITS AFFILIATES.
+
+IF YOU DO NOT HAVE SUCH AUTHORITY, OR IF YOU DO NOT AGREE WITH THESE TERMS OF SERVICE, YOU MUST NOT USE THE SERVICES OR ACCESS THE PLATFORM.
+
+We reserve the right, at our sole discretion, to change or modify portions of these Terms of Service at any time. If we do this, we will post the changes on this page and will indicate at the top of this page the date that these terms were last revised. Any changes will become effective when posted. 
+
+Your continued use of the Services after changes are posted constitutes your acceptance of the new Terms of Service. You should visit this page before using the Services each time to see if there have been any changes to these Terms of Service.
+
+ 
+
+1. Definitions
+
+
+For all Users
+
+The following are terms that we define in a particular way. They are indicated in the Agreement with capital letters. The definitions cover both the singular and plural forms of the words. The headings used in this agreement are included for convenience only and will not limit or otherwise affect these Terms of Service.
+
+
+a. ‘Account’ refers to the Services selected by the User through Retreat Guru’s Platform at the time of registration, subscription, or enrollment.
+
+
+b. ‘Aggregated Statistics’ means data and information related to Users’ use of the Services that are used by Retreat Guru in an aggregate and anonymized manner, including to compile statistical and performance information related to the provision and operation of the Services.
+
+
+c. ‘Authorized User’ refers to Commercial User’s employees, consultants, contractors, and agents (i) who are authorized by the Commercial User to access and use the Services under the rights granted to Commercial User pursuant to this Agreement; and (ii) for whom access to the Services has been purchased hereunder. 
+
+
+d. ‘Commercial User’ refers to any user of the Services who is offering retreat services to others.
+
+
+e. ‘Commercial User Data’ means, other than Aggregated Statistics, information, data, and other content, in any form or medium, that is submitted, posted, or otherwise transmitted by or on behalf of the User through the Services. User Data includes data related to the User’s Customers including customer personal information.
+
+
+f. ‘Commercial User IP’ refers to the intellectual property owned or controlled by the Commercial User. 
+
+
+g. ‘Confidential Information’ has the meaning set forth in Section 14 - Confidential Information.
+
+
+h. ‘Controller’ means the natural or legal person, public authority, agency, or other body which, alone or jointly with others, determines the purposes and means of the Processing of Commercial User Data.
+
+
+i. ‘Customer’ means the customers of the Commercial User who accesses the Services. 
+
+
+j. ‘Documentation’ means Retreat Guru's user manuals, handbooks, and guides relating to the Services provided by Retreat Guru to Commercial Users or Retail Users either electronically or in hard copy form.
+
+
+k. ‘Effective Date’ refers to the date of commencement of the Service as listed in User’s Account.
+
+
+l. ‘Fees’ has the meaning set forth in Section 5(a) - Commercial User Fees and Payment - Commercial User Fees.
+
+
+m. ‘Freemium User’ is a Commercial User (or Host) that is granted access to a very limited subset of Services so that they may list their events, retreats, and programs on the Marketplace. 
+
+
+n. ‘Host’ has the same meaning as Commercial User.
+
+
+o. ‘Initial Term’ means the billing cycle selected by the Commercial User when setting up their account. 
+
+
+p. ‘Law’ means any statute, law, ordinance, regulation, rule, code, order, constitution, treaty, common law, judgment, decree, or other requirement of any federal, provincial, territorial, municipal, or foreign government or political subdivision thereof, or any arbitrator, court, or tribunal of competent jurisdiction.
+
+
+q. ‘Leads’ Retail Users who access the Marketplace (https://retreat.guru) in search of authentic retreats. 
+
+
+r. ‘Losses’ has the meaning set forth in Section 15(a)(i) - Indemnification - Retreat Guru Indemnification - Retreat Guru shall indemnify.
+
+
+s. ‘Marketplace’ refers to the Retreat Guru online marketplace at https://retreat.guru where Commercial Users can list their retreat offerings and individuals can view and book retreat experiences.
+
+
+t. ‘Marketplace Cancellation Policy’ refers to the policies in effect for Retail Users as described in Exhibit D: Marketplace for Hosts.
+
+
+u. ‘Materials’ refers to written and graphical content provided by or through the Service, including, without limitation, text, photographs, illustrations, and designs, whether provided by Retreat Guru or any other third party.
+
+
+v. ‘Notice’ has the meaning set forth in Section 18(a) - General - Notices.
+
+
+w. ‘Platform’ refers to the collection of online tools, websites, and software used to provide the Retreat Guru Services. 
+
+
+x. ‘Privacy Policy’ refers to Retreat Guru’s privacy policy, posted at https://go.retreat.guru/terms as Exhibit C: Privacy Policy, as such policy may change from time to time.
+  
+y. ‘Processor’ means a natural or legal person, public authority, agency, or other body which Processes Commercial User Data on behalf of the Controller.
+
+
+z. ‘Processing’ means any operation or set of operations which is performed on Commercial User Data, encompassing the collection, recording, organization, structuring, storage, adaptation or alteration, retrieval, consultation, use, disclosure by transmission, dissemination or otherwise making available, alignment or combination, restriction or erasure of Commercial User Data. The terms “Process”, “Processes” and “Processed” will be construed accordingly.
+
+
+aa. ‘Retreat Guru IP’ means the Services, the Documentation, and all registered and unregistered rights granted, applied for, or otherwise now or hereafter in existence under or related to any patent, copyright, trademark, trade secret, database protection, or other intellectual property provided to Commercial User or any Authorized User in connection with the foregoing. For the avoidance of doubt, Retreat Guru IP includes Aggregated Statistics and any information, data, or other content derived from Retreat Guru's monitoring of Commercial User's access to or use of the Services, but does not include Commercial User Data or Commercial User IP.
+
+
+bb. ‘Retail User’ refers to any Users of the Services who book retreats on their own behalf or on the behalf of others and includes agents booking retreat packages for travel groups. 
+
+
+cc. ‘Sensitive Information’ means credit or debit card numbers; financial account numbers or wire instructions; government-issued identification numbers (such as Social Security numbers, passport numbers), biometric information, personal health information (or other information protected under any applicable health data protection laws), personal information of children protected under any child data protection laws, and any other information or combinations of information that falls within the definition of “special categories of data” under GDPR or any other applicable law relating to privacy and data protection.
+
+
+dd. ‘Services’ refers to Retreat Guru Marketplace for Retail Users; and, Marketplace, software-as-a-service, software development, and support for Commercial Users, and includes booking, sales, invoicing, payment processing, communication tools, and marketing. 
+
+
+ee. ‘Service Suspension’ has the meaning set forth in Section 3(o) - Access by Commercial Users - Suspension.
+
+
+ff. ‘Site’ refers to any web-based applications, tools, and platforms available to you through your Account or that we otherwise make available to you as Services, and are developed, operated, and maintained by us, accessible via https://retreat.guru or another designated URL, and any ancillary products and services, including website hosting, that we provide to you.
+
+
+gg. ‘Sub-Processor’ means any Processor engaged by us to assist in fulfilling our obligations with respect to the provision of the Services under the Agreement.  Sub-Processors may include third parties but will exclude any Retreat Guru employee or consultant.
+
+
+hh. ‘Term’ has the meaning set forth in Section 7(a) - Commercial User Term and Termination - Term.
+
+
+ii. ‘Third-Party Claim’ has the meaning set forth in Section 15(a)(i) - Indemnification - Retreat Guru Indemnification - Retreat Guru shall indemnify.
+
+
+jj. ‘User’ refers to Commercial Users and Retail Users collectively. 
+
+
+kk. ‘User Data’ refers to data in electronic form input or collected through the Service by or from Users.
+
+
+ll. ‘User IP’ refers to the intellectual property owned or controlled by the User. 
+
+ 
+
+2. Products and Services
+
+
+For all Users
+
+a. Services Description. Retreat Guru provides all of its Users the different types of Services they select or require through the Retreat Guru Platform.
+
+
+b. Retreat Guru Platform. Retreat Guru offers a platform that helps connect individuals providing retreat services with those wishing to access retreat services. Retreat Guru is not a party to any agreement between Commercial Users and Retail Users. All dealings are solely between the respective parties and Retreat Guru makes no representations and warranties on behalf of any Users (including but not limited to the accuracy, completeness, cost, quality, or timeliness of any goods or services provided by any Commercial User) and will have no liability for any interactions between Commercial Users and Retail Users. Notwithstanding the foregoing, Retreat Guru serves as the limited authorized agent of Commercial Users for the purpose of accepting payments from individuals including Retail Users on behalf of Commercial Users, and is responsible for transmitting such payments to the Commercial Users. Each Commercial User hereby appoints Retreat Guru as the Commercial User’s limited agent solely for the purpose of collecting payments made by individuals and Retail Users on behalf of the Commercial User. Retreat Guru has no control over and does not guarantee the existence, quality, safety, or legality of any goods or services posted by Commercial Users on the Platform; the truth or accuracy of any advertisements; the ability of Commercial Users to sell goods or services; the ability of Retail Users to pay for any goods or services. Retreat Guru does not warrant or guarantee that any goods or services offered through the Service will meet a Retail User’s requirements.
+
+
+c. Products. Certain products may be available exclusively on the Marketplace for Retail Users. These products may have limited quantities and are subject to return or exchange only according to our Marketplace Cancellation Policy. We have made every effort to display as accurately as possible the colors and images of our products that appear on the Marketplace. We reserve the right but are not obligated to limit the sales of our products to any person, geographic region, or jurisdiction. We may exercise this right on a case-by-case basis. We reserve the right to limit the quantities of any products that we offer. All descriptions of products or product pricing are subject to change at any time without notice, at the sole discretion of us. We reserve the right to discontinue any product at any time. Any offer for any product made on the Marketplace is void where prohibited.
+
+
+d. Lowest price guarantee. If a retreat Host lists a retreat, event, product, or service on the Marketplace, the Host is not allowed to list that item for a lower price elsewhere.
+
+
+e. Errors, Inaccuracies, and Omissions. Occasionally there may be information on the Marketplace or in the Service that contains typographical errors, inaccuracies, or omissions that may relate to product descriptions, pricing, promotions, offers, product shipping charges, transit times, and availability. We reserve the right to correct any errors, inaccuracies, or omissions, and to change or update information or cancel orders if any information in the Service or on any related website is inaccurate at any time without prior notice (including after you have submitted your order). We undertake no obligation to update, amend or clarify information on the Marketplace or the Service or on any related website, including without limitation, pricing information, except as required by law. No specified update or refresh date applied in the Service or on any related website should be taken to indicate that all information in the Service or on any related website has been modified or updated.
+
+
+f. Modifications to Services. Retreat Guru reserves the right to modify or discontinue, temporarily or permanently, the Services (or any part thereof) with or without notice. You agree that Retreat Guru will not be liable to you or to any third party for any modification, suspension, or discontinuance of the Service.
+
+ 
+
+3. Access and Conditions of Use
+
+
+For all Users
+
+a. Registration Obligations. You may be required to register with Retreat Guru in order to access and use certain features of the Services. If you choose to register, you agree to provide and maintain true, accurate, current, and complete information about yourself as prompted by the registration form. Registration data and certain other information about you are governed by our Privacy Policy as described in Exhibit C: Privacy Policy.
+
+
+b. Age of Majority. If you are under 13 years of age, you are not authorized to use the Services, with or without registering. In addition, if you are under 18 years old, you may use the Services, with or without registering, only with the approval of your parent or guardian.
+
+
+c. Account Security. You are responsible for maintaining the confidentiality of your password and Account, if any, and are fully responsible for any and all activities that occur under your password or account. You agree to immediately notify Retreat Guru of any unauthorized use of your account or password. Retreat Guru will not be liable for any loss or damage arising from your failure to comply with this Section.
+
+
+d. Data Transmission. You understand that your content (not including credit card information), may be transferred unencrypted and involve (a) transmissions over various networks; and (b) changes to conform and adapt to the technical requirements of connecting networks or devices. Credit card information is always encrypted during transfer over networks.
+
+
+e. Third-party Links. Certain content, products, and services available via our Service may include materials from third parties. Third-party links on our Platform may direct you to third-party websites that are not affiliated with us. We are not responsible for examining or evaluating the content or accuracy and we do not warrant and will not have any liability or responsibility for any third-party materials or websites, or for any other materials, products, or services of third parties. We are not liable for any harm or damages related to the purchase or use of goods, services, resources, content, or any other transactions made in connection with any third-party websites. Please review carefully the third-party's policies and practices and make sure you understand them before you engage in any transaction. Complaints, claims, concerns, or questions regarding third-party products should be directed to the third party.
+
+
+f. Posted Content.  You are solely responsible for video, images, information, data, text, music, sound, photographs, graphics, messages, or other materials ("content") that you upload, post, publish or display (hereinafter, “upload”) or email or otherwise use via the Service. Retreat Guru reserves the right to investigate and take appropriate legal action against anyone who, in Retreat Guru’s sole discretion, violates this provision, including without limitation, removing the offending content from the Services, suspending or terminating the account of such violators, and reporting you to the law enforcement authorities. You agree not to use the service to post, display or share content that: (i) infringes the intellectual property or other proprietary rights of any party; (j) contains software viruses or any other computer code, files, or programs designed to interrupt, destroy or limit the functionality of any computer software or hardware or telecommunications equipment; (k) poses or creates a privacy or security risk to any person; (l) constitutes unsolicited or unauthorized advertising, promotional materials, commercial activities and/or sales, “junk mail,” “spam,” “chain letters,” “pyramid schemes,” “contests,” “sweepstakes,” or any other form of solicitation; (m) is unlawful, harmful, threatening, abusive, harassing, tortious, excessively violent, defamatory, vulgar, obscene, pornographic, libelous, invasive of another’s privacy, hateful racially, ethnically or otherwise objectionable; or (n) in the sole judgment of Retreat Guru, is objectionable or which restricts or inhibits any other person from using or enjoying the Service, or which may expose Retreat Guru or its users to any harm or liability of any type.
+
+ 
+
+For Retail Users
+
+g. Fulfillment. As a Retail User, you agree to provide current, complete, and accurate purchase and account information for all purchases made on the Marketplace. You agree to promptly update your account and other information, including your email address and credit card numbers, and expiration dates so that we can complete your transactions and contact you as needed. We reserve the right to refuse any order placed by you. We may, in our sole discretion, limit or cancel quantities purchased per person, per household, or per order. These restrictions may include orders placed by or under the same customer account, the same credit card, and/or orders that use the same billing and/or shipping address. In the event that we make a change to or cancel an order, we may attempt to notify you by contacting the e-mail and/or billing address/phone number provided at the time the order was made. We reserve the right to limit or prohibit orders that, in our sole judgment, appear to be placed by dealers, resellers, or distributors.
+
+
+h. Third-party Tools. We may provide you as a Retail User with access to third-party tools over which we neither monitor nor have any control nor input. You acknowledge and agree that we provide access to such tools ”as is” and “as available” without any warranties, representations, or conditions of any kind and without any endorsement. We shall have no liability whatsoever arising from or relating to your use of optional third-party tools. Any use by you of optional tools offered through the Platform is entirely at your own risk and discretion and you should ensure that you are familiar with and approve of the terms on which tools are provided by the relevant third-party provider(s).
+
+
+i. User Submissions. If at our request, you as a Retail User send certain specific submissions (for example contest entries, videos, images, reviews) or without a request from us you send creative ideas, suggestions, proposals, plans, reviews, questions, comments, or other materials, whether online, by email, by postal mail, or otherwise (collectively, “comments”), you agree that we may, at any time, without restriction, edit, copy, publish, distribute, translate and otherwise use in any medium any comments that you forward to us. You acknowledge that the Retreat Guru may choose to provide attribution of your comments or reviews (for example, listing your name and hometown on a review that you submit) at our discretion and that such submissions may be shared with our supplier partners. We are and shall be under no obligation (1) to post your comments (2) to maintain any comments in confidence and may at our sole discretion provide attribution (for example, listing your name and hometown on a review that you submit); (3) to pay compensation for any comments; or (4) to respond to any comments. We may, but have no obligation to, monitor, edit or remove content that we determine in our sole discretion are unlawful, offensive, threatening, libelous, defamatory, pornographic, obscene, or otherwise objectionable or violates any party’s intellectual property or these Terms of Service. You agree that your comments will not violate any right of any third party, including copyright, trademark, privacy, personality, or other personal or proprietary rights. You further agree that your comments will not contain libelous or otherwise unlawful, abusive, or obscene material, or contain any computer virus or other malware that could in any way affect the operation of the Service or any related website. You may not use a false e-mail address, pretend to be someone other than yourself, or otherwise mislead us or third-parties as to the origin of any comments. You are solely responsible for any comments you make and their accuracy. We take no responsibility and assume no liability for any comments posted by you or any third party.
+
+
+j. International travel. As a Retail User you have the responsibility for the following: you meet all requirements of foreign entry, and your necessary documents for travel (passports, visa, and others) are valid and organized for foreign entry. We do not have a unique understanding or knowledge of your necessary documents for travel or the foreign entry requirements. We encourage you to check any prohibitions on travel, different warnings, general announcements, and advisories that the government of your travel destination has issued. We encourage you to check this before booking your retreat and itinerary.
+
+
+     i. Visas and passports. For this information, you should contact the respective embassy or consulate for your travels. Change in requirements happen and you should always double-check to make sure all your information is current before booking your retreat and leaving on your flight. We accept no liability in the event the airline or airport refused to grant you entry onto the flight, or if you are not allowed into a country due to a lack of proper requirements such as a passport, visa, or other documents that might be required for travel. This also applies to countries that may not be your final destination but are included in your travels.
+
+
+     ii. Health. You are encouraged to consult with your doctor for any necessary or recommended inoculations prior to your travel. You have responsibility for the following: taking any and all recommended medications, receiving the required inoculations, meeting entry requirements for health, and following medical advice given for your travel.
+
+
+     iii. Risk. We help you book retreats in other countries, but this does not represent or warrant that travel to these areas is risk-free or even advised. We are not liable for any losses or damages that may occur or result from traveling to or through any locations.
+
+
+     iv. Confirmation. Retreat Guru advises after booking a retreat through the Marketplace, that you should wait for confirmation directly from the retreat provider before booking any air travel or related arrangements.  This includes but is not limited to providing the retreat provider with any medical or health information they may require before confirming your space on a retreat.
+
+ 
+
+For Commercial Users
+
+k. Provision of Access. Subject to and conditioned on Commercial User’s payment of Fees and compliance with all other terms and conditions of this Agreement, Retreat Guru hereby grants Commercial User’s a non-exclusive, non-transferable right to access and use the Services during the Term, solely for use by Authorized Users and Customers in accordance with the terms and conditions herein. Such use is limited to Commercial User’s and Authorized User’s internal use. Retreat Guru shall provide to Commercial User the necessary passwords and network links or connections to allow Commercial User to access the Services.
+
+
+l. Documentation License. Subject to the terms and conditions contained in this Agreement, Retreat Guru hereby grants to Commercial User a non-exclusive, non-sublicensable, non-transferable license to use the Documentation during the Term solely for Commercial User's internal business purposes in connection with its use of the Services.
+
+
+m. Reservation of Rights. Retreat Guru reserves all rights not expressly granted to Commercial User in this Agreement. Except for the limited rights and licenses expressly granted under this Agreement, nothing in this Agreement grants, by implication, waiver, estoppel, or otherwise, to Commercial User or any third party any intellectual property rights or other right, title, or interest in or to the Retreat Guru IP.
+
+
+n. Use Restrictions. Commercial User’s shall not use the Services for any purposes beyond the scope of the access granted in this Agreement. Commercial User’s shall not at any time, directly or indirectly, and shall not permit any Authorized Users or Customer to: (i) copy, modify, or create derivative works of the Services or Documentation, in whole or in part; (ii) rent, lease, lend, sell, license, sublicense, assign, distribute, publish, transfer, or otherwise make available the Services or Documentation; (iii) reverse engineer, disassemble, decompile, decode, adapt, or otherwise attempt to derive or gain access to any software component of the Services, in whole or in part; (iv) remove any proprietary notices from the Services or Documentation; or (v) use the Services or Documentation in any manner or for any purpose that infringes, misappropriates, or otherwise violates any intellectual property right or other right of any person, or that violates any applicable law.
+
+
+o. Suspension. Notwithstanding anything to the contrary in this Agreement, Retreat Guru may temporarily suspend Commercial User's, any Authorized User's or Customer’s access to any portion or all of the Services if: (i) Retreat Guru reasonably determines that (A) there is a threat or attack on any of the Retreat Guru IP, (B) Commercial User's or any Authorized User's or Customer’s use of the Retreat Guru IP disrupts or poses a security risk to the Retreat Guru IP or to any other Commercial User or vendor of Retreat Guru, (C) Commercial User, any Authorized User or Customer, is using the Retreat Guru IP for fraudulent or illegal activities, (D) subject to applicable Law, Commercial User has ceased to continue its business in the ordinary course, made an assignment for the benefit of creditors or similar disposition of its assets, or become the subject of any bankruptcy, reorganization, liquidation, dissolution, or similar proceeding, or (E) Retreat Guru's provision of the Services to Commercial User, any Authorized User or Customer is prohibited by applicable Law; (ii) any vendor of Retreat Guru has suspended or terminated Retreat Guru's access to or use of any third-party services or products required to enable Commercial User to access the Services; or (iii) in accordance with Section 4(a) Access by Commercial Users - Provision of Access (any such suspension, a “Service Suspension”). Retreat Guru shall use commercially reasonable efforts to provide written notice of any Service Suspension to Commercial User and to provide updates regarding resumption of access to the Services following any Service Suspension. Retreat Guru shall use commercially reasonable efforts to resume providing access to the Services as soon as reasonably possible after the event giving rise to the Service Suspension is cured. Retreat Guru will have no liability for any damage, liabilities, losses (including any loss of data or profits), or any other consequences that Commercial User or any Authorized User may incur as a result of a Service Suspension.
+
+
+p. No Sensitive Information. With the exception of certain data that is required according to the Terms of Service for the respective Payment Processor, YOU, AS A COMMERCIAL USER, ACKNOWLEDGE THAT THE SERVICES HAVE NOT BEEN DESIGNED TO PROCESS OR MANAGE SENSITIVE INFORMATION AND ACCORDINGLY YOU AGREE NOT TO USE THE SUBSCRIPTION SERVICE TO COLLECT, MANAGE OR PROCESS SENSITIVE INFORMATION. WE WILL NOT HAVE AND WE SPECIFICALLY DISCLAIM ANY LIABILITY THAT MAY RESULT FROM YOUR USE OF THE SUBSCRIPTION SERVICE TO COLLECT, PROCESS, OR MANAGE SENSITIVE INFORMATION.
+
+
+
+q. Aggregated Statistics. Notwithstanding anything to the contrary in this Agreement, Retreat Guru may monitor Commercial User's and Customers’ use of the Services and collect and compile Aggregated Statistics. As between Retreat Guru and Commercial User, all right, title, and interest in Aggregated Statistics, and all intellectual property rights therein, belong to and are retained solely by Retreat Guru. Commercial User acknowledges that Retreat Guru may compile Aggregated Statistics based on Commercial User Data input into the Services. Commercial User agrees that Retreat Guru may (i) make Aggregated Statistics publicly available in compliance with applicable Law, and (ii) use Aggregated Statistics to the extent and in the manner permitted under applicable Law; provided that such Aggregated Statistics do not identify Commercial User or Commercial User's Confidential Information.
+
+ 
+
+4. Commercial User Responsibilities and Representations
+
+
+For Commerical Users
+
+
+a. General. Commercial User is responsible and liable for all uses of the Services and Documentation resulting from access provided by Commercial User, directly or indirectly, whether such access or use is permitted by or in violation of this Agreement. Without limiting the generality of the foregoing, Commercial User is responsible for all acts and omissions of Authorized Users, and any act or omission by an Authorized User that would constitute a breach of this Agreement if taken by Commercial User will be deemed a breach of this Agreement by Commercial User. Commercial User shall use all reasonable efforts to make all Authorized Users aware of this Agreement's provisions as applicable to such Authorized User's use of the Services and shall cause Authorized Users to comply with such provisions.
+
+
+b. Commercial User’s Identity. Commercial User warrants: (i) that it has accurately identified itself through its Account and will maintain the accuracy of such identification; and (ii) that it is a corporation or other business entity authorized to do business pursuant to applicable Law.
+
+
+c. Right to Do Business. Commercial User warrants that it has the full right and authority to enter into, execute, and perform its obligations under this Agreement and that no pending or threatened claim or litigation known to it would have a material adverse impact on its ability to perform as required by this Agreement.
+
+
+d. Third-Party Products. Retreat Guru may from time to time make Third-Party Products available to the Commercial User. For purposes of this Agreement, such Third-Party Products are subject to their own terms and conditions. If Commercial User does not agree to abide by the applicable terms for any such Third-Party Products, then the Commercial User should not install or use such Third-Party Products.
+
+ 
+
+5. Commercial User Fees and Payment
+
+
+For Commercial Users
+
+a. Commercial User Fees. Commercial Users shall pay fees to Retreat Guru for a recurring software-as-a-service subscription and other Services in accordance with the then-current payment plans for your Account, including those described in Exhibit D: Marketplace for Hosts, and Exhibit E: Service Levels for Commercial Users, and make all payments hereunder on or before the due date set forth in said exhibits (“Due Date”). All Commercial User fees are non-cancellable and non-refundable. If you have registered for the Services via a subscription plan, you expressly acknowledge and agree that (i) Retreat Guru is authorized to charge your credit card or other payment instrument in accordance with the terms of your subscription plan for as long as your subscription continues, and (ii) your subscription is continuous until you cancel it or Retreat Guru suspends or otherwise stops providing access to the Platform and/or Services in accordance with these terms. You will promptly update your Account information with any changes (for example, a change in your billing address or credit card expiration date) that may occur. As a Commercial User, you may agree to pay a pre-selected percentage of the money you receive from purchases made by Users of your goods and services through the Platform, and you will pay Retreat Guru a percentage of each such transaction, as set forth in further detail in the payment plan section of your Account. If you dispute any charges by Retreat Guru you must let Retreat Guru know within thirty (30) days after the date that Retreat Guru initiated the charge.
+
+
+b. Default Currency. Except as indicated under Section 5(c) - Commercial User Fees and Payment - User Fee Changes, all fees due under this agreement will be paid in U.S. Dollars.
+
+c. User Fee Changes. We reserve the right to change Retreat Guru’s fees. If Retreat Guru does change fees, Retreat Guru will provide notice of the change on its website at https://go.retreat.guru/terms or in an email to you, at Retreat Guru’s option, at least 30 days before the change is to take effect. If you have registered for the Services via a subscription plan, your subscription plan may be subject to fee adjustments, including automatic fee increases, during your subscription term; and where a fee adjustment applies to you, we will charge or invoice you under the new price structure, starting with the next billing period in the subscription term, or otherwise in accordance with the terms of your subscription plan. Your continued use of the Service after the price change or fee adjustments becomes effective constitutes your agreement to pay the changed amount.
+
+
+d. Late Fees. If a Commercial User fails to pay the Fees by the Due Date, Retreat Guru may at their discretion charge the Commercial User a Late Fee at a rate of 2.5% of the outstanding balance per month or the maximum rate permitted by law, whichever is lower. 
+
+
+e. Commercial User Non Payment. If Retreat Guru has not received payment of a Commercial User’s fees within 30 days after any Due Date, Retreat Guru may, without liability to Retreat Guru, suspend the Commercial User’s Account and access to all or part of the Services, and Retreat Guru shall be under no obligation to provide any Services while the Commercial User fees remain unpaid.  
+
+
+f. Reactivation. If we have suspended a Commercial User’s Account for any reason, the Commercial User may request reinstatement within the 12 months following the date that the Account was suspended. We may at our sole discretion reactivate the Account. If we agree to reactivate, a reactivation fee equal to $100, or one month of the net monthly software-as-a-service subscription fee described in the payment plan selected under your Commercial User Account, whichever represents the greater amount, will be charged. Reinstatement requests received more than 12 months after the date that the Account was suspended will not be considered.
+
+
+g. Taxes. All Fees and other amounts payable by Commercial User under this Agreement are exclusive of taxes and similar assessments. Commercial User is responsible for all harmonized sales tax (HST), provincial sales tax (PST), goods and services tax (GST), value-added tax, use and excise taxes, and any other similar taxes, duties, and charges of any kind imposed by any federal, provincial, territorial, or local governmental entity on any amounts payable by Commercial User hereunder, other than any taxes imposed on Commercial User's income.
+
+ 
+
+6. Commercial User Location of Sale
+
+
+For Commercial Users
+
+a. Location of Sale. At the point of sale Retreat Guru will verify the Commercial User’s address and cross-reference that with the location of the Commercial User or Retreat Guru will verify the Commercial User’s address by using the Client IP address (geotagging). Commercial Users shall not use the software or service in any Geographical region other than that of the Commercial User as defined by the Commercial User’s Sales Tax region.
+
+
+b. International Law. To access or use the Services, you must be able to form a binding contract with the Retreat Guru and you must not be prohibited from receiving the Services under Canadian law or any other applicable laws. You agree not to use the Services in violation of any Canadian or international law or regulation.
+
+ 
+
+7. Commercial User Term and Termination
+
+
+For Commercial Users
+
+a. Term. This Agreement will continue for the Initial Term as selected by the Commercial User in their Account. At the end of the Initial Term, this Agreement will renew for subsequent terms (‘Term’) of the same length as the Initial Term, unless either party notifies the other of its intent not to renew thirty (30) or more days before the beginning of the next Term.
+
+
+b. Termination. In addition to any other express termination right set forth in this Agreement:
+
+
+     i. Retreat Guru may terminate this Agreement, effective on written notice to Commercial User if Commercial User: (A) fails to pay any amount when due hereunder, and such failure continues more than thirty (30) days after Retreat Guru's delivery of written notice thereof; or (B) breaches any of its obligations under Section 3(n) - Access by Commercial Users - Use Restrictions or Section 14 - Confidential Information;
+
+
+     ii. either Party may terminate this Agreement, effective on written notice to the other Party if the other Party materially breaches this Agreement, and such breach: (A) is incapable of cure; or (B) being capable of cure, remains uncured thirty (30) days after the non-breaching Party provides the breaching Party with written notice of such breach; or
+
+
+     iii. either Party may terminate this Agreement, effective immediately upon written notice to the other Party, if the other Party: (A) becomes insolvent or is generally unable to pay, or fails to pay, its debts as they become due; (B) files or has filed against it, a petition for voluntary or involuntary bankruptcy or otherwise becomes subject, voluntarily or involuntarily, to any proceeding under any domestic or foreign bankruptcy or insolvency law; (C) makes or seeks to make a general assignment for the benefit of its creditors; or (D) applies for or has appointed a receiver, trustee, custodian, or similar agent appointed by order of any court of competent jurisdiction to take charge of or sell any material portion of its property or business.
+
+
+c. Effect of Expiration or Termination. Upon expiration or earlier termination of this Agreement, Commercial User shall immediately discontinue use of the Retreat Guru IP and, without limiting Commercial User's obligations under Section 14 - Confidential Information, Commercial User shall delete, destroy, or return all copies of the Retreat Guru IP and certify in writing to the Retreat Guru that the Retreat Guru IP has been deleted or destroyed. No expiration or termination will affect Commercial User's obligation to pay all Fees that may have become due before such expiration or termination, or entitle Commercial User to any refund.
+
+
+d. Survival. This Section 8(d) and Section 1 - Definitions, Section 5 - Commercial User Fees and Payment, Section 9 - Commercial User Payment Processing, Section 14 - Confidential Information, Section 15 - Indemnification, Section 17 - Limitation of Liability, Section 18(g) General - Governing Law, Section 18(h) - General - Choice of Forum, and Section 18(k) - General - Equitable Relief shall survive any termination or expiration of this Agreement. No other provisions of this Agreement survive the expiration or earlier termination of this Agreement.
+
+8. Service Level and Support
+
+
+For Commercial Users
+
+a. Service Levels. Subject to the terms and conditions of this Agreement, Retreat Guru shall use commercially reasonable efforts to make the Services available in accordance with the service levels set out in Exhibit E: Service Levels for Commercial Users. 
+
+
+b. Support. The access rights granted hereunder entitles Commercial User to the support services described in Exhibit E: Service Levels for Commercial Users for the Term of this Agreement.
+
+ 
+
+9. Commercial User Payment Processing
+
+
+For Commercial Users
+
+a. Payment Processor. As part of the Services, Commercial Users receive payment processing services and are subject to the Terms of Service for the respective Payment Processor. By accepting these Terms of Service and operating as a Commercial User of Retreat Guru, you agree to be bound by the Payment Processor Terms of Service, as the same may be modified by the Payment Processor from time to time. As a condition of Retreat Guru enabling payment processing services through the Payment Processor, you agree to provide Retreat Guru accurate and complete information about you and your business, and you authorize Retreat Guru to share it and any transaction information related to your use of the payment processing services provided by the Payment Processor.
+
+ 
+
+ 
+
+Supplementary Products Exclusion: Notwithstanding any provision to the contrary herein, or any representations on Retreat Guru Platforms which may be construed as indicating otherwise, Users acknowledge and agree that those Fees presented and payable on or through the Platforms (including, without limitation, if a User's bookings, payments, or purchases are made via a Commercial User's website, or other online platform, which makes use of Platforms) pertain solely to Services and Offerings, and will not include the cost of any plant-medicines or similar products (collectively, "Supplementary Products") which may be provided, offered, or distributed by a Commercial User, or or any other party, in connection with Services or Offerings. Retreat Guru shall bear no responsibility or liability in connection with any provision, offering, or distribution of Supplementary Products, and is not a party thereto.
+
+ 
+
+Payout policy with Retreat Guru Payment Services
+
+If as a Commercial User (“Host”) you are processing credit card payments directly through Retreat Guru Payments Inc. (“RG Payments”), the following payout policy will apply. Initial and final payment percentages will be determined and agreed to in your software subscription agreement with Retreat Guru.
+
+Commercial User's must pass our application process to use RG Payments processing services. We may ask you for information pertaining to your payment business or financial performance periodically. You agree to cooperate fully. Failure to comply may result in termination of any payment processing agreements. RG Payments reserves the right to terminate any payment processing agreement or temporarily hold payout funds for any reason.
+
+Eligibility for payout
+Upon completion of a Retail User’s initial registration, the initial payout payment for that registration will become eligible for payout. The remainder of the funds received as payment for the registration will be held in reserve by RG Payments and will become eligible for payout one day after the start date of the retreat, program or stay.
+RG Payments reserves the right to request additional reserves. If there are insufficient reserves, the payout will be held for 60 days from the stay start date in the Retreat Guru Software before it can be released.
+The payout amount cannot exceed the amount of funds held in reserve: a minimum of $3,000 USD needs to be held in your reserves before a payout can be facilitated. If there are no reserves, the payout will be held for 60 days from the stay start date and then will become available for payout.
+ 
+
+Payout schedule
+The Payout schedule is designed to maintain sufficient funds in your account in the event there are refunds or chargebacks.
+RG Payments will transfer funds to the Commercial User’s via bank transfer following the agreed to payout schedule, within your software subscription agreement for Retreat Guru Software, on the 5th or 20th of each month or the following Canadian (British Columbia) business day.
+If eligible funds total $3,000.00 USD or more, the transfer will occur automatically on the next scheduled payout date. No sender fee will be applied to these automatic payouts.
+If eligible funds total less than $3,000.00 USD, you may request a special payout to be made on the next regularly scheduled payout date. Such requests must be submitted to accounting@retreat.guru at least 2 business days prior to the next regularly scheduled payout date.
+If you need to make changes to your bank wire information, such changes must be acknowledged by Retreat Guru at least 2 business days before the next regularly scheduled payout date.
+Bank fees
+You may incur additional fees from your bank to accept a wire transfer, and additional fees from the payment processor for chargebacks and refunds.
+Additional fees
+RG Payments reserves the right to deduct any owed fees related to transactions, retreat.guru marketplace bookings, chargebacks, use of international credit cards, or other activities from your account prior to determining payout eligibility.
+Standard fees from RG Payments are shown below. These fees are subject to change without notice.
+
+Chargeback fee	$35.00 USD
+Sender fee (for payouts less than $3,000.00 USD)	$30.00 USD
+Early Payout fee (per early eligible payout)	$50.00 USD
+Returned Wire fee (minimum charge)	$75.00 USD
+Additional Wire fee (per each additional wire transfer)	$20.00 USD
+ 
+
+Chargeback Transactions
+A “chargeback” is a request that a purchaser files directly with their card company or card issuing bank to contest the validity of a processed payment. 
+Your center will remain responsible for paying all fees and penalties related to a chargeback. You will owe RG Payments and will immediately pay RG Payments for any chargeback, associated fees, fines or penalties assessed by the Bank, our processor, or the ACH. If you do not have sufficient funds available in your payout account to cover chargebacks or refunds, additional reserve funds will need to be sent immediately by wire transfer and/or by a charge to your credit card on file within the Retreat Guru Software in accordance with the Additional Fees section above. 
+You understand that if you have pending chargebacks, RG Payments or the Bank may delay payouts to you.
+RG Payments will notify you when a chargeback is received. You agree to assist RG Payments when requested and otherwise cooperate fully, at your expense, with any investigation of any of your transactions processed through RG Payments, payment processing service, until such investigation is completed. To that end, you permit us to share information about a chargeback with the Bank, the purchaser, the purchaser's financial institution, and your financial institution in order to investigate and/or mediate a chargeback. We will request necessary information from you to contest the chargeback. 
+If the chargeback is contested successfully, we will release the reserved funds to your payout account. If a chargeback dispute is not resolved in your favour by the issuing bank or you choose not to contest the chargeback, we will recover the chargeback amount and any associated fees. 
+You acknowledge that your failure to assist us in a timely manner when investigating a transaction, including providing necessary documentation promptly upon our request, may result in an irreversible chargeback. We reserve the right, upon notice to you, to charge a fee for mediating and/or investigating chargeback disputes. 
+You acknowledge the outcome of chargeback verdicts are determined solely by our partner bank. You further acknowledge that RG Payments’ sole role in chargebacks is to facilitate evidence submissions and pass on chargeback fees.  
+You hold RG Payments free of any liabilities from unfavourable chargeback outcomes.
+ 
+
+10. Intellectual Property
+
+
+For Commercial Users
+
+a. Retreat Guru IP. Commercial User acknowledges that, as between Commercial User and Retreat Guru, Retreat Guru owns all right, title, and interest, including all intellectual property rights, in and to Retreat Guru IP.
+
+
+b. and, with respect to Third-Party Products, the applicable third-party providers own all right, title, and interest, including all intellectual property rights, in and to the Third-Party Products.
+ 
+c. Commercial User IP. Except as expressly set forth herein, Commercial User is and shall remain the owner of all Intellectual Property, and written and graphical content, including, without limitation, text, photographs, illustrations, and designs that it owns or controls as of the Effective Date or that it develops or acquires thereafter.
+
+
+d. Commercial User Data. Retreat Guru acknowledges that, as between Retreat Guru and Commercial User, Commercial User owns all right, title, and interest, to all Commercial User IP, and Commercial User Data. In accordance with Exhibit C: Privacy Policy and applicable privacy legislation, Commercial User hereby grants to Retreat Guru a non-exclusive, royalty-free, worldwide license to reproduce, distribute, and otherwise use and display the Commercial User IP and Commercial User Data and perform all acts with respect to the Commercial User IP Commercial User Data as may be necessary for Retreat Guru to provide the Services to Commercial User, and a non-exclusive, perpetual, irrevocable, royalty-free, worldwide license to reproduce, distribute, modify, and otherwise use and display Commercial User Data incorporated within the Aggregated Statistics.
+
+11. Infringing Material
+
+
+For all Users
+
+a. If it is your belief held in good faith that certain materials displayed on the Marketplace infringe your copyright, you, as the complainant, may send us a written notice including the information below. We will not process any notice that is incomplete. You may be liable for damages if you misrepresent that certain materials, content, or activity are infringing. You must:
+
+
+      i. Clearly identify the allegedly infringing material on our Platform, providing hyperlink(s) or screenshots.
+
+
+      ii. Include a statement that you have a “good faith belief that the material that is claimed as copyright infringement is not authorized by the copyright owner, its agent, or the law.”
+
+
+      iii. Include a statement that "the information in the notice is accurate, and under penalty of perjury, the complaining party is authorized to act on behalf of the owner of an exclusive right that is allegedly infringed."
+
+
+      iv. As the complainant, provide your telephone number, postal address, and email address.
+
+
+      v. Include a signature from the owner of an exclusive right that is allegedly infringed, or the person who is authorized to act on the behalf of the owner of the exclusive right that is allegedly infringed.
+
+
+b. Send your notice to us via email at support@retreat.guru.
+
+ 
+
+12. Online Policies
+
+
+For all Users
+
+a. Acceptable Use Policy. Users will comply with the Acceptable Use Policy (AUP) as contained in Exhibit A: Acceptable Use. In the event of User’s material breach of the AUP, including without limitation any copyright infringement, Retreat Guru may suspend or terminate User’s access to the Service, in addition to such other remedies as Retreat Guru may have at law or pursuant to this Agreement. Neither this Agreement nor the AUP requires that Retreat Guru take any action against Users for violating the AUP, but Retreat Guru is free to take any such action it sees fit.
+
+
+b. Privacy Policy. The Privacy Policy as contained in Exhibit C: Privacy Policy applies only to the Services and does not apply to any third-party site or service linked to the Services or recommended or referred to through the Services or by Retreat Guru’s employees. By using the Service, you consent to our collection and use of personal data as outlined therein.
+
+ 
+
+13. Data Security
+
+
+For all Users
+
+a. Data Security. Retreat Guru has established and implemented and will maintain throughout the term of this Agreement, a Data Management Policy as contained in Exhibit B: Data Management Policy. The Data Management Policy contains procedures that are commercially reasonable and in compliance with applicable Laws and industry practices, including administrative, technical, and physical safeguards, to protect the confidentiality, integrity, and security of personal information, including, without limitation, Commercial User Data, in its possession, custody or control against unauthorized access, use, modification, disclosure or other misuses.
+
+ 
+
+14. Confidential Information
+
+
+For Commercial Users
+
+From time to time during the Term, either Party may disclose or make available to the other Party information about its business affairs, products, confidential intellectual property, trade secrets, third-party confidential information, and other sensitive or proprietary information, whether orally or in written, electronic, or other form or media/in written or electronic form or media, that is/and whether or not marked, designated, or otherwise identified as "confidential" (collectively, "Confidential Information"). Confidential Information does not include information that at the time of disclosure is: (a) in the public domain; (b) known to the receiving Party at the time of disclosure; (c) rightfully obtained by the receiving Party on a non-confidential basis from a third party; or (d) independently developed by the receiving Party. The receiving Party shall not disclose the disclosing Party's Confidential Information to any person or entity, except to the receiving Party's employees who have a need to know the Confidential Information for the receiving Party to exercise its rights or perform its obligations hereunder. Notwithstanding the foregoing, each Party may disclose Confidential Information to the limited extent required (i) in order to comply with the order of a court or other governmental body, or as otherwise necessary to comply with applicable Law, provided that the Party making the disclosure pursuant to the order shall first have given written notice to the other Party and made a reasonable effort to obtain a protective order; or (ii) to establish a Party's rights under this Agreement, including to make required court filings. On the expiration or termination of the Agreement, the receiving Party shall promptly return to the disclosing Party all copies, whether in written, electronic, or other form or media, of the disclosing Party's Confidential Information, or destroy all such copies and certify in writing to the disclosing Party that such Confidential Information has been destroyed. Each Party's obligations of non-disclosure with regard to Confidential Information are effective as of the Effective Date and will expire five (5) years from the date first disclosed to the receiving Party; provided, however, with respect to any Confidential Information that constitutes a trade secret (as determined under applicable Law), such obligations of non-disclosure will survive the termination or expiration of this Agreement for as long as such Confidential Information remains subject to trade secret protection under applicable Law.
+
+ 
+
+15. Indemnification
+
+
+For Commercial Users
+
+a. Retreat Guru Indemnification.
+
+
+     i. Retreat Guru shall indemnify, defend, and hold harmless Commercial User from and against any and all losses, damages, liabilities, costs (including reasonable legal fees) ("Losses") incurred by Commercial User resulting from any third-party claim, suit, action, or proceeding ("Third-Party Claim") that the Services, or any use of the Services in accordance with this Agreement, infringes or misappropriates such third party's Canadian intellectual property rights/Canadian patents, trade-marks, copyrights, or trade secrets, provided that Commercial User promptly notifies Retreat Guru in writing of the claim, cooperates with Retreat Guru, and allows Retreat Guru sole authority to control the defense and settlement of such claim.
+
+
+     ii. If such a claim is made or appears possible, Commercial User agrees to permit Retreat Guru, at Retreat Guru's sole discretion, to (A) modify or replace the Services, or component or part thereof, to make it non-infringing, or (B) obtain the right for Commercial User to continue use. If Retreat Guru determines that neither alternative is reasonably available, Retreat Guru may terminate this Agreement, in its entirety or with respect to the affected component or part, effective immediately on written notice to Commercial User.
+
+
+     iii. This Section 15(a) - Indemnification - Retreat Guru Indemnification will not apply to the extent that the alleged infringement arises from: (A) use of the Services in combination with data, software, hardware, equipment, or technology not provided by Retreat Guru or authorized by Retreat Guru in writing; (B) modifications to the Services not made by Retreat Guru; or (C) Commercial User Data; or (D) Third-Party Products.
+
+
+b. Commercial User Indemnification.
+
+
+     i. Commercial User shall indemnify, hold harmless, and, at Retreat Guru's option, defend Retreat Guru from and against any Losses resulting from any Third-Party Claim that the Commercial User Data, or any use of the Commercial User Data in accordance with this Agreement, infringes or misappropriates such third party's intellectual property rights and any Third-Party Claims based on Commercial User's or any Authorized User's (A) negligence or wilful misconduct; (B) use of the Services in a manner not authorized by this Agreement; (C) use of the Services in combination with data, software, hardware, equipment or technology not provided by Retreat Guru or authorized by Retreat Guru in writing; or (D) modifications to the Services not made by Retreat Guru, provided that Commercial User may not settle any Third-Party Claim against Retreat Guru unless Retreat Guru consents to such settlement, and further provided that Retreat Guru will have the right, at its option, to defend itself against any such Third-Party Claim or to participate in the defence thereof by counsel of its own choice.
+
+ 
+
+16. Disclaimer of Warranties
+
+
+For all Users
+
+Disclaimers. Except for the express warranties specified in this Agreement, THE SERVICE IS PROVIDED ‘AS IS’ AND AS AVAILABLE, AND RETREAT GURU DISCLAIMS ALL WARRANTIES AND CONDITIONS, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE. RETREAT GURU SPECIFICALLY DISCLAIMS ALL IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT, AND ALL WARRANTIES ARISING FROM COURSE OF DEALING, USAGE, OR TRADE PRACTICE. RETREAT GURU MAKES NO WARRANTY OF ANY KIND THAT (I) THE SERVICE OR ANY PRODUCTS OR RESULTS OF THE USE THEREOF, WILL MEET USER’S OR ANY OTHER PERSON’S REQUIREMENTS, (II) THE SERVICE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE, (III) THE RESULTS THAT MAY BE OBTAINED FROM THE USE OF THE SERVICES WILL BE ACCURATE, RELIABLE, ACHIEVE ANY INTENDED RESULT, BE COMPATIBLE OR WORK WITH ANY SOFTWARE, SYSTEM, OR OTHER SERVICES, OR (IV) THE QUALITY OF ANY PRODUCTS, SERVICES, INFORMATION, OR OTHER MATERIAL PURCHASED OR OBTAINED BY YOU THROUGH THE SERVICES WILL MEET YOUR EXPECTATIONS.
+
+Without limiting the generality of the foregoing, (i) RETREAT GURU HAS NO OBLIGATION TO INDEMNIFY OR DEFEND USER AGAINST CLAIMS RELATED TO INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS; and (ii) RETREAT GURU does not warrant that the Services will perform without error or immaterial interruption.
+
+ 
+
+17. Limitation of Liability
+
+
+For all Users
+
+IN NO EVENT WILL RETREAT GURU BE LIABLE UNDER UNDER ANY LEGAL OR EQUITABLE THEORY, INCLUDING BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, AND OTHERWISE, FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, AGGRAVATED, OR PUNITIVE DAMAGES, OR DAMAGES FOR INCREASED COSTS, DIMINUTION IN VALUE, OR LOST BUSINESS, PRODUCTION, REVENUES, OR PROFITS, INCLUDING BUT NOT LIMITED TO, DAMAGES FOR LOSS OF GOODWILL OR REPUTATION, USE, INABILITY TO USE, LOSS, INTERRUPTION, DELAY OR RECOVERY OF ANY DATA, OR BREACH OF DATA OR SYSTEM SECURITY, OR COST OF REPLACEMENT GOODS OR SERVICES, OR LOSSES FROM ANY ACTS, OMISSIONS, STATEMENTS OR OTHER CONDUCT OF ANY CLIENTS, VENDORS, BUSINESSES OR OTHER THIRD PARTIES ON THE SERVICE, OR ANY OTHER MATTER RELATING TO THE SERVICES, OR ANY OTHER INTANGIBLE LOSSES. IN EACH CASE EVEN IF RETREAT GURU WAS ADVISED OF THE POSSIBILITY OF SUCH LOSSES OR DAMAGES OR SUCH LOSSES OR DAMAGES WERE OTHERWISE FORESEEABLE, IN NO EVENT WILL RETREAT GURU’S TOTAL LIABILITY TO YOU FOR ALL DAMAGES, LOSSES, OR CAUSES OF ACTION EXCEED THE TOTAL AMOUNTS PAID AND AMOUNTS ACCRUED BUT NOT YET PAID TO PROVIDER UNDER THIS AGREEMENT IN THE 12 MONTH PERIOD PRECEDING THE EVENT GIVING RISE TO THE CLAIM.
+
+ 
+
+18. General
+
+
+For all Users
+
+a. Notices. All notices, requests, consents, claims, demands, waivers, and other communications hereunder (each, a "Notice") must be in writing and addressed to the Parties at the addresses set forth in User’s Account (or to such other address that may be designated by the Party giving Notice from time to time in accordance with this Section). Retreat Guru may send notices pursuant to this Agreement in accordance with this Section and such notices will be deemed received 7 days after they are sent.
+
+
+b. Amendment. Retreat Guru may amend this Agreement (including other policies listed at https://go.retreat.guru/terms) from time to time by posting an amended version at its website (https://retreat.guru) and sending Commercial Users a written notice thereof. Such amendment will be deemed accepted and become effective 30 days after such notice (the ‘Proposed Amendment Date’) unless Retreat Guru first gives Commercial User written notice of rejection of the amendment. In the event of such rejection, this Agreement will continue under its original provisions, and the amendment will become effective at the start of Commercial User’s next Term following the Proposed Amendment Date (unless Commercial User first terminates this Agreement). Commercial User’s continued use of the Service following the effective date of an amendment will confirm Commercial User’s consent thereto. This Agreement may not be amended in any other way except through a written agreement executed by Authorized Representatives of each party. Notwithstanding the foregoing, Retreat Guru may amend the Privacy Policy at any time by posting a new version at its website and sending Commercial User notice thereof, and such amended version will become effective 10 business days after such notice is sent.
+
+
+c. Independent Contractors. The parties are independent contractors and will so represent themselves in all regards. Neither party is the agent of the other and neither may bind the other in any way.
+
+
+d. Waiver. No waiver by any Party of any of the provisions hereof will be effective unless explicitly set forth in writing and signed by the Party so waiving. Except as otherwise set forth in this Agreement, (i) no failure to exercise, or delay in exercising, any rights, remedy, power, or privilege arising from this Agreement will operate or be construed as a waiver thereof, and (ii) no single or partial exercise of any right, remedy, power, or privilege hereunder will preclude any other or further exercise thereof or the exercise of any other right, remedy, power, or privilege.
+
+
+e. Force Majeure. In no event shall either Party be liable to the other Party, or be deemed to have breached this Agreement, for any failure or delay in performing its obligations under this Agreement, if and to the extent such failure or delay is caused by any circumstances beyond such Party's reasonable control, including but not limited to acts of God, epidemics, pandemics, including the 2019 novel coronavirus disease (COVID-19) pandemic, flood, fire, earthquake, explosion, war, terrorism, invasion, riot or other civil unrest, strikes, labor stoppages or slowdowns or other industrial disturbances, or passage of law or any action taken by a governmental or public authority, including imposing an embargo.
+
+
+f. Assignment. Commercial User may not assign any of its rights or delegate any of its obligations hereunder, in each case whether voluntarily, involuntarily, by operation of law or otherwise, without the prior written consent of Retreat Guru, which consent shall not be unreasonably withheld, conditioned, or delayed. Any purported assignment or delegation in violation of this Section will be null and void. No assignment or delegation will relieve the assigning or delegating Party of any of its obligations hereunder. This Agreement is binding upon and inures to the benefit of the Parties and their respective permitted successors and assigns.
+
+
+g. Governing Law.  This Agreement and all related documents and all matters arising out of or relating to this Agreement, whether sounding in contract, tort, or statute, are governed by and construed in accordance with, the laws of the Province of  British Columbia and the federal laws of Canada applicable therein, without giving effect to any choice or conflict of law provision or rule.
+
+
+h. Choice of Forum. Any legal suit, action, litigation, or proceeding of any kind whatsoever in any way arising out of, from, or relating to this Agreement, including all statements of work, exhibits, schedules, attachments, and appendices attached to this Agreement, the services provided hereunder, and all contemplated transactions, shall be instituted in the courts of the Province of British Columbia, and each Party irrevocably submits to the exclusive jurisdiction of such courts in any such suit, action, litigation, or proceeding. Service of process, summons, notice, or other document by mail to such Party's address set forth herein shall be effective service of process for any suit, action, litigation, or other proceeding brought in any such court. Each Party agrees that a final judgment in any such suit, action, litigation, or proceeding is conclusive and may be enforced in other jurisdictions by suit on the judgment or in any other manner provided by law. The Parties irrevocably and unconditionally waive any objection to the venue of any action or proceeding in such courts and irrevocably waive and agree not to plead or claim in any such court that any such action or proceeding brought in any such court has been brought in an inconvenient forum.
+
+
+i. Severability. If any provision of this Agreement is invalid, illegal, or unenforceable in any jurisdiction, such invalidity, illegality, or unenforceability will not affect any other term or provision of this Agreement or invalidate or render unenforceable such term or provision in any other jurisdiction.
+
+
+j. Order of Precedence. In the event of any inconsistency between the statements made in the body of this Agreement, the related Exhibits, and any other documents incorporated herein by reference including additional policies listed at https://go.retreat.guru/terms, the following order of precedence governs: (i) first, this Agreement, excluding its Exhibits; (ii) second, the Exhibits to this Agreement as of the Effective Date; and (iii) third, any other documents incorporated herein by reference including additional policies listed at https://go.retreat.guru/terms.
+
+
+k. Equitable Relief. Each Party acknowledges and agrees that a breach or threatened breach by such Party of any of its obligations under Section 14 - Confidential Information or, in the case of Commercial User, Section 3(n) - Access by Commercial Users - Use Restrictions, would cause the other Party irreparable harm for which monetary damages would not be an adequate remedy and agrees that, in the event of such breach or threatened breach, the other Party will be entitled to equitable relief, including a restraining order, an injunction, specific performance, and any other relief that may be available from any court, without any requirement to post a bond or other security, or to prove actual damages or that monetary damages are not an adequate remedy. Such remedies are not exclusive and are in addition to all other remedies that may be available at law, in equity, or otherwise.
+
+
+l. Entire Agreement. This Agreement sets forth the entire agreement of the parties and supersedes all prior or contemporaneous writings, negotiations, and discussions with respect to the subject matter hereof. Neither party has relied upon any such prior or contemporaneous communications.
+
+ 
+
+Exhibit A: Acceptable Use
+
+For all Users
+
+
+Last modified: April 04, 2022
+
+
+This Retreat Guru Acceptable Use Policy ("AUP") applies to the use of any Service provided by us (Retreat Guru), whether we provide it directly or use another party to provide it to you. This AUP is designed to ensure compliance with the laws and regulations that apply to Retreat Guru Service. This AUP also protects the interests of all of our Users, as well as our goodwill and reputation. These terms are so important that we cannot provide Retreat Guru Services unless you agree to them. By using the Retreat Guru Service, you are agreeing to these terms.
+
+
+If you are using any Retreat Guru Service, this AUP applies to you. Every User agrees to abide by this AUP and is responsible for any violations. You are not allowed to assist or engage others in a way that would violate this AUP. We will enforce and ensure compliance with this AUP by using methods we consider to be appropriate, such as complaint and email failure monitoring. We may also suspend or terminate your use of Retreat Guru Services pursuant to our Terms of Service for violations of this AUP.
+
+
+We periodically update these terms and we will let you know when we do by posting a revised copy on our website (https://retreat.guru). When we change this AUP, the "Last Modified" date above will be updated to reflect the date of the most recent version. You agree to review the AUP on a regular basis and always remain in compliance.
+
+ 
+
+
+Reporting Suspected Violations
+
+
+We encourage Users of our Services to report suspected violations of this AUP to us by sending an email to support@retreat.guru. If you know of or suspect a violation of this AUP, you will promptly notify us in writing of the known or suspected violation of this AUP. We will investigate all of these reports and respond in the way we consider appropriate.
+
+ 
+
+Prohibited Email Actions
+
+You may not use the Services to send spam. 
+
+
+Spam can be in the form of bulk email or one-to-one commercial emails.
+
+
+Bulk email is spam when it is unsolicited. Unsolicited means the recipient has not granted verifiable permission for the message to be sent. Bulk means that the message is sent as part of a larger collection of messages that have substantively similar content. One-to-one commercial emails are spam when they violate CAN-SPAM. One-to-one commercial emails are also considered Spam if the data processed for purposes of sending that email is in the scope of the General Data Protection Regulation (‘GDPR’) and you fail to provide notice to individuals and establish a lawful basis of processing.
+
+You may not use the Services in any way (directly or indirectly) to send, transmit, handle, distribute or deliver: 
+
+
+a. spam in violation of the CAN-SPAM Act (referenced below) or any other law; 
+
+
+b. email to an address obtained via Internet harvesting methods or any surreptitious methods (e.g., scraping or harvesting); 
+
+
+c. email to an address that is incomplete, inaccurate, or not updated for all applicable opt-out notifications, using best efforts and best practices in the industry, 
+
+
+d. commercial electronic messages in violation of Canada’s Anti-Spam Legislation (referenced below), or 
+
+
+e. in violation of the General Data Protection Regulation (GDPR).
+
+
+
+
+You may not use any misleading or false names, addresses, email addresses, or subject lines.
+
+
+Email sent, or caused to be sent to or through the Service may not: 
+
+
+a. use or contain invalid or forged headers; 
+
+
+b. use or contain invalid or non-existent domain names; 
+
+
+c. employ any technique to otherwise misrepresent, hide or obscure any information in identifying the point of origin or the transmission path; 
+
+
+d. use other means of deceptive addressing; 
+
+
+e. use a third party's internet domain name without their consent, or be relayed from or through a third party's equipment without the third party’s permission; 
+
+
+f. contain false or misleading information in the subject line or otherwise contain false or misleading content; or 
+
+
+g. use our trademark(s), tagline(s), or logo(s) without our prior written consent and only then pursuant to our trademark usage guidelines.
+
+
+If you use email, we recommend that you adopt the Messaging, Malware, and Mobile Anti-Abuse Working Group (M3AAWG) Sender Best Communications Practices (BCP), which were created and agreed upon with collaborative input from both volume email senders and Internet Service Providers. View the MAAWG Sender Best Communications Practices. You will use commercially reasonable efforts to follow these practices.
+
+ 
+
+
+You may not email purchased lists.
+
+
+You are prohibited from using the Service to email: (a) purchased, rented, or borrowed lists, and (b) lists that are likely to result in an excessive number of unsubscribe requests or spam complaints or notices, as determined by acceptable industry practices.
+
+
+
+
+Email Opt-out Requirements
+
+
+You warrant that each email you send or is sent for you using the Service will contain: 
+
+
+a. header information that is not false or misleading; and 
+
+
+b. an advisement that the recipient may unsubscribe, opt-out, or otherwise demand that use of its information for unsolicited, impermissible, or inappropriate communication(s) as described in this AUP be stopped (and how the recipient can notify you that it wants to unsubscribe, opt-out, or stop this use of its information). 
+
+
+These requirements may not apply if the email sent is a transactional email and these requirements are not otherwise required by law. You warrant that you will promptly comply with all opt-out, unsubscribe, "do not call" and "do not send" requests.
+
+
+No Disruption
+
+
+You agree not to:
+
+
+a. use the Service in a way that impacts the normal operation, privacy, integrity, or security of another's property.  Another’s property includes another’s account(s), domain name(s), URL(s), website(s), network(s), system(s), facilities, equipment, data, other information, or business operations;
+
+
+b. use or launch any automated system, including, "robots," "spiders," or "offline readers," that sends more request messages to our servers in a given period of time than a human can reasonably produce in the same period by conventional means;
+
+
+c. use the Service in any manner that damages, disables, overburdens, or impairs any of our websites or interferes with any other party's use of the Service;
+
+
+d. attempt to gain unauthorized access to the Service;
+
+
+e. access the Service other than through our interface;
+
+
+f. use the Service to gain unauthorized access to, use, monitor, make an unauthorized reference to, another’s property unless you have the appropriate express prior consent to do so; or
+
+
+g. use the Service in a way that causes or may cause any Retreat Guru IP addresses, Retreat Guru domains, or Retreat Guru User domains to be blacklisted.
+
+
+Examples of prohibited actions include (without limitation) include hacking, spoofing, denial of service, mailbombing, or sending any email that contains or transmits any virus or propagating worm(s), or any malware, whether spyware, adware, or other such file or program. These restrictions apply regardless of your intent and whether or not you act intentionally or unintentionally.
+
+
+
+
+Proper Usage of the Service
+
+
+You will respect the limits that apply to your use of the Service as specified in your Account.
+
+
+In addition, and without limiting the other requirements in this AUP, you may not (directly or indirectly) use the Service with content, or in a manner that:
+
+
+a. is threatening, abusive, harassing, stalking, or defamatory;
+
+
+b. is deceptive, false, misleading, or fraudulent;
+
+
+c. is invasive of another's privacy or otherwise violates another’s legal rights (such as rights of privacy and publicity);
+
+
+d. contains vulgar, obscene, indecent, or unlawful material;
+
+
+e. infringes a third party's intellectual property right(s);
+
+
+f. publishes, posts, uploads, or otherwise distributes any software, music, videos, or other material protected by intellectual property laws (or by rights of privacy or publicity) unless you have all necessary rights and consents to do so;
+
+
+g. uploads files that contain viruses, corrupted files, or any other similar software or programs that may damage the operation of another person's computer;
+
+
+h. downloads any file that you know, or reasonably should know, cannot be legally distributed in that way;
+
+
+i. falsifies or deletes any author attributions, legal or proprietary designations, labels of the origin or source of software, or other material contained in a file that is uploaded;
+
+
+j. restricts or inhibits any other user of the Service from using and enjoying our website and/or the Service;
+
+
+k. harvests or otherwise collects information about others, including e-mail addresses, without their consent;
+
+
+l. violates the usage standards or rules of an entity affected by your use, including without limitation any ISP, ESP, or news or user group (and including by way of example and not limitation circumventing or exceeding equipment use rights and restrictions and/or location and path identification detail);
+
+
+m. is legally actionable between private parties;
+
+
+n. is not a good faith use of the service; and/or
+
+
+o. is in violation of any applicable local, state, national or international law or regulation, including all export laws and regulations and without limitation the Controlling the Assault of Non-Solicited Pornography and Marketing Act (CAN-SPAM Act) (15 U.S.C. § 7701 et seq.), the U.S Telephone Consumer Protection Act of 1991 (47 U.S.C. § 227), the Do-Not-Call Implementation Act of 2003 (15 U.S.C. § 6152 et seq.; originally codified at § 6101 note), the General Data Protection Regulation (2016/679), the Directive 2000/31/EC of the European Parliament and Council of 8 June 2000, on certain legal aspects of information society services, in particular, electronic commerce in the Internal Market ('Directive on Electronic Commerce'), along with the Directive 2002/58/EC of the European Parliament and Council of 12 July 2002, concerning the processing of personal data and the protection of privacy in the electronic communications sector ('Directive on Privacy and Electronic Communications'), regulations promulgated by the U.S. Securities Exchange Commission, any rules of national or other securities exchange, including without limitation, the New York Stock Exchange, the American Stock Exchange or the NASDAQ, the Personal Information Protection and Electronic Documents Act (PIPEDA) (S.C. 2000, c. 5), Canada’s Anti-Spam Legislation (CASL) (S.C. 2010, c. 23), Japan’s Act on Regulation of Transmission of Specified Electronic Mail (Act No. 26 of April 17, 2002) and any regulations having the force of law or laws in force in your or your email recipient's country of residence;
+
+
+p. encourages, promotes, facilitates, or instructs others to engage in illegal activity; or,
+
+
+q. promotes, encourages, or facilitates: hate speech, violence, discrimination based on race, color, sexual orientation, marital status, gender or identity expression, parental status, religion or creed, national origin or ancestry, sex, age, physical or mental disability, veteran status, genetic information, citizenship and/or any other characteristic protected by law.
+
+
+Organizations or individuals who promote, encourage, or facilitate hate speech, violence, discrimination, either through their own content or through the distribution of user-generated content, are prohibited from using the Service, regardless of whether the Service is used specifically for the prohibited activities. Violation of these standards may result in termination of your use of the Service.
+
+
+You are responsible for moderating user-generated content or user activity on your platform or service. User-generated content that violates these standards may result in termination of your use of the Service.
+You will use the Service for your personal or internal business purposes and will not: (i) willfully tamper with the security of the Service or tamper with our customer accounts; (ii) access data on the Service not intended for you; (iii) log into a server or account on the Service that you are not authorized to access; (iv) attempt to probe, scan or test the vulnerability of any Service or to breach the security or authentication measures without proper authorization; (v) willfully render any part of the Service unusable; (vi) lease, distribute, license, sell or otherwise commercially exploit the Service or make the Service available to a third party other than as contemplated in your subscription to the Service; (vii) use the Service for timesharing or service bureau purposes or otherwise for the benefit of a third party; or (viii) provide to third parties any evaluation version of the Service without our prior written consent.
+
+
+
+
+Retreat Guru Trademark Use
+
+
+Unless you have our express prior written permission, you may not use any name, logo, tagline or other mark of ours or the Service, or any identifier or tag generated by the Service, including without limitation: (a) as a hypertext link to any website or other location (except as provided for or enabled expressly by us); or (b) to imply identification with us as an employee, contractor, agent or other similar representative capacity. You also agree not to remove or alter any of these items as we may have provided or enabled.
+
+
+
+
+General Terms
+
+
+We may immediately suspend your access to the Service if you breach this AUP or don’t respond to us in a reasonable period after we’ve contacted you about a potential breach of this AUP.  We may also suspend your access as we explain in our Terms of Service and, if you breach this AUP, we may terminate your Account agreement for cause. You acknowledge we may disclose information regarding your use of any Service to satisfy any law, regulation, government request, court order, subpoena, or other legal process.  If we make this type of required disclosure we will notify you, unless we are required to keep the disclosure confidential.
+
+
+We are not obligated to but may choose to, remove any prohibited materials and deny access to any person who violates this AUP. We further reserve all other rights.
+
+ 
+
+Exhibit B: Data Management Policy
+
+For Commercial Users
+
+Last modified: August 03, 2023
+
+ 
+
+This Data Management Policy and its Annexes (“DMP”) reflects the parties’ agreement with respect to the Processing of Commercial User Data by us on behalf of you in connection with the Services under the Terms of Service between you and us (also referred to in this DMP as the “Agreement”). 
+
+ 
+
+Access, Use, and Legal Compulsion
+
+Unless it receives Commercial User’s prior written consent, Retreat Guru: (i) will not access or use data in electronic form collected through the Services from Commercial User’s customers or other third parties, or collected or accessible directly from Commercial User, (collectively, “Project Data”) other than as necessary to facilitate the Services, which includes but is not limited to Retreat Guru marketing activities and data analytics; and (ii) will not give any third party access to Project Data. Notwithstanding the foregoing, Retreat Guru may disclose Project Data as required by applicable law or by proper legal or governmental authority. Retreat Guru will, where not otherwise prohibited by Law, give Commercial User prompt notice of any such legal or governmental demand, and reasonably cooperate with Commercial User in any effort to seek a protective order or otherwise to contest such required disclosure, at Commercial User’s expense.
+
+ 
+
+Compliance with Law and Policy
+
+Retreat Guru will comply with all applicable federal and provincial laws and regulations governing the handling of Project Data.
+
+ 
+
+Sub-Processors
+
+You agree that we may engage Sub-Processors to process Project Data on your behalf. We have currently appointed, as Sub-Processors, the third parties listed in Annex 1 to this DMP. 
+
+ 
+
+Retention and Deletion
+
+We will delete all Project Data Processed pursuant to this DMP, on termination or expiration of your Services in accordance with the procedures set out in our Agreement. This term shall apply except where we are required by applicable law to retain some or all of the Project Data, or where we have archived Project Data on backup systems, which data we will securely isolate and protect from any further Processing and delete when the backup lifecycle is complete. 
+
+ 
+
+Security
+
+We will implement and maintain appropriate technical and organizational measures to protect Project Data as described under Annex 2 to this DMP ("Security Measures"). Notwithstanding any provision to the contrary, we may modify or update the Security Measures at our discretion provided that such modification or update does not result in a material degradation in the protection offered by the Security Measures.
+
+ 
+
+Leaks
+
+Retreat Guru will notify Commercial User of any exposure or misappropriation of Project Data (any “Leak”) that comes to Retreat Guru’s attention. Retreat Guru will cooperate with Commercial User and with law enforcement authorities, when necessary, in investigating any such Leak.
+
+ 
+
+Injunction
+
+Retreat Guru agrees that violation of the provisions of this DMP might cause Commercial User irreparable injury, for which monetary damages would not provide adequate compensation, and that in addition to any other remedy, Commercial User will be entitled to injunctive relief against such breach or threatened breach, without proving actual damage or posting a bond or other security.
+
+ 
+
+Annex 1: Sub-Processors
+
+This Annex forms part of the DMP.
+
+Sub-Processor
+
+Purpose
+
+Pagely
+
+Managed WordPress hosting for our websites.
+
+Amazon Web Services
+
+Hosting services.
+
+Digital Ocean
+
+Cloud computing services.
+
+Metabase
+
+Data analytics.
+
+Mixpanel
+
+Product analytics.
+
+HubSpot
+
+CRM and central communications system.
+
+Braintree
+
+Processing gateway for Retreat Guru Payment Services.
+
+Stripe
+
+Processing gateway for Retreat Guru Payment Services.
+
+Paystand
+
+Processing gateway for Retreat Guru Payment Services.
+
+MailChimp
+
+Transactional email service (Mandrill).
+
+1Password
+
+Encrypted repository for passwords.
+
+Formstack
+
+Workplace productivity and automation tools.
+
+Klaviyo
+
+Email and SMS marketing software.
+
+Zapier
+
+API-enabled tool to connect apps with our Services.
+
+Google Workspace
+
+Our employee emails, shared drives, and calendars.
+
+Very Good Security
+
+Payment data security and compliance infrastructure.
+
+Slack
+
+Internal Retreat Guru team communications including monitoring of data changes (like billing address change, chargeback notifications, etc.)
+
+New Relic
+
+System monitoring
+
+ 
+
+ 
+
+Annex 2: Security Measures
+
+This Annex forms part of the DMP.
+
+We currently observe the Security Measures described in this Annex 2. All capitalized terms not otherwise defined herein shall have the meanings as set forth in the Master Terms.
+
+ 
+
+Access Control
+
+Preventing Unauthorized Product Access
+
+Outsourced processing: We host our Services with outsourced cloud infrastructure providers. We rely on contractual agreements, privacy policies, and internal compliance programs in order to protect data processed or stored by these vendors.
+
+Physical and environmental security: We host our product infrastructure with multi-tenant, outsourced infrastructure providers. The physical and environmental security controls are audited for SOC 2 Type II and ISO 27001 compliance, among other certifications.
+
+Authentication: Commercial Users who interact with the products via the user interface must authenticate before accessing non-public customer data.
+
+Authorization: Project Data is stored in multi-tenant storage systems accessible to Commercial Users via only application user interfaces and application programming interfaces. Commercial Users are not allowed direct access to the underlying application infrastructure. The authorization model in each of our products is designed to ensure that only the appropriately assigned individuals can access relevant features, views, and customization options. Authorization to data sets is performed by validating the Commercial User’s permissions against the attributes associated with each data set.
+
+Application Programming Interface (API) access: Public product APIs may be accessed using an API key.
+
+Preventing Unauthorized Product Use
+
+We implement industry-standard access controls and detection capabilities for the internal networks that support its products.
+
+Access controls: Network access control mechanisms are designed to prevent network traffic using unauthorized protocols from reaching the product infrastructure. The technical measures implemented differ between infrastructure providers and include Virtual Private Cloud (VPC) implementations, security group assignments, and traditional firewall rules.
+
+Intrusion detection and prevention: We implement a Web Application Firewall (WAF) solution to protect hosted customer websites and other internet-accessible applications. WAF is designed to identify and prevent attacks against publicly available network services.
+
+Static code analysis: Security reviews of code is performed by our developers prior to merging into our production codebase, checking for coding best practices and identifiable software flaws.
+
+Penetration testing: In addition to internal practices and procedures, we maintain relationships with industry-recognized penetration testing service providers for regular penetration tests. The intent of the penetration tests is to identify and resolve foreseeable attack vectors and potential abuse scenarios.
+
+Limitations of Privilege & Authorization Requirements
+
+Product access: A subset of our employees have access to the products and to customer data via controlled interfaces. The intent of providing access to a subset of employees is to provide effective customer support, troubleshoot potential problems, and detect and respond to security incidents and implement data security. Employees are granted access by role, and employee roles are reviewed at least once every six months.
+
+Transmission Control
+
+In-transit: We make HTTPS encryption (also referred to as SSL or TLS) available on every one of its login interfaces and for free on every customer site hosted on the HubSpot products. Our HTTPS implementation uses industry-standard algorithms and certificates.
+
+At-rest: We store user passwords following industry-standard practices for security.  
+
+Response and tracking: We maintain a record of known security incidents that includes descriptions, dates and times of relevant activities, and incident disposition. Suspected and confirmed security incidents are investigated by security, operations, or support personnel; and appropriate resolution steps are identified and documented. For any confirmed incidents, we will take appropriate steps to minimize product and Customer damage or unauthorized disclosure. Notification to you will be in accordance with the terms of the Agreement.
+
+Availability Control
+
+Infrastructure availability: The infrastructure providers use commercially reasonable efforts to ensure a minimum of 99.95% uptime. The providers maintain a minimum of N+1 redundancy to power, network, and HVAC services.
+
+Fault tolerance: Backup and replication strategies are designed to ensure redundancy during a significant processing failure. Customer data is backed up to external data stores.
+
+ 
+
+Exhibit C: Privacy Policy
+
+
+For all Users
+
+
+Last modified: April 04, 2022
+
+
+This Privacy Policy governs the manner in which Retreat Guru collects, uses, maintains, and discloses information collected from Users (each a “User”) of the Services.
+
+ 
+
+
+Personal identification information
+
+
+We may collect personal identification information from Users in a variety of ways, including, but not limited to, when Users visit our Site, register on the Site, subscribe to the newsletter, fill out a form, and in connection with other activities, services, features or resources we make available on our Site. Users may be asked for, as appropriate, their name and email address. Users may, however, visit our Site anonymously. We will collect personal identification information from Users only if they voluntarily submit such information to us. Users can always refuse to supply personally identification information, except that it may prevent them from engaging in certain Site related activities.
+
+ 
+
+
+Non-personal identification information
+
+
+We may collect non-personal identification information about Users whenever they interact with our Site. Non-personal identification information may include the browser name, the type of computer, and technical information about Users' means of connection to our Site, such as the operating system and the Internet service providers utilized and other similar information.
+
+ 
+
+
+Web browser cookies
+
+
+Our Site may use "cookies" to enhance User experience. A User's web browser may place a cookie on their hard drive for record-keeping purposes and sometimes to track information about them. As a User, you may choose to set your web browser to refuse cookies or to alert you when cookies are being sent. If you do set your browser to refuse cookies, some parts of the Site may not function properly.
+
+ 
+
+
+How we use collected information
+
+
+Retreat Guru may collect and use Users personal information for the following purposes:
+a. To improve customer service - information you provide helps us respond to your customer service requests and support needs more efficiently.
+
+
+b. To personalize user experience - we may use information in the aggregate to understand how our Users as a group use the services and resources provided on our Site.
+
+
+c. To improve our Site - we may use the feedback you provide to improve our products and services.
+
+
+d. To process payments - we may use the information Users provide about themselves when placing an order only to provide service to that order. We do not share this information with outside parties except to the extent necessary to provide the service.
+
+
+e. To run a promotion, contest, survey, or other Site feature - to send Users information they agreed to receive about topics we think will be of interest to them.
+
+
+f. To send periodic emails - we may use the email address to send User information and updates pertaining to their order. It may also be used to respond to their inquiries, questions, and/or other requests. If User decides to opt-in to our mailing list, they will receive emails that may include company news, updates, related product or service information, etc. If at any time the User would like to unsubscribe from receiving future emails, we include detailed unsubscribe instructions at the bottom of each email or the User may contact us via our Site.
+
+
+g. To inform marketing campaigns - including, but not limited to Google advertising and social media marketing.
+
+
+How we protect your information
+
+
+We adopt appropriate data collection, storage, and processing practices and security measures to protect against unauthorized access, alteration, disclosure, or destruction of your personal information, username, password, transaction information, and data stored on our Site.
+Sensitive and private data exchange between the Site and its Users happens over an SSL secured communication channel and is encrypted and protected with digital signatures.
+
+ 
+
+
+Sharing your personal information
+
+
+We do not sell, trade, or rent User personal identification information to others. We may share generic aggregated demographic information not linked to any personal identification information regarding visitors and users with our business partners, trusted affiliates, and advertisers for the purposes outlined above. We may use third-party service providers to help us operate our business and the Site or administer activities on our behalf, such as sending out newsletters or surveys. We may share your information with these third parties for those limited purposes provided that you have given us your permission.
+
+ 
+
+
+Third-party websites
+
+
+Users may find advertising or other content on our Site that link to the sites and services of our partners, suppliers, advertisers, sponsors, licensors, and other third parties. We do not control the content or links that appear on these sites and are not responsible for the practices employed by websites linked to or from our Site. In addition, these sites or services, including their content and links, may be constantly changing. These sites and services may have their own privacy policies and customer service policies. Browsing and interaction on any other website, including websites that have a link to our Site, is subject to that website's own terms and policies.
+
+ 
+
+
+Changes to this privacy policy
+
+
+Retreat Guru has the discretion to update this privacy policy at any time. When we do, we will revise the updated date at the bottom of this page. We encourage Users to frequently check this page for any changes to stay informed about how we are helping to protect the personal information we collect. You acknowledge and agree that it is your responsibility to review this privacy policy periodically and become aware of modifications.
+
+ 
+
+
+Your acceptance of these terms
+
+
+By using the Site, you signify your acceptance of this policy. If you do not agree to this policy, please do not use the Site. Your continued use of the Site following the posting of changes to this policy will be deemed your acceptance of those changes.
+
+ 
+
+Exhibit D: Marketplace for Hosts
+
+For Commercial Users
+
+Last modified: August 03, 2023
+
+ 
+
+Listings
+
+Commercial Users, including those with Freemium Account (Marketplace-only Hosts), can list unlimited retreats on the Marketplace (https://retreat.guru) for free. 
+
+You may not list retreats, events, products or services that contravene applicable Law.
+
+Your listings must adhere to the Supplementary Products Exclusion described in Section 9: Commercial User Payment Processing which prohibits the inclusion of plant medicine or other similar products in the cost of the event, retreat or stay.
+
+Photographic images uploaded to the Marketplace must adhere to the following policy.
+
+Full color - Use only clear full-color photos. Black and white, and greyscale images are not permitted.
+
+Perspective and size - Use only images in landscape mode (not portrait mode). The recommend ratio is 720px wide by 400px tall.
+
+Images or videos are your own - You may only post images or videos that do not violate another individuals or companies intellectual property rights.
+
+No text or watermarks - Do not upload photos with superimposed text, watermarks, or other after-effects. You may, however, discreetly include your center’s official logo on the photo.
+
+Single authentic image - Use only photos that depict a single scene or setting. Do not upload collages or other types of images composed of multiple photos.
+
+No nudity - posting images or videos of nude people is not permitted.
+
+ 
+
+We reserve the right at our sole discretion to remove a listing. 
+
+We reserve the right at our sole discretion to modify a listing. Our intent for any such modification will be to increase visibility, appeal, and ranking. The scope would typically be limited to changing the title, correcting grammar and punctuation, editing the flow and arrangement of sections, images, and text, and similar actions.
+
+We reserve the right, at our sole discretion with or without cause, to suspend or terminate your use of the Marketplace. We reserve the right to display your profile and reviews on the Marketplace after your use is suspended or terminated.
+
+ 
+
+Qualifying registrations
+
+Retail Users who access the Marketplace (https://retreat.guru) to actively search for authentic retreats are identified by Retreat Guru as Leads. 
+
+If a Lead results in a qualifying registration for one of your retreats, a booking commission will be applied to the total price of that registration. 
+
+For commission purposes, a qualified registration is one where the Retail User:
+
+Clicks “secure your spot” or “book now” on your event page on the Marketplace, or
+Sends you a message (“Contact”) on the Marketplace, or
+Interacts in another way with your event, center, or teacher page on the Marketplace.
+ 
+
+These bookings will be considered commission-qualified for the 6 months following the date of any of the above actions. For example, if a Retail User visits your center’s page on the Marketplace in January, and registers for a retreat at your center anytime between January and the following June, that registration will qualify for the commission. 
+
+If after the initial commission-qualified registration, the Retail User makes another registration directly on Marketplace (clicks “secure your spot” or “book now” and completes the registration form), a commission will be charged on this additional commission-qualified registration. 
+
+If after the initial commission-qualified registration, the Retail User makes another booking directly with your center (via your website, phone, or another direct contact method) no commission will apply to the booking.
+
+All Commercial Users, except those with a Freemium Account (Marketplace-only Hosts), agree to pay a booking commission fee on the total price of the qualifying registration (including bookings that use the pricing method "suggested donation"). The booking fee does not apply to taxes, credit card fees, or donations. 
+
+For Commercial Users with a Freemium Account (Marketplace-only Hosts), the commission is calculated on the total amount of the booking. The commission is paid by the Retail User. 
+
+Commercial Users with a Freemium Account (Marketplace-only Hosts) must complete all bookings on the Marketplace. If bookings get completed off the Marketplace, you must report bookings that originate on the Marketplace under your Freemium Account but are then booked with you outside of the Marketplace (for example, through your website, WhatsApp, email, phone, or other channels). Non-compliance with this reporting policy may result in you, as a Freemium User, being banned from the Marketplace.
+
+For Commercial Users with a Freemium Account (Marketplace-only Hosts), commissions are not applied to registrations that are canceled and fully refunded.
+
+
+ 
+
+Communication
+
+Commercial Users with a Freemium Account (Marketplace-only Hosts) are responsible for managing communication with the Retail User related to bookings completed on the Marketplace. Specifically, you must contact the Retail User to confirm their booking within two (2) business days, and respond to Retail Users who use the Contact link on the Marketplace within two (2) business days.
+
+ 
+
+Payment of commissions
+
+Third-party payment processing. If as a Commercial User you are processing credit card payments through our integration with a third-party payment service provider, we will invoice you monthly. Once issued, an invoice is locked - if a booking cancellation occurs after the invoice date, and a full refund has been processed, the associated commission will be credited to your account and applied to reduce the balance due on the next invoice. 
+
+Retreat Guru Payment Services. If as a Commercial User you are processing credit card payments directly through Retreat Guru Payment Services, the total booking fees for the month will be deducted from your next payout.
+
+ 
+
+Commission disputes
+
+Contact us at support@retreat.guru if you wish to dispute a commission charge. We will research to verify the original lead source and, if needed, make adjustments. For example, if you received the lead from another source prior to the Retail User’s activity on the Marketplace, you may submit a copy (or screenshot) of the dated communications with the Retail User as verification.
+
+ 
+
+Cancellation policies for Freemium Accounts
+
+Freemium Users (Marketplace-only Hosts) may select one of the following cancellation policies to be in effect for all Marketplace registrations associated with their Account:
+
+Flexible
+100% refund of monies paid if canceled 30+ days before the start date.
+50% refund of monies paid if canceled 15-29 days before the start date.
+0% refund of monies paid if canceled less than 15 days before the start date.
+Moderate
+100% refund of monies paid if canceled 60+ days before the start date.
+50% refund of monies paid if canceled 30-59 days before the start date.
+0% refund of monies paid if canceled less than 30 days before the start date.
+ 
+
+If you, as a Freemium User, cancel an event, you must reimburse the Retail User in full within 14 days of receiving the cancellation notification. You must also contact us to request that we refund the Retail User’s deposit - you must not instruct the Retail User to contact Retreat Guru directly to request a refund. Non-compliance with this cancellation policy may result in you, as a Freemium User, being banned from the Marketplace.
+
+ 
+
+Exhibit E: Service Levels
+
+Last modified: August 03, 2022
+
+ 
+
+Data import
+
+Commercial Users with an eligible software subscription plan may request a single import of historical and future registration data prior to your initial go-live date - no imports will be allowed after your initial go-live date. 
+
+If Retreat Guru agrees to such a data import, Commercial User will provide data in a comma-separated variable (CSV) file format using templates provided by Retreat Guru. 
+
+An additional one-time project fee, based upon the hours of consultation and the number of records imported, will be charged by Retreat Guru for the data import.
+
+ 
+
+Retail Users
+
+Need help finding your next retreat?
+
+View help articles at https://go.retreat.guru/participant-faq
+Send us an email at help@retreat.guru.
+ 
+
+Commercial Users
+
+Implementation assistance, training, and ongoing support are included in all Commercial User software subscriptions. 
+
+Service
+
+Freemium
+
+Core
+
+Standard+
+
+Onboarding - implementation assistance.
+
+✔
+
+✔
+
+✔
+
+Marketplace - support to level up your listings.
+
+✔
+
+✔
+
+✔
+
+Knowledgebase - 24/7 access to help articles.
+
+✔
+
+✔
+
+✔
+
+In-app message bubble - for live chat and automatic support ticket creation.
+
+✔
+
+✔
+
+✔
+
+Email - help@retreat.guru
+
+✔
+
+ 	 
+Email - support@retreat.guru
+
+ 	
+✔
+
+✔
+
+Training - initial training for Admin superusers.
+
+ 	
+✔
+
+✔
+
+WordPress Plug-in
+
+ 	
+✔
+
+✔
+
+API support
+
+ 	 	
+✔
+
+Advanced features support
+
+ 	 	
+✔
+
+ 
+
+

@@ -7,7 +7,7 @@
 <body>
 [% INCLUDE new_tt2/header.tt2 %]
 
-<h1>MMC Online Payment Request</h1>
+<h1>Online Payment Request</h1>
 <table cellpadding=5>
 <tr><th>Name</th><td> $first $last</td></tr>
 <tr><th>Address</th><td>$addr, $city, $state $zip $country</td></tr>

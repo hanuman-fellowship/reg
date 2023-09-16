@@ -543,7 +543,7 @@ If you only want a certificate of completion enter COMP for the license #.
      Word of Mouth</label><br>
 <label><input type=radio
        name=howHeard
-       id=howHeard7
+       id=howHeard9
        value=ad
        onclick="document.getElementById('adsource').focus();"
 > Other:</label>
@@ -551,7 +551,7 @@ If you only want a certificate of completion enter COMP for the license #.
        id=adsource
        type=text
        size=30
-       onfocus="document.getElementById('howHeard7').checked = true;"
+       onfocus="document.getElementById('howHeard9').checked = true;"
 >
 </ul>
 

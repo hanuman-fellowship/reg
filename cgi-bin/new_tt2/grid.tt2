@@ -77,10 +77,12 @@ function add_more(id) {
 .dow {
     color: red;
 }
+/*
 a {
     color: blue;
     text-decoration: underline;
 }
+*/
 a:hover {
     padding-left: 4px;
 }
@@ -110,11 +112,7 @@ a:hover {
 </style>
 </head>
 <body>
-
-    <div class="body-content">
-        <div class="container">
-
-
+[% INCLUDE new_tt2/header.tt2 %]
 <form method=POST
       name=form
       action='$action'
@@ -122,7 +120,7 @@ a:hover {
 <h2>
 $name
 </h2>
-<p><span style="font-size: 13pt; padding-top: 1.8em;">$sdate <span class=dow>${sdate.format("%a")}</span>
+<p><span style="font-size: 15pt; padding-top: 1.8em;">$sdate <span class=dow>${sdate.format("%a")}</span>
 <b>To</b> 
 $edate <span class=dow>${edate.format("%a")}</span>
 </span>
@@ -262,9 +260,5 @@ $days
 [% END %]
 
 </table>
-
-</div>
-</div>
-
 </body>
 </html>

@@ -2677,7 +2677,10 @@ sub cancel : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-
+    my $tot_payments = 0;
+    for my $rp ($reg->payments()) {
+        $tot_payments += $rp->amount;
+    }
     if ($reg->program->school->mmi()) {
         # when MMI students cancel, there is no credit, no letter
         #
@@ -2687,11 +2690,14 @@ sub cancel : Local {
     my $today = tt_today($c);
     my $person = $reg->person();
     my $name = $person->last() . ", " . $person->first();
+    my $ndays = $reg->program->sdate_obj - $today;
     Global->init($c);
     stash($c,
         pg_title       => "Cancel $name",
         today          => $today,
-        ndays          => $reg->program->sdate_obj - $today,
+        ndays          => $ndays,
+        pl             => $ndays == 1? '': 's',
+        tot_payments   => $tot_payments,
         reg            => $reg,
         credit_amount  => $string{credit_amount},
         template       => "registration/credit_confirm.tt2",
@@ -2702,20 +2708,24 @@ sub cancel_do : Local {
     my ($self, $c, $id, $mmi) = @_;
 
     my $reg         = model($c, 'Registration')->find($id);
+    my $today = tt_today($c);
+    my $ndays = $reg->program->sdate_obj - $today;
+    my $pl = $ndays == 1? '': 's',
     my $send_letter = $c->request->params->{send_letter};
-    my $credit_amount = $c->request->params->{credit_amount};
-    my $refund_amount = $c->request->params->{refund_amount};
-    my $via_authorize = $c->request->params->{via_authorize};
-
+JON "who '" . $c->request->params->{who_cancelled} . "'";
+    my $mmc_cancelled = $c->request->params->{who_cancelled} eq 'mmc';
+    my $credit_amount = $c->request->params->{credit_amount} || 0;
+    my $refund_amount = $c->request->params->{refund_amount} || 0;
+    my $via_online = $c->request->params->{via_online};
     if (!$mmi) {
-        if (defined $credit_amount && invalid_amount($credit_amount)) {
+        if (invalid_amount($credit_amount)) {
             error($c,
                 "Illegal credit amount: $credit_amount",
                 'gen_error.tt2',
             );
             return;
         }
-        if (defined $refund_amount && invalid_amount($refund_amount)) {
+        if (invalid_amount($refund_amount)) {
             error($c,
                 "Illegal refund amount: $refund_amount",
                 'gen_error.tt2',
@@ -2723,7 +2733,11 @@ sub cancel_do : Local {
             return;
         }
         if ($credit_amount && $refund_amount) {
-            $credit_amount = 0;
+            error($c,
+                "Sorry, can't do both a credit AND a refund.",
+                'gen_error.tt2',
+            );
+            return;
         }
     }
     my $date_expire;
@@ -2769,7 +2783,7 @@ sub cancel_do : Local {
             . (           $mmi? ""
               :($credit_amount? " - Credit of \$$credit_amount given."
               :($refund_amount? " - Refund of \$$refund_amount given"
-                    . ($via_authorize? ' via authorize.net '
+                    . ($via_online? ' via online payment '
                                        . $reg->transaction_id()
                                        . '.'
                       :                '.')
@@ -2811,12 +2825,15 @@ sub cancel_do : Local {
         my $stash = {
             person        => $reg->person,
             program       => $reg->program,
+            ndays         => $ndays,
+            pl            => $pl,
+            mmc_cancelled => $mmc_cancelled,
             credit_amount => $credit_amount,
             refund_amount => $refund_amount,
             date_expire   => $date_expire,
             user          => $c->user,
             today         => tt_today($c),
-            via_authorize => $via_authorize,
+            via_online    => $via_online,
         };
         $tt->process(
             $template,      # template
@@ -3586,25 +3603,32 @@ sub update_do : Local {
         if (@alerts) {
             stash($c, alerts => join "\\n\\n", @alerts);
         }
-        # did the start date change?  if so, change the program_id
-        if ($dates{date_start} != $reg->date_start()) {
+        # did the start date of the PR change?
+        # if so, check see if it is in a different month.
+        # if so, change the program_id to the personal retreat
+        # program that starts in that month.
+        #
+        if ($dates{date_start} ne $reg->date_start()) {
             my $dt = date($dates{date_start});
-            my $first_of_month = date($dt->year, $dt->month, 1);
-            my ($new_pr) = model($c, 'Program')->search({
-                            sdate => $first_of_month->as_d8(),
-                          });
-            $reg->update({
-                program_id => $new_pr->id(),
-            });
-            # and adjust the reg_count in both PR programs.
-            my $n = $pr->reg_count();
-            $pr->update({
-                reg_count => $n-1,
-            });
-            $n = $new_pr->reg_count();
-            $new_pr->update({
-                reg_count => $n+1,
-            });
+            if ($dt->month != $reg->date_start_obj->month) {
+                my $first_of_month = date($dt->year, $dt->month, 1);
+                my ($new_pr) = model($c, 'Program')->search({
+                                   name  => { like => '%personal%retreat%' },
+                                   sdate => $first_of_month->as_d8(),
+                               });
+                $reg->update({
+                    program_id => $new_pr->id(),
+                });
+                # and adjust the reg_count in both PR programs.
+                my $n = $pr->reg_count();
+                $pr->update({
+                    reg_count => $n-1,
+                });
+                $n = $new_pr->reg_count();
+                $new_pr->update({
+                    reg_count => $n+1,
+                });
+            }
         }
     }
     if ($reg->house_id()

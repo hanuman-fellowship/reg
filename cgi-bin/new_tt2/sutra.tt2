@@ -3,6 +3,12 @@
 <meta charset='UTF-8'>
 [% INCLUDE new_tt2/top_css_js.tt2 %]
 
+<style>
+.sub-button {
+    margin-top: 0mm;
+}
+</style>
+
 </head>
 <body>
 
@@ -29,8 +35,8 @@ enter your email address below and press the appropriate button.
 <tr>
 <td></td>
 <td>
-<button type=submit name=sut_sub>Send Sutras</button>
-<button type=submit name=sut_unsub>Do NOT Send Sutras</button>
+<button type=submit name=sut_sub class=sub-button>Send Sutras</button>
+<button type=submit name=sut_unsub class=sub-button>Do NOT Send Sutras</button>
 </td>
 </tr>
 </form>
@@ -52,7 +58,7 @@ enter your email address below and press the appropriate button.
 <tr>
 <td></td>
 <td>
-<button type=submit name=search>Search</button>
+<button type=submit name=search class=sub-button>Search</button>
 &nbsp; &nbsp; &nbsp;Pattern can be part of a word 
 <input type=checkbox name=substring>
 </td>

@@ -12,28 +12,10 @@
 Dear $first ${last},
 </p>
 <p>
-Thank you for your meal reservation at least 48 hours in advance.<br>
+Thank you for your meal request at least 48 hours in advance.<br>
 This helps the kitchen plan for your arrival. 
-</p>
 <p>
-Please check in at the RECEPTION OFFICE in the Community Building
-when you arrive. If that office is not open, please go to GUEST SERVICES
-to check in.  If neither office is open, feel free to proceed to the
-Dining Room in the Community Building for your meal.
-You have already paid for your meal(s).
-</p>
-<p>
-<b>If you are coming on a Saturday or a Holiday and will be on the
-land after 11am, or on a Sunday anytime during visiting hours (4pm-7pm),
-a parking reservation is needed.</b> You can make a reservation by going to 
-<a href='https://www.mountmadonna.org/explore'>this site</a>
-and clicking on "reserve your space." <br>
-You can also check out the hours of on-land stores/cafe using this link.
-</p>
-<p>
-PLEASE BRING A PRINTOUT (or electronic copy) OF THIS MESSAGE
-WITH YOU AS CONFIRMATION OF YOUR RESERVATION. Details are below:
-</p>
+Your meal request is confirmed for:
 <ul>
 $display_requests
 </ul>

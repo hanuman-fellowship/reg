@@ -13,9 +13,8 @@ body {
 <p>
 Dear $first ${last},
 <p>
-Thank you for your meal request at least 72 hours in advance.<br>
+Thank you for your meal request at least 48 hours in advance.<br>
 This helps the kitchen plan for your arrival. 
-<p>
 <p>
 Your meal request is confirmed for:
 <ul>

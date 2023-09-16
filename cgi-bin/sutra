@@ -15,12 +15,13 @@ my $tt = Template->new(
 use lib '../lib';
 use Util qw/
     trim
+    styled
 /;
 
 my %P = $q->Vars();
 if (! %P) {
     $tt->process(
-        'sutra.tt2',
+        styled('sutra.tt2'),
         {},
     );
     exit;

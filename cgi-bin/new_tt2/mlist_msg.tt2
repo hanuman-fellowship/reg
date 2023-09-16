@@ -6,9 +6,10 @@
 <body>
 	<div class="message-box-a">
 		<div class="message-box-c">
-<h3>Thank You!</h3>
-<p>Your information was received.</p>
-</div>
-</div>
+			<img src='/static/images/mm-legacy-logo.svg' width=250 style="width: 250px; max-height: 160px;">
+			<h3>Thank You!</h3>
+			<p>Your information was received.</p>
+		</div>
+	</div>
 </body>
 </html>

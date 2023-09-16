@@ -3,6 +3,11 @@
 <meta charset='UTF-8'>
 [% INCLUDE new_tt2/top_css_js.tt2 %]
 
+<style>
+.sub-button {
+    margin-top: 0mm;
+}
+</style>
 </head>
 <body>
 [% INCLUDE new_tt2/header.tt2 %]
@@ -75,7 +80,8 @@ This is the information we have for you.  Please verify and correct it.
 
 </table>
 <p>
-<button type=submit>Submit the changes I made</button>
+<p>
+<button type=submit class=sub-button>Submit the changes I made</button>
 </form>
 
 <form action='https://www.mountmadonna.org' method=post>

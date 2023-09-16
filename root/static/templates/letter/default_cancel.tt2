@@ -11,22 +11,28 @@ strong {
 </style>
 Greetings $person.first,
 <p>
-Your registration for the '$program.title' program
-was cancelled on [% today.format("%B %e, %Y") %].
-[% IF credit_amount %]
+[% IF mmc_cancelled %]
+Unfortunately, MMC had to cancel
+your registration for the '$program.title' program.
+[% ELSE %]
+Per your request,
+your registration for the '$program.title' program
+was cancelled on ${today.format("%B %e, %Y")}.
+We are sorry you won't be able to join us!
+[% END %]
+<p>
 The program's cancellation policy is:
 <ul>
 $program.canpol.policy_br
 </ul>
-[% END %]
 [% IF credit_amount %]
     <p>
     You have been given a credit of \$$credit_amount applicable
     towards future MMC-sponsored programs.
-    This credit will expire on [% date_expire.format("%B %e, %Y") %].
+    This credit will expire on ${date_expire.format("%B %e, %Y")}.
 [% ELSIF refund_amount %]
     <p>
-    [% IF via_authorize %]
+    [% IF via_online %]
         We have refunded \$$refund_amount to your credit card.
     [% ELSE %]
         You are due a refund of \$${refund_amount}.
@@ -36,8 +42,10 @@ $program.canpol.policy_br
     [% END %]
 [% ELSE %]
     <p>
-    We're sorry but you have been given neither a credit nor a refund.
+    As this cancellation request was received $ndays day$pl before the start of the program, we are unfortunately unable to offer you a refund or a credit toward a future stay.
 [% END %]
+<p>
+Please take care and we very much hope you can join us for a program in the near future.
 <p>
 Sincerely,<br>
 $user.first $user.last

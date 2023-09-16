@@ -39,6 +39,7 @@ Fields marked with a <span class=required>*</span> are required.</P>
 <h3>Contact Information</h3>  
 <form action="/cgi-bin/mlist"
       method="post"
+      class="regs-form"
       onsubmit="return check_form()"
 >
 <table cellpadding=5>
@@ -132,7 +133,7 @@ Add the following address to your address book:</p>
 programs@mountmadonna.org
 </ul>
 
-<input style="background: lightgreen" type=submit id=submit value='Submit'>
+<input class="sub-button button tealn" type=submit id=submit value='Submit'>
 </form>
 
 <!-- // PAGE CONTENT ENDS HERE -->

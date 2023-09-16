@@ -35,7 +35,7 @@ a {
 <script type='text/javascript' src='/static/js/popup.js'></script>
 </head>
 <body>
-    [% INCLUDE new_tt2/header.tt2 %]
+[% INCLUDE new_tt2/header.tt2 %]
             <!-- PAGE CONTENT BEGINS HERE -->
 <h2>
 $name
@@ -47,13 +47,13 @@ $edate <span class=dow>${edate.format("%a")}</span>
 </span>
 </p>
 <p>
-<span style="margin-left: .5in; font-size: 15pt;">$first $last
+<span style="font-size: 15pt;">$first $last
 </p>
 <p>
 <h3>
 Housing Assignment Grid </h3>
 <div class="info-box">
-<span style="font-size: 12pt;"><a href="$action?code=$code" class="med-button">ReEdit</a></span>
+<span style="font-size: 12pt;"><a href="$action?code=$code">ReEdit</a></span>
 </div>
 
 <table class="options-table" cellpadding=5 border=1>

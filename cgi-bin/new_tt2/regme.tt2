@@ -30,13 +30,20 @@
                     The cost for the day is \$${ME_cost}.<br>
                     Available only on ${weekdays} and some holidays.<br>
                     Reservations must be made at least 48 hours in advance.<br>
-                    Mountain Experience bookings cannot be made more than 90 days in advance. Due to other onsite programming, the following dates are not available for Mountain Experience bookings:
+                    Mountain Experience bookings cannot be made more than 90 days in advance. 
                 </p>
+ 
+[% IF noME.0 %]
+<p>
+Due to other onsite programming,
+the following dates are not available for Mountain Experience bookings:
                 <ul>
                     [% FOR d IN noME %]
                         <li>$d</li>
                     [% END %]
                 </ul>
+</p>
+[% END %]
             </div>
 
 

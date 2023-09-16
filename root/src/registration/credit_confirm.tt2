@@ -1,49 +1,42 @@
 <h2>Registration Cancellation Credit/Refund</h2>
-The registration for [% reg.person.first%] [% reg.person.last %]
-in [% reg.program.name %] will be cancelled.
-<p>
-Today is [% today.format("%B %e") %].<br>
-The program begins [% reg.program.sdate_obj.format("%B %e") %].<br>
-It is [% ndays %] days before the program starts. 
-<p>
-The cancellation policy is:
+<form action="/registration/cancel_do/$reg.id">
 <ul>
-[% reg.program.canpol.policy_br %]
-</ul>
+Who requested the cancellation? &nbsp;
+The Registrant <input type=radio name=who_cancelled value="registrant" checked>
+&nbsp;
+MMC <input type=radio name=who_cancelled value="mmc">
+<p class=p2>
+The registration for $reg.person.first ${reg.person.last}
+in '${reg.program.name}' will be cancelled.
 <p>
-<form action="/registration/cancel_do/[% reg.id %]">
-<table cellpadding=5 border=0>
-
-<tr>
-<td align=right>Credit of</td>
-<td>
-\$<input type=text size=4 name=credit_amount id=credit_amount value="[% credit_amount %]">?
-</td>
-</tr>
-
-<tr>
-<td align=right>Refund of</td>
-<td>
-\$<input type=text size=4 name=refund_amount value=''
-onkeypress="document.getElementById('credit_amount').value = '';"
->?
-</td>
-<td>
-Via authorize.net? <input type=checkbox name=via_authorize checked>
+Today is ${today.format("%B %e")}.<br>
+The program begins ${reg.program.sdate_obj.format("%B %e")}.<br>
+It is $ndays day$pl before the program starts. 
+<p class=p2>
+The cancellation policy is:
+<p class=p2>
+<ul style="width: 700px; color: green">
+$reg.program.canpol.policy_br
+</ul>
+<p class=p2>
+There was a total of \$$tot_payments paid.
+<p class=p2>
+Credit of \$<input type=text size=4 name=credit_amount id=credit_amount value="$credit_amount">?
+<p class=p2>
+Refund of \$<input type=text size=4 name=refund_amount value=''>?
+&nbsp;
+Via online payment? <input type=checkbox name=via_online checked>
 [% IF reg.transaction_id %]
 Transaction $reg.transaction_id
 [% END %]
-</td>
-</tr>
-
-</table>
 [% IF ! reg.program.school.mmi %]
 <p class=p2>
 Send cancellation letter? <input type=checkbox name=send_letter value="yes" checked>
 [% END %]
 <p class=p2>
-<input type=submit value="Submit">
+<input type=submit value="Submit" id=sub>
 </form>
+</ul>
 <script type="text/javascript">
 document.getElementById('credit_amount').focus();
 </script>

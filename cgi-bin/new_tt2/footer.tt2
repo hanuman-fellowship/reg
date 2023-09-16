@@ -1,93 +1,12 @@
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <div class="xfooter">
-        <!-- logo -->
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <a href="https://mountmadonna.org"><img class="logo" src="/static/images/mm-logo-mobile.png" alt="Mount Madonna Center" title="Mount Madonna Center"></a>
-                </div>
-            </div>
-        </div>
-        <!-- // logo -->
-        <!-- contact - socials -->
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <div class="address">
-                        <p>Mount Madonna<br>
-                            445 Summit Road<br>
-                            Watsonville, CA 95076<br>
-                            United States<br>
-                            Overlooking the Monterey Bay<br>
-                            <span class="ftPhone">+1 408-847-0406</span><br>
-                            <span class="ftMail">reception@mountmadonna.org</span>
-                        </p>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                    <h3>Engage with Us</h3>
-                    <!-- social media -->
-                    <ul class="socials">
-                        <li><a href="#"><img src="/static/images/ic-smfb.svg" alt="Mount Madonna Facebook" title="Mount Madonna Facebook"></a></li>
-                        <li><a href="#"><img src="/static/images/ic-smig.svg" alt="Mount Madonna Instagram" title="Mount Madonna Instagram"></a></li>
-                        <li><a href="#"><img src="/static/images/ic-smli.svg" alt="Mount Madonna Linked In" title="Mount Madonna Linked In"></a></li>
-                        <li><a href="#"><img src="/static/images/ic-smyt.svg" alt="Mount Madonna YouTube" title="Mount Madonna YouTube"></a></li>
-                        <li><a href="#"><img src="/static/images/ic-corr.svg" alt="Contact Mount Madonna" title="Contact Mount Madonna"></a></li>
-                        <li><a href="#"><img src="/static/images/ic-nlsg.svg" alt="Subscbribe to Newsletter" title="Subscbribe to Newsletter"></a></li>
-                    </ul>
-                    <!-- // social media -->
-                    <h4>380 Acres Serve as<br>
-                        The Touchstone for<br>
-                        Deepening your<br>
-                        Connection to Self.</h4>
-                </div>
-            </div>
-        </div>
-        <!-- // contact - socials -->
-        <!-- credits -->
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="credits">
-                        <p>© 1973 – 2023 | All rights reserved | Privacy Policy | Terms of Use</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- // credits -->
-    </div>
-    <!-- // FOOTER -->
+    
 
     <!-- back to top JS -->
     
 
-    <script type="text/javascript">
-        // button back to top
-        var btn = \$('#bttbutton');
-
-        \$(window).scroll(function() {
-          if (\$(window).scrollTop() > 300) {
-            btn.addClass('show');
-          } else {
-            btn.removeClass('show');
-          }
-        });
-
-        btn.on('click', function(e) {
-          e.preventDefault();
-          $('html, body').animate({scrollTop:0}, '300');
-        });
-        // parallax header effect
-        function parallax() {
-              var parallax = document.getElementById("banner-parallax");
-              parallax.style.top = -(window.pageYOffset / 2)+'px';
-            }
-
-            window.addEventListener("scroll", parallax, false);
-    </script>
+    
      
      
     

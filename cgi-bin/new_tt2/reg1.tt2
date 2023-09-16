@@ -6,7 +6,10 @@
 <!-- page's JS -->
 <script>
 var fields = [
-
+[% IF basicfull %]
+    { id: 'radio', name: 'progchoice',
+                   err: 'How many days to attend?' },
+[% END %]
     { id: 'first', regexp: '\\S',
                    err: 'Missing First Name' },
     { id: 'last', regexp: '\\S',
@@ -30,27 +33,53 @@ var fields = [
     { id: 'email2',  regexp: '^\\s*\\S+[@]\\S+[.]\\S+\\s*\$',
                      err: 'Invalid Email address' }
 
+[% IF ! housing_not_needed %]
 ,
     { id: 'radio', name: 'house1',
                    err: 'Missing 1st Housing Choice' },
     { id: 'radio', name: 'house2',
                    err: 'Missing 2nd Housing Choice' }
-
+[% END %]
 ];
 function check_form() {
     if (!check_fields()) {
         return false;
     }
 [% IF date_names %]
-    var prev = 0;
-    for (let i = 1; i < $$ndates; ++i) {
+    // we have a 'reg_by_day' program.
+    // make sure that at least one day was chosen
+    // and that the chosen dates are consecutive.
+    var chosen = [];
+    var start_dt = 0;
+    var end_dt = 0;
+    for (let i = 1; i <= $$ndays; ++i) {
         if (document.getElementById('date' + i).checked) {
-            if (prev != 0 && i != prev + 1) {
-                alert('You cannot come, go, and come back!');
-                return false;
+            if (! start_dt) {
+                start_dt = i;
             }
-            prev = i;
+            chosen.push(i);
+            end_dt = i;
         }
+    }
+    var ndays_el = document.getElementById('ndays1');
+    if (start_dt == 0) {
+        alert('Please choose the days you wish to attend.');
+        setTimeout(function() {
+            ndays_el.focus();
+            ndays_el.scrollIntoView();
+        }, 100);
+        return false;
+    }
+    // are the dates consecutive?
+    if (end_dt - start_dt + 1 > chosen.length) {
+        alert('Sorry, there is a gap in your chosen days.\n'
+            + ' You cannot come, go, and then come back.\n'
+            + ' Please register twice.');
+        setTimeout(function() {
+            ndays_el.focus();
+            ndays_el.scrollIntoView();
+        }, 100);
+        return false;
     }
 [% END %]
     var em1 = document.getElementById('email1').value;
@@ -547,14 +576,14 @@ If you only want a certificate of completion enter COMP for the license #.
     <li>
         <label><input type=radio
            name=howHeard
-           id=howHeard7
+           id=howHeard9
            value=ad
            onclick="document.getElementById('adsource').focus();"> Other:</label>
             <input name=adsource
            id=adsource
            type=text
            size=30
-           onfocus="document.getElementById('howHeard7').checked = true;">
+           onfocus="document.getElementById('howHeard9').checked = true;">
     </li>
 </ul>
 
@@ -613,6 +642,8 @@ EIN #51-0174679.
 Please note any dietary restrictions you have such as vegan, gluten free, allergies, etc:
 <p>
 <input type=text size=50 name=diet value="$diet">
+<p>
+<a target=_blank href='/cgi-bin/meals_at_mmc'>Meal Information</a>
 </ul>
 
 <h3>Additional Requests</h3>  
