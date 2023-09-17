@@ -34,7 +34,7 @@ function check_form() {
 [% INCLUDE new_tt2/header.tt2 %]
             <!-- PAGE CONTENT BEGINS HERE -->
             
-<h2>Mailing List</h2>  
+<h2>Mount Madonna Institute Mailing List</h2>  
 Fields marked with a <span class=required>*</span> are required.</P>
 <h3>Contact Information</h3>  
 <form action="/cgi-bin/mlist"
@@ -129,9 +129,7 @@ I am interested in:
 <p>
 Don't let our emails end up in your spam filter.<br>
 Add the following address to your address book:</p>
-<ul>
-programs@mountmadonna.org
-</ul>
+<p><strong>programs@mountmadonna.org</strong></p>
 
 <input class="sub-button button tealn" type=submit id=submit value='Submit'>
 </form>

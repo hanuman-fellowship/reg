@@ -1,7 +1,7 @@
     <!-- Back to top button 
     <a id="bttbutton"></a>-->
     <!-- HEADER -->
-    <div class="body-content">
+    <div class="prebody-content">
         <div class="container">
             <img src='/static/images/mm-legacy-logo.svg' width=250 style="width: 250px; max-height: 160px;">
         </div>

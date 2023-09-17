@@ -68,7 +68,7 @@ my $rlink = "https://akash.mountmadonna.org/rental/view/$P{rental_id}/3";
 my $amount = commify($P{amount});
 email_letter($c,
     to      => $string{rental_coord_email},
-    from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+    from    => 'Mount Madonna Center <programs@mountmadonna.org>',
                                 # what else?
     subject => "\u$P{type} payment received for $rental_name",
     html    => $person->name . " paid \$$amount"

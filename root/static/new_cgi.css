@@ -116,6 +116,10 @@ h1, h2, h3, h4, h5, h6 {
     background: #FFFDF4;
     padding: 2.5em 1em;
 }
+.prebody-content {
+    background: #FFFDF4;
+    padding: 2.5em 1em 0 1em;
+}
 /* top nav */
 .top-menu {
     width: 100%;
@@ -631,6 +635,35 @@ a.ulwhite:hover::before {
     text-align: right;
     padding-right: .8em;
 }
+
+/* table setup */
+.progtable {
+    margin: 2.6em 0;
+}
+.progtable td {
+    padding: .2em .4em .5em .4em;
+}
+.progtable a { 
+    line-height: 16px;
+    text-align: left;
+    position: relative;
+    bottom: -9px;
+    font-size: 12px;
+    text-decoration: underline;
+}
+.progtable tr {
+    height: 3.4em;
+}
+.progtable tr:nth-child(even){
+    background-color: #F7F1E2;
+}
+.progtable tr:nth-child(odd){
+    background-color: #FFFDF4;
+}
+.progtable tr:hover {
+    background-color: #F3EBE0;
+}
+
 
 .options-table {
     margin: 2.6em 0;
