@@ -123,7 +123,7 @@ $person_name = "<a target=_blank href='https://akash.mountmadonna.org"
                ;
 email_letter($c,
     to      => get_string('covid_notify'),
-    from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+    from    => 'Mount Madonna Center <programs@mountmadonna.org>',
     subject => 'COVID-19 Vaccination Card',
     html    => "Got COVID-19 vaccination card for $person_name",
     activity_msg => "Received COVID-19 Vaccination card for $person_name.",
