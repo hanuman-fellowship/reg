@@ -27,6 +27,12 @@ To <input type=text size=10 name=me_to>
 <input type=submit id=sub value="Go">
 </form>
 <p class=p2>
+<form action="/listing/pr_info" method=POST>
+<span style="color: purple">PR Info</span> From <input type=text size=10 name=pr_from>
+To <input type=text size=10 name=pr_to>
+<input type=submit id=sub value="Go">
+</form>
+<p class=p2>
 <form action="/listing/badges_in_date_range" target=_blank>
 <table cellpadding=5>
 <tr><td colspan=2><hr><h3 style="margin: 0;">Badges</h3></td></tr>

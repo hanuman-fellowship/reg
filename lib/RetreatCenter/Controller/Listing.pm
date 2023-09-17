@@ -2989,6 +2989,106 @@ sub _email_all {
          . "'>email all</a>";
 }
 
+sub pr_info : Local {
+    my ($self, $c) = @_;
+    my $pr_from = trim($c->request->params->{pr_from});
+    my $pr_to = trim($c->request->params->{pr_to});
+    my $from = date($pr_from);
+    my $to = date($pr_to);
+    if (! $from || ! $to || $from > $to) {
+        $c->stash->{mess} = "Date problem";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my @prs = grep { ! $_->mountain_experience } 
+                    # couldn't get the above into the SQL 
+                    # not sure why
+              model($c, 'Registration')->search(
+                  {
+                      'program.name' => { like => '%personal%retreat%' },
+                      date_start =>
+                          { between => [ $from->as_d8(), $to->as_d8() ] },
+                      'me.cancelled' => { '!=' => 'yes' },
+                  },
+                  {
+                     join     => [qw/ person program /],
+                     prefetch => [qw/ person program /],
+                     order_by => 'person.first, person.last',
+                  }
+              );
+    my $html = <<"EOH";
+<style>
+body {
+    font-size: 16pt;
+    margin: .5in;
+}
+td, th {
+    font-size: 16pt;
+}
+a {
+    text-decoration: none;
+    color: blue;
+}
+</style>
+<h1>Personal Retreats from $from to $to</h1>
+<table cellpadding=3>
+<tr>
+<th align=left valign=bottom>Name</th>
+<th valign=bottom># Registrations</th>
+<th valign=bottom>PR was<br>First Reg</th>
+<th valign=bottom>PR was<br>Not Last Reg</th>
+</tr>
+EOH
+    my $tot = @prs;
+    my $tot_first = 0;
+    my $tot_not_last = 0;
+    my $n_first_only = 0;
+    my $emails = "";
+    my @day_of_week;
+    for my $r (@prs) {
+        my $id = $r->id;
+        my $per = $r->person;
+        my $per_id = $per->id;
+        my $per_name = $per->name;
+        my $per_email = $per->email;
+        ++$day_of_week[$r->date_start_obj->day_of_week];
+        my @regs = $per->registrations();
+        my $first = ($id == $regs[-1]->id)? 1: '';
+        $tot_first += $first;
+        my $not_last = ($id != $regs[0]->id)? 1: '';
+        if ($first && ! $not_last) {
+            ++$n_first_only;
+            $emails .= "$per_name <$per_email>, ";
+        }
+        $tot_not_last += $not_last;
+        my $first_check = $first? '&check;': '';
+        my $not_last_check = $not_last? '&check;': '';
+        $html .= "<tr><td><a target=_blank href='/person/view/$per_id'>$per_name</a></td>"
+              .  '<td align=right>' . scalar(@regs) . "</td><td align=center>$first_check</td><td align=center>$not_last_check</td></tr>\n";
+    }
+    $html .= <<"EOH";
+</table>
+<p>
+Total PR: $tot<br>
+PR was first registration: $tot_first<br>
+PR was not last registration: $tot_not_last<br>
+PR was first and <b>only</b> registration: $n_first_only<br>
+<ul>
+<table border=1 cellpadding=3>
+<tr><td>Sun</td><td align=right>$day_of_week[0]</td></tr>
+<tr><td>Mon</td><td align=right>$day_of_week[1]</td></tr>
+<tr><td>Tue</td><td align=right>$day_of_week[2]</td></tr>
+<tr><td>Wed</td><td align=right>$day_of_week[3]</td></tr>
+<tr><td>Thu</td><td align=right>$day_of_week[4]</td></tr>
+<tr><td>Fri</td><td align=right>$day_of_week[5]</td></tr>
+<tr><td>Sat</td><td align=right>$day_of_week[6]</td></tr>
+</table>
+</ul>
+<a href='mailto:?bcc=$emails'>Bcc Email All First and <b>Only</b></a>
+EOH
+    $c->res->output($html);
+}
+
 sub me_info : Local {
     my ($self, $c) = @_;
     my $me_from = trim($c->request->params->{me_from});
