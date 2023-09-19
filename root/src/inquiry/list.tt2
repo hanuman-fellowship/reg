@@ -2,7 +2,15 @@
 <a target=_blank href=$cgi/program_inquiry.pl>Create</a>
 &nbsp;&nbsp;
 <a href=/inquiry/export>Export</a>
-<p>
+<p class=p2>
+<style>
+.white {
+    background: white;
+}
+.gray {
+    background: #EDEDED;
+}
+</style>
 <table cellpadding=5 style="width: 100%" border=1 class=tbl>
 <tr>
 <td valign=bottom><a $st.date href=/inquiry/list/date>Date</a></th>
@@ -13,15 +21,21 @@
 <th align=left>Dates Requested</th>
 <th align=left>Flex Dates</th>
 </tr>
+[% color = 'white' %]
 [% FOR i IN inquiries %]
-<tr>
-<td>${i.the_date_obj.format("%D")}</td>
-<td><a href=/inquiry/view/$i.id>$i.first $i.last</a></td>
-<td>$i.status_disp</td>
-<td>$i.how_many</td>
-<td><a href=/inquiry/view/$i.id>$i.group_name</a></td>
-<td>$i.dates</td>
-<td>$i.flexdates</td>
-</tr>
+    <tr class=$color>
+    <td>${i.the_date_obj.format("%D")}</td>
+    <td><a href=/inquiry/view/$i.id>$i.first $i.last</a></td>
+    <td>$i.status_disp</td>
+    <td>$i.how_many</td>
+    <td><a href=/inquiry/view/$i.id>$i.group_name</a></td>
+    <td>$i.dates</td>
+    <td>$i.flexdates</td>
+    </tr>
+    [% IF color == 'white' %]
+        [% color = 'gray' %]
+    [% ELSE %]
+        [% color = 'white' %]
+    [% END %]
 [% END %]
 </table>
