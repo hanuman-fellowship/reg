@@ -3,14 +3,15 @@
 &nbsp;&nbsp;
 <a href=/inquiry/export>Export</a>
 <p>
-<ul>
-<table cellpadding=5 width=1300>
+<table cellpadding=5 style="width: 100%" border=1 class=tbl>
 <tr>
-<td width=6%><a $st.date href=/inquiry/list/date>Date</a></th>
-<td width=15% align=left><a $st.leader href=/inquiry/list/leader>Leader</a></th>
-<td width=10% align=left><a $st.status href=/inquiry/list/status>Status</a></th>
-<td width=8% align=left><a $st.how_many href=/inquiry/list/how_many>How Many?</a></th>
-<td width=52% align=left><a $st.group_name href=/inquiry/list/group_name>Group Name</a></th>
+<td valign=bottom><a $st.date href=/inquiry/list/date>Date</a></th>
+<td valign=bottom align=left><a $st.leader href=/inquiry/list/leader>Leader</a></th>
+<td valign=bottom align=left><a $st.status href=/inquiry/list/status>Status</a></th>
+<td valign=bottom align=left><a $st.how_many href=/inquiry/list/how_many>How Many?</a></th>
+<td valign=bottom align=left><a $st.group_name href=/inquiry/list/group_name>Group Name</a></th>
+<th align=left>Dates Requested</th>
+<th align=left>Flex Dates</th>
 </tr>
 [% FOR i IN inquiries %]
 <tr>
@@ -19,7 +20,8 @@
 <td>$i.status_disp</td>
 <td>$i.how_many</td>
 <td><a href=/inquiry/view/$i.id>$i.group_name</a></td>
+<td>$i.dates</td>
+<td>$i.flexdates</td>
 </tr>
 [% END %]
 </table>
-</ul>

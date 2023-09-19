@@ -18,6 +18,7 @@ use Time::Simple qw/
 use Global qw/
     %string
 /;
+use Text::CSV;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -88,6 +89,8 @@ sub list : Local {
                        $status_order{$_->status},
                        $_->how_many =~ m{\A (\d+)}xms,
                        $_->the_date,
+                       $_->dates,
+                       $_->flexdates,
                    ]
                }
                @inq;
@@ -177,20 +180,51 @@ sub change_status_do : Local {
 sub export : Local {
     my ($self, $c) = @_;
     open my $out, '>', "/var/Reg/report/inquiry.csv";
-    print {$out} join "\t", map { my $s = $_; $s =~ s{_}{ }xmsg; $s; } qw/
-        Date Time Leader Phone Email
-        Notes Status
-        Group_Name Dates Description
-        How_Many Vegetarian Retreat_Type
-        Needs How_Learn What_Else
-    /;
-    print {$out} "\n";
+    my $csv = Text::CSV->new({binary => 1, auto_diag => 1});
+    my @fields = qw/
+the_date
+the_time
+leader_name
+phone
+email
+group_name
+dates
+description
+how_many
+vegetarian
+retreat_type
+needs
+learn
+what_else
+notes
+status
+comm
+mailing_list
+first
+last
+website
+event_name
+flexdates
+optdates
+group_type
+services
+/;
+    $csv->say($out, [ @fields ]);
     for my $inq (model($c, 'Inquiry')->search(
                      {},
                      { order_by => 'the_date, the_time' },
                  )
     ) {
-        print {$out} $inq->csv, "\n";
+        $csv->say($out, [
+                            map {
+                                my $s = $inq->$_;
+                                $s =~ s{(<br>|</p>)}{\n}xms;
+                                $s =~ s{<p>}{}xms;
+                                $s;
+                            }
+                            @fields
+                        ]
+                 );
     }
     close $out;
     $c->response->redirect($c->uri_for("/report/show_report_file/inquiry.csv"));
