@@ -30,7 +30,11 @@ td {
 <tr><th>Email</th><td><a href='mailto:$inquiry.email'>$inquiry.email</a></td></tr>
 <tr><th>Phone</th><td>$inquiry.phone</td></tr>
 <tr><th>Group Name</th><td>$inquiry.group_name</td></tr>
+[% IF inquiry.website %]
+<tr><th>Website</th><td><a target=_blank href='$inquiry.website_plus'>$inquiry.website</a></td></tr>
+[% ELSE %]
 <tr><th>Website</th><td>$inquiry.website</td></tr>
+[% END %]
 <tr><th>Event Name</th><td>$inquiry.event_name</td></tr>
 <tr><th>How Many?</th><td>$inquiry.how_many</td></tr>
 <tr><th>Description</th><td>$inquiry.description</td></tr>

@@ -45,6 +45,15 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
+sub website_plus {
+    my ($self) = @_;
+    my $ws = $self->website;
+    if ($ws && $ws !~ m{http}xms) {
+        $ws = "https://$ws";
+    }
+    return $ws;
+}
+
 sub the_date_obj {
     my ($self) = @_;
     return date($self->the_date) || "";
