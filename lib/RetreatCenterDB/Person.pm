@@ -69,6 +69,9 @@ __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
 # proposal submitter
 __PACKAGE__->has_many(proposals => 'RetreatCenterDB::Proposal', 'person_id');
 
+# inquiry submitter
+__PACKAGE__->has_many(inquiries => 'RetreatCenterDB::Inquiry', 'person_id');
+
 # rental coordinator
 __PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'coordinator_id');
 

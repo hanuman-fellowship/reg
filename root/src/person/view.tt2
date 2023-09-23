@@ -309,6 +309,26 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
     </ul>
 [% END %]
 
+[% inquiries = person.inquiries %]
+[% IF Catalyst.check_user_roles('prog_staff') && inquiries %]
+    <p class=p2>
+    <span class=larger>Inquiries Submitted</span>
+    <ul>
+    <table cellpadding=3>
+    <tr>
+    <th align=left>Group Name</th>
+    <th align=left>Date</th>
+    </tr>
+    [% FOR i IN inquiries %]
+        <tr>
+        <td><a href="/inquiry/view/$i.id">$i.group_name</a></td>
+        <td>$i.the_date_obj</td>
+        </tr>
+    [% END %]
+    </table>
+    </ul>
+[% END %]
+
 [% proposals = person.proposals %]
 [% IF Catalyst.check_user_roles('prog_staff') && proposals %]
     <p class=p2>
