@@ -112,13 +112,11 @@ for my $type (qw/ No Yes /) {
 }
 $stash{noME} = \@noME;
 
-# since there is a 48 hour advance notification requirement...
-# if after 10:00 am disable the date 2 days from now.
-# AND the date 1 day from now.
+# since there is a 24 hour advance notification requirement...
+# if after 10:00 am disable the date 1 day from now.
 # it may have already been disabled.
 if ((localtime())[2] >= 10) {
     $disabled{($today + 1)->format("%m/%d/%Y")} = 1;
-    $disabled{($today + 2)->format("%m/%d/%Y")} = 1;
 }
 $stash{disabled} = join ', ',
                    map { qq!'$_'! }

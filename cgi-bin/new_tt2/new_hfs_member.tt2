@@ -1,6 +1,7 @@
 <html>
 <head>
 <meta charset='UTF-8'>
+[% INCLUDE new_tt2/top_css_js.tt2 %]
 <script>
 var fields = [
     { id: 'first', regexp: '\\S',
@@ -23,7 +24,7 @@ var fields = [
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 <style>
-body {
+/*body {
     width: 800px;
     font-size: 18pt;
     font-family: Arial;
@@ -52,52 +53,58 @@ th, td, textarea, input {
 button {
     background: lightgreen;
     font-size: 16pt;
-}
+}*/
 </style>
+<link rel="stylesheet" href="/static/new_cgi.css">
 </head>
 <body>
-<h2 class=cent>Hanuman Fellowship Membership</h2>
-<div class=cent>
-<img src=/static/images/hanuman.png width=100>
-<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
-<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
-</div>
-<p>
+  
+  <div class="prebody-content">
+        <div class="container">
+          <h2 class=cent>Hanuman Fellowship Membership</h2>
+            <!--<img src='/static/images/hanuman-fellowship-graph.png' style="width: 550px; max-height: 160px;">-->
+        </div>
+    </div>
+
+
+<!-- // HEADER -->
+    <div class="body-content">
+        <div class="container">
+
 <div class=mission>
-The Hanuman Fellowship is organized, as inspired by the example and
-teachings of master yogi
-<a target=_blank href=https://www.mountmadonna.org/baba-hari-dass>Baba Hari Dass</a>,
-to promote the principles
-and practice of yoga by means of sadhana (spiritual practice), karma
+<p>The Hanuman Fellowship is organized, as inspired by the example and
+teachings of master yogi <a target=_blank href=https://www.mountmadonna.org/baba-hari-dass>Baba Hari Dass</a>,
+to promote the principles and practice of yoga by means of sadhana (spiritual practice), karma
 yoga (selfless service), and satsang (supportive community), as well
 as other spiritual disciplines and learning that foster personal
 and spiritual development and wellness and that create an environment
 for the attainment of peace.
-<p>
+</p>
 </div>
-The Hanuman Fellowship (HFS) is a self-supportive community dedicated to
+<p>The Hanuman Fellowship (HFS) is a self-supportive community dedicated to
 the attainment of peace. In order to attain this mission and carry
 forward the teachings of Baba Hari Dass through sadhana, satsang,
 and karma yoga, a membership based on commitment and service is
 essential.
-<p>
+</p><p>
 Members are the strength and foundation of the Fellowship and membership is a way of becoming involved in the service of maintaining and developing the programs and facilities we offer to serve the broader community.
-<p>
+</p><p>
 Please review the membership categories and complete the
 application form below. Applicants are eligible to receive the benefits
 listed in the membership categories upon payment of annual dues.
 Eligibility to vote in the annual Board of Directors election is
 subject to confirmation by the members at the Annual
 General Meeting.
-<p>
+</p><p>
 In Peace,<br>
 The Membership Committee<br>
 Hanuman Fellowship Board of Directors<br>
 <a href=mailto:memberships@mountmadonna.org>memberships@mountmadonna.org</a>
-<p>
-<table cellpadding=10 border=1 style="width: 900px">
+</p>
+
+<table cellpadding=10 border=1>
 <tr>
-<th width=45% colspan=2>MEMBERSHIP CATEGORIES</th>
+<th colspan=2>MEMBERSHIP CATEGORIES</th>
 <th>BENEFITS</th>
 </tr>
 
@@ -110,8 +117,8 @@ Hanuman Fellowship Board of Directors<br>
 </td>
 <td>
 <ul>
-<li>20% Discount on meals at MMC
-<li>Eligibility to vote for the Board of Directors
+<li>20% Discount on meals at MMC</li>
+<li>Eligibility to vote for the Board of Directors</li>
 </ul>
 </td>
 </tr>
@@ -148,11 +155,13 @@ retreats: Spring, Liberation, Fall, or New Year's Retreat.
 </td>
 </tr>
 </table>
-<p>
+
 <div class=smaller>
-** Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
+<p>** Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
+</p>
 <p>
 Please complete the form below and press Submit at the bottom:
+</p>
 </div>
 <form action='/cgi-bin/new_hfs_member'
       name=form method=post
@@ -263,6 +272,9 @@ Hanuman temple (tending, parking), and others.)
 <p>
 <button type=submit>Submit</button>
 </form>
+ </div>
+    </div>
+
 </body>
 </html>
 <script>
