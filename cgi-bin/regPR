@@ -16,7 +16,7 @@ use Util qw/
 my $c = db_init();
 my %stash;
 my $today = today();
-my $start = $today + 1;
+my $start = $today + 2;
 my $end = $today + 90;
 $stash{startDate} = $start->format("%m/%d/%Y");
 $stash{endDate} = $end->format("%m/%d/%Y");
