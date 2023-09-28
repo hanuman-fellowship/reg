@@ -1,16 +1,17 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
 </head>
 <body>
+	<!-- // HEADER -->
+    <div class="body-content">
+        <div class="container">
 [% sans = person.sanskrit %]
-<img src=/static/images/hanuman.png width=100>        
-&nbsp;
-<img src=/static/images/hanuman.png width=100>        
-&nbsp;
-<img src=/static/images/hanuman.png width=100>        
+
 <div ><h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
+<img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
+</div>
 
 <dl>
 <dt>Name:</dt>
@@ -41,5 +42,7 @@
 $stripe_payment
 
 </form>
+</div>
+</div>
 </body>
 </html>

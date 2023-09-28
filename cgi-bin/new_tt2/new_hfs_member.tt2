@@ -24,45 +24,15 @@ var fields = [
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 <style>
-/*body {
-    width: 800px;
-    font-size: 18pt;
-    font-family: Arial;
-    margin-top: .5in;
-    margin-left: .5in;
-    margin-bottom: 1in;
-}
-.mission {
-    text-align: center;
-    color: green;
-}
-.cent {
-    text-align: center;
-}
-.required {
-    color: red;
-    font-style: bold;
-}
-th, td, textarea, input {
-    font-size: 16pt;
-    font-family: Arial;
-}
-.smaller, form {
-    font-size: 16pt;
-}
-button {
-    background: lightgreen;
-    font-size: 16pt;
-}*/
+/* */
 </style>
-<link rel="stylesheet" href="/static/new_cgi.css">
 </head>
 <body>
   
   <div class="prebody-content">
         <div class="container">
           <h2 class=cent>Hanuman Fellowship Membership</h2>
-            <!--<img src='/static/images/hanuman-fellowship-graph.png' style="width: 550px; max-height: 160px;">-->
+            <img src='/static/images/hanuman-fellowship-graph.png' style="width: 550px; max-height: 160px;">
         </div>
     </div>
 
@@ -137,6 +107,7 @@ This can be taken:<br>
 For one of the four annual retreats:<br>
 Spring, Liberation, Fall, or
 New Year's.
+</p>
 </ul>
 Lodging is a double room w/o private bath, or room/tent of lesser value.
 Sponsor dues lead to Lifetime Membership when the accumulated
@@ -166,6 +137,7 @@ Please complete the form below and press Submit at the bottom:
 <form action='/cgi-bin/new_hfs_member'
       name=form method=post
       enctype="multipart/form-data"
+      class="regs-form"
       onSubmit="return check_fields();"
 >
 <p>
@@ -173,10 +145,12 @@ Please complete the form below and press Submit at the bottom:
 <tr>
 <th align=right valign=top width=30%>Membership Type</th>
 <td>
-<input type=radio name=mem_type value=general checked> General - \$$mem_gen_amt annually<p>
-<input type=radio name=mem_type value=general_ky> General with KY** - \$$mem_gen_ky_amt annually + 20 hours KY<p>
-<input type=radio name=mem_type value=sponsor> Sponsor - \$$mem_spons_year annually
-<br><br>
+  <ul>
+    <label><input type=radio name=mem_type value=general checked> General - \$$mem_gen_amt annually</label><br>
+    <label><input type=radio name=mem_type value=general_ky> General with KY** - \$$mem_gen_ky_amt annually + 20 hours KY</label><br>
+    <label><input type=radio name=mem_type value=sponsor> Sponsor - \$$mem_spons_year annually</label>
+  </ul>
+
 </td>
 </tr>
 <tr>
@@ -270,16 +244,16 @@ Hanuman temple (tending, parking), and others.)
 <textarea name=ky rows=5 cols=50>
 </textarea>
 <p>
-<button type=submit>Submit</button>
+<button class="sub-button button tealn" type=submit>Submit</button>
 </form>
  </div>
     </div>
-
-</body>
-</html>
 <script>
 document.getElementById('first').focus({ preventScroll: true });
 setTimeout(function() {
     window.scrollTo(0, 0);
 }, 50);
 </script>
+</body>
+</html>
+

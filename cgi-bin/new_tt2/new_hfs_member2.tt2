@@ -1,13 +1,14 @@
 <html>
 <head>
 <meta charset='UTF-8'>
-<link rel="stylesheet" href="/static/cgi.css">
+[% INCLUDE new_tt2/top_css_js.tt2 %]
 </head>
 <body>
+    <!-- // HEADER -->
+    <div class="body-content">
+        <div class="container">
 <h2>Hanuman Fellowship Membership</h2>
-<img src=/static/images/hanuman.png width=100>        
-<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
-<img src=/static/images/hanuman.png width=100 style="margin-left: 20mm">
+<img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
 <p>
 Verify the following:
 <ul>
@@ -26,6 +27,7 @@ $email1
 [% IF pic_thumb %]
     <img src=$pic_thumb>
 [% END %]
+</p>
 </ul>
 You want to enroll as a $Mem_Type in the Hanuman Fellowship.<br>
 The $prorated cost is \$${amount}.
@@ -38,7 +40,9 @@ The $prorated cost is \$${amount}.
 [% END %]
 [% IF pic %]
     <p>
-    Your picture:<p>
+    Your picture:
+</p>
+    <p>
     <img src=/static/images/$pic>
 [% END %]
 [% IF ky %]
@@ -50,6 +54,9 @@ The $prorated cost is \$${amount}.
 [% END %]
 <p>
 $stripe_payment
+</p>
 </form>
+</div>
+</div>
 </body>
 </html>
