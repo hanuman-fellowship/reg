@@ -2,6 +2,30 @@
 <head>
 <meta charset='UTF-8'>
 [% INCLUDE new_tt2/top_css_js.tt2 %]
+<style type="text/css">
+	dt { padding-top: 2em; }
+button {
+    line-height: 25px;
+    font-size: 18px;
+    border: 1px solid #b1713c;
+    text-transform: uppercase;
+    font-family: 'Marcellus', serif;
+    color: #FFF;
+    position: relative;
+    background-color: #b1713c;
+    border-radius: 3px;
+    padding: .7em 2em;
+    letter-spacing: .2em;
+    transition: all 0.25s ease-in-out;
+    bottom: 0;
+    margin-top: 2em;
+}
+button:hover {
+    box-shadow: 6px 6px 8px 8px rgba(150, 150, 150, 0.1);
+    bottom: 3px;
+    background-color: #BB8355!important;
+}
+</style>
 </head>
 <body>
 	<!-- // HEADER -->
@@ -9,8 +33,9 @@
         <div class="container">
 [% sans = person.sanskrit %]
 
-<div ><h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
-<img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
+<div style="padding-bottom: 2.5em;">
+	<h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
+	<img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
 </div>
 
 <dl>

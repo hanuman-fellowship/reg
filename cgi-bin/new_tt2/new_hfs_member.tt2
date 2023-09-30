@@ -24,7 +24,132 @@ var fields = [
 </script>
 <script type='text/javascript' src='/static/js/check_fields.js'></script>
 <style>
-/* */
+:root {
+  --radius: 4px;
+  --trans: 250ms;
+  --color-file-input: #b1713c;
+  --color-file-input-hover: #BB8355;
+  --color-file-input-contrast: #2d3436;
+  --color-file-input-hover-contrast: #dfe6e9;
+  --bg-light: #d1d8e0;
+  --bg-dark: #4b6584;
+}
+
+[data-grid] {
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+  grid-auto-rows: 250px;
+  gap: 5px;
+  padding: 5px;
+}
+[data-grid] > section {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 50px 1fr;
+  place-items: center;
+  background: var(--bg-light);
+}
+[data-grid] > section div {
+  font-size: 1.5rem;
+}
+
+.file-upload {
+  border-radius: var(--radius);
+}
+.file-upload [type=file] {
+  display: none;
+}
+.file-upload span {
+  font-weight: 300;
+}
+.file-upload button {
+  all: unset;
+  pointer-events: none;
+  font-weight: 400;
+  background-color: var(--color-file-input);
+  border: 1px solid var(--color-file-input);
+  color: var(--color-file-input-contrast);
+  color: #FFF;
+}
+.file-upload span,
+.file-upload button {
+  transition: var(--trans);
+  padding: 0.3em 1em;
+}
+.file-upload:not(:is(.reverse, .column)) button {
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.file-upload:not(:is(.reverse, .column)) span {
+  border-top: 1px solid var(--color-file-input);
+  border-bottom: 1px solid var(--color-file-input);
+  border-left: 1px solid var(--color-file-input);
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+.file-upload.column {
+  text-align: center;
+}
+/*.file-upload.column:not(.reverse) label {
+  flex-direction: column;
+}
+.file-upload.column:not(.reverse) button {
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.file-upload.column:not(.reverse) span {
+  border-top: 1px solid var(--color-file-input);
+  border-left: 1px solid var(--color-file-input);
+  border-right: 1px solid var(--color-file-input);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}*/
+.file-upload.reverse:not(.column) label {
+  flex-direction: row-reverse;
+}
+.file-upload.reverse:not(.column) button {
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+.file-upload.reverse:not(.column) span {
+  border-top: 1px solid var(--color-file-input);
+  border-bottom: 1px solid var(--color-file-input);
+  border-right: 1px solid var(--color-file-input);
+  border-top-right-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.file-upload.column.reverse label {
+  flex-direction: column-reverse;
+}
+.file-upload.column.reverse button {
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+}
+.file-upload.column.reverse span {
+  border-left: 1px solid var(--color-file-input);
+  border-right: 1px solid var(--color-file-input);
+  border-bottom: 1px solid var(--color-file-input);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
+.file-upload label {
+  display: inline-flex;
+  cursor: pointer;
+  box-sizing: initial;
+}
+.file-upload label:hover button, .file-upload label:focus-within button {
+  background-color: var(--color-file-input-hover);
+  border-color: var(--color-file-input-hover);
+  color: var(--color-file-input-hover-contrast);
+}
+.file-upload label:hover span, .file-upload label:focus-within span {
+  border-color: var(--color-file-input-hover);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+
 </style>
 </head>
 <body>
@@ -32,7 +157,7 @@ var fields = [
   <div class="prebody-content">
         <div class="container">
           <h2 class=cent>Hanuman Fellowship Membership</h2>
-            <img src='/static/images/hanuman-fellowship-graph.png' style="width: 550px; max-height: 160px;">
+            <img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
         </div>
     </div>
 
@@ -43,7 +168,7 @@ var fields = [
 
 <div class=mission>
 <p>The Hanuman Fellowship is organized, as inspired by the example and
-teachings of master yogi <a target=_blank href=https://www.mountmadonna.org/baba-hari-dass>Baba Hari Dass</a>,
+teachings of master yogi <a target="_blank" href="https://dev-mountmadonna.pantheonsite.io/about/baba-hari-dass/">Baba Hari Dass</a>,
 to promote the principles and practice of yoga by means of sadhana (spiritual practice), karma
 yoga (selfless service), and satsang (supportive community), as well
 as other spiritual disciplines and learning that foster personal
@@ -65,24 +190,27 @@ listed in the membership categories upon payment of annual dues.
 Eligibility to vote in the annual Board of Directors election is
 subject to confirmation by the members at the Annual
 General Meeting.
-</p><p>
+</p>
+<p>
 In Peace,<br>
 The Membership Committee<br>
 Hanuman Fellowship Board of Directors<br>
 <a href=mailto:memberships@mountmadonna.org>memberships@mountmadonna.org</a>
 </p>
 
+<div style="padding: 2.5em 0">
+
 <table cellpadding=10 border=1>
 <tr>
-<th colspan=2>MEMBERSHIP CATEGORIES</th>
-<th>BENEFITS</th>
+<th colspan=2 style="text-align:left">MEMBERSHIP CATEGORIES</th>
+<th style="text-align:left">BENEFITS</th>
 </tr>
 
 
 <tr>
-<th width=15%>General</th>
+<th width=15% style="text-align:left">General</th>
 <td>\$$mem_gen_amt Yearly Dues<br>
-&nbsp;&nbsp;<b>or</b><br>
+or<br>
 \$$mem_gen_ky_amt Yearly Dues + 20 hours Karma Yoga**
 </td>
 <td>
@@ -94,7 +222,7 @@ Hanuman Fellowship Board of Directors<br>
 </tr>
 
 <tr>
-<th>Sponsor</th>
+<th style="text-align:left">Sponsor</th>
 <td>\$$mem_spons_year Yearly Dues</td>
 <td>
 All above benefits, PLUS:
@@ -103,7 +231,7 @@ All above benefits, PLUS:
 <p>
 This can be taken:<br>
  As a Personal Retreat, subject to availability.<br>
-&nbsp;&nbsp;<b>or</b><br>
+or<br>
 For one of the four annual retreats:<br>
 Spring, Liberation, Fall, or
 New Year's.
@@ -115,7 +243,7 @@ amount of \$$mem_life_total is reached.
 </td>
 <tr>
 <tr>
-<th>Lifetime</th>
+<th style="text-align:left">Lifetime</th>
 <td>\$12,000 Lifetime Dues</td>
 <td>
 All above benefits, PLUS:
@@ -126,6 +254,8 @@ retreats: Spring, Liberation, Fall, or New Year's Retreat.
 </td>
 </tr>
 </table>
+
+</div>
 
 <div class=smaller>
 <p>** Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
@@ -228,18 +358,33 @@ the Hanuman Fellowship.
 <p>
 <textarea name=intro rows=5 cols=50>
 </textarea>
+
+<div style="padding: 2em 0;">
 <p>
 If available, please upload a photograph of yourself for the
 purpose of identification at the Annual General Meeting when new
 members are elected into the voting body.
-<p>
-<input type=file name=photo>
+</p>
+
+<section>
+        
+        <div class="file-upload reverse">
+            <input id="file-sr" type="file" name="photo" />
+            <label for="file-sr">
+                <span>Filename</span>
+                <button>Choose File</button>
+            </label>
+        </div>
+    </section>
+
+</div>
 <p>
 ** For those choosing the Karma Yoga option: In what areas would you like
 to become more involved (or continue your involvement) with HFS in
 order to perform your 20 hours of KY? (For example, help during
 retreats, on Saturdays after class (kitchen, landscaping, maintenance),
 Hanuman temple (tending, parking), and others.)
+</p>
 <p>
 <textarea name=ky rows=5 cols=50>
 </textarea>
@@ -253,6 +398,22 @@ document.getElementById('first').focus({ preventScroll: true });
 setTimeout(function() {
     window.scrollTo(0, 0);
 }, 50);
+
+//
+const finputs = Array.from(
+    document.querySelectorAll('.file-upload [type="file"]')
+);
+
+finputs.forEach((input) => {
+    input.addEventListener("change", (e) => {
+        const path = e.target.value;
+        const filenameField = e.target.parentElement.querySelector("span");
+        const filename = path.split(/\/|\\/).pop();
+        if (filename) filenameField.innerText = filename;
+        else filenameField.innerText = "Filename";
+    });
+});
+
 </script>
 </body>
 </html>
