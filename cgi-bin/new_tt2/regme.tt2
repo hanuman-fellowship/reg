@@ -28,7 +28,7 @@
             <div class="info-box">
                 <p>
                     The cost for the day is \$${ME_cost}.<br>
-                    Available only on ${weekdays} and some holidays.<br>
+                    Available only on ${weekdays}, some Sundays, and select weekdays.<br>
                     Reservations must be made at least 48 hours in advance.<br>
                     Mountain Experience bookings cannot be made more than 90 days in advance. 
                 </p>

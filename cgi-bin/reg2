@@ -249,8 +249,15 @@ if ($prog->discount_code) {
     # note that the only way to get a non-blank $form{disc_code}
     # is to have a $prog->discount_code
     #
-    if ($form{disc_code} =~ m{\S}xms) {
+    my $disc_code = $form{disc_code};
+    if ($disc_code =~ m{\S}xms) {
         if ($form{disc_code} ne $prog->discount_code) {
+            $err .= "Sorry, invalid Discount Code.";
+        }
+        elsif (($ME && $disc_code !~ m{\A ME}xms)
+               ||
+               (!$ME && $disc_code =~ m{\A ME}xms)
+        ) {
             $err .= "Sorry, invalid Discount Code.";
         }
         else {

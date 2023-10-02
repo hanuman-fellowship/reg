@@ -34,7 +34,7 @@ https://www.jquery-az.com/bootstrap-datepicker-set-up-guide-with-8-online-demos-
 <h1>Mountain Experience Registration</h1>
 The cost for the day is \$${ME_cost}.
 <br>
-Available only on ${weekdays} and some holidays.
+Available only on ${weekdays}, some Sundays, and select weekdays.
 <br>
 Reservations must be made at least 24 hours in advance.
 <p>
