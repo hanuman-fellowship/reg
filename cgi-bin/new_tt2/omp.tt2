@@ -34,8 +34,9 @@ button:hover {
 [% sans = person.sanskrit %]
 
 <div style="padding-bottom: 2.5em;">
-	<h3>Payment for a $category Membership in the Hanuman Fellowship</h3>
 	<img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
+	<h2>Payment for a $category Membership in the Hanuman Fellowship</h2>
+	
 </div>
 
 <dl>

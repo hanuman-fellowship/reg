@@ -156,8 +156,9 @@ var fields = [
   
   <div class="prebody-content">
         <div class="container">
+          <img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
           <h2 class=cent>Hanuman Fellowship Membership</h2>
-            <img src='/static/images/hanuman-fellowship-graph.png' style="width: 450px; max-height: 160px;">
+            
         </div>
     </div>
 
