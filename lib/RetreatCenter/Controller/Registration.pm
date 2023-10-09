@@ -4722,6 +4722,9 @@ sub lodge_do : Local {
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
     my $person = $reg->person();
     my $psex = $person->sex;
+    if ($psex eq 'R') {
+        $psex = 'X';    # In the daily pic X means not M or F.
+    }
 
     my $program = $reg->program();
     my $program_id = $reg->program_id;
