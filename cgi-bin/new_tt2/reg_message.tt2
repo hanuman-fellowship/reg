@@ -12,12 +12,7 @@
 <div class="mail-box-a">
     <div class="mail-box-b">
         
-[% IF sending_email %]
-    <img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
-[% ELSE %]
-    <img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.svg' width=200 style="width: 200px; max-height: 160px;">
-[% END %]
-
+<img src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.png' width=200 style="width: 200px; max-height: 160px;">
 
 <p>
 Thank you, ${first}.
