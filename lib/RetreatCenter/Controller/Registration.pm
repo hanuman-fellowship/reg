@@ -5268,6 +5268,8 @@ sub who_is_there : Local {
     if ($sex eq 'R') {
         # it is a rental
         # find a booking_rental with house $house_id on $the_date
+        # this will give us the rental_id.
+        # then we can look in the grid table.
         my (@rb) = model($c, 'RentalBooking')->search(
             {
                 house_id   => $house_id,
@@ -5282,6 +5284,23 @@ sub who_is_there : Local {
             }
         );
         my $rb = $rb[0];    # should only be 1
+        my $rental_id = $rb->rental->id;
+        my @grids = model($c, 'Grid')->search({
+                        rental_id => $rental_id,
+                        house_id  => $house_id,
+                    });
+        my $dt = date($the_date);
+        my $rdt = date($rb->rental->sdate);
+        my $i = $dt - $rdt;
+        my @names;
+        for my $g (@grids) {
+            my @days = split ' ', $g->occupancy;
+            if ($days[$i]) {
+                # they ARE attending this day
+                push @names, $g->name;
+            }
+        }
+        my $names = join ', ', @names;
         $c->res->output(
             "<center>"
             . $rb->house->name()
@@ -5293,6 +5312,7 @@ sub who_is_there : Local {
             . $rb->rental->name() . " - "
             . $string{$rb->h_type()}
             . "</a></td></tr>"
+            . "<tr><td style='text-indent: .5in'>$names</td></tr"
             . "</table>"
         );
         return;
