@@ -23,9 +23,23 @@
 </tr>
 
 <tr>
-<th align=right>Cost</th>
-<td align=left>$mp.cost</td>
+<th align=right>Costs</th>
+<td><table>
+
+<tr>
+<th align=right>1</th>
+<th align=right>2</th>
+<th align=right>3</th>
+<th align=right>4</th>
 </tr>
+<tr>
+<td align=right>$mp.cost1</td>
+<td align=right>$mp.cost2</td>
+<td align=right>$mp.cost3</td>
+<td align=right>$mp.cost4</td>
+</tr>
+
+</table></td></tr>
 
 <tr>
 <th align=right>Display Order</th>

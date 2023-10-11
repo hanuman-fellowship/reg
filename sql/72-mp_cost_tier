@@ -1,0 +1,1 @@
+alter table rental add column mp_cost_tier int(11) default 1;

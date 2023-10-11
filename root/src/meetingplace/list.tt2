@@ -6,7 +6,10 @@
 <th align=left>Abbr</th>
 <td align=left><a href="/meetingplace/list/0">Name</a></td>
 <td align=right><a href="/meetingplace/list/1">Max</a></td>
-<td align=right><a href="/meetingplace/list/2">Cost</a></td>
+<td align=right><a href="/meetingplace/list/2">Cost1</a></td>
+<td align=right>Cost2</td>
+<td align=right>Cost3</td>
+<td align=right>Cost4</td>
 <td align=right><a href="/meetingplace/list/3">Order</a></td>
 <th align=right>Sleeping</th>
 <th align=left>Color</th>
@@ -16,7 +19,10 @@
     <td>$mp.abbr</td>
     <td><a href="/meetingplace/view/$mp.id">$mp.name</a></td>
     <td align=right>$mp.max</td>
-    <td align=right>$mp.cost</td>
+    <td align=right>$mp.cost1</td>
+    <td align=right>$mp.cost2</td>
+    <td align=right>$mp.cost3</td>
+    <td align=right>$mp.cost4</td>
     <td align=right>$mp.disp_ord</td>
     <td align=center>[% IF mp.sleep_too == 'yes' %]<img src=/static/images/checked.gif>[% END %]</td>
     <td width=100 bgcolor=$mp.bgcolor style="border: solid; border-width: thin;"></td>

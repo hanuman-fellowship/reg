@@ -1,0 +1,4 @@
+alter table meeting_place change cost cost1 int(11) default 0;
+alter table meeting_place add column cost2 int(11) default 0;     
+alter table meeting_place add column cost3 int(11) default 0;
+alter table meeting_place add column cost4 int(11) default 0;

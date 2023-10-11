@@ -15,7 +15,10 @@ __PACKAGE__->add_columns(qw/
     disp_ord
     sleep_too
     color
-    cost
+    cost1
+    cost2
+    cost3
+    cost4
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -27,7 +30,10 @@ overview - A place reserved by a Program, Rental or Event for group gatherings.
     The reservations are made by creating Booking records.
 abbr - A short name for the place.
 color - RGB values for displaying the Meeting Place on the Calendar.
-cost - dollar cost of reserving this place
+cost1 - dollar cost of reserving this place - tier1
+cost2 - dollar cost of reserving this place - tier2
+cost3 - dollar cost of reserving this place - tier3
+cost4 - dollar cost of reserving this place - tier4
 disp_ord - What vertical space in the calendar?
 id - unique id
 max - Maximum # of people that can be accomodated.

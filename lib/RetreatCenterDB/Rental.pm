@@ -104,6 +104,8 @@ __PACKAGE__->add_columns(qw/
     mp_deposit
     day_retreat
     invoice_sent
+
+    mp_cost_tier
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -655,6 +657,11 @@ sub compute_balance {
     if ($rental->new_contract()) {
         ($mp_table, $mp_cost_per_day) = $rental->meeting_place_table();
         $mp_total_cost = $mp_cost_per_day * $n_nights;
+        if ($rental->mp_deposit) {
+            $rental->update({
+                deposit => $mp_total_cost,
+            });
+        }
     }
     else {
         # old contracts
@@ -792,6 +799,18 @@ sub other_request_br {
     return add_br($self->other_request);
 }
 
+# 'our' so we can reference outside
+our @tier_name = (
+    "Legacy",
+    "Small Business/Non-Profit/Educational",
+    "Medium",
+    "Corporate/Foundation/Institution",
+);
+sub mp_cost_tier_disp {
+    my ($self) = @_;
+    return $tier_name[$self->mp_cost_tier - 1];
+}
+
 sub meeting_place_table {
     my ($self) = @_;
     my $total = 0;
@@ -805,7 +824,9 @@ EOH
     for my $b ($self->bookings) {
         my $mp = $b->meeting_place;
         my $name = $mp->name;
-        my $cost = $mp->cost;
+        my $tier = $self->mp_cost_tier;
+        my $col = "cost$tier";
+        my $cost = $mp->$col;
         $total += $cost;
         $html .= <<"EOH";
 <tr>
@@ -886,6 +907,7 @@ meeting_request - special meeting place request
 meeting_request_cost - cost of special meeting place request
 mmc_does_reg - will we be doing registration for this event?
     if so, a parallel hybrid program will be created.
+mp_cost_tier - the meeting place cost tier (1 .. 4)
 mp_deposit - Deposit is taken from meeting place reservations.
     Only effective in new contracts (April 2022).  Otherwise
     the deposit is taken directly from the deposit field.

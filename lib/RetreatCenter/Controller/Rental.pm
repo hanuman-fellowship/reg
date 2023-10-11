@@ -266,6 +266,10 @@ sub create : Local {
         check_in_group_name  => '',
         check_new_contract   => 'yes',
         check_mp_deposit     => 'yes',
+        check_mp_cost_tier1  => 'checked',
+        check_mp_cost_tier2  => '',
+        check_mp_cost_tier3  => '',
+        check_mp_cost_tier4  => '',
     );
 }
 
@@ -851,6 +855,11 @@ sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
     my $r = model($c, 'Rental')->find($id);
+    my @check_mpc;
+    for my $i (1 .. 4) {
+        push @check_mpc, "check_mpc_$i",
+                         $r->mp_cost_tier == $i? "checked": "";
+    }
     stash($c,
         rental      => $r,
         edit_gl     => 1,
@@ -866,6 +875,7 @@ sub update : Local {
         check_mp_deposit => ($r->mp_deposit())? "checked": "",
         check_day_retreat => ($r->day_retreat())? "checked": "",
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
+        @check_mpc,
         #check_staff_ok => ($r->staff_ok())? "checked": "",
         check_rental_follows => ($r->rental_follows())? "checked": "",
         housecost_opts  =>

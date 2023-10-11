@@ -20,8 +20,20 @@
 </tr>
 
 <tr>
-<th align=right><span class=red>*</span> Cost</th>
-<td><input type=text name=cost value=$meetingplace.cost></td>
+<th align=right><span class=red>*</span> Costs</th>
+<td><table>
+<tr>
+<th align=right>1</th>
+<th align=right>2</th>
+<th align=right>3</th>
+<th align=right>4</th>
+</tr>
+<td align=right><input type=text name=cost1 size=4 value=$meetingplace.cost1></td>
+<td align=right><input type=text name=cost2 size=4 value=$meetingplace.cost2></td>
+<td align=right><input type=text name=cost3 size=4 value=$meetingplace.cost3></td>
+<td align=right><input type=text name=cost4 size=4 value=$meetingplace.cost4></td>
+</tr>
+</table></td>
 </tr>
 
 <tr>

@@ -202,6 +202,18 @@ These costs will apply for each day the person stays - regardless of how many ot
 </tr>
 
 <tr>
+<th valign=top>Meeting Place Cost Tier</th>
+<td>
+<table>
+<tr><td><input type=radio name=mp_cost_tier value=1 $check_mpc_1> Legacy</td></tr>
+<tr><td><input type=radio name=mp_cost_tier value=2 $check_mpc_2> Small Business/Non-Profit/Educational</td></tr>
+<tr><td><input type=radio name=mp_cost_tier value=3 $check_mpc_3> Medium</td></tr>
+<tr><td><input type=radio name=mp_cost_tier value=4 $check_mpc_4> Corporate/Foundation/Institution</td></tr>
+</table>
+</td>
+</tr>
+
+<tr>
 <th align=right>Contract in Group Name</th>
 <td><input type=checkbox name=in_group_name value="yes" $check_in_group_name></td>
 </tr>

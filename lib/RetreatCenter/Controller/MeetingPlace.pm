@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::MeetingPlace;
 use base 'Catalyst::Controller';
 
+use lib '../../';
+
 use Date::Simple qw/
     date
 /;
@@ -30,7 +32,10 @@ sub create : Local {
         green           => 127,
         blue            => 127,
         check_sleep_too => '',
-        cost            => 0,
+        cost1            => 0,
+        cost2            => 0,
+        cost3            => 0,
+        cost4            => 0,
         form_action     => "create_do",
         template        => "meetingplace/create_edit.tt2",
     );
@@ -47,7 +52,7 @@ sub _get_data {
         $hash{sleep_too} = '';
     }
     @mess = ();
-    for my $f (qw/abbr name disp_ord color cost/) {
+    for my $f (qw/abbr name disp_ord color cost1 cost2 cost3 cost4/) {
         if (empty($hash{$f})) {
             push @mess, "\u$f cannot be blank";
         }
@@ -56,8 +61,10 @@ sub _get_data {
         if ($hash{max} !~ m{^\d+$}) {
             push @mess, "Illegal maximum: $hash{max}";
         }
-        if ($hash{cost} !~ m{^\d+$}) {
-            push @mess, "Illegal cost: $hash{cost}";
+        for my $i (1 .. 4) {
+            if ($hash{"cost$i"} !~ m{^\d+$}) {
+                push @mess, qq!Illegal cost: $hash{"cost$i"}!;
+            }
         }
     }
     if (! $update) {
@@ -112,7 +119,7 @@ sub list : Local {
         @mp = sort { $b->max <=> $a->max } @mp;
     }
     elsif ($sort == 2) {
-        @mp = sort {$b->cost <=> $a->cost } @mp;
+        @mp = sort {$b->cost1 <=> $a->cost1 } @mp;
     }
     elsif ($sort == 3) {
         @mp = sort _by_disp @mp;
