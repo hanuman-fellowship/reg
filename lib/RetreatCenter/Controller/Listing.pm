@@ -3276,4 +3276,10 @@ sub mountain_experience : Local {
     );
 }
 
+sub dup_email : Local {
+    my ($self, $c) = @_;
+    my $out = `/var/www/src/dup_email`;
+    $c->res->output("<pre>$out</pre>");
+}
+
 1;

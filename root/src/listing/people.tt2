@@ -46,6 +46,8 @@ Phone Lists
     <p class=p2>
     <a href="/listing/activity_tally">Date of Last Contact - Tally by Year</a>
     <p class=p2>
+    <a target=_blank href="/listing/dup_email">Duplicate Emails</a>
+    <p class=p2>
     [% IF Catalyst.check_user_roles('prog_admin') %]
 
         <a href="/registration/online_history?sdate=week">Online Registration History</a>

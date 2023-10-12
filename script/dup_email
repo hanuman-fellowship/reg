@@ -1,0 +1,49 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use Util qw/
+    db_init
+/;
+my $c = db_init();
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "cannot connect to database\n";
+my $sth_get_people = $dbh->prepare(<<'EOS');
+    SELECT id, first, last, email
+      FROM people
+     WHERE email != ''
+  ORDER BY email
+EOS
+$sth_get_people->execute();
+my $nemails = 0;
+my %ndups;
+my ($prev_first, $prev_last, $prev_email) = ('') x 3;
+while (my $href = $sth_get_people->fetchrow_hashref()) {
+    if ($href->{email} eq $prev_email) {
+        my @dups = ("$prev_last, $prev_first",
+                    "$href->{last}, $href->{first}");
+        LOOP:
+        while ($href = $sth_get_people->fetchrow_hashref()) {
+            if ($href->{email} eq $prev_email) {
+                push @dups, "$href->{last}, $href->{first}";
+            }
+            else {
+                last LOOP;
+            }
+        }
+        my $nd = @dups;
+        print "$prev_email => ", join('|', @dups), " : $nd\n";
+        ++$nemails;
+        ++$ndups{$nd};
+    }
+    $prev_first = $href->{first};
+    $prev_last = $href->{last};
+    $prev_email = $href->{email};
+}
+print "$nemails emails\n";
+print "# people with same email => # emails\n";
+for my $k (sort { $b <=> $a } keys %ndups) {
+    print "$k => $ndups{$k}\n";
+}
