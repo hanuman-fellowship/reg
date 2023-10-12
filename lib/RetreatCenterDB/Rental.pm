@@ -799,8 +799,7 @@ sub other_request_br {
     return add_br($self->other_request);
 }
 
-# 'our' so we can reference outside
-our @tier_name = (
+my @tier_name = (
     "Legacy",
     "Small Business/Non-Profit/Educational",
     "Medium",

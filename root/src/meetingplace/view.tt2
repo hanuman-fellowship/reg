@@ -23,8 +23,8 @@
 </tr>
 
 <tr>
-<th align=right>Costs</th>
-<td><table>
+<th valign=top align=right>Costs</th>
+<td><table cellpadding=5 border=1>
 
 <tr>
 <th align=right>1</th>
@@ -39,7 +39,16 @@
 <td align=right>$mp.cost4</td>
 </tr>
 
-</table></td></tr>
+</table></td>
+
+<td>
+1 - Legacy<br>
+2 - Small Business/Non-Profit/Educational<br>
+3 - Medium<br>
+4 - Corporate/Foundation/Institute
+</td>
+
+</tr>
 
 <tr>
 <th align=right>Display Order</th>
