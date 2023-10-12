@@ -42,7 +42,8 @@ while (my $href = $sth_get_people->fetchrow_hashref()) {
     $prev_last = $href->{last};
     $prev_email = $href->{email};
 }
-print "$nemails emails\n";
+print "\n";
+print "$nemails total duplicated emails\n\n";
 print "# people with same email => # emails\n";
 for my $k (sort { $b <=> $a } keys %ndups) {
     print "$k => $ndups{$k}\n";
