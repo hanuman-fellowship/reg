@@ -310,9 +310,9 @@ sub create_many : Local {
             cur      => { '>', 0 },
         });
         next HOUSE if @cf;        # nope
-        my $check .= "<input type=checkbox name=h$h_id value=$h_id> "
+        my $check .= "<label><input type=checkbox name=h$h_id value=$h_id> "
               . $h->name()
-              . "<br>\n"
+              . "</label><br>\n"
               ;
         if ($h->tent()) {
             if ($h->center()) {
