@@ -128,7 +128,7 @@ Event Name <span class=required>*</span><br>
 </p>
 <p>
 Number of participants anticipated (15-200) <span class=required>*</span><br>
-<input type=text size=45 name=how_many id=how_many>
+<input type=text size=32 maxlength=32 name=how_many id=how_many>
 </p>
 <p>
 Short description of retreat<br>
