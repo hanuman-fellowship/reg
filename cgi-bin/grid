@@ -457,7 +457,8 @@ if ($P{process}) {
             if ($tot && $no_email) {
                 push @need_email, $h->{name} . " - $name";
             }
-            if (! $tot) {
+            if ($npeeps && ! $tot) {
+                JON "$npeeps people and no total cost for house $h->{name} - so skipping";
                 next BED;
             }
             push @fields, cost => $tot; # this 'cost' is the *total* cost
