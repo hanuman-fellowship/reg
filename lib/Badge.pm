@@ -199,7 +199,6 @@ sub get_badge_data_from_rental {
         return $mess;
     }
     my $d = $rental->sdate_obj();
-    my $ed = $rental->edate_obj();
 
     my @data;
     GRID:
@@ -209,7 +208,7 @@ sub get_badge_data_from_rental {
     ) {
         my $cost = $g->cost;
         my $house_id = $g->house_id;
-        if (!$cost) {
+        if (!$cost || $g->occupancy !~ /1/) {
             # no one is in that room
             # shouldn't be a record...
             next GRID;
@@ -224,15 +223,24 @@ sub get_badge_data_from_rental {
         # for 'child', '&', and 'and', see below
 
         # what nights?
-        my $this_d = $d;
-        my $this_ed = $ed;
-        while ($nights[0] == 0) {
-            shift @nights;
-            ++$this_d;
+        # there must be an easier way to do this...
+        my ($this_d, $this_ed);
+        for (my $i = 0; $i <= $#nights; ++$i) {
+            if ($nights[$i] == 1) {
+                $this_d = $d + $i;
+                last;
+            }
         }
-        while ($nights[-1] == 0) {
-            pop @nights;
-            --$this_ed;
+        for (my $i = $#nights; $i >= 0; --$i) {
+            if ($nights[$i] == 1) {
+                $this_ed = $d + $i + 1;
+                    # +1 for the next day...
+                last;
+            }
+        }
+        if ((! $this_d) || (! $this_ed)) {
+            # something is wrong
+            next GRID;
         }
         my $dates = $this_d->format("%b %e")
                   . ' - '
