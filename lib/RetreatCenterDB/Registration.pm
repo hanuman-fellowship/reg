@@ -234,7 +234,10 @@ sub balance_disp {
 sub from_where_verbose {
     my ($self) = @_;
     my $fw = $self->from_where();
-    if ($fw eq 'SJC') {
+    if (! $fw) {
+        return '';
+    }
+    elsif ($fw eq 'SJC') {
         return 'San Jose';
     }
     elsif ($fw eq 'SFO') {

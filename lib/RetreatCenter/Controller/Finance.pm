@@ -561,7 +561,7 @@ sub period_end : Local {
     # validation
     my $start = $sdate? date($sdate): "";
     if (! $start) {
-        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{mess} = "Illegal start date";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }

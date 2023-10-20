@@ -494,7 +494,7 @@ sub create_do : Local {
     if (exists $hash{fname}) {
         ($type, $fname) = split m{/}, $hash{fname};
         delete $hash{fname};
-        if ($type eq 'temple') {
+        if ($type && $type eq 'temple') {
             @temple = (temple_id => $fname);
         }
     }

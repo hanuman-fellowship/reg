@@ -2869,10 +2869,10 @@ sub badges : Local {
 sub color : Local {
     my ($self, $c, $rental_id) = @_;
     my $rental = model($c, 'Rental')->find($rental_id);
-    my ($r, $g, $b) = $rental->color() =~ m{\d+}g;
-    $r ||= 127;
-    $g ||= 127;
-    $b ||= 127;
+    my ($r, $g, $b) = (127, 127, 127);
+    if ($rental->color()) {
+        ($r, $g, $b) = $rental->color() =~ m{\d+}g;
+    }
     stash($c,
         Type     => 'Rental',
         type     => 'rental',

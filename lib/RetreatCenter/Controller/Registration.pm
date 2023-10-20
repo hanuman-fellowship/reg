@@ -532,7 +532,7 @@ EOH
     #
     # various fields from the online file make their way
     # into the stash...
-    if ($href->{progchoice} eq 'full') {
+    if ($href->{progchoice} && $href->{progchoice} eq 'full') {
         stash($c, date_end => $pr->edate_obj() + $pr->extradays);
     }
     for my $how (qw/ ad web brochure flyer word_of_mouth /) {
@@ -610,6 +610,7 @@ EOH
 
     my $fw = $href->{from_where};
     $href->{howHeard} ||= 'other';
+    $href->{green_amount} ||= 0;
     stash($c,
         comment         => $href->{request},
         share_first     => normalize($href->{withwhom_first}),

@@ -3150,9 +3150,9 @@ EOH
         my $per_email = $per->email;
         ++$day_of_week[$r->date_start_obj->day_of_week];
         my @regs = $per->registrations();
-        my $first = ($id == $regs[-1]->id)? 1: '';
+        my $first = ($id == $regs[-1]->id)? 1: 0;
         $tot_first += $first;
-        my $not_last = ($id != $regs[0]->id)? 1: '';
+        my $not_last = ($id != $regs[0]->id)? 1: 0;
         if ($first && ! $not_last) {
             ++$n_first_only;
             $emails .= "$per_name <$per_email>, ";

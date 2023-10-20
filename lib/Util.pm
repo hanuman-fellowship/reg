@@ -768,7 +768,7 @@ sub email_letter {
         $message .= "Failed to send email: $@\n";
     };
     $message = substr($message, 0, 256);        # in case it failed...
-    if ($args{activity_msg} ne 'none') {
+    if ($args{activity_msg} && $args{activity_msg} ne 'none') {
         add_activity($c, $args{activity_msg} || $message);
     }
 }
@@ -1986,7 +1986,7 @@ sub add_or_update_deduping {
     # is via a Mail Chimp import of unsubscriptions.
     KEY:
     for my $k (@mailing_keys) {
-        next KEY if $href->{$k} eq '-1';
+        next KEY if ! exists $href->{$k} || $href->{$k} eq '-1';
         if ($href->{$k} eq '1') {
             $href->{$k} = 'yes';
         }
@@ -2088,7 +2088,7 @@ sub add_or_update_deduping {
         # so we add a new person.
         #
         for my $k (@mailing_keys) {
-            if ($href->{$k} == -1) {
+            if ($href->{$k} eq '-1') {
                 $href->{$k} = '';
             }
         }
@@ -2505,6 +2505,9 @@ sub check_alt_packet {
 
 sub add_br {
     my ($s) = @_;
+    if (! $s) {
+        return '';
+    }
     $s =~ s{$}{<br>}xmsg;
     return $s;
 }
