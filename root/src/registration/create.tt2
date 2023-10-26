@@ -87,9 +87,9 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <tr>
 <th align=right>Adjacent Rental</th>
 <td>
-Before <input type=checkbox name=rental_before value=yes>
+Arriving Early<input type=checkbox name=rental_before value=yes>
 &nbsp;&nbsp;
-After <input type=checkbox name=rental_after value=yes>
+Extra Day<input type=checkbox name=rental_after value=yes>
 &nbsp;&nbsp;
 &nbsp;&nbsp;
 <b>OverRide a No PR</b>

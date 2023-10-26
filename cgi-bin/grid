@@ -443,6 +443,13 @@ if ($P{process}) {
                     }
                 }
             }
+            # If no occupancy ...
+            # if a name is present - give a warning
+            # if no name or note and no occupancy
+            #     skip it.
+            # name, email no days - it looks saved
+            # but on re-edit that name is gone.
+            #
             push @fields, occupancy => $occupancy;
             #
             # handle more than one person in a tent
