@@ -34,6 +34,7 @@ function toggle_all(clust_num) {
 [% heading %]
 <p class=p2>
 <input type=submit value="Submit">
+<a style='margin-left: 2in' href='/listing/housekeeping/0'>Reporte De Limpieza Para Hoy</a>
 [% content %]
 <p>
 <input type=submit value="Submit">

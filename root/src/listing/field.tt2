@@ -4,20 +4,15 @@
 
 <tr>
 <td>
-<a href="/listing/make_up">Room Make-Up List<a>
+<a href="/listing/make_up">Lista De Cuartos Para Limpiar<a>
 </td>
 <td align=right><a href=/listing/regen_make_up>Regenerate</a></td>
 </tr>
 
-<tr>
-<td>
-<a href="/listing/make_up/1">Campsite Make-Up List<a>
-</td></tr>
-
 <form action="/listing/housekeeping/0" method=POST>
 <tr>
 <td>
-<a href="/listing/housekeeping/0">Today's Housekeeping Report</a>
+<a href="/listing/housekeeping/0">Reporte De Limpieza Para Hoy</a>
 </td>
 <td align=left>
 On <input type=text size=10 name=hs_date>
@@ -25,6 +20,13 @@ On <input type=text size=10 name=hs_date>
 </td>
 </tr>
 </form>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td>
+<a href="/listing/make_up/1">Campsite Make-Up List<a>
+</td></tr>
 
 <form action="/listing/housekeeping/1" method=POST>
 <tr>
@@ -37,6 +39,8 @@ On <input type=text size=10 name=hs_date>
 </td>
 </tr>
 </form>
+
+<tr><td>&nbsp;</td></tr>
 
 <form action="/listing/field_plan" method=POST>
 <tr>

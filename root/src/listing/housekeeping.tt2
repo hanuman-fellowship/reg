@@ -1,9 +1,19 @@
-<h1>[% IF tent %]Campground[% ELSE %]Housekeeping[% END %] Report<br>[% the_date.format("%A %B %e, %Y") %]</h1>
-<a href="/listing/housekeeping/[% tent %]/[% prev_date %]" accesskey='b'><span class=keyed>B</span>ack</a>
+<h1>
+[% IF tent %]
+    Campground Report
+[% ELSE %]
+    Reporte De Limpieza
+[% END %]
+<span style="margin-left: 1in;">${the_date.format("%D")}</span>
+</h1>
+<a style='margin-left: 2.8in;' href='/listing/make_up'>Lista De Cuartos Para Limpiar</a>
+<p class=p2>
+<br>
+<a href="/listing/housekeeping/[% tent %]/[% prev_date %]" accesskey='b'>Atras</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/listing/housekeeping/[% tent %]/[% next_date %]" accesskey='n'><span class=keyed>N</span>ext</a>
+<a href="/listing/housekeeping/[% tent %]/[% next_date %]" accesskey='n'>Siguiente</a>
 <hr width=500 align=left>
-<h2>Arriving</h2>
+<h2>Llegando</h2>
 <ul>
 [% prev_clust = '' %]
 [% FOR h IN arriving_houses %]
@@ -20,7 +30,7 @@
 </ul>
 </ul>
 <hr width=500 align=left>
-<h2>Departing</h2>
+<h2>Saliendo</h2>
 <ul>
 [% prev_clust = '' %]
 [% FOR h IN departing_houses %]

@@ -1669,7 +1669,7 @@ sub housekeeping : Local {
             my $n = date($config->the_date()) - date($d8);
             my $name = $h->name();
             if ($n == 0) {
-                $next_needed{$name} = " - needed TODAY";
+                $next_needed{$name} = " - para HOY";
                 #
                 # see if the person(s) occupying it today
                 # is/are actually arriving today or if they
@@ -1680,11 +1680,11 @@ sub housekeeping : Local {
                                      house_id   => $hid,
                                  }))
                 ) {
-                    $next_needed{$name} .= " (already occupied)";
+                    $next_needed{$name} .= " (Ya Ocupado)";
                 }
             }
             else {
-                $next_needed{$name}  = " - needed in $n day";
+                $next_needed{$name}  = " - en $n dia";
                 $next_needed{$name} .= "s" if $n != 1;
             }
         }
@@ -1715,7 +1715,7 @@ sub make_up : Local {
     my $today = tt_today($c);
     my $prev_clust = '';
     my $type = ($tent)? "Campsite"
-               :        "Room"
+               :        "Cuarto"
                ;
     my $html = "";
     my $clust_num = 0;
@@ -1753,7 +1753,12 @@ sub make_up : Local {
 <span class=all>All <input type=checkbox onclick="toggle_all($clust_num)"></span>
 </h2>
 <ul>
-<table>
+<table cellpadding=7>
+<tr>
+<th align=left>Cuarto</th>
+<th align=left>Necesario Futuro</th>
+<th align=left>Vacio</th>
+</tr>
 EOH
             $prev_clust = $clust;
         }
@@ -1761,35 +1766,38 @@ EOH
         if ($mu->date_needed() && $mu->date_needed != 29991231) {
             $needed = $mu->date_needed_obj() - $today;
             if ($needed <= $string{make_up_urgent_days}) {
-                $needed = $needed ==  0? 'Today'
-                         :$needed ==  1? 'Tomorrow'
-                         :$needed == -1? 'Yesterday'
-                         :               "$needed days"
+                $needed = $needed ==  0? 'Para Hoy'
+                         :$needed ==  1? 'Ma&ntilde;ana'
+                         :$needed == -1? 'Fue Para Ayer'
+                         :               "$needed dias"
                          ;
                 if ($mu->refresh()) {
                     # most likely Today
-                    $needed .= " - Refresh";
+                    $needed .= " - Limpieza Ligera";
                 }
-                $needed = "<span style='color: red'>$needed</span>";
+                $needed = "<span style='color: red; font-weight: bold;'>$needed</span>";
             }
             else {
-                $needed .= " days";
+                $needed .= " dias";
             }
         }
         else {
-            $needed = "Never";
+            $needed = "Nunca";
         }
         ++$house_num;
-        $html .= "<tr><td><input type=checkbox id=$clust_num-$house_num name=h"
+        $html .= "<tr><td align=left><input type=checkbox id=$clust_num-$house_num name=h"
               .  $mu->house_id()
               .  "> "
               .  $mu->house->name()
-              .  "</td><td>&nbsp;&nbsp;&nbsp;$needed"
+              .  "</td><td align=left>$needed</td>"
+              .  "<td align=left>"
+                 . $mu->date_vacated_obj->format("%D")
+                 . "</td>"
               .  "</td></tr>\n"
               ;
     }
     $html .= "</table></ul>\n";
-    $c->stash->{heading} ="<span class=heading>$type Make-Up List</span>\n"
+    $c->stash->{heading} ="<span class=heading>Lista De ${type}s Para Limpiar</span>\n"
                         . "<span class=timestamp>As of "
                         . localtime()
                         . "</span>\n"
