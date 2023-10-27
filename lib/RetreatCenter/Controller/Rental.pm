@@ -1505,7 +1505,7 @@ sub del_booking : Local {
                      rental_id => $r->id,
                      house_id  => $h->id,
                  });
-    if ($grid) {
+    if ($grid && $grid->occupancy =~ /1/) {
         error($c,
             "Because the rental coordinator has assigned "
           . $grid->name
