@@ -8,6 +8,7 @@
 <p>
 Thank you, ${first}.
 <p>
-Your $type payment has been credited to ${rental_name}.
+Your $type payment of \$$amount has been credited to ${rental_name}.<br>
+The id for the transaction is: ${transaction_id}.
 </body>
 </html>

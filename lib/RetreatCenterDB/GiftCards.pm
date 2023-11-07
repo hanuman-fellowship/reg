@@ -58,4 +58,4 @@ rec_email - email of the recipient
 reg_id - foreign key to Registration (optional)
 the_date - date purchase was made
 the_time - time purchase was made
-transaction_id - authorize.net transaction id for online payments (optional)
+transaction_id - transaction id for online payments (optional)

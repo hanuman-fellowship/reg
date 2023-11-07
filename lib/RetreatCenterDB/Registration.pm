@@ -418,7 +418,7 @@ share_first - first name of the person they want to share a room with
 share_last - last name of the person they want to share a room with
 status - membership status - empty, Sponsor, Life, Founding Life
 time_postmark - what time did the initial registration happen?
-transaction_id - Authorize.net transaction id
+transaction_id - deposit payment transaction id
 work_study - do they want to do work study?
 work_study_comment - what kind of work do they want to do?
 work_study_safety - have they filled in a safety form?  This is in synchrony with

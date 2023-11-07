@@ -1,0 +1,1 @@
+alter table rental_payment add column transaction_id varchar(128);

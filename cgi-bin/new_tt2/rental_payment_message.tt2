@@ -11,7 +11,8 @@
 			Thank you, ${first}.
 			</h3>
 			<p>
-			Your $type payment has been credited to ${rental_name}.
+			Your $type payment of \$$amount has been credited to ${rental_name}.<br>
+            The id for this transaction is ${transaction_id}.
 			</p>
 		</div>
 	</div>

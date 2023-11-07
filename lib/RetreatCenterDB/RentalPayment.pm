@@ -30,6 +30,7 @@ __PACKAGE__->add_columns(qw/
     time
     amount
     type
+    transaction_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -106,5 +107,6 @@ id - unique id
 rental_id - foreign key to rental
 the_date - date the payment was made
 time - time the payment was made
+transaction_id - transaction id of online payment
 type - D (credit), C (check), S (cash), O (online)
 user_id - foreign key to user - the user who entered the payment

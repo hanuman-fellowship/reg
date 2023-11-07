@@ -50,12 +50,13 @@ my $rental = model($c, 'Rental')->find($P{rental_id});
 my $rental_name = $rental->name_trimmed;
 
 model($c, 'RentalPayment')->create({
-    amount    => $P{amount},
-    rental_id => $P{rental_id},
-    type      => 'O',
-    user_id     => 0,                 # what other user id?
-    the_date    => $today_d8,
-    time        => $now_t24,
+    amount         => $P{amount},
+    rental_id      => $P{rental_id},
+    type           => 'O',
+    user_id        => 0,                 # what other user id?
+    the_date       => $today_d8,
+    time           => $now_t24,
+    transaction_id => $P{transaction_id},
 });
 $rental->compute_balance();
 
@@ -74,17 +75,43 @@ email_letter($c,
     html    => $person->name . " paid \$$amount"
              . " for <a href='$rlink'>$rental_name</a>",
     activity_msg => "\u$P{type} payment of \$$amount"
-                  . " for <a href='$rlink'>$rental_name</a>",
+                  . " for <a href='/rental/view/$P{rental_id}/3'>$rental_name</a>",
 );
 
+# message to the screen
 use Template;
-Template->new(
+my $tt = Template->new(
     INTERPOLATE => 1,
-)->process(
+);
+$tt->process(
     styled('rental_payment_message.tt2'),
     {
-        first => $person->first,
-        type  => $P{type},
-        rental_name => $rental_name,
+        first          => $person->first,
+        type           => $P{type},
+        rental_name    => $rental_name,
+        amount         => $amount,
+        transaction_id => $P{transaction_id},
     }
+);
+
+# and send a similar email
+my $html;
+$tt->process(
+    'rental_payment_email.tt2',
+    {
+        first          => $person->first,
+        type           => $P{type},
+        rental_name    => $rental_name,
+        amount         => $amount,
+        transaction_id => $P{transaction_id},
+    },
+    \$html,
+);
+email_letter($c,
+    to      => $person->email,
+    from    => 'Mount Madonna Center <programs@mountmadonna.org>',
+                                # what else?
+    subject => "\u$P{type} payment of \$$amount received for $rental_name",
+    html    => $html,
+    activity_msg => "Email confirmation sent about payment for <a href='/rental/view/$P{rental_id}/3'>$rental_name</a>",
 );
