@@ -164,11 +164,19 @@ You requested lodging for a maximum of $rental.max people.
 [% IF rental.payments %]
 <h2>Payments</h2>
 <ul>
-<table class=ind cellpadding=3 border=0>
+<table class=ind cellpadding=5 border=0>
+<tr>
+<th valign=bottom align=left>Date</th>
+<th valign=bottom>Amount</th>
+<th valign=bottom>Transaction ID</th>
+<th valign=bottom>MMC<br>GL #<th>
+</tr>
     [% FOR p IN rental.payments %]
         <tr>
         <td class=xx>${p.the_date_obj.format("%D")}</td>
         <td class=yy>[% commify(p.amount_disp) %]</td>
+        <td class=zz>$p.transaction_id</td>
+        <td class=uu>$rental.glnum</td>
         </tr>
     [% END %]
     <tr><td colspan=2><hr></td></tr>
