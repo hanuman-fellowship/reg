@@ -150,6 +150,7 @@ dble_bath - the display name for the housing type 'dble_bath'
 dble_cabin - the display name for the housing type 'dble_cabin'
 dble_cottage1 - the display name for the housing type 'dble_cottage1'
 dble_cottage2 - the display name for the housing type 'dble_cottage2'
+dble_cottage3 - the display name for the housing type 'dble_cottage3'
 default_date_format - the format used when doing $dt->format() or when
     a $dt is stringified in a template.
 default_num_prog_days - when choosing 'Program' how many days
@@ -243,6 +244,7 @@ long_dble_bath - for housing type descriptions
 long_dble_cabin - for housing type descriptions
 long_dble_cottage1 - for housing type descriptions
 long_dble_cottage2 - for housing type descriptions
+long_dble_cottage3 - for housing type descriptions
 long_dormitory - for housing type descriptions
 long_economy - for housing type descriptions
 long_not_needed - for housing type descriptions
@@ -254,6 +256,7 @@ long_single_bath - for housing type descriptions
 long_single_cabin - for housing type descriptions
 long_single_cottage1 - for housing type descriptions
 long_single_cottage2 - for housing type descriptions
+long_single_cottage3 - for housing type descriptions
 long_triple - for housing type descriptions
 long_unknown - for housing type descriptions
 long_whole_cottage - for housing type descriptions
@@ -358,6 +361,7 @@ single_bath - the display name for the housing type 'single_bath'
 single_cabin - the display name for the housing type 'single_cabin'
 single_cottage1 - the display name for the housing type 'single_cottage1'
 single_cottage2 - the display name for the housing type 'single_cottage2'
+single_cottage3 - the display name for the housing type 'single_cottage3'
 smtp_auth - the 'auth' field for the SMTP server
 smtp_pass - the 'password' field for the SMTP server
 smtp_port - the 'port' field for the SMTP server

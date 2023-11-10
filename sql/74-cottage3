@@ -1,0 +1,8 @@
+insert into house (name, max, bath, tent, center, cabin, priority, x, y, cluster_id, cluster_order, inactive, disp_code, comment, resident, cat_abode, sq_foot, key_card, cottage) values ('RAM 3A', 2, '', '', '', '', 9, 280, 315, 4, 6, '', 'Bt', '', '', '', '', 'yes', 4);
+insert into house (name, max, bath, tent, center, cabin, priority, x, y, cluster_id, cluster_order, inactive, disp_code, comment, resident, cat_abode, sq_foot, key_card, cottage) values ('RAM 3B', 2, '', '', '', '', 9, 315, 315, 4, 7, '', 'Bt', '', '', '', '', 'yes', 4);
+insert into string (the_key, value) values ('single_cottage3', 'Single Cottage 3');
+insert into string (the_key, value) values ('dble_cottage3', 'Double Cottage 3');
+insert into string (the_key, value) values ('long_single_cottage3', 'Single Occupancy in a Cottage - Ram 3');
+insert into string (the_key, value) values ('long_dble_cottage3', 'Double Occupancy in a Cottage - Ram 3');
+alter table housecost add column single_cottage3 int not null default 0;
+alter table housecost add column dble_cottage3 int not null default 0;

@@ -1344,6 +1344,7 @@ sub booking : Local {
     my $ht_cottage = $h_type !~ m{cottage} ? 0
                     :$h_type =~ m{cottage1}? 1
                     :$h_type =~ m{cottage2}? 2
+                    :$h_type =~ m{cottage3}? 4
                     :                        3   # whole cottage
                     ;
     my $max    = type_max($h_type);

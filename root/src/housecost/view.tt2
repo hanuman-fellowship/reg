@@ -29,6 +29,11 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<th align=right>Single Cottage 3</th>
+<td align=right width=60>[% housecost.single_cottage3 %]</td>
+</tr>
+
+<tr>
 <th align=right>Double Cottage 1</th>
 <td align=right width=60>[% housecost.dble_cottage1 %]</td>
 </tr>
@@ -36,6 +41,11 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 <tr>
 <th align=right>Double Cottage 2</th>
 <td align=right width=60>[% housecost.dble_cottage2 %]</td>
+</tr>
+
+<tr>
+<th align=right>Double Cottage 3</th>
+<td align=right width=60>[% housecost.dble_cottage3 %]</td>
 </tr>
 
 <tr>

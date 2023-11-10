@@ -1,0 +1,6 @@
+insert into housing_type (
+    name, ht_order, short_desc, long_desc
+)
+values
+('dble_cottage3', '21', 'Double Cottage #3, shared bath', ''),
+('single_cottage3', '22', 'Single Cottage #3, shared bath', '');

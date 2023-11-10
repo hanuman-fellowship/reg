@@ -424,6 +424,11 @@ if ($P{process}) {
                                     :            $hcost{dble_cottage2}
                                     ;
                         }
+                        elsif ($cot == 4) {
+                            $cost += ($np == 1)? $hcost{single_cottage3}
+                                    :            $hcost{dble_cottage3}
+                                    ;
+                        }
                         elsif ($cot == 3) {
                             $cot3 = 1;
                             $cot3_name = $name; # the person's name

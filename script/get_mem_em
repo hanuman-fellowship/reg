@@ -1,0 +1,19 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB");
+my $get_sth = $dbh->prepare(<<'EOS');
+select p.email from member m, people p
+where m.person_id = p.id
+EOS
+$get_sth->execute();
+my %emails;
+while (my ($email) = $get_sth->fetchrow_array()) {
+    next unless $email;
+    $emails{$email} = 1;
+}
+for my $em (sort keys %emails) {
+    print "$em\n";
+}
+

@@ -536,8 +536,10 @@ sub housing_types {
         whole_cottage
         single_cottage1
         single_cottage2
+        single_cottage3
         dble_cottage1
         dble_cottage2
+        dble_cottage3
         single_bath
         single
         single_cabin
@@ -863,8 +865,10 @@ my %tmax = qw/
     whole_cottage   1
     single_cottage1 1
     single_cottage2 1
+    single_cottage3 1
     dble_cottage1   2
     dble_cottage2   2
+    dble_cottage3   2
     single_bath     1
     single          1
     single_cabin    1

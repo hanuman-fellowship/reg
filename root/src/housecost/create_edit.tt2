@@ -27,6 +27,11 @@
 </tr>
 
 <tr>
+<th align=right>Single Cottage 3</th>
+<td><input type=text name=single_cottage3 value='$housecost.single_cottage3' size=4></td>
+</tr>
+
+<tr>
 <th align=right>Double Cottage 1</th>
 <td><input type=text name=dble_cottage1 value='$housecost.dble_cottage1' size=4></td>
 </tr>
@@ -34,6 +39,11 @@
 <tr>
 <th align=right>Double Cottage 2</th>
 <td><input type=text name=dble_cottage2 value='$housecost.dble_cottage2' size=4></td>
+</tr>
+
+<tr>
+<th align=right>Double Cottage 3</th>
+<td><input type=text name=dble_cottage3 value='$housecost.dble_cottage3' size=4></td>
 </tr>
 
 <tr>
