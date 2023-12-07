@@ -210,9 +210,7 @@ Hanuman Fellowship Board of Directors<br>
 
 <tr>
 <th width=15% style="text-align:left">General</th>
-<td>\$$mem_gen_amt Yearly Dues<br>
-or<br>
-\$$mem_gen_ky_amt Yearly Dues + 20 hours Karma Yoga**
+<td>\$$mem_gen_amt Yearly Dues
 </td>
 <td>
 <ul>
@@ -259,8 +257,6 @@ retreats: Spring, Liberation, Fall, or New Year's Retreat.
 </div>
 
 <div class=smaller>
-<p>** Karma Yoga: Members can be directed toward KY opportunities by the membership committee.
-</p>
 <p>
 Please complete the form below and press Submit at the bottom:
 </p>
@@ -278,7 +274,6 @@ Please complete the form below and press Submit at the bottom:
 <td>
   <ul>
     <label><input type=radio name=mem_type value=general checked> General - \$$mem_gen_amt annually</label><br>
-    <label><input type=radio name=mem_type value=general_ky> General with KY** - \$$mem_gen_ky_amt annually + 20 hours KY</label><br>
     <label><input type=radio name=mem_type value=sponsor> Sponsor - \$$mem_spons_year annually</label>
   </ul>
 
@@ -379,16 +374,6 @@ members are elected into the voting body.
     </section>
 
 </div>
-<p>
-** For those choosing the Karma Yoga option: In what areas would you like
-to become more involved (or continue your involvement) with HFS in
-order to perform your 20 hours of KY? (For example, help during
-retreats, on Saturdays after class (kitchen, landscaping, maintenance),
-Hanuman temple (tending, parking), and others.)
-</p>
-<p>
-<textarea name=ky rows=5 cols=50>
-</textarea>
 <p>
 <button class="sub-button button tealn" type=submit>Submit</button>
 </form>
