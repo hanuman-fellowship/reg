@@ -1057,8 +1057,7 @@ sub auto_mailings : Local {
 }
 
 my %letter_for = qw/
-    dec10      lapse_gen_soon.tt2
-    dec10spons lapse_spons_soon.tt2
+    dec10      lapse_soon.tt2
     dec20      lapse.tt2
     jul11      alt_lapse.tt2
 /;
