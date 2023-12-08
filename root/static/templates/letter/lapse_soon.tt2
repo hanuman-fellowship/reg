@@ -23,9 +23,8 @@ development, and Hanuman Fellowship offerings for the community.
 <p>
 As you may know, in August 2022, the Hanuman Fellowship Bylaws were
 revised creating two broad categories of membership: Statutory
-(voting) Members and Supporting (non-voting) Members. As a $type
-Member at the time of this change, your membership has been
-automatically rolled into the Statutory (voting) Membership category.
+(voting) Members and Supporting (non-voting) Members.
+You are currently a Statutory (voting) Member.
 [% IF type == 'General' %]
 To continue your Statutory Membership for another year, please
 submit your payment of \$${string.mem_gen_amt}.
