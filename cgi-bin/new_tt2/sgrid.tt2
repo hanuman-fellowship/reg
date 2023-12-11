@@ -158,5 +158,8 @@ $days
 
            <!-- // PAGE CONTENT ENDS HERE -->
 [% INCLUDE new_tt2/footer.tt2 %]
+[% IF alert %]
+<script>alert('$alert');</script>
+[% END %]
 </body>
 </html>

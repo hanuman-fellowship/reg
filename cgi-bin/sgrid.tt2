@@ -143,5 +143,8 @@ $days
 [% END %]
 
 </table>
+[% IF alert %]
+<script>alert('$alert');</script>
+[% END %]
 </body>
 </html>

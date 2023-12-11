@@ -269,6 +269,7 @@ if ($P{process}) {
 
     my @records;        # an array of arrayrefs
                         # records to add.
+    my $alert = '';
 
     my @counts = (0) x $nnights;        # population each night
     my @need_email;
@@ -276,6 +277,7 @@ if ($P{process}) {
     my $cot3_name;
     my $gtotal = 0;
     my @fields;
+    my %cost_issue;
     HOUSE:
     for my $h (@houses) {
         my $id = $h->{id};
@@ -382,6 +384,7 @@ if ($P{process}) {
             NIGHT:
             for my $n (1 .. $nnights) {
                 my $occ = $P{"n$id\_$bed\_$n"} || 0;
+                my $Ncost = 0;  # night cost
                 $occupancy .= "$occ ";
                 if ($occ) {
                     #
@@ -396,9 +399,13 @@ if ($P{process}) {
                         next NIGHT;
                     }
                     if ($h->{tent}) {
-                        $cost += ($h->{own})? $hcost{own_tent}
+                        $Ncost = ($h->{own})? $hcost{own_tent}
                                 :             $hcost{center_tent}
                                 ;
+                        if (! $Ncost) {
+                            $alert .= "Zero cost for tent $h->{name} - Alert MMC!\\n";
+                        }
+                        $cost += $Ncost;
                         next NIGHT;
                     }
                     # how many people in this room this night?
@@ -415,37 +422,44 @@ if ($P{process}) {
                     if (my $cot = $h->{cottage}) {
                         if ($cot == 1) {
                             $cot1 = 1;
-                            $cost += ($np == 1)? $hcost{single_cottage1}
+                            $Ncost = ($np == 1)? $hcost{single_cottage1}
                                     :            $hcost{dble_cottage1}
                                     ;
                         }
                         elsif ($cot == 2) {
-                            $cost += ($np == 1)? $hcost{single_cottage2}
+                            $Ncost = ($np == 1)? $hcost{single_cottage2}
                                     :            $hcost{dble_cottage2}
                                     ;
                         }
                         elsif ($cot == 4) {
-                            $cost += ($np == 1)? $hcost{single_cottage3}
+                            $Ncost = ($np == 1)? $hcost{single_cottage3}
                                     :            $hcost{dble_cottage3}
                                     ;
                         }
                         elsif ($cot == 3) {
                             $cot3 = 1;
                             $cot3_name = $name; # the person's name
-                            $cost += $hcost{whole_cottage};
+                            $Ncost = $hcost{whole_cottage};
                         }
                         else {
                             # ???
                         }
                     }
                     else {
-                        $cost += ($np == 1            )? $hcost{"single$suffix"}
+                        $Ncost = ($np == 1            )? $hcost{"single$suffix"}
                                 :($np == 2            )? $hcost{"dble$suffix"}
                                 :($np == 3            )? $hcost{triple}
                                 :(4 <= $np && $np <= 7)? $hcost{dormitory}
                                 :                        $hcost{economy}
                                 ;
                     }
+                    if ($np && ! $Ncost) {
+                        my $day = ($sdate + $n - 1)->format("%A");
+                        $alert .= "There is a problem with the housing type cost for $name in house $h->{name} on $day - Alert MMC!\\n";
+                        $cost_issue{$name} = 1;
+                        $Ncost = 999;
+                    }
+                    $cost += $Ncost;
                 }
             }
             # If no occupancy ...
@@ -455,6 +469,9 @@ if ($P{process}) {
             # name, email no days - it looks saved
             # but on re-edit that name is gone.
             #
+            if ($name && $occupancy !~ /1/) {
+                $alert .= "$name in house $h->{name} has no nights checked!\\n";
+            }
             push @fields, occupancy => $occupancy;
             #
             # handle more than one person in a tent
@@ -469,10 +486,6 @@ if ($P{process}) {
             if ($tot && $no_email) {
                 push @need_email, $h->{name} . " - $name";
             }
-            if ($npeeps && ! $tot) {
-                JON "$npeeps people and no total cost for house $h->{name} - so skipping";
-                next BED;
-            }
             push @fields, cost => $tot; # this 'cost' is the *total* cost
             push @records, [ @fields ];
 
@@ -486,6 +499,7 @@ if ($P{process}) {
             }
             $P{"c$id\_$bed"} = $tot;        # to be displayed
             if (($tot == 0 && $name)
+                || $cost_issue{"$name"}
                 || $override_np
                 || $name =~ m{\&|\band\b}i
                 || $name =~ m{\b/\b}
@@ -575,7 +589,11 @@ if ($P{process}) {
         INTERPOLATE => 1,
         EVAL_PERL    => 0,
     });
+    if ($alert) {
+        $alert = "ALERT!!\\n\\n$alert";
+    }
     my $stash = {
+        alert   => $alert,
         new_way => $new_way,
         cgi     => $string{cgi},
         first   => $coord->first,
