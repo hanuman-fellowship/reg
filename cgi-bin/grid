@@ -318,10 +318,17 @@ if ($P{process}) {
                     $occupancy .= "$occ ";
                     $totn += $occ;
                 }
+                if ($name && $totn == 0) {
+                    my $type = $id == 1001? "Own Van": "Commuting";
+                    $alert .= "$name in $type has no nights checked!\\n";
+                    $P{"cl$id\_$bed"} = 1;
+                }
                 push @fields, occupancy => $occupancy;
                 my $cost = $totn * $per_night * $npeeps;
 
-                if ($cost) {
+                if ($name && ($cost || $totn == 0)) {
+                    # include records where there were
+                    # no nights checked.
                     push @fields, cost => $cost;
                     $P{"c$id\_$bed"} = $cost || "";
                     $gtotal += $cost;
@@ -404,6 +411,8 @@ if ($P{process}) {
                                 ;
                         if (! $Ncost) {
                             $alert .= "Zero cost for tent $h->{name} - Alert MMC!\\n";
+                            $cost_issue{$name} = 1;
+                            $Ncost = 10000;
                         }
                         $cost += $Ncost;
                         next NIGHT;
@@ -457,7 +466,7 @@ if ($P{process}) {
                         my $day = ($sdate + $n - 1)->format("%A");
                         $alert .= "There is a problem with the housing type cost for $name in house $h->{name} on $day - Alert MMC!\\n";
                         $cost_issue{$name} = 1;
-                        $Ncost = 999;
+                        $Ncost = 10000;
                     }
                     $cost += $Ncost;
                 }
@@ -486,8 +495,12 @@ if ($P{process}) {
             if ($tot && $no_email) {
                 push @need_email, $h->{name} . " - $name";
             }
-            push @fields, cost => $tot; # this 'cost' is the *total* cost
-            push @records, [ @fields ];
+            if ($name && ($tot || $occupancy !~ /1/)) {
+                # include records where there were
+                # no nights checked.
+                push @fields, cost => $tot; # this 'cost' is the *total* cost
+                push @records, [ @fields ];
+            }
 
             $gtotal += $tot;
             if ($name !~ m{\S} && ! $tot) {
@@ -605,6 +618,12 @@ if ($P{process}) {
         edate   => $edate,
 
         data    => \%P,
+            # we pass %P to display, however...
+            # it may contain erroneous data
+            # like notes and days checked but no name
+            # oh well.
+            # this will show on the next page
+            # but will disappear when re-editing.
         houses  => \@houses,
         nnights => $nnights,
         days    => $days,
