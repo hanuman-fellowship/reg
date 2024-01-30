@@ -272,4 +272,31 @@ sub date_ranges_do : Local {
     $c->response->redirect('/configuration/index');
 }
 
+my $dir = "/var/Reg/output";
+my $fname = "mmc_rg_export.tar";
+
+sub _mk_csv {
+    my ($type) = @_;
+    copy("/var/www/src/cgi-bin/rg_headers/$type.csv", "$dir/$type.csv");
+    open my $out, '>>', "$dir/$type.csv";
+    # branch on $type and fill in
+    close $out;
+}
+
+sub mmc_rg_export : Local {
+    my ($self, $c) = @_;
+    
+    _mk_csv("programs");
+    _mk_csv("rooms");
+    _mk_csv("teachers");
+    _mk_csv("registrations");
+    _mk_csv("lodgings");
+    _mk_csv("transactions");
+    system("cd $dir; tar cvf $fname *.csv");
+    open my $fh, '<', "$dir/$fname"
+        or die "$fname not found!!: $!\n";
+    $c->response->content_type('application/x-tar');
+    $c->response->body($fh);
+}
+
 1;

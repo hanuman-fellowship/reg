@@ -84,6 +84,7 @@ p {
     <a href=/project/list>Projects</a><p>
     <a href=/resident/list>Residents</a><p>
 [% END %]
+<a href='/configuration/mmc_rg_export'>RG Data Export</a><p>
 [% IF user_admin %]
     <a href=/role/list>Roles</a><p>
 [% END %]
