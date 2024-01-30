@@ -273,6 +273,7 @@ sub date_ranges_do : Local {
 }
 
 my $dir = "/var/Reg/output";
+#my $fname = "mmc_rg_export.zip";
 my $fname = "mmc_rg_export.tar";
 
 sub _mk_csv {
@@ -293,9 +294,13 @@ sub mmc_rg_export : Local {
     _mk_csv("lodgings");
     _mk_csv("transactions");
     system("cd $dir; tar cvf $fname *.csv");
+    #system("cd $dir; zip $fname *.csv");
     open my $fh, '<', "$dir/$fname"
         or die "$fname not found!!: $!\n";
     $c->response->content_type('application/x-tar');
+    #$c->response->content_type('application/x-zip');
+    # it downloads on OSX as mmc_rg_export not mmc_rg_export.zip
+    # it IS a .zip file
     $c->response->body($fh);
 }
 
