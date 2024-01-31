@@ -6,7 +6,7 @@
 <body>
 	<div class="message-box-a">
 		<div class="message-box-c">
-			<img src='/static/images/mmc-teal.png' width=200>
+			<img src='/static/images/mm-legacy-logo.png' width=200>
 			<h3>
 			Thank you, ${first}.
 			</h3>
