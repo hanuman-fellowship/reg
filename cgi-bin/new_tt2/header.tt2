@@ -3,7 +3,7 @@
     <!-- HEADER -->
     <div class="prebody-content">
         <div class="container">
-            <img src='/static/images/mm-legacy-logo.svg' width=250 style="width: 250px; max-height: 160px;">
+            <img src='/static/images/mm-legacy-logo.png' width=250 style="width: 250px; max-height: 160px;">
         </div>
     </div>
     <!-- // HEADER -->

@@ -265,6 +265,9 @@ sub att_prog_dates {
         $pedate = $prog->edate_obj() + $prog->extradays();
     }
     if ($psdate->month == $pedate->month) {
+        if ($psdate->day == $pedate->day) {
+            return $psdate->format("%B %e");
+        }
         return $psdate->format("%B %e-") . trim($pedate->format("%e"));
     }
     else {
