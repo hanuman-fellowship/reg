@@ -534,6 +534,27 @@ sub _quote {
     return qq!"$s"!;
 }
 
+sub _gender {
+    my ($sex) = @_;
+    return ($sex eq 'M' or $sex eq 'male'  )? 'Man'
+          :($sex eq 'F' or $sex eq 'female')? 'Woman'
+          :($sex eq 'T'                    )? 'Transgender'
+          :($sex eq 'R'                    )? 'Prefer not to respond'
+          :                                   'Non-binary/Non-conforming'
+          ;
+}
+
+# ?? all correct slugs?
+sub _fund_method {
+    my ($type) = @_;
+    return $type eq 'C'? 'check'
+          :$type eq 'D'? 'credit-card'
+          :$type eq 'S'? 'cash'
+          :$type eq 'O'? 'online'
+          :              'credit-card'
+          ;
+}
+
 sub _gen_csv {
     my ($c) = @_;
     my %RG_id_for;
@@ -565,6 +586,8 @@ sub _gen_csv {
                      || $per->tel_work
                      || $per->tel_home;;
         }
+
+        # PROGRAM
         print {$prog} join(',',
          $p->id,
          _quote($p->title),
@@ -581,15 +604,35 @@ sub _gen_csv {
             my $per = $r->person;
             my $time_submitted = '';
             if ($r->date_postmark) {
-                $time_submitted = $r->date_postmark_obj->format("D");
+                $time_submitted = $r->date_postmark_obj->format("%F");
                 if ($r->time_postmark) {
                     $time_submitted = ' '
-                        .  $r->time_postmark_obj->t24(),
+                        .  $r->time_postmark_obj->format('12'),
                 }
             }
-            # ?? house_id 0? commuting/own van/not needed
+            my $room_id = 0;
+            my $htype = $r->htype;
+            if ($r->house_id) {
+                $room_id = $RG_id_for{$r->house_id()};
+            }
+            elsif ($htype eq 'commuting') {
+                $room_id = 83;      # RG room 'Commuter 1 - 25p'
+                                    #                       50p   ? 85
+                                    #                       100p  ? 84
+            }
+            elsif ($htype eq 'own van') {
+                $room_id = 128;     # Lot CC
+                                    # Lot Redwood   ? 127
+                                    # Lot SH        ? 147
+                                    # Lot Log House ? 146
+            }
+            elsif ($htype eq 'not needed') {
+                $room_id = 0;       # ??
+            }
             my $comment = $r->comment;
             $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
+
+            # REGISTRATION
             print {$reg} join(',',
                 $r->id,
                 $per->first,
@@ -599,7 +642,7 @@ sub _gen_csv {
                 $time_submitted,
                 $r->date_start_obj->format("%D"),
                 $r->date_end_obj->format("%D"),
-                $RG_id_for{$r->house_id()},
+                $room_id,
                 _quote($per->addr1),
                 _quote($per->addr2),
                 $per->city,
@@ -607,19 +650,29 @@ sub _gen_csv {
                 $per->zip_post,
                 $per->country,
                 $per->tel_cell || $per->tel_home || $per->tel_work,
-                $per->sex,
+                _gender($per->sex),
                 _quote($comment),
             ), "\n";
 
-=comment
-
+            # TRANSACTIONS
+                # ?? charges and payments both?
+                # or just payments (= credit)
             for my $pay ($r->payments) {
-                my $amt = $pay->amount;
-                $tot += $amt;
+                print {$trans} join(',',
+                    'registration', # ??
+                    $r->id,
+                    $pay->the_date_obj->format("%F"),
+                    $pay->what,
+                    'payment',      # ??
+                    ,               # charge
+                    $pay->amount,   # credit
+                    'complete',
+                    ,               # trans id - do not have
+                    _fund_method($pay->type),       # D/C/S/O
+                    0, # is test
+                    # notes
+                ), "\n";
             }
-
-=cut
-
         }
     }
 
@@ -639,6 +692,8 @@ sub _gen_csv {
         my $phone = $contact->tel_cell
                     || $contact->tel_home
                     || $contact->tel_work;
+        
+        # PROGRAM (aka RENTAL)
         print {$prog} join(',',
          $r->id,        # ??? dup with Program? it's okay
          $r->title,
@@ -650,17 +705,35 @@ sub _gen_csv {
          $name
         ), "\n";
 
-=comment
-
+        # RENTAL DEPOSIT PAYMENTS
         for my $pay ($r->payments()) {
-            my $amt = int($pay->amount);
+            print {$trans} join(',',
+                'rental-payment',   # object-type??
+                $r->id,             # rental id
+                $pay->the_date_obj->format("%F"),
+                ,                   # no description
+                'payment',      # ??
+                ,               # charge
+                $pay->amount,   # credit
+                'complete',
+                $pay->transaction_id,
+                _fund_method($pay->type),       # D/C/S/O
+                0, # is test
+                # notes
+            ), "\n";
         }
-
-=cut
 
         for my $g (model($c, 'Grid')->search({ rental_id => $r->id })) {
             my $room_id = $g->house_id;
-            # ??? room_id > 1000??? commuting/own van
+            if ($room_id == 1001) {
+                $room_id = 128;     # see above
+            }
+            elsif ($room_id == 1002) {
+                $room_id = 83;      # see above
+            }
+            else {
+                $room_id = $RG_id_for{$room_id};
+            }
             my @names = split ' ', $g->name;
             my $first = shift @names;
             my $last = "@names";
@@ -679,6 +752,8 @@ sub _gen_csv {
             }
             my $start = ($r->sdate_obj + $arr)->format("%F");
             my $end   = ($r->sdate_obj + $dep + 1)->format("%F");
+
+            # REGISTRATION (aka grid entry)
             print {$reg} join(',',
                 $g->rental_id . $g->house_id . $g->bed_num,
                     # a concocted id for transactions
@@ -689,7 +764,7 @@ sub _gen_csv {
                 '',   # time_submitted,
                 $start,
                 $end,
-                $RG_id_for{$room_id},       # commuting?? no housing??
+                $room_id,
                 '', # addr1,
                 '', # addr2,
                 '', # city,
@@ -700,9 +775,16 @@ sub _gen_csv {
                 '', # sex,
                 '', # comment
             ), "\n";
+
             my $cost = int($g->cost);
-            # concoct a transaction - even though we don't
-            # have the individual transaction.
+
+            # concoct a transaction? - even though we don't
+            # have the individual transaction?
+
+            # TRANSACTION (amount due in the grid but not collected)
+            # we DO collect the *total* of all of these costs
+            # from the rental coordinator - plus other costs
+            # such as meeting place, extra time fees, etc.
         }
 
     }
