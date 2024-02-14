@@ -754,15 +754,17 @@ sub _gen_csv {
         my $phone = $contact->tel_cell
                     || $contact->tel_home
                     || $contact->tel_work;
+        my $ren_start = $ren->sdate_obj->format("%F");
+        my $ren_end   = $ren->edate_obj->format("%F");
         
         # PROGRAM (aka RENTAL)
         print {$prog_fh} join(',',
             $ren->id,        # ??? dup with Program? it's okay
             _quote($ren->title),
             _quote($ren->webdesc),
-            $ren->sdate_obj->format("%F"),
-            $ren->edate_obj->format("%F"),
-            $ren->sdate_obj->format("%F"),
+            $ren_start,
+            $ren_end,
+            $ren_start,
             $email,
             $phone,
             $name,
@@ -784,8 +786,8 @@ sub _gen_csv {
             $email,
             $ren->id,     # the rental id
             $N,   # time_submitted,
-            $ren->sdate_obj->format("%F"),
-            $ren->edate_obj->format("%F"),
+            $ren_start,
+            $ren_end,
             $N,   # room id
             $N,   # parent id - blank or 0??
             _quote($contact->addr1),     # addr1,
@@ -898,7 +900,7 @@ sub _gen_csv {
             print {$trans_fh} join(',',
                 'rental-charge',    # object-type??
                 $reg_id,      # NOT the coordinator id - the reg id
-                $ren->the_date_obj->format("%F"),   # date of the rental start??
+                $ren_start,   # okay??
                 'room charge',  # description
                 'charge',       # category
                 $cost,          # charge
