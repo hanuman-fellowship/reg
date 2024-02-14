@@ -603,7 +603,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        if ($partial && $$p->id != $part_program_id) {
+        if ($partial && $p->id != $part_program_id) {
             next PROGRAM;
         }
         my ($email, $phone, $name);
