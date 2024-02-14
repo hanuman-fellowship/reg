@@ -848,7 +848,7 @@ sub _gen_csv {
         0,
     ), "\n";
     for my $per (model($c, 'Person')->search(
-        { date_updat => $last_active },
+        { date_updat => { '>=' => $last_active } },
     )) {
         ++$reg_id;
         print {$reg_fh} join(',',
