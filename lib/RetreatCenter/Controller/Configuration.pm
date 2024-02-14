@@ -822,7 +822,7 @@ sub _gen_csv {
                 'rental-payment',   # object-type??
                 $coord_reg_id,      # coordinator id
                 $pay->the_date_obj->format("%F"),
-                _quote($pay->what), # description
+                $N,             # description - none??
                 'payment',      # category
                 $N,             # charge - 0 or blank??
                 $pay->amount,   # credit
