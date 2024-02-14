@@ -432,7 +432,7 @@ leave_date
 *person_id_original
 room_id
 *lodging_id
-*parent_registration_id_original
+parent_registration_id_original
 address
 address2
 city
@@ -569,13 +569,14 @@ sub _fund_method {
 # reg - registration
 # ren - rental
 # pay - payment
+# cha - charges
 # trans - transaction
 # part - partial
 #
 sub _gen_csv {
     my ($c) = @_;
 
-    my $reg_id = 0;
+    my $reg_id = 0;     # for concocted registrations (rentals)
 
     # parameters for a partial test export
     my $partial = 1;
@@ -584,6 +585,8 @@ sub _gen_csv {
     my $part_program_id = 4866;
     my $part_rental_id = 2007;
     my $last_active = 20240201;
+    my $N = '';
+    my $Z = 0;
 
     my %RG_id_for;
     for my $line (split '\n', $Reg_id_RG_id_mapping) {
@@ -634,8 +637,9 @@ sub _gen_csv {
 
         REG:
         for my $reg ($prog->registrations) {
+            my $r_id = $reg->id;
             my $per = $reg->person;
-            my $time_submitted = '';
+            my $time_submitted = $N;
             if ($reg->date_postmark) {
                 $time_submitted = $reg->date_postmark_obj->format("%F");
                 if ($reg->time_postmark) {
@@ -667,7 +671,7 @@ sub _gen_csv {
 
             # REGISTRATION
             print {$reg_fh} join(',',
-                $reg->id,
+                $r_id,
                 $per->first,
                 $per->last,
                 $per->email,
@@ -676,6 +680,7 @@ sub _gen_csv {
                 $reg->date_start_obj->format("%D"),
                 $reg->date_end_obj->format("%D"),
                 $room_id,
+                $N,         # parent id?? blank or 0??
                 _quote($per->addr1),
                 _quote($per->addr2),
                 $per->city,
@@ -688,22 +693,39 @@ sub _gen_csv {
             ), "\n";
 
             # TRANSACTIONS
-                # ?? charges and payments both?
-                # or just payments (= credit)
+            #
+            # CHARGES
+            for my $cha ($reg->charges()) {
+                print {$trans_fh} join(',',
+                    'registration', # object type??
+                    $r_id,
+                    $cha->the_date_obj->format("%F"),
+                    _quote($cha->what),  # description
+                    $cha->type_disp, # category??
+                    $cha->amount,    # charge
+                    $N,              # credit - 0 or blank??
+                    'complete',      # status??
+                    $N,              # trans id - do not have
+                    $N,              # funding method?? - blank = not a payment
+                    $Z, # is test
+                        # notes
+                ), "\n";
+            }
+            # PAYMENTS
             for my $pay ($reg->payments) {
                 print {$trans_fh} join(',',
-                    'registration', # ??
-                    $reg->id,
+                    'registration', # object type??
+                    $r_id,
                     $pay->the_date_obj->format("%F"),
-                    $pay->what,
-                    'payment',      # ??
-                    ,               # charge
+                    _quote($pay->what),  # description
+                    'payment',      # category??
+                    $N,             # charge - 0 or blank??
                     $pay->amount,   # credit
-                    'complete',
-                    ,               # trans id - do not have
+                    'complete',     # status??
+                    $N,             # trans id - do not have
                     _fund_method($pay->type),       # D/C/S/O
-                    0, # is test
-                    # notes
+                    $Z,             # is test
+                    $N,             # notes
                 ), "\n";
             }
         }
@@ -726,6 +748,7 @@ sub _gen_csv {
             next RENTAL;
         }
         my $contact = $ren->coordinator();
+            # this is a Person!
         my $name = $contact->name;
         my $email = $contact->email; 
         my $phone = $contact->tel_cell
@@ -746,23 +769,68 @@ sub _gen_csv {
             $ren->max,
         ), "\n";
 
-        # RENTAL DEPOSIT PAYMENTS
-        # attribute them to a registration for the coordinator
-        # concocted registrations begin at 1 and increment
+        # COORDINATOR REGISTRATION as a parent for others
+        # (no housing assignment)
+        # and for deposit and payments
+        ++$reg_id;
+        my $coord_reg_id = $reg_id;     # for concocted registrations
+                                        # from the grid.
+        # The coordinator will have TWO registrations??
+        # one as parent/coordinator and one as room occupier
+        print {$reg_fh} join(',',
+            $reg_id,
+            $contact->first,
+            $contact->last,
+            $email,
+            $ren->id,     # the rental id
+            $N,   # time_submitted,
+            $ren->sdate_obj->format("%F"),
+            $ren->edate_obj->format("%F"),
+            $N,   # room id
+            $N,   # parent id - blank or 0??
+            _quote($contact->addr1),     # addr1,
+            _quote($contact->addr2),     # addr2,
+            $contact->city,      # city,
+            $contact->st_prov,   # st_prov,
+            $contact->zip_post,  # zip_post,
+            $contact->country,   # country,
+            $phone,
+            _gender($contact->sex),    # sex,
+            _quote($contact->comment), # comment
+        ), "\n";
+
+        # RENTAL CHARGES and PAYMENTS
+        # attribute them all to the registration for the coordinator
+        for my $cha ($ren->charges()) {
+            print {$trans_fh} join(',',
+                'rental-charge',    # object-type??
+                $coord_reg_id,      # coordinator id
+                $cha->the_date_obj->format("%F"),
+                _quote($cha->what), # description
+                'charge',       # category
+                $cha->amount,   # charge
+                $N,             # credit - 0 or blank??
+                'complete',     # status
+                $N,             # no transaction id
+                $N,             # funding method - none as a charge
+                $Z,             # is test
+                $N,             # notes
+            ), "\n";
+        }
         for my $pay ($ren->payments()) {
             print {$trans_fh} join(',',
                 'rental-payment',   # object-type??
-                $ren->id,             # rental id
+                $coord_reg_id,      # coordinator id
                 $pay->the_date_obj->format("%F"),
-                ,                   # no description
-                'payment',      # ??
-                ,               # charge
+                _quote($pay->what), # description
+                'payment',      # category
+                $N,             # charge - 0 or blank??
                 $pay->amount,   # credit
-                'complete',
-                $pay->transaction_id,
+                'complete',     # status
+                $N,             # no transaction id
                 _fund_method($pay->type),       # D/C/S/O
-                0, # is test
-                # notes
+                $Z,             # is test
+                $N,             # notes
             ), "\n";
         }
 
@@ -778,10 +846,15 @@ sub _gen_csv {
                 $room_id = $RG_id_for{$room_id};
             }
             my @names = split ' ', $g->name;
+
+            # ?? What about children?  What about two names?
+            # ?? Just let it be - in the last name?  Just one cost.
+            # ?? Messy.
+
             my $first = shift @names;
             my $last = "@names";
             my ($email) = $g->notes =~ m{(\S+[@]\S+)}xms;
-            # a concocted 'registration'
+            # create a "concocted" 'registration'
             my @days = split ' ', $g->occupancy;
                 # use @days below
             my ($arr, $dep);
@@ -804,30 +877,38 @@ sub _gen_csv {
                 $last,
                 $email,
                 $ren->id,     # the rental id
-                '',   # time_submitted,
+                $N,   # time_submitted,
                 $start,
                 $end,
                 $room_id,
-                '', # addr1,
-                '', # addr2,
-                '', # city,
-                '', # st_prov,
-                '', # zip_post,
-                '', # country,
-                '', # tel_cell || $per->tel_home || $per->tel_work,
-                '', # sex,
-                '', # comment
+                $coord_reg_id,      # PARENT REG ID!!
+                $N, # addr1,
+                $N, # addr2,
+                $N, # city,
+                $N, # st_prov,
+                $N, # zip_post,
+                $N, # country,
+                $N, # tel_cell || $per->tel_home || $per->tel_work,
+                $N, # sex,
+                $N, # comment
             ), "\n";
 
+            # TRANSACTION - CHARGE for the room, not a payment
             my $cost = int($g->cost);
-
-            # concoct a transaction? - even though we don't
-            # have the individual transaction?
-
-            # TRANSACTION (amount due in the grid but not collected)
-            # we DO collect the *total* of all of these costs
-            # from the rental coordinator - plus other costs
-            # such as meeting place, extra time fees, etc.
+            print {$trans_fh} join(',',
+                'rental-charge',    # object-type??
+                $reg_id,      # NOT the coordinator id - the reg id
+                $ren->the_date_obj->format("%F"),   # date of the rental start??
+                'room charge',  # description
+                'charge',       # category
+                $cost,          # charge
+                $N,             # credit - 0 or blank??
+                'complete',     # status??
+                $N,             # no transaction id
+                $N,             # funding method - none as a charge
+                $Z,             # is test
+                $N,             # notes
+            ), "\n";
         }
         if ($partial && $ren->id == $part_rental_id) {
             last RENTAL;
@@ -837,15 +918,16 @@ sub _gen_csv {
     # ??create the program to hold these people (aka registrations)
     print {$prog_fh} join(',',
         1,      # ??
-        'Program to Hold People from Reg',        # title
-        'A fictitous program to import people records from Reg',   # description
-        $start_F,
-        $start_F,
-        $start_F,
-        '',
-        '',
-        '',
-        0,
+        'Program to Hold People from Reg',   # title?? what name??
+        'A fictitous program to import people records from Reg',
+                                             # description?? what desc??
+        $start_F,   # start okay??
+        $start_F,   # end??
+        $start_F,   # list until date??
+        $N, # email
+        $N, # phone
+        $N, # name
+        $Z, # max
     ), "\n";
     for my $per (model($c, 'Person')->search(
         { date_updat => { '>=' => $last_active } },
@@ -858,9 +940,11 @@ sub _gen_csv {
             $per->email,
             1,          # the 'last active' program id
             '12:00',    # time_submitted,
-            $start_F,       # "date start" of reg
-            $start_F,       # "date end"   of reg
-            0,
+            $start_F,       # "date start" of "reg"
+            $start_F,       # "date end"   of "reg"
+                # ?? or should it be the date_updat?
+            $Z,             # room id
+            $Z,             # parent id
             $per->addr1,    # addr1,
             $per->addr2,    # addr2,
             $per->city,     # city,
@@ -871,6 +955,7 @@ sub _gen_csv {
             _gender($per->sex), # sex,
             $per->comment,  # comment
         ), "\n";
+        # no transactions
     }
     close $prog_fh;
     close $reg_fh;
