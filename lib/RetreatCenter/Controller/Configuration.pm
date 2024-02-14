@@ -395,7 +395,7 @@ EOM
 my @prog_headers = qw/
 program_id_original
 title
-*description
+description
 *date_type
 date_start
 date_end
@@ -414,7 +414,7 @@ contact_name
 *first_price
 *lodging_ids
 *price_note
-*capacity_max
+capacity_max
 *categories
 *email_message
 /;
@@ -555,26 +555,57 @@ sub _fund_method {
           ;
 }
 
+#
+# ??
+# have a way of generating a test sample - not all
+# specific ids for rentals and programs
+# and a limited number of people in the concocted program
+# to hold people's names, emails, etc
+# the full export will start at a point with 
+# a specific last contact date.
+#
+# naming conventions:
+# prog - program
+# reg - registration
+# ren - rental
+# pay - payment
+# trans - transaction
+# part - partial
+#
 sub _gen_csv {
     my ($c) = @_;
+
+    my $reg_id = 0;
+
+    # parameters for a partial test export
+    my $partial = 1;
+    my $start = today()->as_d8();
+    my $start_F = today()->format("%F");
+    my $part_program_id = 4866;
+    my $part_rental_id = 2007;
+    my $last_active = 20240101;
+
     my %RG_id_for;
     for my $line (split '\n', $Reg_id_RG_id_mapping) {
         my ($Reg_id, $RG_id) = $line =~ m{\A \s* (\d+) \s+ (\d+)}xms;
         $RG_id_for{$Reg_id} = $RG_id;
     }
-    open my $prog,  '>', "$dir/programs.csv";
-    open my $reg ,  '>', "$dir/registrations.csv";
-    open my $trans, '>', "$dir/transactions.csv";
-    print {$prog}  join(',', grep { ! /\A[*]/ } @prog_headers),  "\n";
-    print {$reg}   join(',', grep { ! /\A[*]/ } @reg_headers),   "\n";
-    print {$trans} join(',', grep { ! /\A[*]/ } @trans_headers), "\n";
-    my $start = today()->as_d8();
+    open my $prog_fh,  '>', "$dir/programs.csv";
+    open my $reg_fh,   '>', "$dir/registrations.csv";
+    open my $trans_fh, '>', "$dir/transactions.csv";
+    print {$prog_fh}  join(',', grep { ! /\A[*]/ } @prog_headers),  "\n";
+    print {$reg_fh}   join(',', grep { ! /\A[*]/ } @reg_headers),   "\n";
+    print {$trans_fh} join(',', grep { ! /\A[*]/ } @trans_headers), "\n";
+    PROGRAM:
     for my $p (
         model($c, 'Program')->search(
             { edate => { '>=' => $start } },
             { order_by => 'sdate' }
         )
     ) {
+        if ($partial && $$p->id != $part_program_id) {
+            next PROGRAM;
+        }
         my ($email, $phone, $name);
         my @leaders = $p->leaders;
         if (@leaders) {
@@ -588,32 +619,34 @@ sub _gen_csv {
         }
 
         # PROGRAM
-        print {$prog} join(',',
+        print {$prog_fh} join(',',
          $p->id,
          _quote($p->title),
+         _quote($p->webdesc),
          $p->sdate_obj->format("%F"),
          $p->edate_obj->format("%F"),
          $p->sdate_obj->format("%F"),
          $email,
          $phone,
-         $name
+         $name,
+         $p->max,
         ), "\n";
 
         REG:
-        for my $r ($p->registrations) {
-            my $per = $r->person;
+        for my $reg ($p->registrations) {
+            my $per = $reg->person;
             my $time_submitted = '';
-            if ($r->date_postmark) {
-                $time_submitted = $r->date_postmark_obj->format("%F");
-                if ($r->time_postmark) {
+            if ($reg->date_postmark) {
+                $time_submitted = $reg->date_postmark_obj->format("%F");
+                if ($reg->time_postmark) {
                     $time_submitted = ' '
-                        .  $r->time_postmark_obj->format('12'),
+                        .  $reg->time_postmark_obj->format('12'),
                 }
             }
             my $room_id = 0;
-            my $htype = $r->htype;
-            if ($r->house_id) {
-                $room_id = $RG_id_for{$r->house_id()};
+            my $htype = $reg->htype;
+            if ($reg->house_id) {
+                $room_id = $RG_id_for{$reg->house_id()};
             }
             elsif ($htype eq 'commuting') {
                 $room_id = 83;      # RG room 'Commuter 1 - 25p'
@@ -629,19 +662,19 @@ sub _gen_csv {
             elsif ($htype eq 'not needed') {
                 $room_id = 0;       # ??
             }
-            my $comment = $r->comment;
+            my $comment = $reg->comment;
             $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
 
             # REGISTRATION
-            print {$reg} join(',',
-                $r->id,
+            print {$reg_fh} join(',',
+                $reg->id,
                 $per->first,
                 $per->last,
                 $per->email,
                 $p->id,
                 $time_submitted,
-                $r->date_start_obj->format("%D"),
-                $r->date_end_obj->format("%D"),
+                $reg->date_start_obj->format("%D"),
+                $reg->date_end_obj->format("%D"),
                 $room_id,
                 _quote($per->addr1),
                 _quote($per->addr2),
@@ -657,10 +690,10 @@ sub _gen_csv {
             # TRANSACTIONS
                 # ?? charges and payments both?
                 # or just payments (= credit)
-            for my $pay ($r->payments) {
-                print {$trans} join(',',
+            for my $pay ($reg->payments) {
+                print {$trans_fh} join(',',
                     'registration', # ??
-                    $r->id,
+                    $reg->id,
                     $pay->the_date_obj->format("%F"),
                     $pay->what,
                     'payment',      # ??
@@ -674,19 +707,25 @@ sub _gen_csv {
                 ), "\n";
             }
         }
+        if ($partial && $$p->id == $part_program_id) {
+            last PROGRAM;
+        }
     }
 
     RENTAL:
-    for my $r (
+    for my $ren (
         model($c, 'Rental')->search(
             { edate => { '>=' => $start } },
             { order_by => 'sdate' }
         )
     ) {
-        if ($r->program_id) {
+        if ($ren->program_id) {
             next RENTAL;
         }
-        my $contact = $r->coordinator();
+        if ($partial && $ren->id != $part_rental_id) {
+            next RENTAL;
+        }
+        my $contact = $ren->coordinator();
         my $name = $contact->name;
         my $email = $contact->email; 
         my $phone = $contact->tel_cell
@@ -694,22 +733,26 @@ sub _gen_csv {
                     || $contact->tel_work;
         
         # PROGRAM (aka RENTAL)
-        print {$prog} join(',',
-         $r->id,        # ??? dup with Program? it's okay
-         $r->title,
-         $r->sdate_obj->format("%F"),
-         $r->edate_obj->format("%F"),
-         $r->sdate_obj->format("%F"),
-         $email,
-         $phone,
-         $name
+        print {$prog_fh} join(',',
+            $ren->id,        # ??? dup with Program? it's okay
+            _quote($ren->title),
+            _quote($ren->webdesc),
+            $ren->sdate_obj->format("%F"),
+            $ren->edate_obj->format("%F"),
+            $ren->sdate_obj->format("%F"),
+            $email,
+            $phone,
+            $name,
+            $ren->max,
         ), "\n";
 
         # RENTAL DEPOSIT PAYMENTS
-        for my $pay ($r->payments()) {
-            print {$trans} join(',',
+        # attribute them to a registration for the coordinator
+        # concocted registrations begin at 1 and increment
+        for my $pay ($ren->payments()) {
+            print {$trans_fh} join(',',
                 'rental-payment',   # object-type??
-                $r->id,             # rental id
+                $ren->id,             # rental id
                 $pay->the_date_obj->format("%F"),
                 ,                   # no description
                 'payment',      # ??
@@ -723,7 +766,7 @@ sub _gen_csv {
             ), "\n";
         }
 
-        for my $g (model($c, 'Grid')->search({ rental_id => $r->id })) {
+        for my $g (model($c, 'Grid')->search({ rental_id => $ren->id })) {
             my $room_id = $g->house_id;
             if ($room_id == 1001) {
                 $room_id = 128;     # see above
@@ -750,17 +793,17 @@ sub _gen_csv {
                     $dep = $i;
                 }
             }
-            my $start = ($r->sdate_obj + $arr)->format("%F");
-            my $end   = ($r->sdate_obj + $dep + 1)->format("%F");
+            my $start = ($ren->sdate_obj + $arr)->format("%F");
+            my $end   = ($ren->sdate_obj + $dep + 1)->format("%F");
 
             # REGISTRATION (aka grid entry)
-            print {$reg} join(',',
-                $g->rental_id . $g->house_id . $g->bed_num,
-                    # a concocted id for transactions
+            ++$reg_id;
+            print {$reg_fh} join(',',
+                $reg_id,
                 $first,
                 $last,
                 $email,
-                $r->id,     # the rental id
+                $ren->id,     # the rental id
                 '',   # time_submitted,
                 $start,
                 $end,
@@ -786,11 +829,52 @@ sub _gen_csv {
             # from the rental coordinator - plus other costs
             # such as meeting place, extra time fees, etc.
         }
-
+        if ($partial && $ren->id == $part_rental_id) {
+            last RENTAL;
+        }
     }
-    close $prog;
-    close $reg;
-    close $trans;
+    # LAST ACTIVE
+    # ??create the program to hold these people (aka registrations)
+    print {$prog_fh} join(',',
+        1,      # ??
+        'Program to Hold People from Reg',        # title
+        'A fictitous program to import people records from Reg',   # description
+        $start_F,
+        $start_F,
+        $start_F,
+        '',
+        '',
+        '',
+        0,
+    ), "\n";
+    for my $per (model($c, 'Person')->search(
+        { date_updat => $last_active },
+    )) {
+        ++$reg_id;
+        print {$reg_fh} join(',',
+            $reg_id,
+            $per->first,
+            $per->last,
+            $per->email,
+            1,          # the 'last active' program id
+            '12:00',    # time_submitted,
+            $start_F,       # "date start" of reg
+            $start_F,       # "date end"   of reg
+            0,
+            $per->addr1,    # addr1,
+            $per->addr2,    # addr2,
+            $per->city,     # city,
+            $per->st_prov,  # st_prov,
+            $per->zip_post, # zip_post,
+            $per->country,  # country,
+            $per->tel_cell || $per->tel_home || $per->tel_work,
+            _gender($per->sex), # sex,
+            $per->comment,  # comment
+        ), "\n";
+    }
+    close $prog_fh;
+    close $reg_fh;
+    close $trans_fh;
 }
 
 sub mmc_rg_export : Local {
