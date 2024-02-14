@@ -644,7 +644,7 @@ sub _gen_csv {
                 }
             }
             my $room_id = 0;
-            my $htype = $reg->htype;
+            my $htype = $reg->h_type;
             if ($reg->house_id) {
                 $room_id = $RG_id_for{$reg->house_id()};
             }
