@@ -583,7 +583,7 @@ sub _gen_csv {
     my $start_F = today()->format("%F");
     my $part_program_id = 4866;
     my $part_rental_id = 2007;
-    my $last_active = 20240101;
+    my $last_active = 20240201;
 
     my %RG_id_for;
     for my $line (split '\n', $Reg_id_RG_id_mapping) {
