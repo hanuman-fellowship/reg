@@ -597,17 +597,17 @@ sub _gen_csv {
     print {$reg_fh}   join(',', grep { ! /\A[*]/ } @reg_headers),   "\n";
     print {$trans_fh} join(',', grep { ! /\A[*]/ } @trans_headers), "\n";
     PROGRAM:
-    for my $p (
+    for my $prog (
         model($c, 'Program')->search(
             { edate => { '>=' => $start } },
             { order_by => 'sdate' }
         )
     ) {
-        if ($partial && $p->id != $part_program_id) {
+        if ($partial && $prog->id != $part_program_id) {
             next PROGRAM;
         }
         my ($email, $phone, $name);
-        my @leaders = $p->leaders;
+        my @leaders = $prog->leaders;
         if (@leaders) {
             my $lead = $leaders[0];
             my $per = $lead->person;
@@ -620,20 +620,20 @@ sub _gen_csv {
 
         # PROGRAM
         print {$prog_fh} join(',',
-         $p->id,
-         _quote($p->title),
-         _quote($p->webdesc),
-         $p->sdate_obj->format("%F"),
-         $p->edate_obj->format("%F"),
-         $p->sdate_obj->format("%F"),
-         $email,
-         $phone,
-         $name,
-         $p->max,
+            $prog->id,
+            _quote($prog->title),
+            _quote($prog->webdesc),
+            $prog->sdate_obj->format("%F"),
+            $prog->edate_obj->format("%F"),
+            $prog->sdate_obj->format("%F"),
+            $email,
+            $phone,
+            $name,
+            $prog->max,
         ), "\n";
 
         REG:
-        for my $reg ($p->registrations) {
+        for my $reg ($prog->registrations) {
             my $per = $reg->person;
             my $time_submitted = '';
             if ($reg->date_postmark) {
@@ -671,7 +671,7 @@ sub _gen_csv {
                 $per->first,
                 $per->last,
                 $per->email,
-                $p->id,
+                $prog->id,
                 $time_submitted,
                 $reg->date_start_obj->format("%D"),
                 $reg->date_end_obj->format("%D"),
@@ -707,7 +707,7 @@ sub _gen_csv {
                 ), "\n";
             }
         }
-        if ($partial && $$p->id == $part_program_id) {
+        if ($partial && $prog->id == $part_program_id) {
             last PROGRAM;
         }
     }
