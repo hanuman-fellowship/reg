@@ -958,6 +958,8 @@ sub _gen_csv {
             $per->comment,  # comment
         ), "\n";
         # no transactions
+
+        # what about affiliations?? aka tags??
     }
     close $prog_fh;
     close $reg_fh;
