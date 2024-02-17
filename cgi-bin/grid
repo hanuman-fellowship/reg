@@ -410,7 +410,7 @@ if ($P{process}) {
                                 :             $hcost{center_tent}
                                 ;
                         if (! $Ncost) {
-                            $alert .= "Zero cost for tent $h->{name} - Alert MMC!\\n";
+                            $alert .= "Zero cost for tent $h->{name}.\\n";
                             $cost_issue{$name} = 1;
                             $Ncost = 10000;
                         }
@@ -464,7 +464,7 @@ if ($P{process}) {
                     }
                     if ($np && ! $Ncost) {
                         my $day = ($sdate + $n - 1)->format("%A");
-                        $alert .= "There is a problem with the housing type cost for $name in house $h->{name} on $day - Alert MMC!\\n";
+                        $alert .= "There is a problem with the housing type cost for $name in house $h->{name} on $day.\\n";
                         $cost_issue{$name} = 1;
                         $Ncost = 10000;
                     }
@@ -603,7 +603,7 @@ if ($P{process}) {
         EVAL_PERL    => 0,
     });
     if ($alert) {
-        $alert = "ALERT!!\\n\\n$alert";
+        $alert = "Please call the Guest Services Director to resolve the following issues.  Phone number: (408) 846-4009\\n\\n$alert";
     }
     my $stash = {
         alert   => $alert,
