@@ -635,6 +635,7 @@ EOS
 my %country_code_for;
 open my $fh, '<', \$country_code;
 while (my $line = <$fh>) {
+    chomp $line;
     my ($country, $code) = split '\s*,\s*', $line;
     $country_code_for{$country} = $code;
 }
