@@ -1044,7 +1044,7 @@ sub _gen_csv {
             $per->last,
             $per->email,
             1,          # the 'last active' program id
-            '$start_F 12:00',    # date, time_submitted,
+            "$start_F 12:00",    # date, time_submitted,
             $start_F,       # "date start" of "reg"
             $start_F,       # "date end"   of "reg"
                 # ?? or should it be the date_updat?
