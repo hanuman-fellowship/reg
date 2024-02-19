@@ -745,11 +745,10 @@ sub _gen_csv {
             my $per = $reg->person;
             my $time_submitted = $N;
             if ($reg->date_postmark) {
-                $time_submitted = $reg->date_postmark_obj->format("%F");
-                if ($reg->time_postmark) {
-                    $time_submitted = ' '
-                        .  $reg->time_postmark_obj->format('12'),
-                }
+                $time_submitted = $reg->date_postmark_obj->format("%F")
+                                . ' '
+                                . ($reg->time_postmark || '12:00')
+                                ;
             }
             my $room_id = 0;
             my $htype = $reg->h_type;
@@ -812,7 +811,7 @@ sub _gen_csv {
                     $N,              # trans id - do not have
                     $N,              # funding method?? - blank = not a payment
                     $Z, # is test
-                        # notes
+                    $N, # notes
                 ]);
             }
             # PAYMENTS
@@ -1045,12 +1044,12 @@ sub _gen_csv {
             $per->last,
             $per->email,
             1,          # the 'last active' program id
-            '12:00',    # time_submitted,
+            '$start_F 12:00',    # date, time_submitted,
             $start_F,       # "date start" of "reg"
             $start_F,       # "date end"   of "reg"
                 # ?? or should it be the date_updat?
             $N,             # room id
-            $Z,             # parent id
+            $N,             # parent id
             $per->addr1,    # addr1,
             $per->addr2,    # addr2,
             $per->city,     # city,
