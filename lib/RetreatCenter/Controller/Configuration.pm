@@ -700,9 +700,9 @@ sub _gen_csv {
     open my $prog_fh,  '>:encoding(utf8)', "$dir/programs.csv";
     open my $reg_fh,   '>:encoding(utf8)', "$dir/registrations.csv";
     open my $trans_fh, '>:encoding(utf8)', "$dir/transactions.csv";
-    $csv->say($prog_fh,  grep { ! /\A[*]/ } @prog_headers);
-    $csv->say($reg_fh,   grep { ! /\A[*]/ } @reg_headers);
-    $csv->say($trans_fh, grep { ! /\A[*]/ } @trans_headers);
+    $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
+    $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
+    $csv->say($trans_fh, [ grep { ! /\A[*]/ } @trans_headers ]);
     PROGRAM:
     for my $prog (
         model($c, 'Program')->search(
@@ -726,7 +726,7 @@ sub _gen_csv {
         }
 
         # PROGRAM
-        $csv->say($prog_fh,
+        $csv->say($prog_fh, [
             $prog->id,
             $prog->title,
             $prog->webdesc,
@@ -737,7 +737,7 @@ sub _gen_csv {
             $phone,
             $name,
             $prog->max,
-        );
+        ]);
 
         REG:
         for my $reg ($prog->registrations) {
@@ -774,7 +774,7 @@ sub _gen_csv {
             $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
 
             # REGISTRATION
-            $csv->say($reg_fh,
+            $csv->say($reg_fh, [
                 $r_id,
                 $per->first,
                 $per->last,
@@ -794,13 +794,13 @@ sub _gen_csv {
                 $per->tel_cell || $per->tel_home || $per->tel_work,
                 _gender($per->sex),
                 $comment,
-            );
+            ]);
 
             # TRANSACTIONS
             #
             # CHARGES
             for my $cha ($reg->charges()) {
-                $csv->say($trans_fh,
+                $csv->say($trans_fh, [
                     'registration', # object type??
                     $r_id,
                     $cha->the_date_obj->format("%F"),
@@ -813,11 +813,11 @@ sub _gen_csv {
                     $N,              # funding method?? - blank = not a payment
                     $Z, # is test
                         # notes
-                );
+                ]);
             }
             # PAYMENTS
             for my $pay ($reg->payments) {
-                $csv->say($trans_fh,
+                $csv->say($trans_fh, [
                     'registration', # object type??
                     $r_id,
                     $pay->the_date_obj->format("%F"),
@@ -830,7 +830,7 @@ sub _gen_csv {
                     _fund_method($pay->type),       # D/C/S/O
                     $Z,             # is test
                     $N,             # notes
-                );
+                ]);
             }
         }
         if ($partial && $prog->id == $part_program_id) {
@@ -862,7 +862,7 @@ sub _gen_csv {
         my $ren_end   = $ren->edate_obj->format("%F");
         
         # PROGRAM (aka RENTAL)
-        $csv->say($prog_fh,
+        $csv->say($prog_fh, [
             $ren->id,        # ??? dup with Program? it's okay
             $ren->title,
             $ren->webdesc,
@@ -873,7 +873,7 @@ sub _gen_csv {
             $phone,
             $name,
             $ren->max,
-        );
+        ]);
 
         # COORDINATOR REGISTRATION as a parent for others
         # (no housing assignment)
@@ -883,7 +883,7 @@ sub _gen_csv {
                                         # from the grid.
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
-        $csv->say($reg_fh,
+        $csv->say($reg_fh, [
             $reg_id,
             $contact->first,
             $contact->last,
@@ -903,12 +903,12 @@ sub _gen_csv {
             $phone,
             _gender($contact->sex),    # sex,
             $contact->comment, # comment
-        );
+        ]);
 
         # RENTAL CHARGES and PAYMENTS
         # attribute them all to the registration for the coordinator
         for my $cha ($ren->charges()) {
-            $csv->say($trans_fh,
+            $csv->say($trans_fh, [
                 'registration',     # object-type
                 $coord_reg_id,      # coordinator id
                 $cha->the_date_obj->format("%F"),
@@ -921,10 +921,10 @@ sub _gen_csv {
                 $N,             # funding method - none as a charge
                 $Z,             # is test
                 $N,             # notes
-            );
+            ]);
         }
         for my $pay ($ren->payments()) {
-            $csv->say($trans_fh,
+            $csv->say($trans_fh, [
                 'registration',     # object-type
                 $coord_reg_id,      # coordinator id
                 $pay->the_date_obj->format("%F"),
@@ -937,7 +937,7 @@ sub _gen_csv {
                 _fund_method($pay->type),       # D/C/S/O
                 $Z,             # is test
                 $N,             # notes
-            );
+            ]);
         }
 
         for my $g (model($c, 'Grid')->search({ rental_id => $ren->id })) {
@@ -977,7 +977,7 @@ sub _gen_csv {
 
             # REGISTRATION (aka grid entry)
             ++$reg_id;
-            $csv->say($reg_fh,
+            $csv->say($reg_fh, [
                 $reg_id,
                 $first,
                 $last,
@@ -997,11 +997,11 @@ sub _gen_csv {
                 $N, # tel_cell || $per->tel_home || $per->tel_work,
                 $N, # sex,
                 $N, # comment
-            );
+            ]);
 
             # TRANSACTION - CHARGE for the room, not a payment
             my $cost = int($g->cost);
-            $csv->say($trans_fh,
+            $csv->say($trans_fh, [
                 'registration',  # object-type
                 $reg_id,      # NOT the coordinator id - the reg id
                 $ren_start,   # okay??
@@ -1014,7 +1014,7 @@ sub _gen_csv {
                 $N,             # funding method - none as a charge
                 $Z,             # is test
                 $N,             # notes
-            );
+            ]);
         }
         if ($partial && $ren->id == $part_rental_id) {
             last RENTAL;
@@ -1022,7 +1022,7 @@ sub _gen_csv {
     }
     # LAST ACTIVE
     # ??create the program to hold these people (aka registrations)
-    $csv->say($prog_fh,
+    $csv->say($prog_fh, [
         1,      # ??
         'Program to Hold People from Reg',   # title?? what name??
         'A fictitous program to import people records from Reg',
@@ -1034,12 +1034,12 @@ sub _gen_csv {
         $N, # phone
         $N, # name
         $Z, # max
-    );
+    ]);
     for my $per (model($c, 'Person')->search(
         { date_updat => { '>=' => $last_active } },
     )) {
         ++$reg_id;
-        $csv->say($reg_fh,
+        $csv->say($reg_fh, [
             $reg_id,
             $per->first,
             $per->last,
@@ -1060,7 +1060,7 @@ sub _gen_csv {
             $per->tel_cell || $per->tel_home || $per->tel_work,
             _gender($per->sex), # sex,
             $per->comment,  # comment
-        );
+        ]);
         # no transactions
 
         # what about affiliations?? aka tags??
