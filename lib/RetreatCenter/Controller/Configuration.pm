@@ -642,6 +642,9 @@ while (my $line = <$fh>) {
 
 sub _gender {
     my ($sex) = @_;
+    if (! $sex) {
+        return 'im-not-sharing-a-room';
+    }
     return ($sex eq 'M' or $sex eq 'male'  )? 'male'
           :($sex eq 'F' or $sex eq 'female')? 'female'
           :($sex eq 'T'                    )? 'trans'
