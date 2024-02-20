@@ -700,9 +700,12 @@ sub _gen_csv {
         $RG_id_for{$Reg_id} = $RG_id;
     }
     my $csv = Text::CSV->new ({ binary => 1, auto_diag => 1 });
-    open my $prog_fh,  '>:encoding(utf8)', "$dir/programs.csv";
-    open my $reg_fh,   '>:encoding(utf8)', "$dir/registrations.csv";
-    open my $trans_fh, '>:encoding(utf8)', "$dir/transactions.csv";
+    open my $prog_fh,  '>:encoding(utf8)', "$dir/programs.csv"
+        or die "no prog";
+    open my $reg_fh,   '>:encoding(utf8)', "$dir/registrations.csv"
+        or die "no reg";
+    open my $trans_fh, '>:encoding(utf8)', "$dir/transactions.csv"
+        or die "no trans";
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
     $csv->say($trans_fh, [ grep { ! /\A[*]/ } @trans_headers ]);

@@ -1,0 +1,13 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib 'lib';
+use Text::CSV;
+use RetreatCenterDB;
+use RetreatCenter::Controller::Configuration;
+use Util qw/
+    db_init
+/;
+my $c = db_init();
+RetreatCenter::Controller::Configuration::_gen_csv($c);
+
