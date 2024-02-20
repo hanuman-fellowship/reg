@@ -427,7 +427,7 @@ last_name
 email
 *program_id
 program_id_original
-*status
+status
 time_submitted
 arrive_date
 leave_date
@@ -451,7 +451,7 @@ country
 *org-web-page
 *rs-inquiry-email
 *rs-inquiry-firstname
-*guest_type
+guest_type
 *flag-person
 *black_listed
 *flag-notes
@@ -686,9 +686,11 @@ sub _gen_csv {
     my $partial = 1;
     my $start = today()->as_d8();
     my $start_F = today()->format("%F");
-    my $part_program_id = 4866;
-    my $part_rental_id = 2007;
-    my $last_active = 20240201;
+    my %part_program_id = (4866 => 1, 4872 => 1, 4962 => 1);
+        # Pelvis is Everything, March PR, Shivarati Overnight
+    my %part_rental_id = (2007 => 1, 1837 => 1);
+        # SRF, Aspire
+    my $last_active = 20240101;
     my $N = '';
     my $Z = 0;
 
@@ -711,7 +713,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        if ($partial && $prog->id != $part_program_id) {
+        if ($partial && !$part_program_id{$prog->id}) {
             next PROGRAM;
         }
         my ($email, $phone, $name);
@@ -780,6 +782,7 @@ sub _gen_csv {
                 $per->last,
                 $per->email,
                 $prog->id,
+                'reserved', # status
                 $time_submitted,
                 $reg->date_start_obj->format("%F"),
                 $reg->date_end_obj->format("%F"),
@@ -791,6 +794,7 @@ sub _gen_csv {
                 $per->st_prov,
                 $per->zip_post,
                 $country_code_for{$per->country} || $N,
+                'participant',  # guest_type
                 $per->tel_cell || $per->tel_home || $per->tel_work,
                 _gender($per->sex),
                 $comment,
@@ -817,24 +821,23 @@ sub _gen_csv {
             }
             # PAYMENTS
             for my $pay ($reg->payments) {
+                my $fund_m = _fund_method($pay->type);       # D/C/S/O
                 $csv->say($trans_fh, [
                     'registration', # object type??
                     $r_id,
                     $pay->the_date_obj->format("%F"),
                     $pay->what,     # description
-                    'payment',      # category??
+                    $fund_m eq 'check'? 'other-payment': 'payment',
+                                    # category??
                     $N,             # charge - 0 or blank??
                     $pay->amount,   # credit
                     'complete',     # status??
                     $N,             # trans id - do not have
-                    _fund_method($pay->type),       # D/C/S/O
+                    $fund_m,        # D/C/S/O => check/credit-card
                     $Z,             # is test
                     $N,             # notes
                 ]);
             }
-        }
-        if ($partial && $prog->id == $part_program_id) {
-            last PROGRAM;
         }
     }
 
@@ -848,7 +851,7 @@ sub _gen_csv {
         if ($ren->program_id) {
             next RENTAL;
         }
-        if ($partial && $ren->id != $part_rental_id) {
+        if ($partial && !$part_rental_id{$ren->id}) {
             next RENTAL;
         }
         my $contact = $ren->coordinator();
@@ -889,6 +892,7 @@ sub _gen_csv {
             $contact->last,
             $email,
             $ren->id,     # the rental id
+            'reserved',   # status
             $N,   # time_submitted,
             $ren_start,
             $ren_end,
@@ -900,6 +904,7 @@ sub _gen_csv {
             $contact->st_prov,   # st_prov,
             $contact->zip_post,  # zip_post,
             $country_code_for{$contact->country} || $N,   # country,
+            'participant',  # guest_type
             $phone,
             _gender($contact->sex),    # sex,
             $contact->comment, # comment
@@ -924,17 +929,19 @@ sub _gen_csv {
             ]);
         }
         for my $pay ($ren->payments()) {
+            my $fund_m = _fund_method($pay->type);
             $csv->say($trans_fh, [
                 'registration',     # object-type
                 $coord_reg_id,      # coordinator id
                 $pay->the_date_obj->format("%F"),
                 $N,             # description - none??
-                'payment',      # category
+                $fund_m eq 'check'? 'other-payment': 'payment',
+                                # category
                 $N,             # charge - 0 or blank??
                 $pay->amount,   # credit
                 'complete',     # status
                 $N,             # no transaction id
-                _fund_method($pay->type),       # D/C/S/O
+                $fund_m,        # D/C/S/O => check/credit-card
                 $Z,             # is test
                 $N,             # notes
             ]);
@@ -959,7 +966,7 @@ sub _gen_csv {
 
             my $first = shift @names;
             my $last = "@names";
-            my ($email) = $g->notes =~ m{([\w.-]+[@][a-zA-Z0-9-]+)}xmsi;
+            my ($email) = $g->notes =~ m{([\w.-]+[@][a-zA-Z0-9.-]+)}xmsi;
             # create a "concocted" 'registration'
             my @days = split ' ', $g->occupancy;
                 # use @days below
@@ -983,6 +990,7 @@ sub _gen_csv {
                 $last,
                 $email,
                 $ren->id,     # the rental id
+                'reserved',   # status
                 $N,   # time_submitted,
                 $start,
                 $end,
@@ -994,6 +1002,7 @@ sub _gen_csv {
                 $N, # st_prov,
                 $N, # zip_post,
                 $N, # country,
+                'participant',  # guest_type
                 $N, # tel_cell || $per->tel_home || $per->tel_work,
                 $N, # sex,
                 $N, # comment
@@ -1015,9 +1024,6 @@ sub _gen_csv {
                 $Z,             # is test
                 $N,             # notes
             ]);
-        }
-        if ($partial && $ren->id == $part_rental_id) {
-            last RENTAL;
         }
     }
     # LAST ACTIVE
@@ -1045,6 +1051,7 @@ sub _gen_csv {
             $per->last,
             $per->email,
             1,          # the 'last active' program id
+            'reserved', # status
             "$start_F 12:00",    # date, time_submitted,
             $start_F,       # "date start" of "reg"
             $start_F,       # "date end"   of "reg"
@@ -1057,6 +1064,7 @@ sub _gen_csv {
             $per->st_prov,  # st_prov,
             $per->zip_post, # zip_post,
             $country_code_for{$per->country} || $N,  # country,
+            'participant',  # guest_type
             $per->tel_cell || $per->tel_home || $per->tel_work,
             _gender($per->sex), # sex,
             $per->comment,  # comment
