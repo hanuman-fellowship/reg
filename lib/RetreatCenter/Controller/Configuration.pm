@@ -894,8 +894,8 @@ sub _gen_csv {
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
         my $country = $N;
-        if (exists $country_code_for{$per->country}) {
-            $country = $country_code_for{$per->country};
+        if (exists $country_code_for{$contact->country}) {
+            $country = $country_code_for{$contact->country};
         }
         $csv->say($reg_fh, [
             $reg_id,
