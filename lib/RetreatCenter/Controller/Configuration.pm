@@ -778,6 +778,10 @@ sub _gen_csv {
             my $comment = $reg->comment;
             $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
 
+            my $country = $N;
+            if (exists $country_code_for{$per->country}) {
+                $country = $country_code_for{$per->country};
+            }
             # REGISTRATION
             $csv->say($reg_fh, [
                 $r_id,
@@ -796,7 +800,7 @@ sub _gen_csv {
                 $per->city,
                 $per->st_prov,
                 $per->zip_post,
-                $country_code_for{$per->country} || $N,
+                $country,   # country
                 'participant',  # guest_type
                 $per->tel_cell || $per->tel_home || $per->tel_work,
                 _gender($per->sex),
@@ -889,6 +893,10 @@ sub _gen_csv {
                                         # from the grid.
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
+        my $country = $N;
+        if (exists $country_code_for{$per->country}) {
+            $country = $country_code_for{$per->country};
+        }
         $csv->say($reg_fh, [
             $reg_id,
             $contact->first,
@@ -906,7 +914,7 @@ sub _gen_csv {
             $contact->city,      # city,
             $contact->st_prov,   # st_prov,
             $contact->zip_post,  # zip_post,
-            $country_code_for{$contact->country} || $N,   # country,
+            $country,            # country
             'participant',  # guest_type
             $phone,
             _gender($contact->sex),    # sex,
@@ -1048,6 +1056,10 @@ sub _gen_csv {
         { date_updat => { '>=' => $last_active } },
     )) {
         ++$reg_id;
+        my $country = $N;
+        if (exists $country_code_for{$per->country}) {
+            $country = $country_code_for{$per->country};
+        }
         $csv->say($reg_fh, [
             $reg_id,
             $per->first,
@@ -1066,7 +1078,7 @@ sub _gen_csv {
             $per->city,     # city,
             $per->st_prov,  # st_prov,
             $per->zip_post, # zip_post,
-            $country_code_for{$per->country} || $N,  # country,
+            $country,       # country
             'participant',  # guest_type
             $per->tel_cell || $per->tel_home || $per->tel_work,
             _gender($per->sex), # sex,
