@@ -779,7 +779,7 @@ sub _gen_csv {
             $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
 
             my $country = $N;
-            if (exists $country_code_for{$per->country}) {
+            if ($per->country && exists $country_code_for{$per->country}) {
                 $country = $country_code_for{$per->country};
             }
             # REGISTRATION
@@ -894,7 +894,7 @@ sub _gen_csv {
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
         my $country = $N;
-        if (exists $country_code_for{$contact->country}) {
+        if ($contact->country && exists $country_code_for{$contact->country}) {
             $country = $country_code_for{$contact->country};
         }
         $csv->say($reg_fh, [
@@ -1057,7 +1057,7 @@ sub _gen_csv {
     )) {
         ++$reg_id;
         my $country = $N;
-        if (exists $country_code_for{$per->country}) {
+        if ($per->country && exists $country_code_for{$per->country}) {
             $country = $country_code_for{$per->country};
         }
         $csv->say($reg_fh, [
