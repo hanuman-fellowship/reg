@@ -716,7 +716,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        if ($partial && !$part_program_id{$prog->id}) {
+        if ($partial && ! exists $part_program_id{$prog->id}) {
             next PROGRAM;
         }
         my ($email, $phone, $name);
@@ -854,7 +854,7 @@ sub _gen_csv {
         if ($ren->program_id) {
             next RENTAL;
         }
-        if ($partial && !$part_rental_id{$ren->id}) {
+        if ($partial && ! exists $part_rental_id{$ren->id}) {
             next RENTAL;
         }
         my $contact = $ren->coordinator();
