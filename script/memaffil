@@ -3,13 +3,16 @@ use strict;
 use warnings;
 use lib 'lib';
 use RetreatCenterDB;
-
-my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+use Util qw/
+    model
+    db_init
+/;
+my $c = db_init();
 
 # get all HFS affils
 my @hfs_mem_affil_ids;
 my %hfs_mem_affil_id_for;
-for my $a ($schema->resultset('Affil')->search({
+for my $a (model($c, 'Affil')->search({
                system => 'yes',
                descrip => { -like => 'HFS%' },
            })
@@ -18,13 +21,16 @@ for my $a ($schema->resultset('Affil')->search({
     push @hfs_mem_affil_ids, $id;
     $hfs_mem_affil_id_for{$a->descrip()} = $id;
 }
+#use Data::Dumper;
+#print Dumper(\%hfs_mem_affil_id_for);
+#exit;
 # delete all HFS affils
-$schema->resultset('AffilPerson')->search({
+model($c, 'AffilPerson')->search({
     a_id => { -in => \@hfs_mem_affil_ids },
 })->delete();
 
 # assign the correct HFS affils to each Member
-for my $m ($schema->resultset('Member')->all()) {
+for my $m (model($c, 'Member')->all()) {
     my $p_id = $m->person_id();
     my @a_ids;
     if ($m->voter()) {
@@ -39,7 +45,7 @@ for my $m ($schema->resultset('Member')->all()) {
         push @a_ids, $hfs_mem_affil_id_for{"HFS Member " . $m->category()};
     }
     for my $a_id (@a_ids) {
-        $schema->resultset('AffilPerson')->create({
+        model($c, 'AffilPerson')->create({
             a_id => $a_id,
             p_id => $p_id,
         });
