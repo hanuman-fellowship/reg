@@ -21,9 +21,6 @@ for my $a (model($c, 'Affil')->search({
     push @hfs_mem_affil_ids, $id;
     $hfs_mem_affil_id_for{$a->descrip()} = $id;
 }
-#use Data::Dumper;
-#print Dumper(\%hfs_mem_affil_id_for);
-#exit;
 # delete all HFS affils
 model($c, 'AffilPerson')->search({
     a_id => { -in => \@hfs_mem_affil_ids },
