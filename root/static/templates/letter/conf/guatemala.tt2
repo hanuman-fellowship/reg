@@ -1,0 +1,167 @@
+<html>
+   <head>
+   <title>Confirmation Letter for $person.name</title>
+   <meta name="viewport" content="width=device-width" />
+   
+      <style>
+         .after {
+         margin-top: .5in;
+         }
+         body {
+         font-size: 14pt;
+         }
+         #container {
+         max-width: 660px;
+         margin: 0 auto;
+         }
+         .invoice {
+         margin-left: 20px;
+         }
+         .rt {
+         text-align: right;
+         }
+         /* I need to learn more about CSS so I don't have the repetition... */
+         .lt2 {
+         text-align: left;
+         font-size: 14pt;
+         }
+         .rt2 {
+         text-align: right;
+         font-size: 14pt;
+         }
+         img {
+         margin: 7px;
+         }
+         h2 {
+         font-size: 16pt;
+         margin-bottom: 5px;
+         }
+         h3 {
+         font-size: 14pt;
+         margin-bottom: 5px;
+         }
+         .indent {
+         margin-left: 0mm;
+         margin-bottom: 5mm;
+         }
+         p {
+         }
+         .hours {
+         font-size: 12pt;
+         text-align: right;
+         }
+         td, th {
+         font-size: 14pt;
+         }
+         .logo {
+         width: 280px;
+         }
+         .top {
+					padding-bottom: 40px;
+					width: 100%;
+					margin-bottom: 70px;
+					border-bottom: 1px solid rgb(178, 178, 178);
+         }
+         .column {
+        	display: inline-block;
+         }
+         
+         .column img {
+         width: 100%;
+         max-width: 380px;
+         }
+         .name {
+         font-weight: bold;
+         margin-left: .25in;
+         }
+         .addr {
+         font-weight: normal;
+         margin-left: .25in;
+         color: red;
+         }
+         .contact {
+         font-weight: normal;
+         margin-left: .25in;
+         margin-bottom: .2in;
+         }
+         
+				@media only screen and (max-width: 480px) {
+					#container {
+					margin: 20px;			
+					}
+					.column {
+					display: block !important;
+					width: 100% !important;
+					}
+				}
+      </style>
+      
+
+   </head>
+   <body>
+      <div id="container">
+
+<div width="500" class="column" style="text-align: center;">
+    <img class=logo src='https://akash.mountmadonna.org/static/images/mm-legacy-logo.png' width=250 style="width: 250px; max-height: 160px;">
+</div>
+<p>
+Guest Services Office: 408-846-4090,
+<a href='mailto:guestservices@mountmadonna.org'>guestservices@mountmadonna.org</a>
+
+      <div class=indent>
+         Dear $person.first,
+      </div>
+      <div class=indent>
+      Thank you for joining us for this special retreat in Guatemala.
+      We look forward to seeing you!
+      <p>
+      Here are your reservation details:
+      <p>
+<table>
+<tr>
+    <th class=rt>Program</th>
+    <td class=lt>&nbsp;$program.title_trimmed
+    $reg.att_prog_dates
+    </td>
+</tr>
+<tr>
+    <th class=rt>Amount Paid</th>
+    <td class=lt>&nbsp;\$$reg.deposit_disp</td>
+</tr>
+<tr>
+    <th class=rt>Balance Remaining</th>
+    <td class=lt>&nbsp;\$$reg.balance</td>
+</tr>
+</table>
+
+      <p>
+
+We will be sending you more information about the program
+prior to the start date of the program.
+         [% IF    reg.confnote_not_empty || program.confnote_not_empty %]
+         <h2>Notes</h2>
+            [% IF reg.confnote_not_empty %]
+            $reg.confnote
+            [% END %]
+            [% IF program.confnote_not_empty %]
+            $program.confnote
+            [% END %]
+        [% END %]    <!-- if Note -->
+
+      <h2>Cancellations</h2>
+      $cancel_policy
+
+         <p>
+If you require additional assistance, please do not hesitate to 
+contact the Kamalesh Hooven in Guatemala at +502 5823-4280 (also on WhatsApp)
+or email 
+<a href=mailto:kamalesh@mountmadonna.org>kamalesh@mountmadonna.org</a>.
+      <div class=indent>
+      We look forward to seeing you soon.
+      <p>
+         Sincerely,<br>
+         $user.first $user.last
+         and the Guest Services Office team
+      </div>
+   </body>
+</html>
