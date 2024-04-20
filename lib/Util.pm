@@ -97,6 +97,7 @@ our @EXPORT_OK = qw/
     member_notify
     fee_types
     styled
+    report_housecost
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2794,5 +2795,14 @@ sub styled {
     return   -f '/var/Reg/documents/plain_style'? $fname
             :                                     "new_tt2/$fname";
 }
+
+sub report_housecost {
+    my ($type, $name, $hc_name, $username) = @_;
+    my $tstamp = today()->format("%D") . ' ' . get_time()->ampm();
+    open my $out, '>>', '/var/Reg/output/housecost.txt';
+    print {$out} "$tstamp: $username: $type: '$name' now has house cost of '$hc_name'\n";
+    close $out;
+}
+
 
 1;

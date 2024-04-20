@@ -5,6 +5,7 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/
+    report_housecost
     leader_table
     affil_table
     housing_types
@@ -571,6 +572,9 @@ sub create_do : Local {
     });
     my $id = $p->id();
 
+    report_housecost('create program', $p->name, $p->housecost->name,
+                     $c->user->name);
+
     # update any uploaded File with the program id now that we have it
     if (ref $file) {
         $file->update({
@@ -1122,6 +1126,10 @@ sub update_do : Local {
     # if we changed where we expect payments (MMC vs MMI)
     # we will need to recalculate all registration balances AFTER the update.
     my $recalc = $p->bank_account ne $P{bank_account};
+    if ($p->housecost_id != $P{housecost_id}) {
+        my $hc = model($c, 'HouseCost')->find($P{housecost_id});
+        report_housecost('update program', $P{name}, $hc->name, $c->user->name);
+    }
     $p->update(\%P);
     if ($recalc) {
         for my $reg ($p->registrations()) {

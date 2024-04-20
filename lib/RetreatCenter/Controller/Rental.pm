@@ -51,6 +51,7 @@ use Util qw/
     too_far
     check_alt_packet
     check_file_upload
+    report_housecost
 /;
 use Global qw/
     %string
@@ -319,6 +320,8 @@ sub create_do : Local {
         gate_code => '',
         needs_verification => "yes",
     });
+    my $hc = model($c, 'HouseCost')->find($P{housecost_id});
+    report_housecost('rental create', $P{name}, $hc->name, $c->user->name);
 
     $P{summary_id} = $sum->id();
     $P{status} = "tentative";
@@ -994,6 +997,10 @@ sub update_do : Local {
     delete $P{file_name};
     delete $P{file_desc};
 
+    if ($r->housecost_id != $P{housecost_id}) {
+        my $hc = model($c, 'HouseCost')->find($P{housecost_id});
+        report_housecost('rental update', $P{name}, $hc->name, $c->user->name);
+    }
     $r->update(\%P);
     $r->compute_balance();       # the changes may have affected it
 
