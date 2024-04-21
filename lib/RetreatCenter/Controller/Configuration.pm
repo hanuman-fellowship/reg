@@ -685,15 +685,9 @@ sub _gen_csv {
 
     my $reg_id = 0;     # for concocted registrations (rentals)
 
-    # parameters for a partial test export
-    my $partial = 1;
-    my $start = today()->as_d8();
-    my $start_F = today()->format("%F");
-    my %part_program_id = (4866 => 1, 4872 => 1, 4962 => 1);
-        # Pelvis is Everything, March PR, Shivarati Overnight
-    my %part_rental_id = (2007 => 1, 1837 => 1);
-        # SRF, Aspire
-    my $last_active = 20240101;
+    my $today_d8 = today()->as_d8();
+    #my $start_d8 = date('1989-01-01')->as_d8();
+    my $start_d8 = date('2021-01-01')->as_d8();
     my $N = '';
     my $Z = 0;
 
@@ -712,46 +706,110 @@ sub _gen_csv {
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
     $csv->say($trans_fh, [ grep { ! /\A[*]/ } @trans_headers ]);
+
+    # to help determine where we should start ...
+    my %prog_by_year;
+    my %reg_by_year;
+    my %trans_by_year;
+
+    # make the (mostly empty) program for Personal Retreats
+    # where ALL personal retreat and ALL special guest
+    # registrations will live.
+    my $pr_sg_prog_id = 9998;
+    my $me_prog_id    = 9999;
+    $csv->say($prog_fh, [
+        $pr_sg_prog_id,
+        "Personal Retreats",
+        $N,
+        $N,
+        $N,
+        $N,
+        $N,
+        $N,
+        $N,
+        1000000,
+    ]);
+    # and one for all Mountain Experience registrations
+    $csv->say($prog_fh, [
+        $me_prog_id,
+        "Mountain Experience",
+        $N,
+        $N,
+        $N,
+        $N,
+        $N,
+        $N,
+        $N,
+        1000000,
+    ]);
     PROGRAM:
     for my $prog (
         model($c, 'Program')->search(
-            { edate => { '>=' => $start } },
+            { edate => { '>=' => $start_d8 } },
             { order_by => 'sdate' }
         )
     ) {
-        if ($partial && ! exists $part_program_id{$prog->id}) {
-            next PROGRAM;
+        my $pname = $prog->name;
+        my $p_id;
+        if ($pname =~ m{personal\s+retreat|special\s+guest}xmsi) {
+            $p_id = $pr_sg_prog_id;
         }
-        my ($email, $phone, $name);
-        my @leaders = $prog->leaders;
-        if (@leaders) {
-            my $lead = $leaders[0];
-            my $per = $lead->person;
-            $name = $per->name;
-            $email = $lead->public_email || $per->email;
-            $phone = $per->tel_cell
-                     || $per->tel_work
-                     || $per->tel_home;;
+        elsif ($pname =~ m{mountain\s+experience}xmsi) {
+            $p_id = $me_prog_id;
         }
+        else {
+            # are there any registrations of people that
+            # have an email address?
+            #
+            my $has_email = 0;
+            REG:
+            for my $reg ($prog->registrations) {
+                if ($reg->person->email) {
+                    $has_email = 1;
+                    last REG;
+                }
+            }
+            if (! $has_email) {
+                next PROGRAM;
+            }
+            my ($email, $phone, $name);
+            my @leaders = $prog->leaders;
+            if (@leaders) {
+                my $lead = $leaders[0];     # use just the first
+                my $per = $lead->person;
+                $name = $per->name;
+                $email = $lead->public_email || $per->email;
+                $phone = $per->tel_cell
+                         || $per->tel_work
+                         || $per->tel_home;
+            }
 
-        # PROGRAM
-        $csv->say($prog_fh, [
-            $prog->id,
-            $prog->title,
-            $prog->webdesc,
-            $prog->sdate_obj->format("%F"),
-            $prog->edate_obj->format("%F"),
-            $prog->sdate_obj->format("%F"),
-            $email,
-            $phone,
-            $name,
-            $prog->max,
-        ]);
+            # PROGRAM
+            $csv->say($prog_fh, [
+                $prog->id,
+                $prog->title,
+                $prog->webdesc,
+                $prog->sdate_obj->format("%F"),
+                $prog->edate_obj->format("%F"),
+                $prog->sdate_obj->format("%F"),
+                $email,
+                $phone,
+                $name,
+                $prog->max,
+            ]);
+            ++$prog_by_year{$prog->sdate_obj->year};
+            $p_id = $prog->id;
+        }
+        # Okay, we have a Reg program id
+        # to put on the registrations
 
         REG:
         for my $reg ($prog->registrations) {
-            my $r_id = $reg->id;
             my $per = $reg->person;
+            if (! $per->email) {
+                next REG;
+            }
+            my $r_id = $reg->id;
             my $time_submitted = $N;
             if ($reg->date_postmark) {
                 $time_submitted = $reg->date_postmark_obj->format("%F")
@@ -761,8 +819,14 @@ sub _gen_csv {
             }
             my $room_id = 0;
             my $htype = $reg->h_type;
-            if ($reg->house_id) {
-                $room_id = $RG_id_for{$reg->house_id()};
+            my $h_id = $reg->house_id;
+            if ($h_id) {
+                if (exists $RG_id_for{$h_id}) {
+                    $room_id = $RG_id_for{$h_id};
+                }
+                else {
+                    print "no RG room id for Reg $h_id!!\n";
+                }
             }
             elsif ($htype eq 'commuting') {
                 $room_id = 83;      # RG room 'Commuter 1 - 25p'
@@ -782,8 +846,13 @@ sub _gen_csv {
             $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
 
             my $country = $N;
-            if ($per->country && exists $country_code_for{$per->country}) {
-                $country = $country_code_for{$per->country};
+            if ($per->country) {
+                if (exists $country_code_for{$per->country}) {
+                    $country = $country_code_for{$per->country};
+                }
+                else {
+                    print "No country code for $per->country\n";
+                }
             }
             # REGISTRATION
             $csv->say($reg_fh, [
@@ -791,7 +860,7 @@ sub _gen_csv {
                 $per->first,
                 $per->last,
                 $per->email,
-                $prog->id,
+                $p_id,
                 'reserved', # status
                 $time_submitted,
                 $reg->date_start_obj->format("%F"),
@@ -809,6 +878,14 @@ sub _gen_csv {
                 _gender($per->sex),
                 $comment,
             ]);
+            ++$reg_by_year{$reg->date_start_obj->year};
+
+            # no transactions (charge or payment)
+            # for registrations in the past
+            #
+            if ($reg->date_start < $today_d8) {
+                next REG;
+            }
 
             # TRANSACTIONS
             #
@@ -828,6 +905,7 @@ sub _gen_csv {
                     $Z, # is test
                     $N, # notes
                 ]);
+                ++$trans_by_year{$cha->the_date_obj->year};
             }
             # PAYMENTS
             for my $pay ($reg->payments) {
@@ -847,9 +925,12 @@ sub _gen_csv {
                     $Z,             # is test
                     $N,             # notes
                 ]);
+                ++$trans_by_year{$pay->the_date_obj->year};
             }
         }
     }
+
+=comment 
 
     RENTAL:
     for my $ren (
@@ -859,9 +940,6 @@ sub _gen_csv {
         )
     ) {
         if ($ren->program_id) {
-            next RENTAL;
-        }
-        if ($partial && ! exists $part_rental_id{$ren->id}) {
             next RENTAL;
         }
         my $contact = $ren->coordinator();
@@ -970,7 +1048,12 @@ sub _gen_csv {
                 $room_id = 83;      # see above
             }
             else {
-                $room_id = $RG_id_for{$room_id};
+                id (exists $RG_id_for{$room_id}) {
+                    $room_id = $RG_id_for{$room_id};
+                }
+                else {
+                    print "no RG room id for Reg $room_id!!\n";
+                }
             }
             my @names = split ' ', $g->name;
 
@@ -1091,9 +1174,28 @@ sub _gen_csv {
 
         # what about affiliations?? aka tags??
     }
+
+=cut
+
     close $prog_fh;
     close $reg_fh;
     close $trans_fh;
+    open my $year, '>', "$dir/report.txt";
+    print {$year} "Programs by Year:\n";
+    for my $k (sort keys %prog_by_year) {
+        print {$year} "$k: $prog_by_year{$k}\n";
+    }
+    print "\n";
+    print {$year} "Registrations by Year:\n";
+    for my $k (sort keys %reg_by_year) {
+        print {$year} "$k: $reg_by_year{$k}\n";
+    }
+    print "\n";
+    print {$year} "Transactions by Year:\n";
+    for my $k (sort keys %trans_by_year) {
+        print {$year} "$k: $trans_by_year{$k}\n";
+    }
+    close $year;
 }
 
 sub mmc_rg_export : Local {
@@ -1101,7 +1203,7 @@ sub mmc_rg_export : Local {
     
     system("cd $dir; rm *.csv");    # clear the field
     _gen_csv($c);
-    system("cd $dir; chmod 666 *.csv; tar cvf $fname *.csv");
+    system("cd $dir; chmod 666 *.csv; tar cvf $fname *");
     #ZIP system("cd $dir; zip $fname *.csv");
     open my $fh, '<', "$dir/$fname"
         or die "$fname not found!!: $!\n";
