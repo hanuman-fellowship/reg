@@ -275,7 +275,8 @@ sub date_ranges_do : Local {
     $c->response->redirect('/configuration/index');
 }
 
-my $dir = "/var/Reg/output";
+my $dir = "/var/Reg/output/export";
+mkdir $dir if ! -d $dir;
 #my $fname = "mmc_rg_export.zip";
 my $fname = "mmc_rg_export.tar";
 
