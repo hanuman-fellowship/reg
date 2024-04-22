@@ -586,6 +586,7 @@ Nederland, NL
 Nepal, NP
 Netherlands, NL
 New Zealand, NZ
+Nz, NZ
 Nigeria
 Northern Ireland
 Norway, NG
@@ -666,6 +667,7 @@ sub _trans_country {
     if (! $s) {
         return '';
     }
+    $s =~ s{\A \s*|\s* \z}{}xmsg;   # trim spaces
     $s =~ s{(\w+)}{ucfirst lc $1}xmseg;
     return $s;
 }
@@ -867,7 +869,7 @@ sub _gen_csv {
                     $country = $country_code_for{$s};
                 }
                 else {
-                    print {$report} "No country code for $s\n";
+                    print {$report} "No country code for '$s'\n";
                 }
             }
             # REGISTRATION
