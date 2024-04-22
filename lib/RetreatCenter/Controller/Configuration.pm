@@ -533,7 +533,7 @@ notes
 # start at 5:06 => 5:33
 my $country_code = <<'EOS';
 Argentina, AR
-AUS, AU
+Aus, AU
 Australia, AU
 Austria, AT
 Belgium, BE
@@ -541,12 +541,10 @@ Bermuda, BM
 Brasil, BR
 Brazil, BR
 British Virgin Islands, VG
-BULGARIA, BG
 Bulgaria, BG
-CA, CA
-CAN, CA
+Ca, CA
+Can, CA
 Canada, CA
-CANADA, CA
 Chile, CL
 China, CN
 Colombia, CO
@@ -559,30 +557,29 @@ England, GB
 Finland, FI
 France, FR
 French West Indies
-GBR, GB
+Gbr, GB
 Germany, DE
 Ghana, GH
-greece, GR
+Greece, GR
 Holland, NL
-HONG KONG, HK
+Hong Kong, HK
 Hungary, HU
 Iceland, IS
 India, IN
 Indonesia, ID
-iran, IR
+Iran, IR
 Ireland, IE
 Israel, IL
-Isreal, IL
 Italia, IT
 Italy, IT
 Jamaica, JM
 Japan, JP
 Jordan, JO
-kenya, KE
+Kenya, KE
 Korea, KR
 Latvia, LV
-LTU, LT
-MALAYSIA, MY
+Ltu, LT
+Malaysia, MY
 Mexico, MX
 Mongolia, MN
 Nederland, NL
@@ -595,15 +592,15 @@ Norway, NG
 NZ, NZ
 P.R.China, CN
 Pakistan, PK
-PANAMA, PA
+Panama, PA
 Peru, PE
 Philippines, PH
 Poland, PL
-portugal, PT
+Portugal, PT
 Puerto Rico, PR
-RUS, RU
+Rus, RU
 Russia, RU
-SaudiArabia, SA
+Saudi Arabia, SA
 Scotland, GB
 Singapore, SG
 Slovakia, SK
@@ -615,22 +612,21 @@ Sweden, SE
 Switzerland, CH
 Taiwan, TW
 Thailand, TH
-the Netherlands, NL
-the Netherlands (Holland), NL
-TRINIDAD, TT
+The Netherlands, NL
+Trinidad, TT
 Trinidad and Tobago, TT
 Turkey, TR
 U.S.A., US
-UA, UA
-UAE, AE
-UK, GB
+Ua, UA
+Uae, AE
+Uk, GB
 United Arab Emirates, AE
 United Kingdom, GB
 United States, US
 Unites States, US
-uruguay, UY
-US, US
-USA, US
+Uruguay, UY
+Us, US
+Usa, US
 Venezuela, VE
 Vietnam, VN
 W. Indies, TT
@@ -663,6 +659,15 @@ sub _fund_method {
           :$type eq 'O'? 'credit-card'
           :              'credit-card'
           ;
+}
+
+sub _trans_country {
+    my ($s) = @_;
+    if (! $s) {
+        return '';
+    }
+    $s =~ s{(\w+)}{ucfirst lc $1}xmseg;
+    return $s;
 }
 
 #
@@ -856,12 +861,13 @@ sub _gen_csv {
             }
 
             my $country = $N;
-            if ($per->country) {
-                if (exists $country_code_for{$per->country}) {
-                    $country = $country_code_for{$per->country};
+            my $s = _trans_country($per->country);
+            if ($s) {
+                if (exists $country_code_for{$s}) {
+                    $country = $country_code_for{$s};
                 }
                 else {
-                    print {$report} "No country code for " . $per->country . "\n";
+                    print {$report} "No country code for $s\n";
                 }
             }
             # REGISTRATION
@@ -1132,57 +1138,6 @@ sub _gen_csv {
                 $N,             # notes
             ]);
         }
-    }
-    # LAST ACTIVE
-    # ??create the program to hold these people (aka registrations)
-    $csv->say($prog_fh, [
-        1,      # ??
-        'Program to Hold People from Reg',   # title?? what name??
-        'A fictitous program to import people records from Reg',
-                                             # description?? what desc??
-        $start_F,   # start okay??
-        $start_F,   # end??
-        $start_F,   # list until date??
-        $N, # email
-        $N, # phone
-        $N, # name
-        $Z, # max
-    ]);
-    for my $per (model($c, 'Person')->search(
-        { date_updat => { '>=' => $last_active } },
-    )) {
-        ++$reg_id;
-        my $country = $N;
-        if ($per->country && exists $country_code_for{$per->country}) {
-            $country = $country_code_for{$per->country};
-        }
-        $csv->say($reg_fh, [
-            $reg_id,
-            $per->first,
-            $per->last,
-            $per->email,
-            1,          # the 'last active' program id
-            'reserved', # status
-            "$start_F 12:00",    # date, time_submitted,
-            $start_F,       # "date start" of "reg"
-            $start_F,       # "date end"   of "reg"
-                # ?? or should it be the date_updat?
-            $N,             # room id
-            $N,             # parent id
-            $per->addr1,    # addr1,
-            $per->addr2,    # addr2,
-            $per->city,     # city,
-            $per->st_prov,  # st_prov,
-            $per->zip_post, # zip_post,
-            $country,       # country
-            'participant',  # guest_type
-            $per->tel_cell || $per->tel_home || $per->tel_work,
-            _gender($per->sex), # sex,
-            $per->comment,  # comment
-        ]);
-        # no transactions
-
-        # what about affiliations?? aka tags??
     }
 
 =cut
