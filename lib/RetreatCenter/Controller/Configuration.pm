@@ -725,6 +725,11 @@ sub _gen_csv {
     my %reg_by_year;
     my %trans_by_year;
 
+    my $prev_yr = 0;
+
+    #
+    my %unknown_h_id;       # house ids not in RG
+
     # make the (mostly empty) program for Personal Retreats
     # where ALL personal retreat and ALL special guest
     # registrations will live.
@@ -762,6 +767,11 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
+        my $yr = $prog->sdate_obj->year;
+        if ($yr != $prev_yr) {
+            print "$yr\n";  # progress report to STDOUT
+            $prev_yr = $yr;
+        }
         my $pname = $prog->name;
         my $p_id;
         if ($pname =~ m{personal\s+retreat|special\s+guest}xmsi) {
@@ -839,8 +849,10 @@ sub _gen_csv {
                 if (exists $RG_id_for{$h_id}) {
                     $room_id = $RG_id_for{$h_id};
                 }
-                else {
-                    print {$report} "no RG room id for Reg house id $h_id!!\n";
+                elsif (! exists $unknown_h_id{$h_id}) {
+                    my $yr = $reg->date_start_obj->year;
+                    print {$report} "no RG room id for Reg house id $h_id!! $yr\n";
+                    $unknown_h_id{$h_id} = 1;
                 }
             }
             elsif ($htype eq 'commuting') {
