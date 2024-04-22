@@ -850,8 +850,6 @@ sub _gen_csv {
                     $room_id = $RG_id_for{$h_id};
                 }
                 elsif (! exists $unknown_h_id{$h_id}) {
-                    my $yr = $reg->date_start_obj->year;
-                    print {$report} "no RG room id for Reg house id $h_id!! $yr\n";
                     $unknown_h_id{$h_id} = 1;
                 }
             }
@@ -1174,6 +1172,16 @@ sub _gen_csv {
     print {$report} "Transactions by Year:\n";
     for my $k (sort keys %trans_by_year) {
         print {$report} "$k: $trans_by_year{$k}\n";
+    }
+
+    print {$report} "Reg House IDs Unknown in RG:\n";
+    for my $h_id (sort { $a <=> $b } keys %unknown_h_id) {
+        my $house = model($c, 'House')->find($h_id);
+        my $name = '';
+        if ($house) {
+            $name = $house->name;
+        }
+        print {$report} "$h_id = $name\n";
     }
     close $report;
 }
