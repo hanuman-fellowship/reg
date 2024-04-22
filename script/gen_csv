@@ -9,5 +9,6 @@ use Util qw/
     db_init
 /;
 my $c = db_init();
-RetreatCenter::Controller::Configuration::_gen_csv($c);
+my $date = shift;
+RetreatCenter::Controller::Configuration::_gen_csv($c, $date);
 

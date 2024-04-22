@@ -542,9 +542,11 @@ Brasil, BR
 Brazil, BR
 British Virgin Islands, VG
 BULGARIA, BG
+Bulgaria, BG
 CA, CA
 CAN, CA
 Canada, CA
+CANADA, CA
 Chile, CL
 China, CN
 Colombia, CO
@@ -682,13 +684,13 @@ sub _fund_method {
 # part - partial
 #
 sub _gen_csv {
-    my ($c) = @_;
+    my ($c, $start) = @_;
 
     my $reg_id = 0;     # for concocted registrations (rentals)
 
     my $today_d8 = today()->as_d8();
     #my $start_d8 = date('1989-01-01')->as_d8();
-    my $start_d8 = date('2021-01-01')->as_d8();
+    my $start_d8 = date($start)->as_d8();
     my $N = '';
     my $Z = 0;
 
@@ -704,6 +706,9 @@ sub _gen_csv {
         or die "no reg";
     open my $trans_fh, '>:encoding(utf8)', "$dir/transactions.csv"
         or die "no trans";
+    open my $report, '>', "$dir/report.txt"
+        or die "no report";
+
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
     $csv->say($trans_fh, [ grep { ! /\A[*]/ } @trans_headers ]);
@@ -770,7 +775,9 @@ sub _gen_csv {
                     last REG;
                 }
             }
-            if (! $has_email) {
+            if (! $has_email && $prog->sdate <= $today_d8) {
+                # skip empty (no registrations yet) programs in the past.
+                # DO add an empty program in the future
                 next PROGRAM;
             }
             my ($email, $phone, $name);
@@ -807,7 +814,7 @@ sub _gen_csv {
         REG:
         for my $reg ($prog->registrations) {
             my $per = $reg->person;
-            if (! $per->email) {
+            if (!$per || ! $per->email) {
                 next REG;
             }
             my $r_id = $reg->id;
@@ -826,7 +833,7 @@ sub _gen_csv {
                     $room_id = $RG_id_for{$h_id};
                 }
                 else {
-                    print "no RG room id for Reg $h_id!!\n";
+                    print {$report} "no RG room id for Reg house id $h_id!!\n";
                 }
             }
             elsif ($htype eq 'commuting') {
@@ -844,7 +851,9 @@ sub _gen_csv {
                 $room_id = $N;      # empty string
             }
             my $comment = $reg->comment;
-            $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
+            if ($comment) {
+                $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
+            }
 
             my $country = $N;
             if ($per->country) {
@@ -852,7 +861,7 @@ sub _gen_csv {
                     $country = $country_code_for{$per->country};
                 }
                 else {
-                    print "No country code for $per->country\n";
+                    print {$report} "No country code for " . $per->country . "\n";
                 }
             }
             # REGISTRATION
@@ -1053,7 +1062,7 @@ sub _gen_csv {
                     $room_id = $RG_id_for{$room_id};
                 }
                 else {
-                    print "no RG room id for Reg $room_id!!\n";
+                    print {$report} "no RG room id for Reg house id $room_id!!\n";
                 }
             }
             my @names = split ' ', $g->name;
@@ -1181,22 +1190,23 @@ sub _gen_csv {
     close $prog_fh;
     close $reg_fh;
     close $trans_fh;
-    open my $year, '>', "$dir/report.txt";
-    print {$year} "Programs by Year:\n";
+
+    print {$report} "\n";
+    print {$report} "Programs by Year:\n";
     for my $k (sort keys %prog_by_year) {
-        print {$year} "$k: $prog_by_year{$k}\n";
+        print {$report} "$k: $prog_by_year{$k}\n";
     }
-    print "\n";
-    print {$year} "Registrations by Year:\n";
+    print {$report} "\n";
+    print {$report} "Registrations by Year:\n";
     for my $k (sort keys %reg_by_year) {
-        print {$year} "$k: $reg_by_year{$k}\n";
+        print {$report} "$k: $reg_by_year{$k}\n";
     }
-    print "\n";
-    print {$year} "Transactions by Year:\n";
+    print {$report} "\n";
+    print {$report} "Transactions by Year:\n";
     for my $k (sort keys %trans_by_year) {
-        print {$year} "$k: $trans_by_year{$k}\n";
+        print {$report} "$k: $trans_by_year{$k}\n";
     }
-    close $year;
+    close $report;
 }
 
 sub mmc_rg_export : Local {

@@ -1,7 +1,8 @@
 #!/bin/bash
 export DBI_DSN="dbi:mysql:reg2"
 export PERL5LIB=/var/www/cpan-lib/lib/perl5
-cd /var/www/src
-/var/www/src/script/gen_csv
-cd /var/Reg/output
-tar cvf /tmp/RG.tar *.csv
+d=/var/Reg/output/export
+rm $d/*
+/var/www/src/script/gen_csv $*
+cd $d
+tar cvf mmc_rg_export.tar *.csv *.txt
