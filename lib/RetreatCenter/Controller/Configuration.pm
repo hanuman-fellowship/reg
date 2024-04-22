@@ -1209,20 +1209,4 @@ sub _gen_csv {
     close $report;
 }
 
-sub mmc_rg_export : Local {
-    my ($self, $c) = @_;
-    
-    system("cd $dir; rm *.csv");    # clear the field
-    _gen_csv($c);
-    system("cd $dir; chmod 666 *.csv; tar cvf $fname *");
-    #ZIP system("cd $dir; zip $fname *.csv");
-    open my $fh, '<', "$dir/$fname"
-        or die "$fname not found!!: $!\n";
-    $c->response->content_type('application/x-tar');
-    #ZIP $c->response->content_type('application/x-zip');
-    #ZIP  it downloads on OSX as mmc_rg_export not mmc_rg_export.zip
-    #ZIP  it IS a .zip file
-    $c->response->body($fh);
-}
-
 1;
