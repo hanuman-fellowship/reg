@@ -812,10 +812,12 @@ sub _gen_csv {
             }
 
             # PROGRAM
+            my $webdesc = $prog->webdesc;
+            $webdesc =~ s{[<][^>]*[>]}{}xmsg;
             $csv->say($prog_fh, [
                 $prog->id,
                 $prog->title,
-                $prog->webdesc,
+                $webdesc,
                 $prog->sdate_obj->format("%F"),
                 $prog->edate_obj->format("%F"),
                 $prog->sdate_obj->format("%F"),
@@ -881,6 +883,7 @@ sub _gen_csv {
             my $comment = $reg->comment;
             if ($comment) {
                 $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
+                chomp $comment;
             }
 
             my $country = $N;
