@@ -1106,7 +1106,7 @@ sub _gen_csv {
                 }
                 elsif (! exists $unknown_h_id{$room_id}) {
                     $room_id = 0;
-                    $unknown_h_id{$h_id} = 1;
+                    $unknown_h_id{$room_id} = 1;
                 }
             }
             my @names = split ' ', $g->name;
