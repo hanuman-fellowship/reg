@@ -981,6 +981,8 @@ sub _gen_csv {
     my $nrent_reg = 0;
     my $nrent_trans = 0;
 
+    print "\nRentals:\n";
+
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
@@ -991,6 +993,7 @@ sub _gen_csv {
         if ($ren->program_id) {
             next RENTAL;
         }
+        print $ren->sdate->format("%D"), "\n";
         ++$nrent;
         my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
@@ -1189,7 +1192,7 @@ sub _gen_csv {
     for my $k (sort keys %prog_by_year) {
         printf {$report} "%4d  %6d\n", $k, $prog_by_year{$k};
     }
-    printf {$report} "      ------\n", $nprog;
+    printf {$report} "      ------\n";
     printf {$report} "      %6d\n", $nprog;
 
     print {$report} "\n";
@@ -1197,13 +1200,13 @@ sub _gen_csv {
     for my $k (sort keys %reg_by_year) {
         printf {$report} "%4d  %6d\n", $k, $reg_by_year{$k};
     }
-    printf {$report} "      ------\n", $nprog;
+    printf {$report} "      ------\n";
     printf {$report} "      %6d\n", $nreg;
     print {$report} "\n";
-    print {$report} "$npr Personal Retreat registrations\n";
-    print {$report} "$nme Mountain Experience registrations\n";
-    print {$report} "$no_email registrations skipped - no email\n";
-    print {$report} "$deceased registrations skipped - deceased\n";
+    printf {$report} "%6d Personal Retreat registrations\n", $npr;
+    printf {$report} "%6d Mountain Experience registrations\n", $nme;
+    printf {$report} "%6d registrations skipped - no email\n", $no_email;
+    printf {$report} "%6d registrations skipped - deceased\n", $deceased;
 
     print {$report} "\n";
     print {$report} "Transactions by Year:\n";
