@@ -769,7 +769,7 @@ sub _gen_csv {
     PROGRAM:
     for my $prog (
         model($c, 'Program')->search(
-            { edate => { '>=' => $start_d8 } },
+            { sdate => { '>=' => $start_d8 } },
             { order_by => 'sdate' }
         )
     ) {
@@ -984,7 +984,7 @@ sub _gen_csv {
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
-            { edate => { '>=' => $today_d8 } },
+            { sdate => { '>=' => $today_d8 } },
             { order_by => 'sdate' }
         )
     ) {
@@ -1104,8 +1104,9 @@ sub _gen_csv {
                 if (exists $RG_id_for{$room_id}) {
                     $room_id = $RG_id_for{$room_id};
                 }
-                else {
-                    print {$report} "no RG room id for Reg house id $room_id!!\n";
+                elsif (! exists $unknown_h_id{$h_id}) {
+                    $room_id = 0;
+                    $unknown_h_id{$h_id} = 1;
                 }
             }
             my @names = split ' ', $g->name;
@@ -1120,7 +1121,7 @@ sub _gen_csv {
             # create a "concocted" 'registration'
             my @days = split ' ', $g->occupancy;
                 # use @days below
-            my ($arr, $dep);
+            my ($arr, $dep) = (0, 0);
             for my $i (0 .. $#days) {
                 if ($days[$i] eq '1') {
                     if (! defined $arr) {
