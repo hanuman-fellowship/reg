@@ -993,7 +993,7 @@ sub _gen_csv {
         if ($ren->program_id) {
             next RENTAL;
         }
-        print $ren->sdate->format("%D"), "\n";
+        print $ren->sdate_obj->format("%D"), "\n";
         ++$nrent;
         my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
