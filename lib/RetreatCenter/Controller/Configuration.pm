@@ -839,9 +839,11 @@ sub _gen_csv {
             }
             if (! $per->email) {
                 ++$no_email;
+                next REG;
             }
             if ($per->deceased) {
                 ++$deceased;
+                next REG;
             }
             my $r_id = $reg->id;
             my $time_submitted = $N;
