@@ -997,7 +997,7 @@ sub update_do : Local {
     delete $P{file_name};
     delete $P{file_desc};
 
-    if ($r->housecost_id != $P{housecost_id}) {
+    if ($P{housecost_id} && $r->housecost_id != $P{housecost_id}) {
         my $hc = model($c, 'HouseCost')->find($P{housecost_id});
         report_housecost('rental update', $P{name}, $hc->name, $c->user->name);
     }
