@@ -1104,7 +1104,7 @@ sub _gen_csv {
                 if (exists $RG_id_for{$room_id}) {
                     $room_id = $RG_id_for{$room_id};
                 }
-                elsif (! exists $unknown_h_id{$h_id}) {
+                elsif (! exists $unknown_h_id{$room_id}) {
                     $room_id = 0;
                     $unknown_h_id{$h_id} = 1;
                 }
