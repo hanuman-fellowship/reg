@@ -726,6 +726,12 @@ sub _gen_csv {
     my %trans_by_year;
 
     my $prev_yr = 0;
+    my $no_email = 0;
+    my $deceased = 0;
+    my $nprog = 0;
+    my $nreg = 0;
+    my $npr = 0;
+    my $nme = 0;
 
     #
     my %unknown_h_id;       # house ids not in RG
@@ -772,13 +778,9 @@ sub _gen_csv {
             print "$yr\n";  # progress report to STDOUT
             $prev_yr = $yr;
         }
-        my $pname = $prog->name;
         my $p_id;
-        if ($pname =~ m{personal\s+retreat|special\s+guest}xmsi) {
+        if ($prog->name =~ m{personal\s+retreat|special\s+guest}xmsi) {
             $p_id = $pr_sg_prog_id;
-        }
-        elsif ($pname =~ m{mountain\s+experience}xmsi) {
-            $p_id = $me_prog_id;
         }
         else {
             # are there any registrations of people that
@@ -823,6 +825,7 @@ sub _gen_csv {
                 $prog->max,
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
+            ++$nprog;
             $p_id = $prog->id;
         }
         # Okay, we have a Reg program id
@@ -831,8 +834,14 @@ sub _gen_csv {
         REG:
         for my $reg ($prog->registrations) {
             my $per = $reg->person;
-            if (!$per || ! $per->email) {
+            if (!$per) {
                 next REG;
+            }
+            if (! $per->email) {
+                ++$no_email;
+            }
+            if ($per->deceased) {
+                ++$deceased;
             }
             my $r_id = $reg->id;
             my $time_submitted = $N;
@@ -883,12 +892,20 @@ sub _gen_csv {
                 }
             }
             # REGISTRATION
+            my $prog_id = $p_id;
+            if ($reg->mountain_experience) {
+                $prog_id = $me_prog_id;
+                ++$nme;
+            }
+            if ($prog_id == $pr_sg_prog_id) {
+                ++$npr;
+            }
             $csv->say($reg_fh, [
                 $r_id,
                 $per->first,
                 $per->last,
                 $per->email,
-                $p_id,
+                $prog_id,
                 'reserved', # status
                 $time_submitted,
                 $reg->date_start_obj->format("%F"),
@@ -907,6 +924,7 @@ sub _gen_csv {
                 $comment,
             ]);
             ++$reg_by_year{$reg->date_start_obj->year};
+            ++$nreg;
 
             # no transactions (charge or payment)
             # for registrations in the past
@@ -958,19 +976,23 @@ sub _gen_csv {
         }
     }
 
-=comment 
+    # only future rentals
+    my $nrent = 0;
+    my $nrent_reg = 0;
+    my $nrent_trans = 0;
 
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
-            { edate => { '>=' => $start } },
+            { edate => { '>=' => $today_d8 } },
             { order_by => 'sdate' }
         )
     ) {
         if ($ren->program_id) {
             next RENTAL;
         }
-        my $contact = $ren->coordinator();
+        ++$nrent;
+        my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
         my $name = $contact->name;
         my $email = $contact->email; 
@@ -1029,6 +1051,7 @@ sub _gen_csv {
             _gender($contact->sex),    # sex,
             $contact->comment, # comment
         ]);
+        ++$nrent_reg;
 
         # RENTAL CHARGES and PAYMENTS
         # attribute them all to the registration for the coordinator
@@ -1048,6 +1071,7 @@ sub _gen_csv {
                 $N,             # notes
             ]);
         }
+        ++$nrent_trans;
         for my $pay ($ren->payments()) {
             my $fund_m = _fund_method($pay->type);
             $csv->say($trans_fh, [
@@ -1066,6 +1090,7 @@ sub _gen_csv {
                 $N,             # notes
             ]);
         }
+        ++$nrent_trans;
 
         for my $g (model($c, 'Grid')->search({ rental_id => $ren->id })) {
             my $room_id = $g->house_id;
@@ -1076,7 +1101,7 @@ sub _gen_csv {
                 $room_id = 83;      # see above
             }
             else {
-                id (exists $RG_id_for{$room_id}) {
+                if (exists $RG_id_for{$room_id}) {
                     $room_id = $RG_id_for{$room_id};
                 }
                 else {
@@ -1132,6 +1157,7 @@ sub _gen_csv {
                 $N, # sex,
                 $N, # comment
             ]);
+            ++$nrent_reg;
 
             # TRANSACTION - CHARGE for the room, not a payment
             my $cost = int($g->cost);
@@ -1149,10 +1175,9 @@ sub _gen_csv {
                 $Z,             # is test
                 $N,             # notes
             ]);
+            ++$nrent_trans;
         }
     }
-
-=cut
 
     close $prog_fh;
     close $reg_fh;
@@ -1161,19 +1186,31 @@ sub _gen_csv {
     print {$report} "\n";
     print {$report} "Programs by Year:\n";
     for my $k (sort keys %prog_by_year) {
-        print {$report} "$k: $prog_by_year{$k}\n";
+        printf {$report} "%4d  %6d\n", $k, $prog_by_year{$k};
     }
+    printf {$report} "      ------\n", $nprog;
+    printf {$report} "      %6d\n", $nprog;
+
     print {$report} "\n";
     print {$report} "Registrations by Year:\n";
     for my $k (sort keys %reg_by_year) {
-        print {$report} "$k: $reg_by_year{$k}\n";
+        printf {$report} "%4d  %6d\n", $k, $reg_by_year{$k};
     }
+    printf {$report} "      ------\n", $nprog;
+    printf {$report} "      %6d\n", $nreg;
+    print {$report} "\n";
+    print {$report} "$npr Personal Retreat registrations\n";
+    print {$report} "$nme Mountain Experience registrations\n";
+    print {$report} "$no_email registrations skipped - no email\n";
+    print {$report} "$deceased registrations skipped - deceased\n";
+
     print {$report} "\n";
     print {$report} "Transactions by Year:\n";
     for my $k (sort keys %trans_by_year) {
-        print {$report} "$k: $trans_by_year{$k}\n";
+        printf {$report} "%4d  %6d\n", $k, $trans_by_year{$k};
     }
 
+    print {$report} "\n";
     print {$report} "Reg House IDs Unknown in RG:\n";
     for my $h_id (sort { $a <=> $b } keys %unknown_h_id) {
         my $house = model($c, 'House')->find($h_id);
@@ -1181,8 +1218,12 @@ sub _gen_csv {
         if ($house) {
             $name = $house->name;
         }
-        print {$report} "$h_id = $name\n";
+        printf {$report} "%4d  %s\n", $h_id, $name;
     }
+    print {$report} "\n";
+    printf {$report} "%5d rentals\n", $nrent;
+    printf {$report} "%5d rental registrations\n", $nrent_reg;
+    printf {$report} "%5d rental transactions\n", $nrent_trans;
     close $report;
 }
 
