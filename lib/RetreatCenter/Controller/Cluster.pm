@@ -449,7 +449,7 @@ EOH
         my $wd = $h->max * $hw + 6;
         # is the name of the house wider than the house rectangle itself?
         my $name = $h->name;
-        if ($h->disp_code =~ m{t}) {
+        if ($name !~ m{yurt}xmsi && $h->disp_code =~ m{t}) {
             $name =~ s{^\S*\s*}{};
         }
         my $nwd = length($name)*$hl;
