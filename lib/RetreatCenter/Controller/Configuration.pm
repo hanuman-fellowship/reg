@@ -672,24 +672,41 @@ sub _trans_country {
     return $s;
 }
 
-#
-# ??
-# have a way of generating a test sample - not all
-# specific ids for rentals and programs
-# and a limited number of people in the concocted program
-# to hold people's names, emails, etc
-# the full export will start at a point with 
-# a specific last contact date.
-#
-# naming conventions:
-# prog - program
-# reg - registration
-# ren - rental
-# pay - payment
-# cha - charges
-# trans - transaction
-# part - partial
-#
+=comment 
+
+Import Conditions
+	Import ONLY those people records that have
+    at least one registration, have a name and
+    email address, and are Active
+
+DO NOT IMPORT:  Those who have NO REGISTRATIONS
+DO NOT IMPORT:  Temple only
+DO NOT IMPORT:  Website Subscriber only
+DO NOT IMPORT:  Deceased"
+
+	Data clean-up prior to import:
+		Records using the same email address : 3400
+		Records with the same name: 1463
+
+Have a way of generating a test sample - not all
+specific ids for rentals and programs
+and a limited number of people in the concocted program
+ to hold people's names, emails, etc
+ the full export will start at a point with 
+ a specific last contact date.
+
+ naming conventions:
+ prog - program
+ reg - registration
+ ren - rental
+ pay - payment
+ cha - charges
+ trans - transaction
+ part - partial
+
+=cut
+
+
 sub _gen_csv {
     my ($c, $start) = @_;
 

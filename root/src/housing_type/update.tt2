@@ -58,6 +58,26 @@ $ht.long_desc
 </tr>
 
 <tr>
+<th align=right valign=top>Picture #3</th>
+<td>
+[% IF pic3 %]
+<img src=/static/images/${ht.name}3.jpg width=450> <a onclick="return confirm('Delete this image?');" href='/housingtype/del_image/$ht.name/3'><img src=/static/images/redX.gif width=20></a><br>
+[% END %]
+<input name=pic3 type=file>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Picture #4</th>
+<td>
+[% IF pic4 %]
+<img src=/static/images/${ht.name}4.jpg width=450> <a onclick="return confirm('Delete this image?');" href='/housingtype/del_image/$ht.name/4'><img src=/static/images/redX.gif width=20></a><br>
+[% END %]
+<input name=pic4 type=file>
+</td>
+</tr>
+
+<tr>
 <th>&nbsp;</th>
 <td><input type=submit id=sub value="Submit"></td>
 </tr>

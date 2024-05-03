@@ -25,9 +25,10 @@ sub pics {
     my $name = $self->name;
     my $dir = '/var/www/src/root/static/images';
     my $html = '';
-    for my $i (1, 2) {
+    for my $i (1 .. 4) {
         if (-f "$dir/$name$i.jpg") {
-            $html .= "<img src=/static/images/$name$i.jpg width=200>&nbsp;";
+            $html .= "<img src=/static/images/$name$i.jpg width=200>";
+            $html .= $i % 2? '&nbsp;': '<p>';
         }
     }
     return $html;

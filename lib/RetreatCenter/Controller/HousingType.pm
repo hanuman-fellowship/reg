@@ -39,9 +39,12 @@ sub update : Local {
                    { name => $name },
                );
     my $dir = '/var/www/src/root/static/images';
+    my @pics;
+    for my $i (1 .. 4) {
+        push @pics, "pic$i" => -f "$dir/${name}$i.jpg";
+    }
     stash($c,
-        pic1     => -f "$dir/${name}1.jpg",
-        pic2     => -f "$dir/${name}2.jpg",
+        @pics,
         ht       => $ht,
         template => "housing_type/update.tt2",
     );
@@ -60,7 +63,7 @@ sub update_do : Local {
         short_desc => $P{short_desc},
         long_desc  => $P{long_desc},
     });
-    for my $i (1, 2) {
+    for my $i (1 .. 4) {
         my $upload = $c->request->upload("pic$i");
         if ($upload) {
             # force the name to be .jpg even if it's a .png...

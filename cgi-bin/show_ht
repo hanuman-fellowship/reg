@@ -37,10 +37,10 @@ print "<h2>" . $ht->short_desc_with_br . "</h2>\n";
 print "\$$cost $type<br><br>\n";
 print "<div style='width: 450px; margin-bottom: 5mm;'>\n" . $ht->long_desc . "</div>\n";
 my $dir = '/var/www/src/root';
-for my $i (1, 2) {
+for my $i (1 .. 4) {
     my $pic = "/static/images/$name$i.jpg";
     if (-f "$dir/$pic") {
-        print "<img src=$pic width=450><br><br>";
+        print "<img src=$pic width=100%><br><br>";
     }
 }
 print <<'EOH';
