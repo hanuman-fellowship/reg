@@ -682,7 +682,7 @@ Import Conditions
 DO NOT IMPORT:  Those who have NO REGISTRATIONS
 DO NOT IMPORT:  Temple only
 DO NOT IMPORT:  Website Subscriber only
-DO NOT IMPORT:  Deceased"
+DO NOT IMPORT:  Deceased
 
 	Data clean-up prior to import:
 		Records using the same email address : 3400
@@ -745,12 +745,29 @@ sub _gen_csv {
     my $prev_yr = 0;
     my $no_email = 0;
     my $deceased = 0;
+    my $inactive = 0;
+    my $web_sub_temple = 0;
     my $nprog = 0;
     my $nreg = 0;
     my $npr = 0;
     my $nme = 0;
 
-    #
+    my $af;
+    ($af) = model($c, 'Affil')->search({
+                descrip => { -like => '%Website Subscriber%' },
+            });
+    if (! $af) {
+        die "No Website Subscriber\n";
+    }
+    my $web_sub_id = $af->id;
+    ($af) = model($c, 'Affil')->search({
+                descrip => { -like => '%Temple Guest%' },
+            });
+    if (! $af) {
+        die "No Temple Guest\n";
+    }
+    my $temple_guest_id = $af->id;
+
     my %unknown_h_id;       # house ids not in RG
 
     # make the (mostly empty) program for Personal Retreats
@@ -829,7 +846,7 @@ sub _gen_csv {
             }
 
             # PROGRAM
-            my $webdesc = $prog->webdesc;
+            my $webdesc = $prog->webdesc || '';
             $webdesc =~ s{[<][^>]*[>]}{}xmsg;
             $csv->say($prog_fh, [
                 $prog->id,
@@ -862,6 +879,41 @@ sub _gen_csv {
             }
             if ($per->deceased) {
                 ++$deceased;
+                next REG;
+            }
+            if ($per->inactive) {
+                ++$inactive;
+                next REG;
+            }
+            # get their affiliations
+            # if there is either none at all
+            # or one that is not $web_sub_id or $temple_guest_id
+            # then keep it.  otherwise skip it.
+            #
+            # in other words, if there ARE affiliations
+            # and all of them are either $web_sub_id or $temple_guest_id
+            # skip the registration.
+            #
+            my (@af) = grep { $_->a_id } $per->affil_person;
+                       # skip affils that are NULL
+            my $got_one = 0;
+            AF:
+            for my $af (@af) {
+                my $a_id = $af->a_id;
+                if (!$a_id) {
+                    next AF;
+                }
+                if (   $a_id != $web_sub_id
+                    && $a_id != $temple_guest_id
+                ) {
+                    $got_one = 1;
+                    last AF;
+                }
+            }
+            if (@af && !$got_one) {
+                ++$web_sub_temple;
+                # temporary
+                print {$report} "only web sub temple id = ", $per->id, "\n";
                 next REG;
             }
             my $r_id = $reg->id;
@@ -1019,11 +1071,14 @@ sub _gen_csv {
         ++$nrent;
         my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
-        my $name = $contact->name;
-        my $email = $contact->email; 
-        my $phone = $contact->tel_cell
-                    || $contact->tel_home
-                    || $contact->tel_work;
+        my ($name, $email, $phone) = ('', '', '');
+        if ($contact) {
+            $name = $contact->name;
+            $email = $contact->email; 
+            $phone = $contact->tel_cell
+                     || $contact->tel_home
+                     || $contact->tel_work;
+        }
         my $ren_start = $ren->sdate_obj->format("%F");
         my $ren_end   = $ren->edate_obj->format("%F");
         
@@ -1050,7 +1105,10 @@ sub _gen_csv {
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
         my $country = $N;
-        if ($contact->country && exists $country_code_for{$contact->country}) {
+        if ($contact
+            && $contact->country
+            && exists $country_code_for{$contact->country}
+        ) {
             $country = $country_code_for{$contact->country};
         }
         $csv->say($reg_fh, [
@@ -1229,6 +1287,8 @@ sub _gen_csv {
     printf {$report} "%6d Mountain Experience registrations\n", $nme;
     printf {$report} "%6d registrations skipped - no email\n", $no_email;
     printf {$report} "%6d registrations skipped - deceased\n", $deceased;
+    printf {$report} "%6d registrations skipped - inactive\n", $inactive;
+    printf {$report} "%6d registrations skipped - web sub temple\n", $web_sub_temple;
 
     print {$report} "\n";
     print {$report} "Transactions by Year:\n";
