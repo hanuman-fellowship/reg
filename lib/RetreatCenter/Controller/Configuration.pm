@@ -1034,6 +1034,10 @@ sub _gen_csv {
                      || $contact->tel_home
                      || $contact->tel_work;
         }
+        else {
+            print {$report} "No contact person for " . $ren->name . "\n";
+            next RENTAL;
+        }
         my $ren_start = $ren->sdate_obj->format("%F");
         my $ren_end   = $ren->edate_obj->format("%F");
         
