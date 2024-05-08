@@ -752,22 +752,6 @@ sub _gen_csv {
     my $npr = 0;
     my $nme = 0;
 
-    my $af;
-    ($af) = model($c, 'Affil')->search({
-                descrip => { -like => '%Website Subscriber%' },
-            });
-    if (! $af) {
-        die "No Website Subscriber\n";
-    }
-    my $web_sub_id = $af->id;
-    ($af) = model($c, 'Affil')->search({
-                descrip => { -like => '%Temple Guest%' },
-            });
-    if (! $af) {
-        die "No Temple Guest\n";
-    }
-    my $temple_guest_id = $af->id;
-
     my %unknown_h_id;       # house ids not in RG
 
     # make the (mostly empty) program for Personal Retreats
@@ -883,37 +867,6 @@ sub _gen_csv {
             }
             if ($per->inactive) {
                 ++$inactive;
-                next REG;
-            }
-            # get their affiliations
-            # if there is either none at all
-            # or one that is not $web_sub_id or $temple_guest_id
-            # then keep it.  otherwise skip it.
-            #
-            # in other words, if there ARE affiliations
-            # and all of them are either $web_sub_id or $temple_guest_id
-            # skip the registration.
-            #
-            my (@af) = grep { $_->a_id } $per->affil_person;
-                       # skip affils that are NULL
-            my $got_one = 0;
-            AF:
-            for my $af (@af) {
-                my $a_id = $af->a_id;
-                if (!$a_id) {
-                    next AF;
-                }
-                if (   $a_id != $web_sub_id
-                    && $a_id != $temple_guest_id
-                ) {
-                    $got_one = 1;
-                    last AF;
-                }
-            }
-            if (@af && !$got_one) {
-                ++$web_sub_temple;
-                # temporary
-                print {$report} "only web sub temple id = ", $per->id, "\n";
                 next REG;
             }
             my $r_id = $reg->id;
@@ -1071,9 +1024,11 @@ sub _gen_csv {
         ++$nrent;
         my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
-        my ($name, $email, $phone) = ('', '', '');
+        my ($name, $first, $last, $email, $phone) = ($N, $N, $N, $N, $N);
         if ($contact) {
             $name = $contact->name;
+            $first = $contact->first;
+            $last = $contact->last;
             $email = $contact->email; 
             $phone = $contact->tel_cell
                      || $contact->tel_home
@@ -1288,7 +1243,6 @@ sub _gen_csv {
     printf {$report} "%6d registrations skipped - no email\n", $no_email;
     printf {$report} "%6d registrations skipped - deceased\n", $deceased;
     printf {$report} "%6d registrations skipped - inactive\n", $inactive;
-    printf {$report} "%6d registrations skipped - web sub temple\n", $web_sub_temple;
 
     print {$report} "\n";
     print {$report} "Transactions by Year:\n";
