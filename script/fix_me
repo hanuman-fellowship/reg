@@ -1,0 +1,42 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Util qw/
+    db_init
+    model
+/;
+use Global qw/
+    %system_affil_id_for
+/;
+my $c = db_init();
+Global->init($c);
+my $me_a_id= $system_affil_id_for{'MMC Mountain Experience'};
+for my $reg (model($c, 'Registration')->search({
+                 mountain_experience => { '!=' => '' },
+             })
+) {
+    my $per = $reg->person;
+    print $per->name . "  ";
+    my @affils = $per->affil_person;
+    my $need_me = 1;
+    AF:
+    for my $af (@affils) {
+        if ($af->a_id && $af->a_id == $me_a_id) {
+            $need_me = 0;
+            last AF;
+        }
+    }
+    if ($need_me) {
+        model($c, 'AffilPerson')->create({
+            a_id => $me_a_id,
+            p_id => $per->id,
+        });
+        print "added ME\n";
+    }
+    else {
+        print "already had ME\n";
+    }
+}
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+export DBI_DSN="dbi:mysql:reg2"
+export PERL5LIB=/var/www/cpan-lib/lib/perl5
+d=/var/Reg/output/export
+rm -f $d/*
+/var/www/src/script/fix_me
