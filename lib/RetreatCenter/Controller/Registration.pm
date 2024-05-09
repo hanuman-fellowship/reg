@@ -1265,15 +1265,17 @@ sub create_do : Local {
         $ws_ap->delete();
     }
     # Mountain Experience affil if needed
-    my ($me_ap) = model($c, 'AffilPerson')->search({
-                      p_id => $P{person_id},
-                      a_id => $system_affil_id_for{'Mountain Experience'},
-                  });
-    if (! $me_ap) {
-        model($c, 'AffilPerson')->create({
-            p_id => $P{person_id},
-            a_id => $system_affil_id_for{'Mountain Experience'},
-        });
+    if ($P{mountain_experience}) {
+        my ($me_ap) = model($c, 'AffilPerson')->search({
+                          p_id => $P{person_id},
+                          a_id => $system_affil_id_for{'MMC Mountain Experience'},
+                      });
+        if (! $me_ap) {
+            model($c, 'AffilPerson')->create({
+                p_id => $P{person_id},
+                a_id => $system_affil_id_for{'MMC Mountain Experience'},
+            });
+        }
     }
 
     my $reg_id = $reg->id();
