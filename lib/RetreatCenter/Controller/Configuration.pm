@@ -399,121 +399,46 @@ my @prog_headers = qw/
 program_id_original
 title
 description
-*date_type
+date_type
 date_start
 date_end
-list_until_date
-*datetime_details
 *organization_id
-*organization_id_original
-*featured-image
-*gallery
-*location
-*location_address
+location
+location_address
 contact_email
 contact_phone
 contact_name
-*price_structure
-*first_price
-*lodging_ids
-*price_note
-capacity_max
 *categories
-*email_message
 /;
 my @reg_headers = qw/
 registration_id_original
-first_name
-last_name
-email
 *program_id
 program_id_original
 status
 time_submitted
 arrive_date
 leave_date
-*person_id_original
 room_id
 *lodging_id
 parent_registration_id_original
-address
-address2
-city
-state
-zip
 country
-*dates-flexible
-*rs-inquiry-organization
-*date-notes
-*organization-type
-*rs-inquiry-number-of-people
-*rs-inquiry-event-description
-*other-event-type
-*org-web-page
-*rs-inquiry-email
-*rs-inquiry-firstname
-guest_type
-*flag-person
-*black_listed
-*flag-notes
-*person-notes
-*person-skills
-*flagged
-*reg-flag-notes
-*reg-notes
-*housekeeping-notes
-*site-referrer
-*firstname
-*lastname
-*rs-inquiry-lastname
-***mobile-phone
-*rs-inquiry-rented-before
+firstname
+alternative-name
+lastname
+email
 phone
-*mobile-phone-2
-*address-line-1-2
-*address-line-2-2
-*city-or-region
-*state-or-province-2
-*zip-or-postal-code
-*newsletter
 gender
-*diet
-*diet-notes
-*diet-restrictions
-*birth-date
-*mmc-vegetarian
-*participant-registration
-*beds-required
-*roommate
-*emergency-contact
-*ride-sharing
-*marketing
-*been-before
-*discount-code
-*terms
-comments
-*bedroom-accommodations
-*anything-else
-*address-line-1
-*address-line-2
-*state-or-province
-*zip-or-post-code
-*country-2
-*guaranteed-minimum
-*lodging-notes
-*meeting-room-notes
-*food-and-beverage-notes
-*av-services-notes
-*payment-terms
-*restroom-signage
-*ada-requirements
-*types-of-meeting-rooms-requested
-*preferred-seating-style
-*breakout-spaces
-*audiovisual-equipment
-*other-av-materials
-*additional-services
-*other-services
+address-line-1-2
+address-line-2-2
+city-or-region
+state-or-province-2
+zip-or-postal-code
+what-is-your-desired-pronouns
+newsletter
+hfs-general-member
+guest-type
+person-notes
+flag-person
 /;
 my @trans_headers = qw/
 object_type
@@ -530,7 +455,6 @@ is_test
 notes
 /;
 
-# start at 5:06 => 5:33
 my $country_code = <<'EOS';
 Argentina, AR
 Aus, AU
@@ -752,37 +676,74 @@ sub _gen_csv {
     my $npr = 0;
     my $nme = 0;
 
+    # Get affil ids
+    my $website_sub_affil_id;
+    my ($ws_af) = model($c, 'Affil')->search({
+                   descrip => 'Website Subscriber',
+               });
+    if ($ws_af) {
+        $website_sub_affil_id = $ws_af->id;
+    }
+    else {
+        die "No affil for Website Subscriber";
+    }
+
+    my $hfs_donor_affil_id;
+    my ($hd_af) = model($c, 'Affil')->search({
+                   descrip => 'HFS Donor',
+               });
+    if ($hd_af) {
+        $hfs_donor_affil_id = $hd_af->id;
+    }
+    else {
+        die "No affil for HFS Donor";
+    }
+
+    my $alert_affil_id;
+    my ($alert_af) = model($c, 'Affil')->search({
+                   descrip => 'Alert When Registering',
+               });
+    if ($alert_af) {
+        $alert_affil_id = $alert_af->id;
+    }
+    else {
+        die "No affil for Alert When Registering";
+    }
+
     my %unknown_h_id;       # house ids not in RG
 
     # make the (mostly empty) program for Personal Retreats
     # where ALL personal retreat and ALL special guest
     # registrations will live.
+    # and one for Mountain Experience
     my $pr_sg_prog_id = 9998;
     my $me_prog_id    = 9999;
     $csv->say($prog_fh, [
-        $pr_sg_prog_id,
-        "Personal Retreats",
-        $N,
-        $N,
-        $N,
-        $N,
-        $N,
-        $N,
-        $N,
-        1000000,
+        $pr_sg_prog_id,         # program_id_original
+        "Personal Retreats",    # title
+        "Personal Retreats",    # description
+        "Flexible",             # date type
+        $N,                     # date start
+        $N,                     # date end
+        "Mount Madonna Center", # location
+        "445 Summit",           # location address
+        $N,                     # email
+        $N,                     # phone
+        $N                      # name
     ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
-        $me_prog_id,
-        "Mountain Experience",
-        $N,
-        $N,
-        $N,
-        $N,
-        $N,
-        $N,
-        $N,
-        1000000,
+        $me_prog_id,            # program_id_original
+        "Mountain Experience",  # title
+        "Mountain Experience",  # description
+        "Flexible",             # date type
+        $N,                     # date start
+        $N,                     # date end
+        "Mount Madonna Center", # location
+        "445 Summit",           # location address
+        $N,                     # email
+        $N,                     # phone
+        $N                      # name
     ]);
     PROGRAM:
     for my $prog (
@@ -817,6 +778,11 @@ sub _gen_csv {
                 # DO add an empty program in the future
                 next PROGRAM;
             }
+
+=comment
+
+# maybe??
+
             my ($email, $phone, $name);
             my @leaders = $prog->leaders;
             if (@leaders) {
@@ -829,20 +795,36 @@ sub _gen_csv {
                          || $per->tel_home;
             }
 
+=cut
+
             # PROGRAM
             my $webdesc = $prog->webdesc || '';
             $webdesc =~ s{[<][^>]*[>]}{}xmsg;
+            my ($email, $phone, $name) = ($N, $N, $N);
+            my @leaders = $prog->leaders;
+            if (@leaders) {
+                my $lead = $leaders[0];
+                my $per = $lead->person;
+                $name = $per->name;
+                $email = $lead->public_email || $per->email;
+                $phone     = $per->tel_cell
+                            || $per->tel_work
+                            ||     $per->tel_home;;
+            }
             $csv->say($prog_fh, [
-                $prog->id,
-                $prog->title,
-                $webdesc,
-                $prog->sdate_obj->format("%F"),
-                $prog->edate_obj->format("%F"),
-                $prog->sdate_obj->format("%F"),
-                $email,
-                $phone,
-                $name,
-                $prog->max,
+                $prog->id,                      # program_id_original
+                $prog->title,                   # title
+                $webdesc,                       # description
+                "Fixed Date",                   # date type
+                $prog->sdate_obj->format("%F"), # start date
+                $prog->edate_obj->format("%F"), # end date
+                "Mount Madonna Center",         # location
+                "445 Summit",                   # location address
+                # JON?? include these 3?
+                $email,                         # contact email
+                $phone,                         # contact phone
+                $name,                          # contact name
+                                                # JON categories
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
             ++$nprog;
@@ -874,7 +856,7 @@ sub _gen_csv {
             if ($reg->date_postmark) {
                 $time_submitted = $reg->date_postmark_obj->format("%F")
                                 . ' '
-                                . ($reg->time_postmark || '12:00')
+                                . ($reg->time_postmark_obj->t12 || '12:00')
                                 ;
             }
             my $room_id = 0;
@@ -902,7 +884,8 @@ sub _gen_csv {
             elsif ($htype eq 'not needed') {
                 $room_id = $N;      # empty string
             }
-            my $comment = $reg->comment;
+            # JON - person comment, not Reg comment, right?
+            my $comment = $per->comment;
             if ($comment) {
                 $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
                 chomp $comment;
@@ -918,6 +901,42 @@ sub _gen_csv {
                     print {$report} "No country code for '$s'\n";
                 }
             }
+
+            # What affiliations?
+            # does this person have the affiliation 'Website Subscriber'?
+            my $website_sub = $N;
+            if (my ($ap) = model($c, 'AffilPerson')->search({
+                    p_id => $per->id,
+                    a_id => $website_sub_affil_id,
+                })
+            ) {
+                $website_sub = 'Website Subscriber';
+            }
+            # HFS Member?
+            my $hfs_member = $N;
+            my $mem = $per->member;
+            if ($mem) {
+                $hfs_member = "HFS Member " . $mem->category;
+            }
+            if (my ($hda) = model($c, 'AffilPerson')->search({
+                    p_id => $per->id,
+                    a_id => $hfs_donor_affil_id,
+                })
+            ) {
+                if ($hfs_member) {
+                    $hfs_member .= ', ';
+                }
+                $hfs_member .= 'HFS Donor';
+            }
+            my $flag = $N;
+            if (my ($ala) = model($c, 'AffilPerson')->search({
+                    p_id => $per->id,
+                    a_id => $alert_affil_id,
+                })
+            ) {
+                $flag = 'Alert When Registering';
+            }
+            #
             # REGISTRATION
             my $prog_id = $p_id;
             if ($reg->mountain_experience) {
@@ -927,29 +946,51 @@ sub _gen_csv {
             if ($prog_id == $pr_sg_prog_id) {
                 ++$npr;
             }
+            my $status = $reg->date_start_obj >= $today_d8? 'reserved': 'checked out';
             $csv->say($reg_fh, [
-                $r_id,
-                $per->first,
-                $per->last,
-                $per->email,
-                $prog_id,
-                'reserved', # status
-                $time_submitted,
-                $reg->date_start_obj->format("%F"),
-                $reg->date_end_obj->format("%F"),
-                $room_id,
-                $N,         # parent id?? blank or 0??
-                $per->addr1,
-                $per->addr2,
-                $per->city,
-                $per->st_prov,
-                $per->zip_post,
-                $country,   # country
-                'participant',  # guest_type
-                $per->tel_cell || $per->tel_home || $per->tel_work,
-                _gender($per->sex),
-                $comment,
+                $r_id,              # registration_id_original
+                $prog_id,           # program_id_original
+                                    # JON no 'program_id' from RG
+                                    # it is from Reg - or 9998 or 9999
+                                    #                  for PR/SG and ME
+                $status,            # status
+                $time_submitted,    # time_submitted - include hh:mm
+                                    # the timestamp of the deposit
+                                    # not just for future
+                $reg->date_start_obj->format("%F"), # arrive
+                $reg->date_end_obj->format("%F"),   # leave
+                $room_id,           # room id (RG mapped - verify!)
+                                    # lodging id JON - no
+                $Z,                 # JON parent_registration_id_original
+                $country,           # country
+                $per->first,        # firstname
+                $per->sanskrit||$N, # alternative-name
+                $per->last,         # lastname
+                $per->email,        # email JON include? yes
+                $per->tel_cell || $per->tel_home || $per->tel_work, # phone
+                _gender($per->sex), # gender
+                $per->addr1,        # address 1
+                $per->addr2,        # address 2
+                $per->city,         # city
+                $per->st_prov,      # state
+                $per->zip_post,     # zip
+                $per->pronouns,     # what-is-your-desired-pronouns
+                $website_sub,       # newsletter (Website Subscriber affil?)
+                $hfs_member,        # hfs-general-member
+                'Participant',      # guest_type
+                $comment||$N,       # person-notes
+                $flag,              # flag-person
             ]);
+# JON
+#print $per->name, "\n";
+#print "pronouns: " . $per->pronouns . "\n";
+#print "HFS: " . $hfs_member . "\n";
+#print "flag $flag\n";
+#print "comment $comment\n";
+#print "newsletter $website_sub\n";
+#print "prog_id ", $prog_id, "\n";
+#print "ts $time_submitted\n";
+#<STDIN>;
             ++$reg_by_year{$reg->date_start_obj->year};
             ++$nreg;
 
@@ -960,6 +1001,7 @@ sub _gen_csv {
                 next REG;
             }
 
+            # JON - what aboutslugs for transactions?
             # TRANSACTIONS
             #
             # CHARGES
@@ -1042,17 +1084,22 @@ sub _gen_csv {
         my $ren_end   = $ren->edate_obj->format("%F");
         
         # PROGRAM (aka RENTAL)
+        my $webdesc = $ren->webdesc || '';
+        $webdesc =~ s{[<][^>]*[>]}{}xmsg;
         $csv->say($prog_fh, [
-            $ren->id,        # ??? dup with Program? it's okay
-            $ren->title,
-            $ren->webdesc,
-            $ren_start,
-            $ren_end,
-            $ren_start,
-            $email,
-            $phone,
-            $name,
-            $ren->max,
+            $ren->id,                       # program_id_original
+                                                # dup with Program? it's ok
+            $ren->title,                    # title
+            $webdesc,                       # description
+            "Fixed Date",                   # date type
+            $ren->sdate_obj->format("%F"),  # start date
+            $ren->edate_obj->format("%F"),  # end date
+            "Mount Madonna Center",         # location
+            "445 Summit",                   # location address
+                                            # JON these 3, right?
+            $email,                         # email
+            $phone,                         # phone
+            $name,                          # name
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others
@@ -1071,27 +1118,39 @@ sub _gen_csv {
             $country = $country_code_for{$contact->country};
         }
         $csv->say($reg_fh, [
-            $reg_id,
-            $contact->first,
-            $contact->last,
-            $email,
-            $ren->id,     # the rental id
-            'reserved',   # status
-            $N,   # time_submitted,
-            $ren_start,
-            $ren_end,
-            $N,   # room id
-            $N,   # parent id - blank or 0??
-            $contact->addr1,     # addr1,
-            $contact->addr2,     # addr2,
-            $contact->city,      # city,
-            $contact->st_prov,   # st_prov,
-            $contact->zip_post,  # zip_post,
-            $country,            # country
-            'participant',  # guest_type
-            $phone,
-            _gender($contact->sex),    # sex,
-            $contact->comment, # comment
+            $reg_id,            # registration_id_original - concocted
+            $ren->id,           # program_id_original
+                                # JON no 'program_id' from RG
+                                # it is from Reg - or 9998 or 9999
+                                #                  for PR/SG and ME
+            'reserved',         # status
+            $N,                 # time_submitted - include hh:mm
+                                # the timestamp of the deposit
+                                # not just for future
+            $ren_start,         # arrive
+            $ren_end,           # leave
+            $Z,                 # room id (RG mapped - verify!)
+                                # lodging id JON - no
+            $Z,                 # JON parent_registration_id_original
+            $country,           # country
+            $contact->first,        # firstname
+            $contact->sanskrit||$N, # alternative-name
+            $contact->last,         # lastname
+            $contact->email,        # email JON include? yes
+            $contact->phone,        # phone
+            _gender($contact->sex), # gender
+            $contact->addr1,        # address 1
+            $contact->addr2,        # address 2
+            $contact->city,         # city
+            $contact->st_prov,      # state
+            $contact->zip_post,     # zip
+            $contact->pronouns,     # what-is-your-desired-pronouns
+                                    # JON all $N below okay?
+            $N,                     # newsletter (Website Subscriber affil?)
+            $N,                     # hfs-general-member
+            'Participant',          # guest_type
+            $N,                     # person-notes
+            $N,                     # flag-person
         ]);
         ++$nrent_reg;
 
@@ -1178,27 +1237,38 @@ sub _gen_csv {
             # REGISTRATION (aka grid entry)
             ++$reg_id;
             $csv->say($reg_fh, [
-                $reg_id,
-                $first,
-                $last,
-                $email,
-                $ren->id,     # the rental id
-                'reserved',   # status
-                $N,   # time_submitted,
-                $start,
-                $end,
+                $reg_id,            # registration_id_original - concocted
+                $ren->id,           # program_id_original
+                                    # JON no 'program_id' from RG
+                                    # it is from Reg - or 9998 or 9999
+                                    #                  for PR/SG and ME
+                'reserved',         # status
+                $N,                 # time_submitted - include hh:mm
+                                    # the timestamp of the deposit
+                                    # not just for future
+                $start,             # arrive
+                $end,               # leave
                 $room_id,
                 $coord_reg_id,      # PARENT REG ID!!
-                $N, # addr1,
-                $N, # addr2,
-                $N, # city,
-                $N, # st_prov,
-                $N, # zip_post,
-                $N, # country,
-                'participant',  # guest_type
-                $N, # tel_cell || $per->tel_home || $per->tel_work,
-                $N, # sex,
-                $N, # comment
+                $N,           # country
+                $first,        # firstname
+                $N,            # alternative-name
+                $last,         # lastname
+                $email,        # email JON include? yes
+                $N,            # phone
+                $N,            # gender
+                $N,            # address 1
+                $N,            # address 2
+                $N,            # city
+                $N,            # state
+                $N,            # zip
+                $N,            # what-is-your-desired-pronouns
+                                        # JON all $N below okay?
+                $N,                     # newsletter (Website Subscriber affil?)
+                $N,                     # hfs-general-member
+                'Participant',          # guest_type
+                $N,                     # person-notes
+                $N,                     # flag-person
             ]);
             ++$nrent_reg;
 
