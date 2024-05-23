@@ -1136,8 +1136,8 @@ sub _gen_csv {
             $contact->first,        # firstname
             $contact->sanskrit||$N, # alternative-name
             $contact->last,         # lastname
-            $contact->email,        # email JON include? yes
-            $contact->phone,        # phone
+            $email,                 # email JON include? yes
+            $phone,                 # phone
             _gender($contact->sex), # gender
             $contact->addr1,        # address 1
             $contact->addr2,        # address 2
