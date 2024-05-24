@@ -1004,15 +1004,15 @@ sub _gen_csv {
                 $flag,              # flag-person
             ]);
 # JON
-print $per->name, "\n";
-print "pronouns: " . $per->pronouns . "\n";
-print "HFS: " . $hfs_member . "\n";
-print "flag $flag\n";
-print "comment $comment\n";
-print "newsletter $website_sub\n";
-print "prog_id ", $prog_id, "\n";
-print "ts $time_submitted\n";
-<STDIN>;
+#print $per->name, "\n";
+#print "pronouns: " . $per->pronouns . "\n";
+#print "HFS: " . $hfs_member . "\n";
+#print "flag $flag\n";
+#print "comment $comment\n";
+#print "newsletter $website_sub\n";
+#print "prog_id ", $prog_id, "\n";
+#print "ts $time_submitted\n";
+#<STDIN>;
             ++$reg_by_year{$reg->date_start_obj->year};
             ++$nreg;
 
