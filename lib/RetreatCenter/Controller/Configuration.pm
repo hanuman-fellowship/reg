@@ -405,9 +405,9 @@ date_end
 *organization_id
 location
 location_address
-contact_email
-contact_phone
-contact_name
+*contact_email
+*contact_phone
+*contact_name
 *categories
 /;
 my @reg_headers = qw/
@@ -435,7 +435,7 @@ state-or-province-2
 zip-or-postal-code
 what-is-your-desired-pronouns
 newsletter
-hfs-general-member
+hfs-affiliate
 guest-type
 person-notes
 flag-person
@@ -688,6 +688,16 @@ sub _gen_csv {
         die "No affil for Website Subscriber";
     }
 
+    my $mmc_donor_affil_id;
+    my ($m_af) = model($c, 'Affil')->search({
+                   descrip => 'MMC Donors',
+               });
+    if ($m_af) {
+        $mmc_donor_affil_id = $m_af->id;
+    }
+    else {
+        die "No affil for MMC Donors";
+    }
     my $hfs_donor_affil_id;
     my ($hd_af) = model($c, 'Affil')->search({
                    descrip => 'HFS Donor',
@@ -727,23 +737,23 @@ sub _gen_csv {
         $N,                     # date end
         "Mount Madonna Center", # location
         "445 Summit",           # location address
-        $N,                     # email
-        $N,                     # phone
-        $N                      # name
+        #$N,                     # email
+        #$N,                     # phone
+        #$N                      # name
     ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
         $me_prog_id,            # program_id_original
-        "Mountain Experience",  # title
+        "Mountain Experience Legacy",  # title
         "Mountain Experience",  # description
         "Flexible",             # date type
         $N,                     # date start
         $N,                     # date end
         "Mount Madonna Center", # location
         "445 Summit",           # location address
-        $N,                     # email
-        $N,                     # phone
-        $N                      # name
+        #$N,                     # email
+        #$N,                     # phone
+        #$N                      # name
     ]);
     PROGRAM:
     for my $prog (
@@ -821,9 +831,9 @@ sub _gen_csv {
                 "Mount Madonna Center",         # location
                 "445 Summit",                   # location address
                 # JON?? include these 3?
-                $email,                         # contact email
-                $phone,                         # contact phone
-                $name,                          # contact name
+                #$email,                         # contact email
+                #$phone,                         # contact phone
+                #$name,                          # contact name
                                                 # JON categories
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
@@ -918,6 +928,7 @@ sub _gen_csv {
             if ($mem) {
                 $hfs_member = "HFS Member " . $mem->category;
             }
+            # HFS Donor
             if (my ($hda) = model($c, 'AffilPerson')->search({
                     p_id => $per->id,
                     a_id => $hfs_donor_affil_id,
@@ -928,13 +939,24 @@ sub _gen_csv {
                 }
                 $hfs_member .= 'HFS Donor';
             }
+            # MMC Donors
+            if (my ($ma) = model($c, 'AffilPerson')->search({
+                    p_id => $per->id,
+                    a_id => $mmc_donor_affil_id,
+                })
+            ) {
+                if ($hfs_member) {
+                    $hfs_member .= ', ';
+                }
+                $hfs_member .= 'MMC Donors';
+            }
             my $flag = $N;
             if (my ($ala) = model($c, 'AffilPerson')->search({
                     p_id => $per->id,
                     a_id => $alert_affil_id,
                 })
             ) {
-                $flag = 'Alert When Registering';
+                $flag = 'ALT alert when registering';
             }
             #
             # REGISTRATION
@@ -982,15 +1004,15 @@ sub _gen_csv {
                 $flag,              # flag-person
             ]);
 # JON
-#print $per->name, "\n";
-#print "pronouns: " . $per->pronouns . "\n";
-#print "HFS: " . $hfs_member . "\n";
-#print "flag $flag\n";
-#print "comment $comment\n";
-#print "newsletter $website_sub\n";
-#print "prog_id ", $prog_id, "\n";
-#print "ts $time_submitted\n";
-#<STDIN>;
+print $per->name, "\n";
+print "pronouns: " . $per->pronouns . "\n";
+print "HFS: " . $hfs_member . "\n";
+print "flag $flag\n";
+print "comment $comment\n";
+print "newsletter $website_sub\n";
+print "prog_id ", $prog_id, "\n";
+print "ts $time_submitted\n";
+<STDIN>;
             ++$reg_by_year{$reg->date_start_obj->year};
             ++$nreg;
 
@@ -1001,7 +1023,7 @@ sub _gen_csv {
                 next REG;
             }
 
-            # JON - what aboutslugs for transactions?
+            # JON - what about slugs for transactions?
             # TRANSACTIONS
             #
             # CHARGES
@@ -1097,9 +1119,9 @@ sub _gen_csv {
             "Mount Madonna Center",         # location
             "445 Summit",                   # location address
                                             # JON these 3, right?
-            $email,                         # email
-            $phone,                         # phone
-            $name,                          # name
+            #$email,                         # email
+            #$phone,                         # phone
+            #$name,                          # name
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others
