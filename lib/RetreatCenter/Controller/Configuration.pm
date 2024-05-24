@@ -762,6 +762,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
+        print $prog->sdate_obj->format("%F"), "\n";
         my $yr = $prog->sdate_obj->year;
         if ($yr != $prev_yr) {
             print "$yr\n";  # progress report to STDOUT
