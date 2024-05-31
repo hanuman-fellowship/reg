@@ -394,6 +394,8 @@ my $Reg_id_RG_id_mapping = <<'EOM';
 95  193  Tent Oaks 55
 73  194  Tent Oaks 56
 99  165  Tent Oaks 64
+317 137  Yurt 1
+318 143  Yurt 2
 EOM
 my @prog_headers = qw/
 program_id_original
@@ -422,9 +424,9 @@ room_id
 *lodging_id
 parent_registration_id_original
 country
-firstname
+first_name
 alternative-name
-lastname
+last_name
 email
 phone
 gender
@@ -732,7 +734,7 @@ sub _gen_csv {
         $pr_sg_prog_id,         # program_id_original
         "Personal Retreats",    # title
         "Personal Retreats",    # description
-        "Flexible",             # date type
+        "Package",              # date type
         $N,                     # date start
         $N,                     # date end
         "Mount Madonna Center", # location
@@ -746,7 +748,7 @@ sub _gen_csv {
         $me_prog_id,            # program_id_original
         "Mountain Experience Legacy",  # title
         "Mountain Experience",  # description
-        "Flexible",             # date type
+        "Package",              # date type
         $N,                     # date start
         $N,                     # date end
         "Mount Madonna Center", # location
@@ -826,7 +828,7 @@ sub _gen_csv {
                 $prog->id,                      # program_id_original
                 $prog->title,                   # title
                 $webdesc,                       # description
-                "Fixed Date",                   # date type
+                "Fixed",                        # date type
                 $prog->sdate_obj->format("%F"), # start date
                 $prog->edate_obj->format("%F"), # end date
                 "Mount Madonna Center",         # location
@@ -986,9 +988,9 @@ sub _gen_csv {
                                     # lodging id JON - no
                 $Z,                 # JON parent_registration_id_original
                 $country,           # country
-                $per->first,        # firstname
+                $per->first,        # first_name
                 $per->sanskrit||$N, # alternative-name
-                $per->last,         # lastname
+                $per->last,         # last_name
                 $per->email,        # email JON include? yes
                 $per->tel_cell || $per->tel_home || $per->tel_work, # phone
                 _gender($per->sex), # gender
@@ -1114,7 +1116,7 @@ sub _gen_csv {
                                                 # dup with Program? it's ok
             $ren->title,                    # title
             $webdesc,                       # description
-            "Fixed Date",                   # date type
+            "Fixed",                        # date type
             $ren->sdate_obj->format("%F"),  # start date
             $ren->edate_obj->format("%F"),  # end date
             "Mount Madonna Center",         # location
@@ -1156,9 +1158,9 @@ sub _gen_csv {
                                 # lodging id JON - no
             $Z,                 # JON parent_registration_id_original
             $country,           # country
-            $contact->first,        # firstname
+            $contact->first,        # first_name
             $contact->sanskrit||$N, # alternative-name
-            $contact->last,         # lastname
+            $contact->last,         # last_name
             $email,                 # email JON include? yes
             $phone,                 # phone
             _gender($contact->sex), # gender
@@ -1274,9 +1276,9 @@ sub _gen_csv {
                 $room_id,
                 $coord_reg_id,      # PARENT REG ID!!
                 $N,           # country
-                $first,        # firstname
+                $first,        # first_name
                 $N,            # alternative-name
-                $last,         # lastname
+                $last,         # last_name
                 $email,        # email JON include? yes
                 $N,            # phone
                 $N,            # gender
