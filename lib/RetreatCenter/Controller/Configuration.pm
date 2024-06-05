@@ -734,7 +734,7 @@ sub _gen_csv {
         $pr_sg_prog_id,         # program_id_original
         "Personal Retreats",    # title
         "Personal Retreats",    # description
-        "Package",              # date type
+        "flexible",             # date type
         $N,                     # date start
         $N,                     # date end
         "Mount Madonna Center", # location
@@ -748,7 +748,7 @@ sub _gen_csv {
         $me_prog_id,            # program_id_original
         "Mountain Experience Legacy",  # title
         "Mountain Experience",  # description
-        "Package",              # date type
+        "flexible",             # date type
         $N,                     # date start
         $N,                     # date end
         "Mount Madonna Center", # location
@@ -828,7 +828,7 @@ sub _gen_csv {
                 $prog->id,                      # program_id_original
                 $prog->title,                   # title
                 $webdesc,                       # description
-                "Fixed",                        # date type
+                "fixed",                        # date type
                 $prog->sdate_obj->format("%F"), # start date
                 $prog->edate_obj->format("%F"), # end date
                 "Mount Madonna Center",         # location
@@ -1116,7 +1116,7 @@ sub _gen_csv {
                                                 # dup with Program? it's ok
             $ren->title,                    # title
             $webdesc,                       # description
-            "Fixed",                        # date type
+            "fixed",                        # date type
             $ren->sdate_obj->format("%F"),  # start date
             $ren->edate_obj->format("%F"),  # end date
             "Mount Madonna Center",         # location
