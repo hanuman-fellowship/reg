@@ -10,6 +10,9 @@ use Date::Simple qw/
     days_in_month
     today
 /;
+use File::Copy qw/
+    copy
+/;
 use Time::Simple qw/
     get_time
 /;
@@ -1429,49 +1432,38 @@ EOH
         $c->logout;
 
         # fix up the content and then
-        # ftp it all to www.mountmadonna.org
+        # write it to /var/www/src/root/static/events
         #
+        my $rst = '/var/www/src/root/static';
+        my $rst_ev = '/var/www/src/root/static/events';
         $content =~ s{https://.*?/calendar_image/}{}g;
         $content =~ s{/static/}{};
         $content =~ s{/static/js/}{};
-        open my $cal, ">", "/tmp/pubcal_index.html"
-            or die "cannot open pubcal_index.html: $!";
+        open my $cal, ">", "$rst_ev/index.html"
+            or die "cannot open $rst_ev/index.html: $!";
         my $updated = get_time()->ampm() . " " . today()->format("%b %e");
         print {$cal} <<"EOH";
 <span class=cal_head>
 Future Events at Mount Madonna Center
 <span class=updated>Updated $updated</span>
-<span class=cal_help><a href="javascript:popup('pubcal_help.html', 620);">Help</a></span>
+<span class=cal_help><a href="javascript:popup('static/events/pubcal_help.html', 620);">Help</a></span>
 </span>
 EOH
+        $content =~ s{src='}{src='static/events/}xmsg;
+        $content =~ s{src="}{src="static/events/}xmsg;
+        $content =~ s{src=([^'"])}{src=static/events/$1}xmsg;
+        $content =~ s{cal.css}{static/events/cal.css}xmsg;
         print {$cal} $content;
         close $cal;
-        my ($jmp_image)  = $content =~ m{src=(imJ\d+[.]png)};
-        my @cal_images = $content =~ m{src='(im\d+[.]png)'}g;
-        my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive})
-            or die "cannot connect to ...";    # not die???
-        $ftp->login($string{ftp_login}, $string{ftp_password})
-            or die "cannot login ", $ftp->message; # not die???
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        no warnings 'redefine';
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->cwd($string{ftp_calendar_dir})
-            or die "cannot cwd ", $ftp->message; # not die???
-        for my $f ($ftp->ls()) {
-            $ftp->delete($f);
-        }
-        $ftp->ascii();
-        $ftp->put("/tmp/pubcal_index.html", "index.html");
-        $ftp->put("root/static/js/overlib.js",     "overlib.js");
-        $ftp->put("root/static/cal.css",           "cal.css");
-        $ftp->put("root/static/help/pubcal_help.html", "pubcal_help.html");
-        $ftp->binary();
+        my ($jmp_image)  = $content =~ m{(imJ\d+[.]png)};
+        my @cal_images = $content =~ m{(im\d+[.]png)}g;
+
+        copy("$rst/js/overlib.js",         "$rst_ev/overlib.js");
+        copy("$rst/cal.css",               "$rst_ev/cal.css");
+        copy("$rst/help/pubcal_help.html", "$rst_ev/pubcal_help.html");
         for my $im (@cal_images, $jmp_image) {
-            $ftp->put("/var/Reg/images/$im", $im);
+            copy("/var/Reg/images/$im", "$rst_ev/$im");
         }
-        $ftp->quit();
         # tidy up
         #
         $c->res->output("sent");
