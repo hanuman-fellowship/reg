@@ -44,6 +44,7 @@ root/static/participant.csv
 root/static/report*.txt
 root/static/expiry_date.txt
 root/static/labels.txt
+root/static/events/*
 mail.log
 file_ftp_dir/
 grab_new_log
