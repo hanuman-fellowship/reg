@@ -742,7 +742,7 @@ sub _gen_csv {
         #$N,                     # email
         #$N,                     # phone
         #$N                      # name
-    ]) if 0; # JON tmp
+    ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
         $me_prog_id,            # program_id_original
@@ -756,7 +756,7 @@ sub _gen_csv {
         #$N,                     # email
         #$N,                     # phone
         #$N                      # name
-    ]) if 0; # JON tmp
+    ]);
     PROGRAM:
     for my $prog (
         model($c, 'Program')->search(
@@ -764,7 +764,6 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        next PROGRAM;       # JON tmp
         print $prog->sdate_obj->format("%F"), "\n";
         my $yr = $prog->sdate_obj->year;
         if ($yr != $prev_yr) {
@@ -1085,9 +1084,6 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        if ($ren->id != 1956) { # JON tmp
-            next RENTAL;
-        }
         if ($ren->program_id) {
             next RENTAL;
         }
