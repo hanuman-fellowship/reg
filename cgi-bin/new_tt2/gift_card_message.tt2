@@ -8,7 +8,7 @@
 
 <div class="mail-box-a">
 	<div class="mail-box-b">
-		<img src="https://akash.mountmadonna.org/static/images/mm-legacy-logo.png" width=200>
+		<img src="https://akash.mountmadonna.org/static/images/mm-logo.png" width=200>
 		<h3>Thank you, ${first}.</h3>
 		<p>Your payment has been received.</p>
 		<p>
