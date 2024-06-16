@@ -6,7 +6,7 @@
 <body>
 	<div class="message-box-a">
 		<div class="message-box-c">
-			<img class="logo-note" src="/static/images/mount-madonna-logo.png" alt="Mount Madonna Center" title="Mount Madonna Center">
+			<img class="logo-note" src="/static/images/logo.svg" alt="Mount Madonna Center" title="Mount Madonna Center">
 			$name cannot occupy the Whole RAM 1 Cottage when<br>
 			there are other people in the RAM 1A or RAM 1B rooms.
 			<p>
