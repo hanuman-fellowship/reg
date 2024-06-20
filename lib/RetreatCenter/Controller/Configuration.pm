@@ -823,9 +823,12 @@ sub _gen_csv {
         }
 
         # RG Program Category ids
-        my @prog_categories;
+        my @prog_categories = ();
         for my $ap ($prog->affil_program) {
-            push @prog_categories, @{$RG_cat_ids_for_Reg_affil_id{$ap->a_id}};
+            if (exists $RG_cat_ids_for_Reg_affil_id{$ap->a_id}) {
+                push @prog_categories,
+                     @{$RG_cat_ids_for_Reg_affil_id{$ap->a_id}};
+            }
         }
         # non hybrid programs
         if (! $prog->rental_id) {
@@ -1210,7 +1213,7 @@ sub _gen_csv {
         my $ren_start = $ren->sdate_obj->format("%F");
         my $ren_end   = $ren->edate_obj->format("%F");
 
-        my @prog_cats;
+        my @prog_cats = ();
         push @prog_cats, 76, 77;
         my $tier = $ren->mp_cost_tier;
         push @prog_cats, $tier == 1? 64     # Legacy
@@ -1218,7 +1221,7 @@ sub _gen_csv {
                         :$tier == 3? 79     # Medium??
                         :            80     # 4 = Corporate / Foundation
                         ;
-        my $prog_cats = join ',', @prog_cats;
+        my $prog_cats = join ',', sort @prog_cats;
         
         # PROGRAM (aka RENTAL)
         my $webdesc = $ren->webdesc || '';
