@@ -928,7 +928,11 @@ sub _gen_csv {
         # to put on the registrations
 
         REG:
-        for my $reg ($prog->registrations) {
+        for my $reg (sort {
+                         $a->date_start <=> $b->date_start
+                     }
+                     $prog->registrations
+        ) {
             my $per = $reg->person;
             if (!$per) {
                 next REG;
@@ -1059,7 +1063,9 @@ sub _gen_csv {
                     print {$me_list} $per->email, "\n";
                     print {$me_list} $per->addr1, "\n";
                     print {$me_list} $per->addr2, "\n" if $per->addr2;
-                    print {$me_list} $per->st_prov, ' ', $per->zip_post, "\n";
+                    print {$me_list} $per->city, ' ',
+                                     $per->st_prov, ' ',
+                                     $per->zip_post, "\n";
                     print {$me_list} $per->country, "\n" if $per->country;
                     print {$me_list} "   meals: ", $reg->mountain_experience, "\n";
                     print {$me_list} "activity: ", $reg->activity, "\n";
