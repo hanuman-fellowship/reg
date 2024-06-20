@@ -410,7 +410,7 @@ location_address
 *contact_email
 *contact_phone
 *contact_name
-*categories
+categories
 /;
 my @reg_headers = qw/
 registration_id_original
@@ -441,6 +441,8 @@ hfs-affiliate
 guest-type
 person-notes
 flag-person
+diet
+diet-restrictions
 /;
 my @trans_headers = qw/
 object_type
@@ -565,6 +567,49 @@ while (my $line = <$fh>) {
     my ($country, $code) = split '\s*,\s*', $line;
     $country_code_for{$country} = $code;
 }
+use List::Util qw/
+    uniq
+/;
+# RG program category numbers for Reg affil Program ids:
+my $cat_nums = <<'EOH';
+20: 65 68 # MMC Annual Yoga Retreats
+36: 65 68 69 # MMI - Open House
+45: 72 # TEMPLE - Temple Donors $100+
+48: 72 # TEMPLE - All Temple Donors
+54: 62 65 # MMI - Community Studies
+63: 65 75 # MMI - Kaya Kalpa
+64: 65 69 # MMI - Ayurveda
+65: 65 68 # MMI - Yoga
+66: 65 69 # MMI - AY Consultations
+67: 72 # Temple Guest
+71: 65 69 # MMI - AY Conferences
+73: 65 68 69 # MMI - AY & Yoga Events
+76: 65 69 # MMI - NAMA
+77: 65 # MMI - Workshops & Non-Credit Programs
+79: 65 69 # MMI - AHC Interest
+80: 65 69 # MMI - C-AP Interest
+81: 65 69 # MMI - MA Interest
+94: 65 69 # MMI - AYT Interest
+104: 65 # MMI - Research Symposium
+108: 65 68 69 # MMI - IAYT
+109: 65 69 # MMI - Ayurveda World
+111: 65 68 # MMI - Yoga Conferences
+113: 65 # MMC Hosted by MMC
+114: 66 # MMC Personal Retreats
+134: 65 68 # MMI - Yoga Prenatal Interest
+135: 65 68 # MMI - YTT300 Interest
+138: 65 68 # MMI - YTT200 Interest
+142: 65 68 # MMC Liberation Retreat 2020
+145: 32 67 # MMC Mountain Experience
+EOH
+my %RG_cat_ids_for_Reg_affil_id;
+open my $in, '<', \$cat_nums or die "cannot open cat_nums\n";
+while (my $line = <$in>) {
+    chomp $line;
+    $line =~ s{[#].*\z}{}xms;
+    my ($id, @nums) = $line =~ m{(\d+)}xmsg;
+    $RG_cat_ids_for_Reg_affil_id{$id} = \@nums;
+}
 
 sub _gender {
     my ($sex) = @_;
@@ -643,6 +688,7 @@ sub _gen_csv {
     my $start_d8 = date($start)->as_d8();
     my $N = '';
     my $Z = 0;
+    my $veg_no_restrict = "Vegetarian with no restrictions";
 
     my %RG_id_for;
     for my $line (split '\n', $Reg_id_RG_id_mapping) {
@@ -658,6 +704,9 @@ sub _gen_csv {
         or die "no trans";
     open my $report, '>', "$dir/report.txt"
         or die "no report";
+    open my $me_list, '>', "$dir/me_list.txt"
+        or die "no me_list";
+    print {$me_list} "FUTURE Mountain Experience Registrations\n\n";
 
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
@@ -739,9 +788,10 @@ sub _gen_csv {
         $N,                     # date end
         "Mount Madonna Center", # location
         "445 Summit",           # location address
-        #$N,                     # email
-        #$N,                     # phone
-        #$N                      # name
+        #$N,                    # email
+        #$N,                    # phone
+        #$N,                    # name
+        '66',                   # categories (PR category)
     ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
@@ -753,9 +803,10 @@ sub _gen_csv {
         $N,                     # date end
         "Mount Madonna Center", # location
         "445 Summit",           # location address
-        #$N,                     # email
-        #$N,                     # phone
-        #$N                      # name
+        #$N,                    # email
+        #$N,                    # phone
+        #$N                     # name
+        "32,66,67",             # categories (PR category) + one day
     ]);
     PROGRAM:
     for my $prog (
@@ -770,6 +821,33 @@ sub _gen_csv {
             print "$yr\n";  # progress report to STDOUT
             $prev_yr = $yr;
         }
+
+        # RG Program Category ids
+        my @prog_categories;
+        for my $ap ($prog->affil_program) {
+            push @prog_categories, @{$RG_cat_ids_for_Reg_affil_id{$ap->a_id}};
+        }
+        # non hybrid programs
+        if (! $prog->rental_id) {
+            push @prog_categories, 65;      # MM sponsored pricing tier
+        }
+        if ($prog->rental_id) {
+            push @prog_categories, 76;      # rental hybrid program
+        }
+        # one day programs
+        if ($prog->sdate eq $prog->edate) {
+            push @prog_categories, 67;
+        }
+        # onsite or online
+        push @prog_categories, $prog->housing_not_needed? 31: 30;
+        # HFS programs
+        if ($prog->name =~ m{purnima|jayanti|ratri}xmsi) {
+            push @prog_categories, 74;
+        }
+        # all done, prepare it further
+        @prog_categories = sort uniq @prog_categories;
+        my $prog_categories = join ',', @prog_categories;
+
         my $p_id;
         if ($prog->name =~ m{personal\s+retreat|special\s+guest}xmsi) {
             $p_id = $pr_sg_prog_id;
@@ -837,7 +915,7 @@ sub _gen_csv {
                 #$email,                         # contact email
                 #$phone,                         # contact phone
                 #$name,                          # contact name
-                                                # JON categories
+                $prog_categories,                # categories
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
             ++$nprog;
@@ -965,13 +1043,35 @@ sub _gen_csv {
             # REGISTRATION
             my $prog_id = $p_id;
             if ($reg->mountain_experience) {
+                # Only past ones?  Future ones are handled manually.
+                if ($reg->date_start >= $today_d8) {
+                    # add to the ME report
+                    my $cost = 0;
+                    for my $p ($reg->payments) {
+                        $cost += $p->amount;
+                    }
+                    print {$me_list} $per->name, "\n";
+                    print {$me_list} $reg->date_start_obj->format("%D"), "\n";
+                    print {$me_list} $per->tel_cell, "\n";
+                    print {$me_list} $per->email, "\n";
+                    print {$me_list} $per->addr1, "\n";
+                    print {$me_list} $per->addr2, "\n" if $per->addr2;
+                    print {$me_list} $per->st_prov, ' ', $per->zip_post, "\n";
+                    print {$me_list} $per->country, "\n" if $per->country;
+                    print {$me_list} "   meals: ", $reg->mountain_experience, "\n";
+                    print {$me_list} "activity: ", $reg->activity, "\n";
+                    print {$me_list} "children: ", $reg->kids, "\n";
+                    print {$me_list} " payment: ", '$', $cost, "\n";
+                    print {$me_list} "\n";
+                    next REG;
+                }
                 $prog_id = $me_prog_id;
                 ++$nme;
             }
             if ($prog_id == $pr_sg_prog_id) {
                 ++$npr;
             }
-            my $status = $reg->date_start_obj >= $today_d8? 'reserved': 'checked out';
+            my $status = $reg->date_start >= $today_d8? 'reserved': 'checked out';
             $csv->say($reg_fh, [
                 $r_id,              # registration_id_original
                 $prog_id,           # program_id_original
@@ -1005,6 +1105,8 @@ sub _gen_csv {
                 'Participant',      # guest_type
                 $comment||$N,       # person-notes
                 $flag,              # flag-person
+                $veg_no_restrict,   # diet
+                $per->diet,         # diet-restrictions
             ]);
 # JON
 #print $per->name, "\n";
@@ -1107,6 +1209,16 @@ sub _gen_csv {
         }
         my $ren_start = $ren->sdate_obj->format("%F");
         my $ren_end   = $ren->edate_obj->format("%F");
+
+        my @prog_cats;
+        push @prog_cats, 76, 77;
+        my $tier = $ren->mp_cost_tier;
+        push @prog_cats, $tier == 1? 64     # Legacy
+                        :$tier == 2? 79     # Small Business / Non-Profit
+                        :$tier == 3? 79     # Medium??
+                        :            80     # 4 = Corporate / Foundation
+                        ;
+        my $prog_cats = join ',', @prog_cats;
         
         # PROGRAM (aka RENTAL)
         my $webdesc = $ren->webdesc || '';
@@ -1122,9 +1234,10 @@ sub _gen_csv {
             "Mount Madonna Center",         # location
             "445 Summit",                   # location address
                                             # JON these 3, right?
-            #$email,                         # email
-            #$phone,                         # phone
-            #$name,                          # name
+            #$email,                        # email
+            #$phone,                        # phone
+            #$name,                         # name
+            $prog_cats,                     # categories
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others
@@ -1176,6 +1289,8 @@ sub _gen_csv {
             'Participant',          # guest_type
             $N,                     # person-notes
             $N,                     # flag-person
+            $veg_no_restrict,       # diet
+            $N,                     # diet-restrictions
         ]);
         ++$nrent_reg;
 
@@ -1294,6 +1409,8 @@ sub _gen_csv {
                 'Participant',          # guest_type
                 $N,                     # person-notes
                 $N,                     # flag-person
+                $veg_no_restrict,       # diet
+                $N,                     # diet-restrictions
             ]);
             ++$nrent_reg;
 
@@ -1320,6 +1437,7 @@ sub _gen_csv {
     close $prog_fh;
     close $reg_fh;
     close $trans_fh;
+    close $me_list;
 
     print {$report} "\n";
     print {$report} "Programs by Year:\n";
