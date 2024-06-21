@@ -681,9 +681,6 @@ and a limited number of people in the concocted program
 sub _gen_csv {
     my ($c, $start) = @_;
 
-    my $only_prs = 1;   # JON tmp
-    my $nprs = 30;  # JON tmp
-
     my $reg_id = 0;     # for concocted registrations (rentals)
 
     my $today_d8 = today()->as_d8();
@@ -795,7 +792,7 @@ sub _gen_csv {
         #$N,                    # phone
         #$N,                    # name
         '66',                   # categories (PR category)
-    ]);
+    ]) if 0; # JON tmp
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
         $me_prog_id,            # program_id_original
@@ -810,7 +807,7 @@ sub _gen_csv {
         #$N,                    # phone
         #$N                     # name
         "32,66,67",             # categories (PR category) + one day
-    ]) unless $only_prs;  # JON tmp
+    ]) if 0; # JON tmp
     PROGRAM:
     for my $prog (
         model($c, 'Program')->search(
@@ -818,6 +815,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
+        next PROGRAM unless $prog->id == 4917; # JON tmp
         print $prog->sdate_obj->format("%F"), "\n";
         my $yr = $prog->sdate_obj->year;
         if ($yr != $prev_yr) {
@@ -861,7 +859,6 @@ sub _gen_csv {
             $p_id = $pr_sg_prog_id;
         }
         else {
-            next PROGRAM;   # JON tmp
             # are there any registrations of people that
             # have an email address?
             #
@@ -1185,8 +1182,6 @@ sub _gen_csv {
                 ++$trans_by_year{$pay->the_date_obj->year};
             }
         }
-        --$nprs;  # JON tmp
-        last PROG if $nprs <= 0;    # JON tmp
     }
 
     # only future rentals
@@ -1203,7 +1198,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        last RENTAL if $only_prs;
+        last RENTAL;  # JON tmp
         if ($ren->program_id) {
             next RENTAL;
         }
