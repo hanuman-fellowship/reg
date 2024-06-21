@@ -815,7 +815,7 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        next PROGRAM unless $prog->id == 4917; # JON tmp
+        next PROGRAM unless $prog->id == 4925; # JON tmp
         print $prog->sdate_obj->format("%F"), "\n";
         my $yr = $prog->sdate_obj->year;
         if ($yr != $prev_yr) {
