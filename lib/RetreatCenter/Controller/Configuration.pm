@@ -848,8 +848,10 @@ sub _gen_csv {
             push @prog_categories, 74;
         }
         # all done, prepare it further
-        @prog_categories = sort uniq @prog_categories;
-        my $prog_categories = join ',', @prog_categories;
+        @prog_categories = uniq @prog_categories;
+        # can't do 'sort uniq' as it tries to use 'uniq'
+        # as the sort algorithm
+        my $prog_categories = join ',', sort { $a <=> $b } @prog_categories;
 
         my $p_id;
         if ($prog->name =~ m{personal\s+retreat|special\s+guest}xmsi) {
