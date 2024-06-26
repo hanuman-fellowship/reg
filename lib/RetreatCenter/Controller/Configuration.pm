@@ -610,6 +610,43 @@ while (my $line = <$in>) {
     my ($id, @nums) = $line =~ m{(\d+)}xmsg;
     $RG_cat_ids_for_Reg_affil_id{$id} = \@nums;
 }
+close $in;
+
+my $RG_cat_num = <<'EOH';
+9 Movement
+30 On-site
+31 Online
+32 Mountain Experience
+49 Symposium
+62 Community Studies
+63 Template
+64 Legacy
+65 MM Sponsored
+66 Personal Retreat
+67 Day Program
+68 Yoga
+69 Ayurveda
+70 Meditation
+71 Silent
+72 Temple
+73 Hybrid
+74 HFS Event
+75 Bodywork
+76 Hosted
+77 Remote Reg
+78 Social Justice
+79 SB/NP/K12 Edu
+80 Corp/Found
+EOH
+
+my %RG_prog_cat_name_for;
+open my $RGin, '<', \$RG_cat_num or die "cannot open RG_cat_num\n";
+while (my $line = <$RGin>) {
+    chomp $line;
+    my ($id, $name) = $line =~ m{\A (\d+) [ ] (.*) \z}xmsg;
+    $RG_prog_cat_name_for{$id} = $name;
+}
+close $RGin;
 
 sub _gender {
     my ($sex) = @_;
