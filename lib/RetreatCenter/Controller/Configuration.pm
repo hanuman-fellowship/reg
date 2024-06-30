@@ -1285,7 +1285,7 @@ sub _gen_csv {
             #$email,                        # email
             #$phone,                        # phone
             #$name,                         # name
-            $prog_cats,                     # categories
+            $prog_cats,                     # categories JON text|text...!
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others

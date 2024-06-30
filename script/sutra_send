@@ -7,42 +7,74 @@ use Util qw/
     email_letter
     db_init
 /;
+
+my ($known_id, $one_email) = @ARGV;
+die unless $known_id && $known_id =~ m{\A \d+ \z}xms;
+die unless $one_email && $one_email =~ m{[@]}xms;
+
 my $c = db_init();
 use DBI;
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "cannot connect to database\n";
+
 my $sutra;
-SUTRA:
-while (1) {
-    my $sth_rand_sut = $dbh->prepare(<<'EOS');
-    SELECT id, content
-      FROM sutra
-     WHERE chosen = 0
-  ORDER BY RAND()
-     LIMIT 1
+
+if ($known_id) {
+    # we know which one we want to send
+    # we have its id.
+    my $id = $known_id;
+    my $sth_sut = $dbh->prepare(<<'EOS');
+        SELECT id, content
+          FROM sutra
+         WHERE id = ?
 EOS
-    $sth_rand_sut->execute();
-    my $href = $sth_rand_sut->fetchrow_hashref();
-    if (! $href) {
-        # reset them all and loop
-        my $sth_reset = $dbh->prepare(<<'EOS');
-            UPDATE sutra
-               SET chosen = 0
+    $sth_sut->execute($id);
+    my $href = $sth_sut->fetchrow_hashref();
+    $sutra = $href->{content};
+
+    # mark it as chosen
+    my $sth_mark = $dbh->prepare(<<'EOS');
+        UPDATE sutra
+           SET chosen = 1
+         WHERE id = ?
 EOS
-        $sth_reset->execute();
-    }
-    else {
-        $sutra = $href->{content};        
-        # mark it as chosen
-        my $sth_mark = $dbh->prepare(<<'EOS');
-            UPDATE sutra
-               SET chosen = 1
-             WHERE id = ?
+    $sth_mark->execute($id);
+}
+else {
+    # choose one that has not been chosen before
+    SUTRA:
+    while (1) {
+        my $sth_rand_sut = $dbh->prepare(<<'EOS');
+        SELECT id, content
+          FROM sutra
+         WHERE chosen = 0
+      ORDER BY RAND()
+         LIMIT 1
 EOS
-        $sth_mark->execute($href->{id});
-        last SUTRA;
+        $sth_rand_sut->execute();
+        my $href = $sth_rand_sut->fetchrow_hashref();
+        if (! $href) {
+            # reset them all and loop
+            my $sth_reset = $dbh->prepare(<<'EOS');
+                UPDATE sutra
+                   SET chosen = 0
+EOS
+            $sth_reset->execute();
+        }
+        else {
+            $sutra = $href->{content};
+            # mark it as chosen
+            my $sth_mark = $dbh->prepare(<<'EOS');
+                UPDATE sutra
+                   SET chosen = 1
+                 WHERE id = ?
+EOS
+            $sth_mark->execute($href->{id});
+            last SUTRA;
+        }
     }
 }
+
 #
 # html version for sending
 #
@@ -87,6 +119,18 @@ Talks with Babaji are here: <a href=http://akash.mountmadonna.org/talks>akash.mo
 </html>
 EOH
 
+print scalar(localtime), "\n";
+if ($one_email) {
+    email_letter($c,
+        to => $one_email,
+        from => 'Daily Sutra <notifications@mountmadonna.org>',
+        subject => 'Daily Sutra from Babaji',
+        html => $html,
+        activity_msg => 'none',
+    );
+    print "sutra sent to $one_email\n";
+    exit;
+}
 my $n = 0;
 my $sth_all_addr = $dbh->prepare(<<'EOS');
     SELECT email
@@ -107,5 +151,5 @@ while (my $href = $sth_all_addr->fetchrow_hashref()) {
         html => $html,
         activity_msg => 'none',
     );
-    print "sutra sent to $email\n" 
+    print "sutra sent to $email\n";
 }
