@@ -9,8 +9,12 @@ use Util qw/
 /;
 
 my ($known_id, $one_email) = @ARGV;
-die unless $known_id && $known_id =~ m{\A \d+ \z}xms;
-die unless $one_email && $one_email =~ m{[@]}xms;
+if ($known_id) {
+    die "illegal known id" unless $known_id =~ m{\A \d+ \z}xms;
+}
+if ($one_email) {
+    die "illegal one email" unless $one_email =~ m{[@]}xms;
+}
 
 my $c = db_init();
 use DBI;
