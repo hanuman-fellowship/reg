@@ -123,7 +123,8 @@ Talks with Babaji are here: <a href=http://akash.mountmadonna.org/talks>akash.mo
 </html>
 EOH
 
-print scalar(localtime), "\n";
+open my $out, '>>', '/var/Reg/output/sutra_send.out';
+print {$out} scalar(localtime), "\n";
 if ($one_email) {
     email_letter($c,
         to => $one_email,
@@ -132,7 +133,8 @@ if ($one_email) {
         html => $html,
         activity_msg => 'none',
     );
-    print "sutra sent to $one_email\n";
+    print {$out} "sutra sent to $one_email\n";
+    close $out;
     exit;
 }
 my $n = 0;
@@ -144,8 +146,9 @@ $sth_all_addr->execute();
 while (my $href = $sth_all_addr->fetchrow_hashref()) {
     ++$n;
     if ($n % 10 == 0) {
-       sleep 60;
-       # otherwise we get an authentication error?
+        $out->flush;
+        sleep 60;
+        # otherwise we get an authentication error?
     }
     my $email = $href->{email};
     email_letter($c,
@@ -155,5 +158,6 @@ while (my $href = $sth_all_addr->fetchrow_hashref()) {
         html => $html,
         activity_msg => 'none',
     );
-    print "sutra sent to $email\n";
+    print {$out} "sutra sent to $one_email\n";
 }
+close $out;
