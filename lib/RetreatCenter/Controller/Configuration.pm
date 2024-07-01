@@ -647,6 +647,15 @@ while (my $line = <$RGin>) {
     $RG_prog_cat_name_for{$id} = $name;
 }
 close $RGin;
+sub cat_names {
+    my @nums = @_;
+    return join '|',
+           map { $RG_prog_cat_name_for{$_} }
+           sort { $a <=> $b }
+           uniq
+           @nums;
+}
+
 
 sub _gender {
     my ($sex) = @_;
@@ -828,7 +837,7 @@ sub _gen_csv {
         #$N,                    # email
         #$N,                    # phone
         #$N,                    # name
-        '66',                   # categories (PR category)
+        cat_names(66),          # categories (PR category)
     ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
@@ -843,7 +852,7 @@ sub _gen_csv {
         #$N,                    # email
         #$N,                    # phone
         #$N                     # name
-        "32,66,67",             # categories (PR category) + one day
+        cat_names(32,66,67),    # categories (PR category) + one day
     ]);
     PROGRAM:
     for my $prog (
@@ -884,11 +893,6 @@ sub _gen_csv {
         if ($prog->name =~ m{purnima|jayanti|ratri}xmsi) {
             push @prog_categories, 74;
         }
-        # all done, prepare it further
-        @prog_categories = uniq @prog_categories;
-        # can't do 'sort uniq' as it tries to use 'uniq'
-        # as the sort algorithm
-        my $prog_categories = join ',', sort { $a <=> $b } @prog_categories;
 
         my $p_id;
         if ($prog->name =~ m{personal\s+retreat|special\s+guest}xmsi) {
@@ -957,7 +961,7 @@ sub _gen_csv {
                 #$email,                         # contact email
                 #$phone,                         # contact phone
                 #$name,                          # contact name
-                $prog_categories,                # categories
+                cat_names(@prog_categories),     # categories
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
             ++$nprog;
@@ -972,6 +976,10 @@ sub _gen_csv {
                      }
                      $prog->registrations
         ) {
+            if ($reg->cancelled) {
+                # skip cancelled registrations
+                next REG;
+            }
             my $per = $reg->person;
             if (!$per) {
                 next REG;
@@ -1012,7 +1020,7 @@ sub _gen_csv {
                                     #                       50p   ? 85
                                     #                       100p  ? 84
             }
-            elsif ($htype eq 'own van') {
+            elsif ($htype eq 'own_van') {
                 $room_id = 128;     # Lot CC
                                     # Lot Redwood   ? 127
                                     # Lot SH        ? 147
@@ -1266,7 +1274,6 @@ sub _gen_csv {
                         :$tier == 3? 79     # Medium??
                         :            80     # 4 = Corporate / Foundation
                         ;
-        my $prog_cats = join ',', sort @prog_cats;
         
         # PROGRAM (aka RENTAL)
         my $webdesc = $ren->webdesc || '';
@@ -1285,7 +1292,7 @@ sub _gen_csv {
             #$email,                        # email
             #$phone,                        # phone
             #$name,                         # name
-            $prog_cats,                     # categories JON text|text...!
+            cat_names(@prog_cats),          # categories
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others
