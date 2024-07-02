@@ -3078,6 +3078,7 @@ EOH
         $html .= "<tr><td><a target=_blank href='/person/view/$per_id'>$per_name</a></td>"
               .  '<td align=right>' . scalar(@regs) . "</td><td align=center>$first_check</td><td align=center>$not_last_check</td></tr>\n";
     }
+    $fees = commify($fees);
     $html .= <<"EOH";
 </table>
 <p>
