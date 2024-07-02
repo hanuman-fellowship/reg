@@ -3048,6 +3048,7 @@ a {
 </tr>
 EOH
     my $tot = @prs;
+    my $fees = 0;
     my $tot_first = 0;
     my $tot_not_last = 0;
     my $n_first_only = 0;
@@ -3059,6 +3060,9 @@ EOH
         my $per_id = $per->id;
         my $per_name = $per->name;
         my $per_email = $per->email;
+        for my $p ($r->payments) {
+            $fees += $p->amount;
+        }
         ++$day_of_week[$r->date_start_obj->day_of_week];
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: '';
@@ -3078,6 +3082,7 @@ EOH
 </table>
 <p>
 Total PR: $tot<br>
+Total income: \$$fees<br>
 PR was first registration: $tot_first<br>
 PR was not last registration: $tot_not_last<br>
 PR was first and <b>only</b> registration: $n_first_only<br>
@@ -3145,6 +3150,7 @@ a {
 </tr>
 EOH
     my $tot = @mes;
+    my $fees = 0;
     my $tot_first = 0;
     my $tot_not_last = 0;
     my $n_first_only = 0;
@@ -3156,6 +3162,9 @@ EOH
         my $per_id = $per->id;
         my $per_name = $per->name;
         my $per_email = $per->email;
+        for my $p ($r->payments) {
+            $fees += $p->amount;
+        }
         ++$day_of_week[$r->date_start_obj->day_of_week];
         my @regs = $per->registrations();
         my $first = ($id == $regs[-1]->id)? 1: 0;
@@ -3175,6 +3184,7 @@ EOH
 </table>
 <p>
 Total ME: $tot<br>
+Total income: \$$fees<br>
 ME was first registration: $tot_first<br>
 ME was not last registration: $tot_not_last<br>
 ME was first and <b>only</b> registration: $n_first_only<br>
@@ -3189,7 +3199,7 @@ ME was first and <b>only</b> registration: $n_first_only<br>
 <tr><td>Sat</td><td align=right>$day_of_week[6]</td></tr>
 </table>
 </ul>
-<a href='mailto:?bcc=$emails'>Bcc Email All First and <b>Only</b></a>
+<a href="mailto:?bcc=$emails">Bcc Email All First and <b>Only</b></a>
 EOH
     $c->res->output($html);
 }
