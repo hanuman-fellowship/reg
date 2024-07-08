@@ -5350,9 +5350,9 @@ sub who_is_there : Local {
     if (! @regs && ! @blocks) {
         my ($house) = model($c, 'House')->find($house_id);
         my $cottage = $house->cottage;
-            $c->res->output($cottage == 3? "Whole cottage is not available"
-                           :$cottage == 1? "Whole cottage is occupied"
-                           :               "Unknown");
+        $c->res->output($cottage == 3? "Whole cottage is not available"
+                       :$cottage == 1? "Whole cottage is occupied"
+                       :               "Unknown");
         return;
     }
     my $reg_names = "";
