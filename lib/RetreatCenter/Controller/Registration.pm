@@ -6962,6 +6962,10 @@ EOH
     $c->res->output($html);
 }
 
+#
+# something is wrong here.
+# disabled for now.
+#
 sub move_dup_reg : Local {
     my ($self, $c, $fname, $d8) = @_;
     open my $out, '>>', "$rst/online/$fname";
