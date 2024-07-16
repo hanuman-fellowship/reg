@@ -52,7 +52,12 @@ $P{time} = get_time()->t24();
 my $d = Dumper(\%P);
 
 my $f = "N$P{transaction_id}";
+mkdir "/var/Reg/online" if ! -d "/var/Reg/online";
+mkdir "/var/Reg/online_backup" if ! -d "/var/Reg/online_backup";
 open my $out, '>', "/var/Reg/online/$f";
+print {$out} $d;
+close $out;
+open my $out, '>', "/var/Reg/online_backup/$f";
 print {$out} $d;
 close $out;
 
