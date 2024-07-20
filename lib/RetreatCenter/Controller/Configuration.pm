@@ -852,7 +852,7 @@ sub _gen_csv {
         #$N,                    # email
         #$N,                    # phone
         #$N                     # name
-        cat_names(32,66,67),    # categories (PR category) + one day
+        cat_names(32,67),       # categories (PR category) + one day
     ]);
     PROGRAM:
     for my $prog (
@@ -888,7 +888,7 @@ sub _gen_csv {
             push @prog_categories, 67;
         }
         # onsite or online
-        push @prog_categories, $prog->housing_not_needed? 31: 30;
+        push @prog_categories, $prog->name =~ m{online}xmsi? 31: 30;
         # HFS programs
         if ($prog->name =~ m{purnima|jayanti|ratri}xmsi) {
             push @prog_categories, 74;
@@ -1127,7 +1127,7 @@ sub _gen_csv {
             if ($prog_id == $pr_sg_prog_id) {
                 ++$npr;
             }
-            my $status = $reg->date_start >= $today_d8? 'reserved': 'checked out';
+            my $status = $reg->date_start >= $today_d8? 'reserved': 'checked-out';
             $csv->say($reg_fh, [
                 $r_id,              # registration_id_original
                 $prog_id,           # program_id_original
@@ -1242,6 +1242,9 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
+        if ($ren->cancelled) {
+            next RENTAL;
+        }
         if ($ren->program_id) {
             next RENTAL;
         }
@@ -1341,7 +1344,7 @@ sub _gen_csv {
                                     # JON all $N below okay?
             $N,                     # newsletter (Website Subscriber affil?)
             $N,                     # hfs-general-member
-            'Participant',          # guest_type
+            'renter',               # guest_type
             $N,                     # person-notes
             $N,                     # flag-person
             $veg_no_restrict,       # diet
@@ -1461,7 +1464,7 @@ sub _gen_csv {
                                         # JON all $N below okay?
                 $N,                     # newsletter (Website Subscriber affil?)
                 $N,                     # hfs-general-member
-                'Participant',          # guest_type
+                'participant',          # guest_type
                 $N,                     # person-notes
                 $N,                     # flag-person
                 $veg_no_restrict,       # diet
