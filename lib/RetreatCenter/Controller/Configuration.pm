@@ -1291,7 +1291,7 @@ sub _gen_csv {
             $ren->edate_obj->format("%F"),  # end date
             "Mount Madonna Center",         # location
             "445 Summit",                   # location address
-                                            # JON these 3, right?
+                                            # JON these 3, right? NO
             #$email,                        # email
             #$phone,                        # phone
             #$name,                         # name
@@ -1452,7 +1452,7 @@ sub _gen_csv {
                 $first,        # first_name
                 $N,            # alternative-name
                 $last,         # last_name
-                $email,        # email JON include? yes
+                $N, #   $email,        # email JON include? yes NO
                 $N,            # phone
                 $N,            # gender
                 $N,            # address 1
