@@ -734,7 +734,7 @@ sub _gen_csv {
     my $start_d8 = date($start)->as_d8();
     my $N = '';
     my $Z = 0;
-    my $veg_no_restrict = "Vegetarian with no restrictions";
+    my $veg_no_restrict = "vegetarian-with-no-restrictions";
 
     my %RG_id_for;
     for my $line (split '\n', $Reg_id_RG_id_mapping) {
@@ -1049,19 +1049,34 @@ sub _gen_csv {
 
             # What affiliations?
             # does this person have the affiliation 'Website Subscriber'?
-            my $website_sub = $N;
+            my $website_sub = 'no';
             if (my ($ap) = model($c, 'AffilPerson')->search({
                     p_id => $per->id,
                     a_id => $website_sub_affil_id,
                 })
             ) {
-                $website_sub = 'Website Subscriber';
+                $website_sub = 'yes';
             }
             # HFS Member?
             my $hfs_member = $N;
             my $mem = $per->member;
             if ($mem) {
-                $hfs_member = "HFS Member " . $mem->category;
+                my $cat = $mem->category;
+                if ($cat =~ m{life}xmsi) {
+                    $hfs_member = 'founding-life-life-member';
+                }
+                elsif ($cat =~ m{sponsor}xmsi) {
+                    $hfs_member = 'sponsor';
+                }
+                elsif ($cat =~ m{general|resident}xmsi) {
+                    $hfs_member = 'general-resident-member';
+                }
+                elsif ($cat =~ m{inactive}xmsi) {
+                    $hfs_member = 'inactive-lapsed';
+                }
+                else {
+                    $hfs_member = 'inactive-lapsed';
+                }
             }
             # HFS Donor
             if (my ($hda) = model($c, 'AffilPerson')->search({
@@ -1070,9 +1085,9 @@ sub _gen_csv {
                 })
             ) {
                 if ($hfs_member) {
-                    $hfs_member .= ', ';
+                    $hfs_member .= ',';
                 }
-                $hfs_member .= 'HFS Donor';
+                $hfs_member .= 'donor';
             }
             # MMC Donors
             if (my ($ma) = model($c, 'AffilPerson')->search({
@@ -1080,10 +1095,12 @@ sub _gen_csv {
                     a_id => $mmc_donor_affil_id,
                 })
             ) {
-                if ($hfs_member) {
-                    $hfs_member .= ', ';
+                if ($hfs_member !~ m{donor}xms) {
+                    if ($hfs_member) {
+                        $hfs_member .= ',';
+                    }
+                    $hfs_member .= 'donor';
                 }
-                $hfs_member .= 'MMC Donors';
             }
             my $flag = $N;
             if (my ($ala) = model($c, 'AffilPerson')->search({
@@ -1091,7 +1108,7 @@ sub _gen_csv {
                     a_id => $alert_affil_id,
                 })
             ) {
-                $flag = 'ALT alert when registering';
+                $flag = 'alt-alert-when-registering';
             }
             #
             # REGISTRATION
@@ -1157,8 +1174,8 @@ sub _gen_csv {
                 $per->zip_post,     # zip
                 $per->pronouns,     # what-is-your-desired-pronouns
                 $website_sub,       # newsletter (Website Subscriber affil?)
-                $hfs_member,        # hfs-general-member
-                'Participant',      # guest_type
+                $hfs_member,        # hfs-affiliate
+                'participant',      # guest-type
                 $comment||$N,       # person-notes
                 $flag,              # flag-person
                 $veg_no_restrict,   # diet
@@ -1342,8 +1359,8 @@ sub _gen_csv {
             $contact->zip_post,     # zip
             $contact->pronouns,     # what-is-your-desired-pronouns
                                     # JON all $N below okay?
-            $N,                     # newsletter (Website Subscriber affil?)
-            $N,                     # hfs-general-member
+            'no',                   # newsletter (Website Subscriber affil?)
+            $N,                     # hfs-affiliate
             'renter',               # guest_type
             $N,                     # person-notes
             $N,                     # flag-person
@@ -1462,8 +1479,8 @@ sub _gen_csv {
                 $N,            # zip
                 $N,            # what-is-your-desired-pronouns
                                         # JON all $N below okay?
-                $N,                     # newsletter (Website Subscriber affil?)
-                $N,                     # hfs-general-member
+                'no',                   # newsletter (Website Subscriber affil?)
+                $N,                     # hfs-affiliate
                 'participant',          # guest_type
                 $N,                     # person-notes
                 $N,                     # flag-person
