@@ -426,26 +426,36 @@ sub dates {
 
     my $sd = $self->sdate_obj;
     my $ed = $self->edate_obj;
+    my $sy = $sd->year;
+    my $ey = $ed->year;
     my $dates = $sd->format("%B %e");
     if ($ed == $sd) {
         ; # the dates are fine already - it is a one day program
+        $dates .= ", " . $sy;
     }
     elsif ($ed->month == $sd->month) {
         $dates .= "-" . $ed->day;
+        $dates .= ", " . $sy;
     }
     else {
+        $dates .= ", " . $sy;
         $dates .= " - " . $ed->format("%B %e");
+        $dates .= ", " . $ey;
     }
     my $extra = $self->extradays;
     if ($extra) {
         $ed += $extra;
         if ($ed->month == $sd->month) {
-            $dates .= ", " . $sd->day . "-";
+            $dates .= " or " . $sd->format("%B %e") . "-";
             $dates .= $ed->day;
+            $dates .= ", " . $ed->year;
         }
         else {
-            $dates .= ", " . $sd->format("%B %e") . " - ";
+            $dates .= " or " . $sd->format("%B %e")
+                   .  ", " . $sd->year
+                   . " - ";
             $dates .= $ed->format("%B %e");
+            $dates .= ", " . $ed->year;
         }
     }
     $dates;

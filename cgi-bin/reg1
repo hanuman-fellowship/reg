@@ -422,7 +422,7 @@ $stash{bdays}     = $PR_ndays || $ndays;
 $stash{fdays}     = $ndays + $prog->extradays;
 if ($stash{basicfull}) {
     # muck with the dates
-    ($stash{bdates}, $stash{fdates}) = split m{,}, $prog->dates;
+    ($stash{bdates}, $stash{fdates}) = split m{or}, $prog->dates;
     if ($stash{fdates} =~ m{^\s*\d}) {
         my ($month) = $stash{bdates} =~ m{([a-z]+)}i;
         $stash{fdates} = "$month " . $stash{fdates};

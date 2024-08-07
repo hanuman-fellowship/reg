@@ -411,6 +411,7 @@ location_address
 *contact_phone
 *contact_name
 categories
+pricing_structure
 /;
 my @reg_headers = qw/
 registration_id_original
@@ -669,16 +670,6 @@ sub _gender {
           ;
 }
 
-sub _fund_method {
-    my ($type) = @_;
-    return $type eq 'C'? 'check'
-          :$type eq 'D'? 'credit-card'
-          :$type eq 'S'? 'cash'
-          :$type eq 'O'? 'credit-card'
-          :              'credit-card'
-          ;
-}
-
 sub _trans_country {
     my ($s) = @_;
     if (! $s) {
@@ -838,6 +829,7 @@ sub _gen_csv {
         #$N,                    # phone
         #$N,                    # name
         cat_names(66),          # categories (PR category)
+        'lodging',              # pricing_structure
     ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
@@ -853,6 +845,7 @@ sub _gen_csv {
         #$N,                    # phone
         #$N                     # name
         cat_names(32,67),       # categories (PR category) + one day
+        'special',              # pricing_structure
     ]);
     PROGRAM:
     for my $prog (
@@ -948,6 +941,10 @@ sub _gen_csv {
                             || $per->tel_work
                             ||     $per->tel_home;;
             }
+            my $pricing = $prog->housing_not_needed eq ''? 'lodging'
+                         :$prog->donation_tiers          ? 'sliding-scale'
+                         :                                 'special'
+                         ;
             $csv->say($prog_fh, [
                 $prog->id,                      # program_id_original
                 $prog->title,                   # title
@@ -957,11 +954,8 @@ sub _gen_csv {
                 $prog->edate_obj->format("%F"), # end date
                 "Mount Madonna Center",         # location
                 "445 Summit",                   # location address
-                # JON?? include these 3?
-                #$email,                         # contact email
-                #$phone,                         # contact phone
-                #$name,                          # contact name
-                cat_names(@prog_categories),     # categories
+                cat_names(@prog_categories),    # categories
+                $pricing,                       # pricing_structure
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
             ++$nprog;
@@ -1029,7 +1023,7 @@ sub _gen_csv {
             elsif ($htype eq 'not needed') {
                 $room_id = $N;      # empty string
             }
-            # JON - person comment, not Reg comment, right?
+            # person comment, not Reg comment
             my $comment = $per->comment;
             if ($comment) {
                 $comment =~ s{[<][^<]*[>]}{}msg;    # strip tags
@@ -1158,8 +1152,7 @@ sub _gen_csv {
                 $reg->date_start_obj->format("%F"), # arrive
                 $reg->date_end_obj->format("%F"),   # leave
                 $room_id,           # room id (RG mapped - verify!)
-                                    # lodging id JON - no
-                $Z,                 # JON parent_registration_id_original
+                $Z,                 # parent_registration_id_original
                 $country,           # country
                 $per->first,        # first_name
                 $per->sanskrit||$N, # alternative-name
@@ -1224,19 +1217,17 @@ sub _gen_csv {
             }
             # PAYMENTS
             for my $pay ($reg->payments) {
-                my $fund_m = _fund_method($pay->type);       # D/C/S/O
                 $csv->say($trans_fh, [
                     'registration', # object type??
                     $r_id,
                     $pay->the_date_obj->format("%F"),
                     $pay->what,     # description
-                    $fund_m eq 'check'? 'other-payment': 'payment',
-                                    # category??
+                    'other-payment',# category
                     $N,             # charge - 0 or blank??
                     $pay->amount,   # credit
                     'complete',     # status??
                     $N,             # trans id - do not have
-                    $fund_m,        # D/C/S/O => check/credit-card
+                    'legacy-payment', # fund_method
                     $Z,             # is test
                     $N,             # notes
                 ]);
@@ -1308,11 +1299,8 @@ sub _gen_csv {
             $ren->edate_obj->format("%F"),  # end date
             "Mount Madonna Center",         # location
             "445 Summit",                   # location address
-                                            # JON these 3, right? NO
-            #$email,                        # email
-            #$phone,                        # phone
-            #$name,                         # name
             cat_names(@prog_cats),          # categories
+            'lodging',                      # pricing_structure
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others
@@ -1343,8 +1331,7 @@ sub _gen_csv {
             $ren_start,         # arrive
             $ren_end,           # leave
             $Z,                 # room id (RG mapped - verify!)
-                                # lodging id JON - no
-            $Z,                 # JON parent_registration_id_original
+            $Z,                 # parent_registration_id_original
             $country,           # country
             $contact->first,        # first_name
             $contact->sanskrit||$N, # alternative-name
@@ -1389,19 +1376,17 @@ sub _gen_csv {
         }
         ++$nrent_trans;
         for my $pay ($ren->payments()) {
-            my $fund_m = _fund_method($pay->type);
             $csv->say($trans_fh, [
                 'registration',     # object-type
                 $coord_reg_id,      # coordinator id
                 $pay->the_date_obj->format("%F"),
                 $N,             # description - none??
-                $fund_m eq 'check'? 'other-payment': 'payment',
-                                # category
+                'other-payment',# category
                 $N,             # charge - 0 or blank??
                 $pay->amount,   # credit
                 'complete',     # status
                 $N,             # no transaction id
-                $fund_m,        # D/C/S/O => check/credit-card
+                'legacy-payment', # fund_method
                 $Z,             # is test
                 $N,             # notes
             ]);
@@ -1454,7 +1439,7 @@ sub _gen_csv {
             $csv->say($reg_fh, [
                 $reg_id,            # registration_id_original - concocted
                 $ren->id,           # program_id_original
-                                    # JON no 'program_id' from RG
+                                    # no 'program_id' from RG
                                     # it is from Reg - or 9998 or 9999
                                     #                  for PR/SG and ME
                 'reserved',         # status
@@ -1463,13 +1448,13 @@ sub _gen_csv {
                                     # not just for future
                 $start,             # arrive
                 $end,               # leave
-                $room_id,
-                $coord_reg_id,      # PARENT REG ID!!
-                $N,           # country
+                $room_id,           # room_id
+                $coord_reg_id,      # parent_registration_id_original
+                $N,            # country
                 $first,        # first_name
                 $N,            # alternative-name
                 $last,         # last_name
-                $N, #   $email,        # email JON include? yes NO
+                $N,            # $email include? yes NO
                 $N,            # phone
                 $N,            # gender
                 $N,            # address 1
@@ -1478,7 +1463,6 @@ sub _gen_csv {
                 $N,            # state
                 $N,            # zip
                 $N,            # what-is-your-desired-pronouns
-                                        # JON all $N below okay?
                 'no',                   # newsletter (Website Subscriber affil?)
                 $N,                     # hfs-affiliate
                 'participant',          # guest_type
