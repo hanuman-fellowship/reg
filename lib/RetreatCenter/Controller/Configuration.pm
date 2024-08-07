@@ -941,10 +941,17 @@ sub _gen_csv {
                             || $per->tel_work
                             ||     $per->tel_home;;
             }
-            my $pricing = $prog->housing_not_needed eq ''? 'lodging'
-                         :$prog->donation_tiers          ? 'sliding-scale'
-                         :                                 'special'
-                         ;
+            my $pricing = 'special';
+            if (   $prog->housing_not_needed
+                && $prog->housing_not_needed eq ''
+            ) {
+                $pricing = 'lodging';
+            }
+            elsif ($prog->donation_tiers
+                   && $prog->donation_tiers ne ''
+            ) {
+                $pricing = 'sliding-scale';
+            }
             $csv->say($prog_fh, [
                 $prog->id,                      # program_id_original
                 $prog->title,                   # title
