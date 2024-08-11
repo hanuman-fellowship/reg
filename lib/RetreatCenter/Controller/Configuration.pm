@@ -1253,6 +1253,7 @@ sub _gen_csv {
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
+            { sdate => { '>=' => $start_d8 } },
         #    { sdate => { '>=' => $today_d8 } },
             { order_by => 'sdate' }
         )
