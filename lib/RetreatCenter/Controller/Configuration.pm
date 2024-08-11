@@ -411,7 +411,7 @@ location_address
 *contact_phone
 *contact_name
 categories
-pricing_structure
+price_structure
 /;
 my @reg_headers = qw/
 registration_id_original
@@ -829,7 +829,7 @@ sub _gen_csv {
         #$N,                    # phone
         #$N,                    # name
         cat_names(66),          # categories (PR category)
-        'lodging',              # pricing_structure
+        'lodging',              # price_structure
     ]);
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
@@ -845,7 +845,7 @@ sub _gen_csv {
         #$N,                    # phone
         #$N                     # name
         cat_names(32,67),       # categories (PR category) + one day
-        'special',              # pricing_structure
+        'special',              # price_structure
     ]);
     PROGRAM:
     for my $prog (
@@ -941,16 +941,16 @@ sub _gen_csv {
                             || $per->tel_work
                             ||     $per->tel_home;;
             }
-            my $pricing = 'special';
+            my $price = 'special';
             if (   $prog->housing_not_needed
                 && $prog->housing_not_needed eq ''
             ) {
-                $pricing = 'lodging';
+                $price = 'lodging';
             }
             elsif ($prog->donation_tiers
                    && $prog->donation_tiers ne ''
             ) {
-                $pricing = 'sliding-scale';
+                $price = 'sliding-scale';
             }
             $csv->say($prog_fh, [
                 $prog->id,                      # program_id_original
@@ -962,7 +962,7 @@ sub _gen_csv {
                 "Mount Madonna Center",         # location
                 "445 Summit",                   # location address
                 cat_names(@prog_categories),    # categories
-                $pricing,                       # pricing_structure
+                $price,                         # price_structure
             ]);
             ++$prog_by_year{$prog->sdate_obj->year};
             ++$nprog;
@@ -1253,7 +1253,7 @@ sub _gen_csv {
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
-            { sdate => { '>=' => $today_d8 } },
+        #    { sdate => { '>=' => $today_d8 } },
             { order_by => 'sdate' }
         )
     ) {
@@ -1307,7 +1307,7 @@ sub _gen_csv {
             "Mount Madonna Center",         # location
             "445 Summit",                   # location address
             cat_names(@prog_cats),          # categories
-            'lodging',                      # pricing_structure
+            'lodging',                      # price_structure
         ]);
 
         # COORDINATOR REGISTRATION as a parent for others
@@ -1400,6 +1400,10 @@ sub _gen_csv {
         }
         ++$nrent_trans;
 
+        if ($ren->sdate < $today_d8) {
+            next RENTAL;    # no grid registrants at all
+        }
+
         for my $g (model($c, 'Grid')->search({ rental_id => $ren->id })) {
             my $room_id = $g->house_id;
             if ($room_id == 1001) {
@@ -1461,7 +1465,7 @@ sub _gen_csv {
                 $first,        # first_name
                 $N,            # alternative-name
                 $last,         # last_name
-                $N,            # $email include? yes NO
+                $email,        # $email include? yes
                 $N,            # phone
                 $N,            # gender
                 $N,            # address 1
