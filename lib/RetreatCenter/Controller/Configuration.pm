@@ -854,12 +854,12 @@ sub _gen_csv {
             { order_by => 'sdate' }
         )
     ) {
-        print $prog->sdate_obj->format("%F"), "\n";
         my $yr = $prog->sdate_obj->year;
         if ($yr != $prev_yr) {
             print "$yr\n";  # progress report to STDOUT
             $prev_yr = $yr;
         }
+        print $prog->sdate_obj->format("%F"), "\n";
 
         # RG Program Category ids
         my @prog_categories = ();
