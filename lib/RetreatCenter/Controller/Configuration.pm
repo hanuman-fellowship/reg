@@ -1295,9 +1295,7 @@ sub _gen_csv {
         }
         else {
             print {$report} "No contact person for "
-                            . $ren->name
-                            . ' ' . $ren->sdate
-                            . "\n";
+                            . $ren->name . " $ren_start\n";
             $first = 'First';
             $last = "Last $ren_start";  # for uniqueness of name
         }
@@ -1321,11 +1319,11 @@ sub _gen_csv {
         $csv->say($prog_fh, [
             $ren->id,                       # program_id_original
                                                 # dup with Program? it's ok
-            $ren->title,                    # title
+            $title,                         # title
             $webdesc,                       # description
             "fixed",                        # date type
-            $ren->sdate_obj->format("%F"),  # start date
-            $ren->edate_obj->format("%F"),  # end date
+            $ren_start,                     # start date
+            $ren_end,                       # end date
             "Mount Madonna Center",         # location
             "445 Summit",                   # location address
             cat_names(@prog_cats),          # categories
