@@ -1264,14 +1264,15 @@ sub _gen_csv {
             next RENTAL;
         }
         print $ren->sdate_obj->format("%D"), "\n";
+        my $ren_start = $ren->sdate_obj->format("%F");
+        my $ren_end   = $ren->edate_obj->format("%F");
         ++$nrent;
         my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
-        my ($name, $first, $last, $sanskrit, $email, $phone, $sex,
+        my ($first, $last, $sanskrit, $email, $phone, $sex,
             $addr1, $addr2, $city, $st_prov, $zip_post, $country, $pronouns)
-            = ($N) x 14;
-        if ($contact) {
-            $name = $contact->name;
+            = ($N) x 13;
+        if ($contact && $contact->first =~ /\S/) {
             $first = $contact->first;
             $last = $contact->last;
             $sanskrit = $contact->sanskrit || $N;
@@ -1298,11 +1299,8 @@ sub _gen_csv {
                             . ' ' . $ren->sdate
                             . "\n";
             $first = 'First';
-            $last = "Last " . $ren->sdate_obj;  # for uniqueness
-            next RENTAL;
+            $last = "Last $ren_start";  # for uniqueness of name
         }
-        my $ren_start = $ren->sdate_obj->format("%F");
-        my $ren_end   = $ren->edate_obj->format("%F");
 
         my @prog_cats = ();
         push @prog_cats, 76, 77;
@@ -1316,6 +1314,10 @@ sub _gen_csv {
         # PROGRAM (aka RENTAL)
         my $webdesc = $ren->webdesc || '';
         $webdesc =~ s{[<][^>]*[>]}{}xmsg;
+        my $title = $ren->title;
+        if ($title !~ /\S/) {
+            $title = $ren->name;
+        }
         $csv->say($prog_fh, [
             $ren->id,                       # program_id_original
                                                 # dup with Program? it's ok
