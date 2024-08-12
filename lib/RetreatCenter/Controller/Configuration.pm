@@ -1243,7 +1243,6 @@ sub _gen_csv {
         }
     }
 
-    # only future rentals
     my $nrent = 0;
     my $nrent_reg = 0;
     my $nrent_trans = 0;
@@ -1268,18 +1267,38 @@ sub _gen_csv {
         ++$nrent;
         my $contact = $ren->coordinator() || $ren->contract_signer();
             # this is a Person!
-        my ($name, $first, $last, $email, $phone) = ($N, $N, $N, $N, $N);
+        my ($name, $first, $last, $sanskrit, $email, $phone, $sex,
+            $addr1, $addr2, $city, $st_prov, $zip_post, $country, $pronouns)
+            = ($N) x 14;
         if ($contact) {
             $name = $contact->name;
             $first = $contact->first;
             $last = $contact->last;
+            $sanskrit = $contact->sanskrit || $N;
             $email = $contact->email; 
             $phone = $contact->tel_cell
                      || $contact->tel_home
                      || $contact->tel_work;
+            $sex = $contact->sex;
+            $addr1 = $contact->addr1;
+            $addr2 = $contact->addr2;
+            $city = $contact->city;
+            $st_prov = $contact->st_prov;
+            $zip_post = $contact->zip_post;
+            $pronouns = $contact->pronouns;
+            if ($contact->country
+                && exists $country_code_for{$contact->country}
+            ) {
+                $country = $country_code_for{$contact->country};
+            }
         }
         else {
-            print {$report} "No contact person for " . $ren->name . "\n";
+            print {$report} "No contact person for "
+                            . $ren->name
+                            . ' ' . $ren->sdate
+                            . "\n";
+            $first = 'First';
+            $last = "Last " . $ren->sdate_obj;  # for uniqueness
             next RENTAL;
         }
         my $ren_start = $ren->sdate_obj->format("%F");
@@ -1319,13 +1338,6 @@ sub _gen_csv {
                                         # from the grid.
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
-        my $country = $N;
-        if ($contact
-            && $contact->country
-            && exists $country_code_for{$contact->country}
-        ) {
-            $country = $country_code_for{$contact->country};
-        }
         $csv->say($reg_fh, [
             $reg_id,            # registration_id_original - concocted
             $ren->id,           # program_id_original
@@ -1341,18 +1353,18 @@ sub _gen_csv {
             $Z,                 # room id (RG mapped - verify!)
             $Z,                 # parent_registration_id_original
             $country,           # country
-            $contact->first,        # first_name
-            $contact->sanskrit||$N, # alternative-name
-            $contact->last,         # last_name
-            $email,                 # email JON include? yes
-            $phone,                 # phone
-            _gender($contact->sex), # gender
-            $contact->addr1,        # address 1
-            $contact->addr2,        # address 2
-            $contact->city,         # city
-            $contact->st_prov,      # state
-            $contact->zip_post,     # zip
-            $contact->pronouns,     # what-is-your-desired-pronouns
+            $first,             # first_name
+            $sanskrit,          # alternative-name
+            $last,              # last_name
+            $email,             # email
+            $phone,             # phone
+            $sex,               # gender
+            $addr1,             # address 1
+            $addr2,             # address 2
+            $city,              # city
+            $st_prov,           # state
+            $zip_post,          # zip
+            $pronouns,          # what-is-your-desired-pronouns
                                     # JON all $N below okay?
             'no',                   # newsletter (Website Subscriber affil?)
             $N,                     # hfs-affiliate
@@ -1366,23 +1378,26 @@ sub _gen_csv {
 
         # RENTAL CHARGES and PAYMENTS
         # attribute them all to the registration for the coordinator
-        for my $cha ($ren->charges()) {
-            $csv->say($trans_fh, [
-                'registration',     # object-type
-                $coord_reg_id,      # coordinator id
-                $cha->the_date_obj->format("%F"),
-                $cha->what,     # description
-                'program',      # category??
-                $cha->amount,   # charge
-                $N,             # credit - 0 or blank??
-                'complete',     # status
-                $N,             # no transaction id
-                $N,             # funding method - none as a charge
-                $Z,             # is test
-                $N,             # notes
-            ]);
+        # (but charges only for future rentals)
+        if ($ren->sdate >= $today_d8) {
+            for my $cha ($ren->charges()) {
+                $csv->say($trans_fh, [
+                    'registration',     # object-type
+                    $coord_reg_id,      # coordinator id
+                    $cha->the_date_obj->format("%F"),
+                    $cha->what,     # description
+                    'program',      # category??
+                    $cha->amount,   # charge
+                    $N,             # credit - 0 or blank??
+                    'complete',     # status
+                    $N,             # no transaction id
+                    $N,             # funding method - none as a charge
+                    $Z,             # is test
+                    $N,             # notes
+                ]);
+                ++$nrent_trans;
+            }
         }
-        ++$nrent_trans;
         for my $pay ($ren->payments()) {
             $csv->say($trans_fh, [
                 'registration',     # object-type
@@ -1398,8 +1413,8 @@ sub _gen_csv {
                 $Z,             # is test
                 $N,             # notes
             ]);
+            ++$nrent_trans;
         }
-        ++$nrent_trans;
 
         if ($ren->sdate < $today_d8) {
             next RENTAL;    # no grid registrants at all
