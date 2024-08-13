@@ -615,7 +615,6 @@ close $in;
 
 my $RG_cat_num = <<'EOH';
 9 Movement
-30 On-site
 31 Online
 32 Mountain Experience
 49 Symposium
@@ -881,7 +880,9 @@ sub _gen_csv {
             push @prog_categories, 67;
         }
         # onsite or online
-        push @prog_categories, $prog->name =~ m{online}xmsi? 31: 30;
+        if ($prog->name =~ m{online}xmsi) {
+            push @prog_categories, 31;  # online
+        }
         # HFS programs
         if ($prog->name =~ m{purnima|jayanti|ratri}xmsi) {
             push @prog_categories, 74;
@@ -1272,6 +1273,7 @@ sub _gen_csv {
         my ($first, $last, $sanskrit, $email, $phone, $sex,
             $addr1, $addr2, $city, $st_prov, $zip_post, $country, $pronouns)
             = ($N) x 13;
+        my $no_contact = 0;
         if ($contact && $contact->first =~ /\S/) {
             $first = $contact->first;
             $last = $contact->last;
@@ -1294,10 +1296,11 @@ sub _gen_csv {
             }
         }
         else {
-            print {$report} "No contact person for "
-                            . $ren->name . " $ren_start\n";
-            $first = 'First';
-            $last = "Last $ren_start";  # for uniqueness of name
+            if ($ren->sdate >= $today_d8) {
+                print {$report} "No contact person for "
+                                . $ren->name . " $ren_start\n"
+            }
+            $no_contact = 1;
         }
 
         my @prog_cats = ();
@@ -1338,66 +1341,72 @@ sub _gen_csv {
                                         # from the grid.
         # The coordinator will have TWO registrations??
         # one as parent/coordinator and one as room occupier
-        $csv->say($reg_fh, [
-            $reg_id,            # registration_id_original - concocted
-            $ren->id,           # program_id_original
-                                # JON no 'program_id' from RG
-                                # it is from Reg - or 9998 or 9999
-                                #                  for PR/SG and ME
-            'reserved',         # status
-            $N,                 # time_submitted - include hh:mm
-                                # the timestamp of the deposit
-                                # not just for future
-            $ren_start,         # arrive
-            $ren_end,           # leave
-            $Z,                 # room id (RG mapped - verify!)
-            $Z,                 # parent_registration_id_original
-            $country,           # country
-            $first,             # first_name
-            $sanskrit,          # alternative-name
-            $last,              # last_name
-            $email,             # email
-            $phone,             # phone
-            $sex,               # gender
-            $addr1,             # address 1
-            $addr2,             # address 2
-            $city,              # city
-            $st_prov,           # state
-            $zip_post,          # zip
-            $pronouns,          # what-is-your-desired-pronouns
-                                    # JON all $N below okay?
-            'no',                   # newsletter (Website Subscriber affil?)
-            $N,                     # hfs-affiliate
-            'renter',               # guest_type
-            $N,                     # person-notes
-            $N,                     # flag-person
-            $veg_no_restrict,       # diet
-            $N,                     # diet-restrictions
-        ]);
-        ++$nrent_reg;
-
-        # RENTAL CHARGES and PAYMENTS
-        # attribute them all to the registration for the coordinator
-        # (but charges only for future rentals)
-        if ($ren->sdate >= $today_d8) {
-            for my $cha ($ren->charges()) {
-                $csv->say($trans_fh, [
-                    'registration',     # object-type
-                    $coord_reg_id,      # coordinator id
-                    $cha->the_date_obj->format("%F"),
-                    $cha->what,     # description
-                    'program',      # category??
-                    $cha->amount,   # charge
-                    $N,             # credit - 0 or blank??
-                    'complete',     # status
-                    $N,             # no transaction id
-                    $N,             # funding method - none as a charge
-                    $Z,             # is test
-                    $N,             # notes
-                ]);
-                ++$nrent_trans;
-            }
+        if (! $no_contact) {
+            $csv->say($reg_fh, [
+                $reg_id,            # registration_id_original - concocted
+                $ren->id,           # program_id_original
+                                    # JON no 'program_id' from RG
+                                    # it is from Reg - or 9998 or 9999
+                                    #                  for PR/SG and ME
+                'reserved',         # status
+                $N,                 # time_submitted - include hh:mm
+                                    # the timestamp of the deposit
+                                    # not just for future
+                $ren_start,         # arrive
+                $ren_end,           # leave
+                $Z,                 # room id (RG mapped - verify!)
+                $Z,                 # parent_registration_id_original
+                $country,           # country
+                $first,             # first_name
+                $sanskrit,          # alternative-name
+                $last,              # last_name
+                $email,             # email
+                $phone,             # phone
+                $sex,               # gender
+                $addr1,             # address 1
+                $addr2,             # address 2
+                $city,              # city
+                $st_prov,           # state
+                $zip_post,          # zip
+                $pronouns,          # what-is-your-desired-pronouns
+                                        # JON all $N below okay?
+                'no',                   # newsletter (Website Subscriber affil?)
+                $N,                     # hfs-affiliate
+                'renter',               # guest_type
+                $N,                     # person-notes
+                $N,                     # flag-person
+                $veg_no_restrict,       # diet
+                $N,                     # diet-restrictions
+            ]);
+            ++$nrent_reg;
         }
+
+        if ($no_contact || $ren->sdate < $today_d8) {
+            # a past rental
+            next RENTAL;    # no grid registrants at all
+                            # and no transactions
+        }
+
+        # Charges
+        # attribute them all to the registration for the coordinator
+        for my $cha ($ren->charges()) {
+            $csv->say($trans_fh, [
+                'registration',     # object-type
+                $coord_reg_id,      # coordinator id
+                $cha->the_date_obj->format("%F"),
+                $cha->what,     # description
+                'program',      # category??
+                $cha->amount,   # charge
+                $N,             # credit - 0 or blank??
+                'complete',     # status
+                $N,             # no transaction id
+                $N,             # funding method - none as a charge
+                $Z,             # is test
+                $N,             # notes
+            ]);
+            ++$nrent_trans;
+        }
+        # Payments
         for my $pay ($ren->payments()) {
             $csv->say($trans_fh, [
                 'registration',     # object-type
@@ -1415,11 +1424,7 @@ sub _gen_csv {
             ]);
             ++$nrent_trans;
         }
-
-        if ($ren->sdate < $today_d8) {
-            next RENTAL;    # no grid registrants at all
-        }
-
+        # The Grid
         for my $g (model($c, 'Grid')->search({ rental_id => $ren->id })) {
             my $room_id = $g->house_id;
             if ($room_id == 1001) {
