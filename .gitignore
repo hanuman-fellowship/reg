@@ -46,6 +46,10 @@ root/static/expiry_date.txt
 root/static/labels.txt
 root/static/events/*
 mail.log
+cgi-bin/wlib/alternates.dbm
+cgi-bin/wlib/excluded.dbm
+cgi-bin/wlib/lex.dbm
+cgi-bin/wlib/vocab.dbm
 file_ftp_dir/
 grab_new_log
 

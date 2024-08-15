@@ -1,0 +1,22 @@
+mkvocab has these files as input:
+    sanskrit.csv
+    english.csv
+    names.csv
+    techniques.csv
+the output is:
+    vocab.dbm
+
+mklex has these files as input:
+    biglex.txt
+    add_to_lex.txt
+    remove_from_lex.txt
+the output is:
+    lex.dbm
+
+mkexcluded has this file as input:
+    prohibited.csv
+the output is:
+    excluded.dbm
+
+the .dbm files can be viewed with:
+    dump_dbm

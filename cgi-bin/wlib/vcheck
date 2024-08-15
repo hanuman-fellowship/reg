@@ -1,0 +1,126 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use DB_File;
+use open ':encoding(utf8)';
+
+if (! @ARGV) {
+    die "usage: vcheck file1.txt file2.txt ...\n";
+}
+for my $f (@ARGV) {
+    if ($f !~ m{ [.]txt\z }xms) {
+        die "$f does not end in .txt!\n";
+    }
+}
+
+my $no_exclude = $ENV{NO_EXCLUDE};
+
+# DBM files
+my (%vocab, %alternates, %lex, %excluded);
+tie %vocab,      'DB_File', 'vocab.dbm';
+tie %alternates, 'DB_File', 'alternates.dbm';
+tie %lex,        'DB_File', 'lex.dbm';
+tie %excluded,   'DB_File', 'excluded.dbm';
+
+my %all_new_words;  # may be needed
+
+open my $excluded_log, '>', 'excluded_log.txt'
+    or die "cannot open excluded_log.txt\n";
+
+#
+# the output should be redirected to a .csv file
+# then open that output file in a spreadsheet.
+# each input file will be one row in that sheet.
+#
+for my $f (@ARGV) {
+    process($f);
+}
+
+close $excluded_log;
+
+#print "All Unique New Words:\n";
+#my @uwords = sort keys %all_new_words;
+#while (@uwords) {
+#    my @eight = splice @uwords, 0, 8;
+#    print "@eight\n";
+#}
+
+sub process {
+    my $fname = shift;
+    open my $in, '<:encoding(utf8)', $fname
+        or die "cannot open $fname: $!\n";
+    print {$excluded_log} "file: $fname\n";
+
+    my @words;
+    my $s;
+    {
+        local $/;
+        no warnings;
+        $s = <$in>;
+        close $in;
+    }
+    $s =~ s{[[:^ascii:]]}{}xmsg;  # clear non-ascii cruft
+    @words = grep { $_ ne 'q' && !/x[fb]/i }
+             $s =~ m{(\w[\w'-]*)}xmsgi;
+    my ($title) = $s =~ m{[*](.*?)[*]}xms;
+    my %seen;
+    @words = sort
+             grep { ! $seen{$_}++ }
+             map { lc }
+             @words;
+#print "words: @words\n"; <STDIN>;
+    my %terms;
+    my %alt_names;
+    my @new_words;
+    WORD:
+    for my $w (@words) {
+        if (exists $vocab{$w}) {
+            $terms{$vocab{$w}} = 1; 
+            my $x = $vocab{$w};
+            if (exists $alternates{$x}) {
+                $alt_names{$x} = $alternates{$x};
+            }
+        }
+        else {
+            # shall we include it in the new words list?
+            if (! $no_exclude) {
+                if (exists $exclude_new{$w}) {
+                    print {$excluded_log} "$w\n";
+                    next WORD;   
+                }
+                if ($w =~ m{ly \z}xms) {
+                    my $x = $w;
+                    $x =~ s{ly\z}{}xms;
+                    if (exists $lex{$x}) {
+                        print {$excluded_log} "ly: $w\n";
+                        next WORD;
+                    }
+                }
+            }
+            # yes, include it
+            push @new_words, $w;
+            $all_new_words{$w} = 1;
+        }
+    }
+    my $row = '';
+    # A
+    $row .= "$fname,";
+    # B
+    $row .= '"'
+         .  (join '||', sort keys %terms)
+         .  '",';
+    # C, D
+    $row .= ",,";
+    # E
+    $row .= '"'
+         .  (join '||', map { $alternates{$_} }
+                      sort
+                      keys %alt_names)
+         .  '",';
+    # F
+    $row .= '"'
+         .  join(', ', @new_words)
+         .  '"';
+    $row .= "\n";
+    print $row;
+}
