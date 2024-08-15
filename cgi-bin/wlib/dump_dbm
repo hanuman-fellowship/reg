@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DB_File;
+my %hash;
+tie %hash, 'DB_File', shift;
+while (my ($key, $value) = each %hash) {
+    print "$key => $value\n";
+}
