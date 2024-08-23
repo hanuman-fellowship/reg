@@ -1235,7 +1235,7 @@ sub _gen_csv {
                     $pay->amount,   # credit
                     'complete',     # status??
                     $N,             # trans id - do not have
-                    'legacy-payment', # fund_method
+                    'reg-payment',  # fund_method
                     $Z,             # is test
                     $N,             # notes
                 ]);
@@ -1418,7 +1418,7 @@ sub _gen_csv {
                 $pay->amount,   # credit
                 'complete',     # status
                 $N,             # no transaction id
-                'legacy-payment', # fund_method
+                'reg-payment',  # fund_method
                 $Z,             # is test
                 $N,             # notes
             ]);
