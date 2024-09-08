@@ -692,7 +692,7 @@ sub show_booking {
         ||
         $b->edate != $event->edate
     ) {
-        $s .= ' ' . $b->date_range;
+        $s .= ' (' . $b->date_range . ')';
     }
     if ($b->breakout) {
         $s .= " - Breakout";
@@ -770,7 +770,7 @@ sub _gen_csv {
     open my $venue_list, '>', "$dir/venue_list.txt"
         or die "no venue_list";
     print {$venue_list} "Venues for Future Programs\n";
-    print {$venue_list} "====== === ====== ========\n\n";
+    print {$venue_list} "==========================\n\n";
 
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
@@ -1297,7 +1297,7 @@ sub _gen_csv {
     print "\nRentals:\n";
 
     print {$venue_list} "Venues for Future Rentals\n";
-    print {$venue_list} "====== === ====== =======\n\n";
+    print {$venue_list} "=========================\n\n";
 
     RENTAL:
     for my $ren (
