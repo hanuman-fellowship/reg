@@ -679,6 +679,30 @@ sub _trans_country {
     return $s;
 }
 
+#
+# Note that Program, Rental, Event all have sdate and edate
+# attributes.
+#
+sub show_booking {
+    my ($b, $event) = @_;
+    my $s = $b->meeting_place->name;
+    # what if not the same dates as the program?
+    # I presume it is rare.
+    if ($b->sdate != $event->sdate
+        ||
+        $b->edate != $event->edate
+    ) {
+        $s .= ' ' . $b->date_range;
+    }
+    if ($b->breakout) {
+        $s .= " Breakout";
+    }
+    elsif ($b->dorm) {
+        $s .= " Dorm";
+    }
+    return $s;
+}
+
 =comment 
 
 Import Conditions
@@ -743,6 +767,9 @@ sub _gen_csv {
     open my $me_list, '>', "$dir/me_list.txt"
         or die "no me_list";
     print {$me_list} "FUTURE Mountain Experience Registrations\n\n";
+    open my $venue_list, '>', "$dir/venue_list.txt"
+        or die "no venue_list";
+    print {$venue_list} "Venues for Future Programs\n\n";
 
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
@@ -833,7 +860,7 @@ sub _gen_csv {
     # and one for all Mountain Experience registrations
     $csv->say($prog_fh, [
         $me_prog_id,            # program_id_original
-        "Mountain Experience Legacy",  # title
+        "Mountain Experience from Reg",  # title
         "Mountain Experience",  # description
         "hotel",                # date type
         $N,                     # date start
@@ -968,6 +995,19 @@ sub _gen_csv {
             ++$prog_by_year{$prog->sdate_obj->year};
             ++$nprog;
             $p_id = $prog->id;
+            if ($prog->sdate >= $today_d8) {
+                # a future program
+                # record the venues for adding post go-live
+                print {$venue_list}
+                    $prog->title
+                  . ' ' . $prog->sdate_obj->format("%F")
+                  . "\n";
+                for my $b ($prog->bookings) {
+                    print {$venue_list} "    "
+                        . show_booking($b, $prog) . "\n";
+                }
+                print {$venue_list} "\n";
+            }
         }
         # Okay, we have a Reg program id
         # to put on the registrations
@@ -1212,7 +1252,7 @@ sub _gen_csv {
                     $r_id,
                     $cha->the_date_obj->format("%F"),
                     $cha->what,      # description
-                    'lodging',       # category - NOT $cha->type_disp??
+                    'lodging-meals', # category - NOT $cha->type_disp??
                     $cha->amount,    # charge
                     $N,              # credit - 0 or blank??
                     'complete',      # status??
@@ -1387,6 +1427,20 @@ sub _gen_csv {
                             # and no transactions
         }
 
+        # venues for future rentals
+        #
+        print {$venue_list}
+            $title
+          . ' ' . $ren->sdate_obj->format("%D")
+          . "\n";
+        for my $b ($ren->bookings) {
+            print {$venue_list}
+                "    "
+                . show_booking($b, $ren)
+                . "\n";
+        }
+        print {$venue_list} "\n";
+
         # Charges
         # attribute them all to the registration for the coordinator
         for my $cha ($ren->charges()) {
@@ -1512,7 +1566,7 @@ sub _gen_csv {
                 $reg_id,      # NOT the coordinator id - the reg id
                 $ren_start,   # okay??
                 'room charge',  # description
-                'lodging',      # category
+                'lodging-meals',# category
                 $cost,          # charge
                 $N,             # credit - 0 or blank??
                 'complete',     # status??
@@ -1529,6 +1583,7 @@ sub _gen_csv {
     close $reg_fh;
     close $trans_fh;
     close $me_list;
+    close $venue_list;
 
     print {$report} "\n";
     print {$report} "Programs by Year:\n";
