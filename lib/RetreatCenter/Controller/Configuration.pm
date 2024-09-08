@@ -695,10 +695,10 @@ sub show_booking {
         $s .= ' ' . $b->date_range;
     }
     if ($b->breakout) {
-        $s .= " Breakout";
+        $s .= " - Breakout";
     }
     elsif ($b->dorm) {
-        $s .= " Dorm";
+        $s .= " - Dorm";
     }
     return $s;
 }
@@ -769,7 +769,7 @@ sub _gen_csv {
     print {$me_list} "FUTURE Mountain Experience Registrations\n\n";
     open my $venue_list, '>', "$dir/venue_list.txt"
         or die "no venue_list";
-    print {$venue_list} "Venues for Future Programs\n\n";
+    print {$venue_list} "Venues for Future Programs\n";
     print {$venue_list} "====== === ====== ========\n\n";
 
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
@@ -1006,7 +1006,7 @@ sub _gen_csv {
                               :                  $prog->bookings;
                 print {$venue_list}
                     $prog->title
-                  . ' ' . $prog->sdate_obj->format("%D")
+                  . ' - ' . $prog->sdate_obj->format("%D")
                   . "\n";
                 for my $b (@bookings) {
                     print {$venue_list} "    "
@@ -1296,7 +1296,7 @@ sub _gen_csv {
 
     print "\nRentals:\n";
 
-    print {$venue_list} "Venues for Future Rentals\n\n";
+    print {$venue_list} "Venues for Future Rentals\n";
     print {$venue_list} "====== === ====== =======\n\n";
 
     RENTAL:
@@ -1440,7 +1440,7 @@ sub _gen_csv {
         #
         print {$venue_list}
             $title
-          . ' ' . $ren->sdate_obj->format("%D")
+          . ' - ' . $ren->sdate_obj->format("%D")
           . "\n";
         for my $b ($ren->bookings) {
             print {$venue_list}
