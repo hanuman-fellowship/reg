@@ -770,6 +770,7 @@ sub _gen_csv {
     open my $venue_list, '>', "$dir/venue_list.txt"
         or die "no venue_list";
     print {$venue_list} "Venues for Future Programs\n\n";
+    print {$venue_list} "====== === ====== ========\n\n";
 
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
@@ -998,11 +999,16 @@ sub _gen_csv {
             if ($prog->sdate >= $today_d8) {
                 # a future program
                 # record the venues for adding post go-live
+                #
+                # venues for hybrids are in the rental
+                #
+                my @bookings = $prog->rental_id? $prog->rental->bookings
+                              :                  $prog->bookings;
                 print {$venue_list}
                     $prog->title
-                  . ' ' . $prog->sdate_obj->format("%F")
+                  . ' ' . $prog->sdate_obj->format("%D")
                   . "\n";
-                for my $b ($prog->bookings) {
+                for my $b (@bookings) {
                     print {$venue_list} "    "
                         . show_booking($b, $prog) . "\n";
                 }
@@ -1290,6 +1296,9 @@ sub _gen_csv {
 
     print "\nRentals:\n";
 
+    print {$venue_list} "Venues for Future Rentals\n\n";
+    print {$venue_list} "====== === ====== =======\n\n";
+
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
@@ -1357,7 +1366,7 @@ sub _gen_csv {
         $webdesc =~ s{[<][^>]*[>]}{}xmsg;
         my $title = $ren->title;
         if ($title !~ /\S/) {
-            $title = $ren->name;
+            $title = $ren->name_trimmed;
         }
         $csv->say($prog_fh, [
             $ren->id,                       # program_id_original
