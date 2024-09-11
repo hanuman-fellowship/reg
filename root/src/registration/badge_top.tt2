@@ -89,6 +89,7 @@ table, td {
     font-family: Calibri;
     font-size: 13pt;
     margin-bottom: .1in;
+    color: #4E2222;
 }
 </style>
 </head>
