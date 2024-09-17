@@ -679,6 +679,29 @@ sub _trans_country {
     return $s;
 }
 
+sub block_date_range {
+    my ($b) = @_;
+    my $sdate = $b->sdate_obj();
+    my $edate = $b->edate_obj();
+    my $s;
+    if ($sdate == $edate) {
+        $s = $sdate->format("%b %e");
+    }
+    elsif ($sdate->month() eq $edate->month()) {
+        $s = $sdate->format("%b %e")
+             . "-"
+             . $edate->day();
+    }
+    else {
+        $s = $sdate->format("%b %e")
+           . "-"
+           . $edate->format("%b %e")
+           ;
+    }
+    $s =~ s{\s{2,}}{ }xmsg;
+    return $s;
+}
+
 #
 # Note that Program, Rental, Event all have sdate and edate
 # attributes.
@@ -700,6 +723,7 @@ sub show_booking {
     elsif ($b->dorm) {
         $s .= " - Dorm";
     }
+    $s =~ s{\s{2,}}{ }xmsg;
     return $s;
 }
 
@@ -767,10 +791,19 @@ sub _gen_csv {
     open my $me_list, '>', "$dir/me_list.txt"
         or die "no me_list";
     print {$me_list} "FUTURE Mountain Experience Registrations\n\n";
-    open my $venue_list, '>', "$dir/venue_list.txt"
-        or die "no venue_list";
-    print {$venue_list} "Venues for Future Programs\n";
-    print {$venue_list} "==========================\n\n";
+    open my $vr_list, '>', "$dir/vr_list.txt"
+        or die "no vr_list";
+    print {$vr_list} "Venues and Rooms for Future Programs\n";
+    print {$vr_list} "====================================\n\n";
+    my $nvenues = 0;
+    my $nblocks = 0;
+    my $nrbookings = 0;
+
+    open my $event_list, '>', "$dir/event_list.txt"
+        or die "no event_list";
+    print {$event_list} "Future Events\n";
+    print {$event_list} "=============\n";
+    my $nevents = 0;
 
     $csv->say($prog_fh,  [ grep { ! /\A[*]/ } @prog_headers  ]);
     $csv->say($reg_fh,   [ grep { ! /\A[*]/ } @reg_headers   ]);
@@ -1004,15 +1037,41 @@ sub _gen_csv {
                 #
                 my @bookings = $prog->rental_id? $prog->rental->bookings
                               :                  $prog->bookings;
-                print {$venue_list}
-                    $prog->title
-                  . ' - ' . $prog->sdate_obj->format("%D")
-                  . "\n";
-                for my $b (@bookings) {
-                    print {$venue_list} "    "
-                        . show_booking($b, $prog) . "\n";
+                my @blocks   = $prog->rental_id? $prog->rental->blocks
+                              :                  $prog->blocks;
+                if (@bookings || @blocks) {
+                    print {$vr_list}
+                        $prog->title
+                      . ' - ' . $prog->sdate_obj->format("%D")
+                      . "\n";
+                    if (@bookings) {
+                        print {$vr_list} "Venues:\n";
+                        for my $b (@bookings) {
+                            print {$vr_list} "    "
+                                . show_booking($b, $prog) . "\n";
+                            ++$nvenues;
+                        }
+                    }
+                    if (@blocks) {
+                        print {$vr_list} "Room Blocks:\n";
+                        for my $b (@blocks) {
+                            my $dates = "";
+                            if ($b->sdate != $prog->sdate
+                                ||
+                                $b->edate != $prog->edate
+                            ) {
+                                $dates = ' ('
+                                       . block_date_range($b)
+                                       . ')';
+                            }
+                            print {$vr_list} "    "
+                                           . $b->house->name
+                                           . "$dates\n";
+                            ++$nblocks;
+                        }
+                    }
+                    print {$vr_list} "\n";
                 }
-                print {$venue_list} "\n";
             }
         }
         # Okay, we have a Reg program id
@@ -1296,14 +1355,13 @@ sub _gen_csv {
 
     print "\nRentals:\n";
 
-    print {$venue_list} "Venues for Future Rentals\n";
-    print {$venue_list} "=========================\n\n";
+    print {$vr_list} "Venues and Rooms for Future Rentals\n";
+    print {$vr_list} "===================================\n\n";
 
     RENTAL:
     for my $ren (
         model($c, 'Rental')->search(
             { sdate => { '>=' => $start_d8 } },
-        #    { sdate => { '>=' => $today_d8 } },
             { order_by => 'sdate' }
         )
     ) {
@@ -1437,18 +1495,45 @@ sub _gen_csv {
         }
 
         # venues for future rentals
+        # and rooms and room blocks
         #
-        print {$venue_list}
-            $title
-          . ' - ' . $ren->sdate_obj->format("%D")
-          . "\n";
-        for my $b ($ren->bookings) {
-            print {$venue_list}
-                "    "
-                . show_booking($b, $ren)
-                . "\n";
+        my @r_venues = $ren->bookings(); 
+        my @r_blocks   = $ren->blocks();
+        my @r_rbookings = $ren->rental_bookings();
+        if (@r_venues || @r_blocks || @r_rbookings) {
+            print {$vr_list}
+                $title
+              . ' - ' . $ren->sdate_obj->format("%D")
+              . "\n";
+            print {$vr_list} "Venues:\n" if @r_venues;
+            for my $b (@r_venues) {
+                print {$vr_list}
+                    "    "
+                    . show_booking($b, $ren)
+                    . "\n";
+                ++$nvenues;
+            }
+            print {$vr_list} "Room Blocks:\n" if @r_blocks;
+            for my $b (@r_blocks) {
+                my $dates = "";
+                if ($b->sdate != $ren->sdate
+                    ||
+                    $b->edate != $ren->edate
+                ) {
+                    $dates = ' ('
+                           . block_date_range($b)
+                           . ')';
+                }
+                print {$vr_list} "    " . $b->house->name . "$dates\n";
+                ++$nblocks;
+            }
+            print {$vr_list} "Room Bookings:\n" if @r_rbookings;
+            for my $b (@r_rbookings) {
+                print {$vr_list} "    " . $b->house->name . "\n";
+                ++$nrbookings;
+            }
+            print {$vr_list} "\n";
         }
-        print {$venue_list} "\n";
 
         # Charges
         # attribute them all to the registration for the coordinator
@@ -1588,11 +1673,66 @@ sub _gen_csv {
         }
     }
 
+    # EVENTS
+    for my $ev (
+        model($c, 'Event')->search(
+            { sdate => { '>=' => $today_d8 } },   # not $start_d8
+            { order_by => 'sdate' }
+        )
+    ) {
+        print {$event_list} "\n";
+        print {$event_list} "       Name: " . $ev->name . "\n";
+        print {$event_list} "       From: "
+                            . $ev->sdate_obj->format("%D") . "\n";
+        print {$event_list} "         To: "
+                            . $ev->edate_obj->format("%D"). "\n";
+        print {$event_list} "Description: " . $ev->descr . "\n"
+            if $ev->descr;
+        print {$event_list} "    Sponsor: " . $ev->organization->name . "\n";
+        if ($ev->max) {
+            print {$event_list} "        Max: " . $ev->max . "\n";
+        }
+        my $indent = ' ' x 13;
+        my @blocks = $ev->blocks();
+        if (@blocks) {
+            print {$event_list} "Room Blocks: \n";
+            for my $b (@blocks) {
+                my $dates = "";
+                if ($b->sdate != $ev->sdate
+                    ||
+                    $b->edate != $ev->edate
+                ) {
+                    $dates = ' ('
+                           . block_date_range($b)
+                           . ')';
+                }
+                print {$event_list} $indent . $b->house->name . "$dates\n";
+            }
+        }
+        my @bookings = $ev->bookings();
+        if (@bookings) {
+            print {$event_list} "     Venues: \n";
+            for my $b (@bookings) {
+                print {$event_list} $indent
+                    . show_booking($b, $ev) . "\n";
+            }
+        }
+        ++$nevents;
+        print {$event_list} "\n-------------------\n";
+    }
+
     close $prog_fh;
     close $reg_fh;
     close $trans_fh;
     close $me_list;
-    close $venue_list;
+
+    print {$vr_list} "\n$nvenues Venues to add\n";
+    print {$vr_list} "$nblocks Room Blocks to add\n";
+    print {$vr_list} "$nrbookings Room Bookings to add\n";
+    close $vr_list;
+
+    print {$event_list} "\n$nevents Events to add\n";
+    close $event_list;
 
     print {$report} "\n";
     print {$report} "Programs by Year:\n";
