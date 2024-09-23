@@ -1,0 +1,36 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+/;
+sub quote {
+    return '"' . $_[0] . '"';
+}
+my $c = db_init();
+for my $pay (model($c, 'XAccountPayment')->search(
+             {
+                 xaccount_id => 101,
+                 the_date    => { '>=' => 20220101 },
+             },
+             {
+                order_by => [ 'the_date' ],
+             }
+)) {
+    my $per = $pay->person();
+    if (! $per) {
+        next;
+    }
+    print join ',',
+          map {
+              quote($_);
+          }
+          ($pay->amount, $pay->the_date_obj->format("%D"),
+          $per->first, $per->last, $per->addr1,
+          $per->addr2, $per->city, uc $per->st_prov,
+          $per->zip_post);
+    print "\n";
+}
