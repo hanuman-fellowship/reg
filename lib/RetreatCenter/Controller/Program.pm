@@ -214,7 +214,7 @@ sub _get_data {
     $P{url} = '';
     $P{bank_account} = 'mmc';
     if (empty $P{percent_tuition}) {
-        $P{percent_tution} = '0';
+        $P{percent_tuition} = '0';
     }
     #
     if ($P{school_id} == 1) {
