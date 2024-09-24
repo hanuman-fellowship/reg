@@ -12,6 +12,12 @@ sub quote {
     return '"' . $_[0] . '"';
 }
 my $c = db_init();
+print "First, Last, Amount, Date, Address1, Address2, City, State, Zip\n";
+          ($per->first, $per->last,
+          $pay->amount, $pay->the_date_obj->format("%D"),
+          $per->addr1,
+          $per->addr2, $per->city, uc $per->st_prov,
+          $per->zip_post);
 for my $pay (model($c, 'XAccountPayment')->search(
              {
                  xaccount_id => 101,
@@ -29,8 +35,9 @@ for my $pay (model($c, 'XAccountPayment')->search(
           map {
               quote($_);
           }
-          ($pay->amount, $pay->the_date_obj->format("%D"),
-          $per->first, $per->last, $per->addr1,
+          ($per->first, $per->last,
+          $pay->amount, $pay->the_date_obj->format("%D"),
+          $per->addr1,
           $per->addr2, $per->city, uc $per->st_prov,
           $per->zip_post);
     print "\n";
