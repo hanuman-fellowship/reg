@@ -7,6 +7,7 @@ use Util qw/
     model
     db_init
 /;
+my $date = shift;
 sub quote {
     return '"' . $_[0] . '"';
 }
@@ -14,7 +15,7 @@ my $c = db_init();
 for my $pay (model($c, 'XAccountPayment')->search(
              {
                  xaccount_id => 101,
-                 the_date    => { '>=' => 20220101 },
+                 the_date    => { '>=' => $date },
              },
              {
                 order_by => [ 'the_date' ],
