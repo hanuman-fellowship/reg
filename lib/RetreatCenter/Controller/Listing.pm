@@ -293,6 +293,69 @@ sub upick : Local {
 }
 
 #
+# the .csv file will have these fields:
+#
+# first, last, alternative_name, pronouns, dates, room, program
+#
+# we provide code separately
+#
+sub rg_badges : Local {
+    my ($self, $c) = @_;
+
+    my $rg_gate_code = trim($c->request->params->{rg_gate_code});
+    if ($rg_gate_code !~ m{\A \d+ \z}xms) {
+        error($c,
+            'Gate code must be only digits',
+            'gen_error.tt2',
+        );
+        return;
+    }
+
+    my $rg_csv_file = $c->request->upload('rg_csv_file');
+    if (! $rg_csv_file) {
+        error($c,
+            'Cannot load the .csv file from Retreat Guru',
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $rg_fh = $rg_csv_file->fh();
+
+    my @rg_badge_data;
+    my $csv = Text::CSV->new();
+    # first line is the header line containing:
+    #
+    # first, last, alternative, pronouns, dates, room, program
+    #
+    my @cols = @{$csv->getline($rg_fh)};
+    my $row = {};
+    $csv->bind_columns(\@{$row}{@cols});        # fancy!
+    while ($csv->getline($rg_fh)) {
+        my $name = "$row->{first} $row->{last}";
+        my $a = $row->{alternative};
+        if ($a) {
+            $name = "$a $name";
+        }
+        push @rg_badge_data, {
+            name     => $name,
+            pronouns => $row->{pronouns},
+            dates    => $row->{dates},
+            room     => $row->{room},
+            program  => $row->{program},
+            code     => $rg_gate_code,
+        };
+    }
+    Badge->initialize($c);
+    Badge->add_group('', $rg_gate_code, \@rg_badge_data);
+        # first parameter will vary - program title
+        #
+        # we can have just one gate code for all, right?
+        # depends when the badges are printed
+        # and when the gate code changes...
+    $c->res->output(Badge->finalize());
+}
+
+#
 # better way to do this the DBIx::Class way???
 # must be a way.  join, prefetch.
 # no inactive people please???
@@ -2883,7 +2946,7 @@ sub future_no_vax : Local {
 
 sub contact_email : Local {
     my ($self, $c) = @_;
- 
+
     my $sdate = trim($c->request->params->{sdate});
     my $edate = trim($c->request->params->{edate});
     my $start = date($sdate);
@@ -3008,8 +3071,8 @@ sub pr_info : Local {
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
-    my @prs = grep { ! $_->mountain_experience } 
-                    # couldn't get the above into the SQL 
+    my @prs = grep { ! $_->mountain_experience }
+                    # couldn't get the above into the SQL
                     # not sure why
               model($c, 'Registration')->search(
                   {
@@ -3228,7 +3291,7 @@ sub mountain_experience : Local {
                  {
                      join     => [qw/ person /],
                      prefetch => [qw/ person /],
-                     order_by => 'me.date_start, person.last, person.first',                   
+                     order_by => 'me.date_start, person.last, person.first',
                  });
     my ($prev, $tot);
     my ($class, $walk, $children) = (0, 0, 0);

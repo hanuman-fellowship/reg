@@ -33,9 +33,9 @@ To <input type=text size=10 name=pr_to>
 <input type=submit id=sub value="Go">
 </form>
 <p class=p2>
-<form action="/listing/badges_in_date_range" target=_blank>
 <table cellpadding=5>
 <tr><td colspan=2><hr><h3 style="margin: 0;">Badges</h3></td></tr>
+<form action="/listing/badges_in_date_range" target=_blank>
 <tr><td>From <input type=text size=10 name=badge_from value=$badge_from>
 To <input type=text size=10 name=badge_to value=$badge_to>
 <p class=p2>
@@ -60,12 +60,26 @@ UPick
 Mountain Experience
 </td></tr>
 </table>
+</form>
 
 </td>
 </tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr><td colspan=2>
+<form action=/listing/rg_badges
+      method=POST
+      enctype="multipart/form-data"
+>
+From Retreat Guru&nbsp;<input type=file name=rg_csv_file><p class=p2>
+Gate Code&nbsp;<input type=text name=rg_gate_code size=6><p class=p2>
+<input style="margin-left: .5in" type=submit id=sub value="Go">
+</form>
+</td></tr>
+
 <tr><td colspan=2><hr></td></tr>
 </table>
-</form>
 <p class=p2>
 <form action="/listing/gate_codes">
 Gate Codes - From 
