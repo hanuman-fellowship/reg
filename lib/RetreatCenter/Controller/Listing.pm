@@ -295,9 +295,18 @@ sub upick : Local {
 #
 # the .csv file will have these fields:
 #
-# first, last, alternative_name, pronouns, dates, room, program
+# first_name
+# last_name
+# registration_id
+# person_id
+# program
+# arrive_date
+# leave_date
+# room
+# alternative_name
+# other_pronouns
 #
-# we provide code separately
+# we provide the gate code separately
 #
 sub rg_badges : Local {
     my ($self, $c) = @_;
@@ -323,25 +332,51 @@ sub rg_badges : Local {
 
     my @rg_badge_data;
     my $csv = Text::CSV->new();
-    # first line is the header line containing:
+
     #
-    # first, last, alternative, pronouns, dates, room, program
+    # first line is the header line
+    # exported from RG the line has a
+    # mysterious stray character at the front :(
     #
-    my @cols = @{$csv->getline($rg_fh)};
-    my $row = {};
-    $csv->bind_columns(\@{$row}{@cols});        # fancy!
-    while ($csv->getline($rg_fh)) {
-        my $name = "$row->{first} $row->{last}";
-        my $a = $row->{alternative};
-        if ($a) {
+    my $line = <$rg_fh>;
+    my @cols = $line =~ m{(\w+)}xmsg;   # rather than parse, fields
+    #
+    # we analyze this @cols so we can reference
+    # fields by name rather than number.
+    # then the order of the fields will not matter.
+    #
+    my %by_name;
+    my $n = 0;
+    for my $c (@cols) {
+        $by_name{$c} = $n++;
+    }
+    while ($line = <$rg_fh>) {
+        $csv->parse($line);
+        my @fields = $csv->fields();
+        my $name = "$fields[$by_name{first_name}] $fields[$by_name{last_name}]";
+        my $a = $fields[$by_name{alternative_name}];
+        if ($a =~ /\S/) {
             $name = "$a $name";
+        }
+        my $dates;
+        my $sdate = date($fields[$by_name{arrive_date}]);
+        my $edate = date($fields[$by_name{leave_date}]);
+        if ($sdate->month == $edate->month) {
+            $dates = $sdate->format("%b %e")
+                   . '-'
+                   . $edate->day;
+        }
+        else {
+            $dates = $sdate->format("%b %e")
+                   . '-'
+                   . $edate->format("%b %e");
         }
         push @rg_badge_data, {
             name     => $name,
-            pronouns => $row->{pronouns},
-            dates    => $row->{dates},
-            room     => $row->{room},
-            program  => $row->{program},
+            pronouns => $fields[$by_name{other_pronouns}],
+            dates    => $dates,
+            room     => $fields[$by_name{room}],
+            program  => $fields[$by_name{program}],
             code     => $rg_gate_code,
         };
     }
