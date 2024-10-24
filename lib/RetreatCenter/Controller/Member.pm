@@ -15,6 +15,7 @@ use Util qw/
     email_letter
     tt_today
     stash
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -624,6 +625,12 @@ sub delete : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $type_opts = "";
     for my $t (qw/ D C S O /) {
         $type_opts .= "<option value=$t>"

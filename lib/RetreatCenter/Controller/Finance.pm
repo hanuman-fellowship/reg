@@ -19,6 +19,7 @@ use Util qw/
     no_comma
     get_string
     put_string
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -257,6 +258,12 @@ sub reconcile_deposit : Local {
 sub file_deposit : Local {
     my ($self, $c, $sponsor, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $host = ($sponsor eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
     my $dep;

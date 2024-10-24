@@ -6,7 +6,10 @@ use Util qw/
     db_init
     get_string
     styled
+    check_read_only
 /;
+check_read_only();
+
 my $c = db_init();
 
 use CGI;

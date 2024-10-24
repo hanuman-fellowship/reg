@@ -11,6 +11,7 @@ use Util qw/
     error
     stash
     get_now
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -62,6 +63,12 @@ sub view : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $meal = model($c, 'Meal')->find($id);
     $meal->delete();
     $c->response->redirect($c->uri_for('/meal/list'));
@@ -125,6 +132,12 @@ sub _get_data {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $meal = $c->stash->{meal} = model($c, 'Meal')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "meal/create_edit.tt2";
@@ -145,6 +158,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         meal => {
             breakfast   => 0,

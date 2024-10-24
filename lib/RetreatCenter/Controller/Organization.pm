@@ -9,6 +9,7 @@ use Util qw/
     model
     stash
     error
+    read_only
 /;
 
 sub index : Private {
@@ -32,6 +33,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     model($c, 'Organization')->find($id)->delete();
     $c->response->redirect($c->uri_for('/organization/list'));
 }
@@ -39,6 +46,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $o = model($c, 'Organization')->find($id);
     my ($r, $g, $b) = $o->color =~ m{(\d+)}g;
     stash($c,
@@ -77,6 +90,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         red         => 127,
         green       => 127,

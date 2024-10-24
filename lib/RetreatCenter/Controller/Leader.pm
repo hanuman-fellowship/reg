@@ -9,6 +9,7 @@ use Util qw/
     valid_email
     model
     stash
+    read_only
 /;
 
 sub index : Private {
@@ -39,6 +40,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $l = model($c, 'Leader')->find($id);
     if (my @programs = $l->programs()) {
         stash($c,
@@ -109,6 +116,12 @@ sub _get_data {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $l = model($c, 'Leader')->find($id);
     stash($c,
         leader => $l,
@@ -144,6 +157,12 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         person      => model($c, 'Person')->find($person_id),
         form_action => "create_do/$person_id",

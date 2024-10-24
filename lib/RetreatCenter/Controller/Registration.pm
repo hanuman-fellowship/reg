@@ -56,6 +56,7 @@ use Util qw/
     time_travel_class
     kid_badge_names
     JON
+    read_only
 /;
 use Slurp qw/
     slurp
@@ -3987,6 +3988,12 @@ sub early_late : Local {
 sub arrived : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Registration')->find($id);
     $r->update({
         arrived => 'yes',

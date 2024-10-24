@@ -14,6 +14,7 @@ use Util qw/
     model
     stash
     d3_to_hex
+    read_only
 /;
 
 use lib '../../';       # so you can do a perl -c here.
@@ -27,6 +28,12 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         red             => 127,
         green           => 127,
@@ -156,6 +163,12 @@ sub _by_disp {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $mp = model($c, 'MeetingPlace')->find($id);
     my ($r, $g, $b) = $mp->color =~ m{\d+}g;
     stash($c,

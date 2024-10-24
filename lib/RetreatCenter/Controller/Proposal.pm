@@ -15,6 +15,7 @@ use Util qw/
     stash
     normalize
     rand6
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -161,6 +162,12 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     # defaults
     stash($c,
         proposal => {
@@ -208,6 +215,12 @@ sub view : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
  
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $proposal = model($c, 'Proposal')->find($id);
     $c->stash->{proposal} = $proposal;
     for my $f (qw/
@@ -261,6 +274,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Proposal')->find($id);
     $p->delete();
     $c->response->redirect($c->uri_for('/proposal/list'));
@@ -287,6 +306,12 @@ sub listpat : Local {
 sub approve : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $proposal = model($c, 'Proposal')->find($id);
 
     my $person_id = _transmit($c, $id);
@@ -334,6 +359,12 @@ sub approve : Local {
 sub transmit : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     _transmit($c, $id);
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
 }
@@ -345,6 +376,12 @@ sub transmit : Local {
 sub cs_transmit : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     _cs_transmit($c, $id);
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
 }
@@ -511,6 +548,12 @@ sub _cs_transmit {
 sub duplicate : Local {
     my ($self, $c, $prop_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $orig_p = model($c, 'Proposal')->find($prop_id);
     $orig_p->set_columns({
         id           => undef,

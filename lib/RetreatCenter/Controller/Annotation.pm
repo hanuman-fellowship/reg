@@ -9,6 +9,7 @@ use Util qw/
     model
     stash
     set_cache_timestamp
+    read_only
 /;
 use Global qw/
     %string
@@ -33,6 +34,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     model($c, 'Annotation')->search({id => $id})->delete();
     set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/annotation/list'));
@@ -41,6 +48,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $ann = $c->stash->{annotation}  = model($c, 'Annotation')->find($id);
     my $cluster_type_opts = "";
     for my $i (1 .. 5) {
@@ -83,6 +96,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $cluster_type_opts = "";
     for my $i (1 .. 5) {
         my $s = $string{"dp_type$i"};

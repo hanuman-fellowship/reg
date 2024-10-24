@@ -12,6 +12,7 @@ use Util qw/
     reserved_clusters
     stash
     set_cache_timestamp
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -47,6 +48,12 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $cl = $c->stash->{cluster} = model($c, 'Cluster')->find($id);
     my $opts = "";
     for my $t (1 .. 5) {
@@ -91,6 +98,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         type_opts => <<"EOO",
 <option value="indoors">Indoors

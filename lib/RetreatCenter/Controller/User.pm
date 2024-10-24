@@ -16,6 +16,7 @@ use Util qw/
     email_letter
     tt_today
     login_log
+    read_only
 /;
 use Global qw/
     %string
@@ -54,6 +55,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     model($c, 'User')->search({id => $id})->delete();
     model($c, 'UserRole')->search(
         { user_id => $id }
@@ -64,6 +71,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $u = model($c, 'User')->find($id);
     stash($c,
         user           => $u,
@@ -222,6 +235,12 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $user_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         check_hide_mmi => '',
         role_table     => role_table($c),
@@ -366,6 +385,13 @@ sub profile_view : Local {
 
 sub profile_edit : Local {
     my ($self, $c) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $u = $c->user();
     stash($c,
         user           => $u,
@@ -428,6 +454,13 @@ sub profile_color_do : Local {
 
 sub profile_password : Local {
     my ($self, $c) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         security => $string{password_security},
         template => 'user/profile_password.tt2',
@@ -493,6 +526,13 @@ sub access_denied : Private {
 
 sub lock : Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $u = model($c, 'User')->find($id);
     $u->update({
         locked => 'yes',
@@ -511,6 +551,13 @@ sub lock : Local {
 
 sub password_reset :Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $u = model($c, 'User')->find($id);
     my $username = $u->username();
     my $pass = randpass();

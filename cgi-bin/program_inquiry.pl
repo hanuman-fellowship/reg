@@ -1,6 +1,17 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use lib '../lib';
+use Util qw/
+    db_init
+    model
+    email_letter
+    rand6
+    styled
+    JON
+    check_read_only
+/;
+check_read_only();
 
 use CGI;
 my $q = CGI->new();
@@ -9,20 +20,11 @@ print $q->header();
 use Template;
 my $tt = Template->new(INTERPOLATE => 1);
 
-use lib '../lib';
 use Date::Simple qw/
     today
 /;
 use Time::Simple qw/
     get_time
-/;
-use Util qw/
-    db_init
-    model
-    email_letter
-    rand6
-    styled
-    JON
 /;
 use Global qw/
     %string

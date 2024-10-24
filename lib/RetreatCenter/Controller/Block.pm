@@ -15,6 +15,7 @@ use Util qw/
     get_now
     too_far
     other_reserved_cids
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -93,6 +94,12 @@ sub view : Local {
 sub delete : Local {
     my ($self, $c, $block_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $block = model($c, 'Block')->find($block_id);
 
     my $redirect = "/block/list";
@@ -251,6 +258,12 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "block/create_edit.tt2";
 }
@@ -258,6 +271,12 @@ sub create : Local {
 sub bound_create : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $hap = model($c, ucfirst $hap_type)->find($hap_id);
     stash($c,
         hap         => $hap,
@@ -278,6 +297,13 @@ sub bound_create : Local {
 #
 sub create_many : Local {
     my ($self, $c, $type, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $event = model($c, ucfirst $type)->find($id);
     my $sdate = $event->sdate();
     my $edate1 = ($event->edate_obj() - 1)->as_d8();
@@ -428,6 +454,12 @@ sub create_many_do : Local {
 sub delete_many : Local {
     my ($self, $c, $type, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $event = model($c, ucfirst $type)->find($id);
     stash($c,
         type     => $type,

@@ -40,6 +40,7 @@ use Util qw/
     add_activity
     check_alt_packet
     check_file_upload
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -88,6 +89,12 @@ sub create : Local {
     my ($self, $c, $rental) = @_;
         # $rental is optional - see sub parallel().
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my @name = ();
     my @dates = ();
     my $rental_id = 0;
@@ -999,6 +1006,12 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
@@ -1142,6 +1155,13 @@ sub update_do : Local {
 
 sub del_alt_packet : Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Program')->find($id);
     unlink '/var/Reg/documents/' . $p->alt_packet;
     $p->update({
@@ -1292,6 +1312,12 @@ sub affil_update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Program')->find($id);
 
     if ($p->rental_id) {
@@ -1410,6 +1436,13 @@ sub update_lunch_do : Local {
 #
 sub duplicate : Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $orig_p = model($c, 'Program')->find($id);
 
     # things that are different from the original:
@@ -1580,6 +1613,9 @@ sub duplicate_do : Local {
 sub reserve_cluster : Local {
     my ($self, $c, $program_id, $cluster_id) = @_;
 
+    if (read_only()) {
+        return;
+    } 
     model($c, 'ProgramCluster')->create({
         program_id => $program_id,
         cluster_id => $cluster_id,
@@ -1591,6 +1627,9 @@ sub reserve_cluster : Local {
 sub UNreserve_cluster : Local {
     my ($self, $c, $program_id, $cluster_id) = @_;
 
+    if (read_only()) {
+        return;
+    } 
     model($c, 'ProgramCluster')->search({
         program_id => $program_id,
         cluster_id => $cluster_id,
@@ -1835,6 +1874,12 @@ sub color_do : Local {
 sub update_refresh : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Program')->find($id);
     stash($c,
         program     => $p,
@@ -1874,6 +1919,12 @@ sub update_refresh_do : Local {
 sub cancel : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Program')->find($id);
     if ($p->cancelled) {
         $p->update({

@@ -33,6 +33,7 @@ use Util qw/
     strip_nl
     time_travel_class
     JON
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -227,6 +228,12 @@ sub search_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Person')->find($id);
 
     #
@@ -320,6 +327,13 @@ sub view : Local {
 
 sub touch : Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     model($c, 'Person')->find($id)->update({
         date_updat => today->as_d8(),
     });
@@ -329,6 +343,12 @@ sub touch : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         e_mailings         => "checked",
         snail_mailings     => "checked",
@@ -525,6 +545,12 @@ sub create_do : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Person')->find($id);
     my $sex = $p->sex() || "";
     stash($c,
@@ -698,6 +724,12 @@ sub separate : Local {
 sub partner : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Person')->find($id);
     $c->stash->{person} = $p;
     $c->stash->{template} = "person/partner.tt2";
@@ -825,6 +857,12 @@ sub mkpartner : Local {
 sub register1 : Local {
     my ($self, $c, $id, $resident) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
     $person->update({
@@ -898,6 +936,12 @@ sub register1 : Local {
 sub undup : Local {
     my ($self, $c, $ids) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my @people = map { model($c, 'Person')->find($_) }
                  split /-/, $ids;
     $c->stash->{people} = \@people;
@@ -1737,6 +1781,12 @@ sub get_addr : Local {
 sub no_mailings : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $p = model($c, 'Person')->find($id);
     $p->update({
         snail_mailings     => '',
@@ -1769,6 +1819,13 @@ sub get_gender : Local {
 
 sub del_covid_vax : Local {
     my ($self, $c, $per_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $per = model($c, 'Person')->find($per_id);
     unlink "$docs/covid_vax/" . $per->covid_vax;
     $per->update({
@@ -1836,6 +1893,13 @@ sub rotate_vax : Local {
 
 sub request_covid_vax : Local {
     my ($self, $c, $per_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $per = model($c, 'Person')->find($per_id);
     my $first = $per->first;
     my $name = $per->name;

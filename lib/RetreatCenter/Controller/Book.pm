@@ -11,6 +11,7 @@ use Util qw/
     tt_today
     stash
     error
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -116,6 +117,12 @@ sub search_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $b = model($c, 'Book')->find($id);
     my $title = $b->title();
     my $author = $b->author();
@@ -157,6 +164,12 @@ sub view : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{media_opts} = <<"EOO";
 <option value=1>Book
 <option value=2>VHS
@@ -189,6 +202,12 @@ sub _get_data {
 sub create_do : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     _get_data($c);
     return if @mess;
 
@@ -203,6 +222,12 @@ sub create_do : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $b = model($c, 'Book')->find($id);
     my $cur_media = ($b->media() == 1)? "Book"
                    :($b->media() == 2)? "VHS"

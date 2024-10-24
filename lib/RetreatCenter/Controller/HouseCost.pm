@@ -10,6 +10,7 @@ use Util qw/
     model
     stash
     tt_today
+    read_only
 /;
 
 sub index : Private {
@@ -40,6 +41,12 @@ sub list : Local {
 sub bulk_inactivate : Local {
     my ($self, $c, $inc_inactive) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     if (my $deactivate_proto = $c->req->body_parameters->{deactivate}) {
         my @deactivate = ref($deactivate_proto)? @$deactivate_proto
                         :                        ($deactivate_proto);
@@ -78,6 +85,12 @@ sub bulk_inactivate : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $hc = model($c, 'HouseCost')->find($id);
     my $error = 0;
     if (my @programs = $hc->programs()) {
@@ -100,6 +113,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $hc = $c->stash->{housecost} = 
         model($c, 'HouseCost')->find($id);
     my $type = $hc->type();
@@ -158,6 +177,12 @@ sub view : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         housecost        => {
             single      => 0,

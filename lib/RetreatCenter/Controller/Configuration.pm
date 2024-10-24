@@ -11,6 +11,7 @@ use Util qw/
     tt_today
     slurp
     JON
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -43,6 +44,12 @@ sub index : Local {
 sub mark_inactive : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my ($date_last) = $c->request->params->{date_last};
     my $dt = date($date_last);
     if (! $dt) {
@@ -150,6 +157,13 @@ sub spellings_do : Local {
 #
 sub documents : Local {
     my ($self, $c) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         pg_title => "Documents for Reg",
         template => 'configuration/documents.tt2',
@@ -216,6 +230,12 @@ my $dr_file = "$words/date_ranges.txt";
 sub date_ranges : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $date_ranges = "";
     if (-f $dr_file) {
         $date_ranges = slurp($dr_file);

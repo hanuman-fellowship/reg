@@ -4,7 +4,11 @@ package RetreatCenter::Controller::Project;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-use Util qw/empty model/;
+use Util qw/
+    empty
+    model
+    read_only
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -25,6 +29,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     #
     # first, are there any donations to this project?
     # If so, show them and get confirmation before doing the deletion.
@@ -61,6 +71,12 @@ sub _del {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{project}       = model($c, 'Project')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "project/create_edit.tt2";
@@ -94,6 +110,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "project/create_edit.tt2";
 }

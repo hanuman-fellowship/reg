@@ -21,6 +21,7 @@ use Util qw/
     email_letter
     put_string
     get_string
+    read_only
 /;
 use Global qw/
     %string
@@ -148,6 +149,12 @@ sub copy : Local {
 sub update : Local {
     my ($self, $c, $type, $sum_id) = @_;
  
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $sum = model($c, 'Summary')->find($sum_id);
     my $happening = $sum->$type();
     calc_sections($sum);
@@ -195,6 +202,12 @@ sub update_do : Local {
 sub update_sect : Local {
     my ($self, $c, $section, $type, $sum_id) = @_;
  
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $sum = model($c, 'Summary')->find($sum_id);
     my $happening = $sum->$type();
     stash($c,
@@ -241,6 +254,12 @@ sub update_section_do : Local {
 sub update_top : Local {
     my ($self, $c, $type, $sum_id) = @_;
  
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $sum = model($c, 'Summary')->find($sum_id);
     my $happening = $sum->$type();
     stash($c,
@@ -283,6 +302,12 @@ sub update_top_do : Local {
 sub use_template : Local {
     my ($self, $c, $type, $happening_id, $sum_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     # $type is Program or Rental
     # $happening_id is the id of the Program or Rental
 
@@ -513,6 +538,12 @@ sub email_do : Local {
 sub touch_sent : Local {
     my ($self, $c, $type, $sum_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $summary = model($c, 'Summary')->find($sum_id);
     $summary->update({
         date_sent => tt_today($c)->as_d8(),

@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use Util qw/
     model
     _br
+    read_only
 /;
 
 sub index : Private {
@@ -29,6 +30,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     model($c, 'ConfNote')->find($id)->delete();
     $c->response->redirect($c->uri_for('/confnote/list'));
 }
@@ -36,6 +43,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{confnote}    = model($c, 'ConfNote')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "confnote/create_edit.tt2";
@@ -55,6 +68,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "confnote/create_edit.tt2";
 }

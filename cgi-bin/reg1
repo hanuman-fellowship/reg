@@ -1,6 +1,17 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use lib '.','../lib';
+use Util qw/
+    db_init
+    model
+    get_string
+    fee_types
+    JON
+    styled
+    check_read_only
+/;
+check_read_only();
 
 use Template;
 use CGI;
@@ -8,7 +19,6 @@ use CGI::Carp qw/fatalsToBrowser/;
 my $q = CGI->new();
 print $q->header();
 
-use lib '.','../lib';
 use DateRange qw/
     overlap
 /;
@@ -19,14 +29,6 @@ use Date::Simple qw/
 /;
 my $today = today();
 
-use Util qw/
-    db_init
-    model
-    get_string
-    fee_types
-    JON
-    styled
-/;
 my $c = db_init();
 
 use Time::Simple qw/

@@ -8,6 +8,7 @@ use Util qw/
     model
     stash
     error
+    read_only
 /;
 use File::Copy qw/
     move
@@ -35,6 +36,12 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $name) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my ($ht) = model($c, 'HousingType')->search(
                    { name => $name },
                );
@@ -80,6 +87,13 @@ sub update_do : Local {
 
 sub del_image :Local {
     my ($self, $c, $name, $i) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     unlink "$images/$name$i.jpg";
     $c->response->redirect($c->uri_for('/housingtype/list'));
 }

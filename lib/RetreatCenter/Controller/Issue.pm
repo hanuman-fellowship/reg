@@ -9,6 +9,7 @@ use Util qw/
     model
     trim
     email_letter
+    read_only
 /;
 use Date::Simple qw/
     today
@@ -84,6 +85,12 @@ sub search : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     model($c, 'Issue')->search({id => $id})->delete();
     $c->response->redirect($c->uri_for('/issue/list'));
 }
@@ -91,6 +98,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{issue}       = model($c, 'Issue')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "issue/create_edit.tt2";
@@ -142,6 +155,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "issue/create_edit.tt2";
 }

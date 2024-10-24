@@ -37,6 +37,7 @@ use Util qw/
     get_now
     time_travel_class
     add_activity
+    read_only
 /;
 use HLog;
 use GD;
@@ -66,6 +67,12 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $sponsor_opts = "";
     for my $o (model($c, 'Organization')->search(
                    undef,
@@ -278,6 +285,12 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $e = model($c, 'Event')->find($id);
     my $sponsor_opts = "";
     for my $o (model($c, 'Organization')->search(
@@ -343,6 +356,12 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $e = model($c, 'Event')->find($id);
 
 #
@@ -1533,6 +1552,13 @@ EOF
 #
 sub del_meeting_place : Local {
     my ($self, $c, $hap_type, $booking_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $booking = model($c, 'Booking')->find($booking_id);
     my $sdate = $booking->sdate();
     my $edate = $booking->edate();
@@ -1615,6 +1641,12 @@ sub del_meeting_place : Local {
 sub add_meeting_place : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $hap = model($c, ucfirst $hap_type)->find($hap_id);
     my $edate = $hap->edate_obj();
     if ($hap_type eq 'program' && $hap->extradays() > 0) {
@@ -1632,6 +1664,12 @@ sub add_meeting_place : Local {
 sub which_mp : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $hap = model($c, ucfirst $hap_type)->find($hap_id);
     my %P = %{ $c->request->params() };
     # check dates for valid format, sdate <= edate

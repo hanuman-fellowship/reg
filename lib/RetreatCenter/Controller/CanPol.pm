@@ -4,7 +4,11 @@ package RetreatCenter::Controller::CanPol;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/empty model/;
+use Util qw/
+    empty
+    model
+    read_only
+/;
 
 #
 # ??? at the last minute I found that I didn't check
@@ -38,6 +42,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $cp = model($c, 'CanPol')->find($id);
     if ($cp->name eq 'Default') {
         $c->stash->{template} = "canpol/nodel_default.tt2";
@@ -56,6 +66,12 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{canpol}      = model($c, 'CanPol')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "canpol/create_edit.tt2";
@@ -95,6 +111,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "canpol/create_edit.tt2";
 }

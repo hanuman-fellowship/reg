@@ -52,6 +52,7 @@ use Util qw/
     check_alt_packet
     check_file_upload
     report_housecost
+    read_only
 /;
 use Global qw/
     %string
@@ -238,6 +239,12 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         check_linked     => '',
         check_tentative  => "checked",
@@ -434,6 +441,12 @@ sub show_file : Local Args(1) {
 sub del_image : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
     $r->update({
         image => '',
@@ -445,6 +458,12 @@ sub del_image : Local {
 sub create_from_proposal : Local {
     my ($self, $c, $proposal_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $proposal = model($c, 'Proposal')->find($proposal_id);
 
     _get_data($c);
@@ -534,6 +553,12 @@ sub create_from_proposal : Local {
 sub create_from_inquiry : Local {
     my ($self, $c, $inquiry_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $inquiry = model($c, 'Inquiry')->find($inquiry_id);
 
     _get_data($c);
@@ -857,6 +882,12 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Rental')->find($id);
     my @check_mpc;
     for my $i (1 .. 4) {
@@ -1023,6 +1054,12 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $rental_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Rental')->find($rental_id);
 
     if ($r->program_id) {
@@ -1115,6 +1152,12 @@ sub access_denied : Private {
 sub pay_balance : Local {
     my ($self, $c, $rental_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     if (tt_today($c)->as_d8() eq get_string($c, 'last_deposit_date')) {
         error($c,
               'Since a deposit was just done'
@@ -1171,6 +1214,12 @@ sub pay_balance_do : Local {
 sub coordinator_update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{rental} = model($c, 'Rental')->find($id);
     $c->stash->{template} = "rental/coordinator_update.tt2";
 }
@@ -1212,6 +1261,12 @@ sub coordinator_update_do : Local {
 sub contract_signer_update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{rental} = model($c, 'Rental')->find($id);
     $c->stash->{template} = "rental/contract_signer_update.tt2";
 }
@@ -1253,6 +1308,12 @@ sub contract_signer_update_do : Local {
 sub new_charge : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{rental} = model($c, 'Rental')->find($id);
     $c->stash->{template} = "rental/new_charge.tt2";
 }
@@ -1299,6 +1360,12 @@ sub new_charge_do : Local {
 sub update_lunch : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $r;
     $c->stash->{lunch_table}
@@ -1338,6 +1405,12 @@ sub update_lunch_do : Local {
 sub booking : Local {
     my ($self, $c, $id, $h_type) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
     my $sdate = $r->sdate;
     my $edate1 = date($r->edate) - 1;
@@ -1507,6 +1580,12 @@ sub booking_do : Local {
 sub del_booking : Local {
     my ($self, $c, $rental_id, $house_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Rental')->find($rental_id);
     my $h = model($c, 'House')->find($house_id);
     my ($grid) = model($c, 'Grid')->search({
@@ -1738,6 +1817,12 @@ sub arrangements : Local {
 sub received : Local {
     my ($self, $c, $rental_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $rental = model($c, 'Rental')->find($rental_id);
     $rental->update({
         contract_received => tt_today($c)->as_d8(),
@@ -2002,6 +2087,12 @@ EOH
 sub reserve_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $rental = model($c, 'Rental')->find($rental_id);
     my $rname = $rental->name();
 
@@ -2071,6 +2162,12 @@ sub reserve_cluster : Local {
 sub cancel_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $rental = model($c, 'Rental')->find($rental_id);
     my $rname = $rental->name();
 
@@ -2216,6 +2313,12 @@ sub invoice : Local {
 sub link_proposal : Local {
     my ($self, $c, $rental_id, $proposal_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     # proposal id in rental
     model($c, 'Rental')->find($rental_id)->update({
         proposal_id => $proposal_id,
@@ -2241,6 +2344,12 @@ sub link_proposal : Local {
 sub duplicate : Local {
     my ($self, $c, $rental_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $orig_r = model($c, 'Rental')->find($rental_id);
 
     if ($orig_r->image()) {
@@ -2458,6 +2567,13 @@ sub _house_opts {
 
 sub del_charge : Local {
     my ($self, $c, $charge_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $charge = model($c, 'RentalCharge')->find($charge_id);
     stash($c,
         template  => 'rental/confirm.tt2',
@@ -2482,6 +2598,13 @@ sub del_charge_do : Local {
 
 sub del_payment : Local {
     my ($self, $c, $payment_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $payment = model($c, 'RentalPayment')->find($payment_id);
     stash($c,
         template  => 'rental/confirm.tt2',
@@ -2507,6 +2630,12 @@ sub del_payment_do : Local {
 sub update_charge : Local {
     my ($self, $c, $charge_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $charge = model($c, 'RentalCharge')->find($charge_id);
     stash($c,
         charge => $charge,
@@ -2549,6 +2678,12 @@ sub update_charge_do : Local {
 sub update_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $payment = model($c, 'RentalPayment')->find($payment_id);
     my $type_opts = "";
     for my $t (qw/ D C S O /) {
@@ -2876,6 +3011,13 @@ sub badges : Local {
 
 sub color : Local {
     my ($self, $c, $rental_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $rental = model($c, 'Rental')->find($rental_id);
     my ($r, $g, $b) = (127, 127, 127);
     if ($rental->color()) {
@@ -2907,6 +3049,12 @@ sub color_do : Local {
 sub update_refresh : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $r;
     $c->stash->{refresh_table}
@@ -2954,6 +3102,13 @@ sub grab_new : Local {
 #
 sub mass_delete : Local {
     my ($self, $c, $rental_id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $rental = model($c, 'Rental')->find($rental_id);
     my %occupant;
     for my $rb ($rental->rental_bookings) {
@@ -3110,6 +3265,13 @@ sub grid_emails : Local {
 
 sub del_alt_packet : Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Rental')->find($id);
     unlink '/var/Reg/documents/' . $r->alt_packet;
     $r->update({

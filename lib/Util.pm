@@ -98,6 +98,8 @@ our @EXPORT_OK = qw/
     fee_types
     styled
     report_housecost
+    check_read_only
+    read_only
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2804,5 +2806,17 @@ sub report_housecost {
     close $out;
 }
 
+my $read_only = '/var/www/src/cgi-bin/read_only';
+sub check_read_only {
+    if (-f $read_only) {
+        print "Content-Type: text/html; charset=ISO-8859-1\n\n";
+        print "Sorry, Reg is now read only.";
+        exit;
+    }
+}
+
+sub read_only {
+    return -f $read_only;
+}
 
 1;

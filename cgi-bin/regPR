@@ -1,18 +1,20 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-print "Content-Type: text/html; charset=ISO-8859-1\n\n";
-use Template;
 use lib '../lib';
-use Date::Simple qw/
-    today
-/;
-
 use Util qw/
     db_init
     model
     styled
+    check_read_only
 /;
+check_read_only();
+
+use Template;
+use Date::Simple qw/
+    today
+/;
+print "Content-Type: text/html; charset=ISO-8859-1\n\n";
 my $c = db_init();
 my %stash;
 my $today = today();

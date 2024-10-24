@@ -11,6 +11,7 @@ use Util qw/
     affil_table
     error
     set_cache_timestamp
+    read_only
 /;
 
 sub index : Private {
@@ -35,6 +36,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     #
     # first, are there any programs, people or reports
     # with this affiliation?  If so, show them and get confirmation 
@@ -80,6 +87,12 @@ sub _del {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{affil}       = model($c, 'Affil')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "affil/create_edit.tt2";
@@ -110,6 +123,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "affil/create_edit.tt2";
 }
@@ -138,6 +157,12 @@ sub create_do : Local {
 sub merge : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         affil       => model($c, 'Affil')->find($id),
         affil_table => affil_table($c, 0),
@@ -241,6 +266,12 @@ sub access_denied : Private {
 sub memaffil : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     system("memaffil");         # does this work?
     $c->response->redirect($c->uri_for("/affil/list"));
 }

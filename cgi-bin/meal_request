@@ -7,6 +7,13 @@
 use strict;
 use warnings;
 use lib '../lib';
+use Util qw/
+    db_init
+    model
+    styled
+    check_read_only
+/;
+check_read_only();
 
 use CGI;
 use CGI::Carp qw/fatalsToBrowser/;
@@ -15,11 +22,6 @@ print $q->header();
 my %params = $q->Vars();
 my $type = delete $params{type};
 
-use Util qw/
-    db_init
-    model
-    styled
-/;
 my $c = db_init();
 use Global qw/
     %string

@@ -21,6 +21,7 @@ use Util qw/
     payment_warning
     error
     invalid_amount
+    read_only
 /;
 use Global qw/
     %string
@@ -37,6 +38,12 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         mmc_checked => 'checked',
         mmi_checked => '',
@@ -150,6 +157,12 @@ sub export : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $xa = model($c, 'XAccount')->find($id);
     my $sponsor = $xa->sponsor();
     stash($c,
@@ -177,6 +190,12 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my @payments = model($c, 'XAccountPayment')->search({
         xaccount_id => $id,
     });
@@ -201,6 +220,12 @@ sub access_denied : Private {
 sub prep_pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         person    => model($c, 'Person')->find($person_id),
         template  => 'xaccount/prep_pay_balance.tt2',
@@ -210,6 +235,12 @@ sub prep_pay_balance : Local {
 sub pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
         error($c,
               'Since a deposit was just done'
@@ -298,6 +329,12 @@ sub pay_balance_do : Local {
 sub del_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $pay = model($c, 'XAccountPayment')->find($payment_id);
     stash($c,
         payment  => $pay,
@@ -334,6 +371,12 @@ sub del_payment_do : Local {
 sub update_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $payment = model($c, 'XAccountPayment')->find($payment_id);
     my $type_opts = "";
     for my $t (qw/ D C S O /) {

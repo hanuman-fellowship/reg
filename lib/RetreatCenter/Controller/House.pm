@@ -10,6 +10,7 @@ use Util qw/
     trim
     stash
     set_cache_timestamp
+    read_only
 /;
 use Date::Simple qw/
     today
@@ -134,6 +135,12 @@ sub _get_data {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $h = model($c, 'House')->find($id);
     stash($c,
         house     => $h,
@@ -195,6 +202,12 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     $c->stash->{cluster_opts} =
         [ model($c, 'Cluster')->search(
             undef,
@@ -250,6 +263,12 @@ sub access_denied : Private {
 sub toggleTCB : Local {
     my ($self, $c) = @_; 
     
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my ($tcb1) = model($c, 'House')->search({ name => "TCB 1" });
     my $new_val = ($tcb1->inactive())? "": "yes";
     model($c, 'House')->search({ name => { 'like', "TCB %" }})
@@ -263,6 +282,12 @@ sub toggleTCB : Local {
 sub makeup : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $today = today()->as_d8(),
 
     # the tricky part is knowing when the house

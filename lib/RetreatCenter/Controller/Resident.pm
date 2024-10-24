@@ -9,6 +9,7 @@ use Util qw/
     valid_email
     model
     stash
+    read_only
 /;
 use Date::Simple qw/
     today
@@ -76,6 +77,12 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = model($c, 'Resident')->find($id);
     _del($c, $id);
     $c->response->redirect($c->uri_for('/resident/list'));
@@ -121,6 +128,12 @@ sub _get_data {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $r = $c->stash->{resident} = model($c, 'Resident')->find($id);
     $c->stash->{person} = $r->person();
     $c->stash->{form_action} = "update_do/$id";
@@ -152,6 +165,12 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         person      => model($c, 'Person')->find($person_id),
         form_action => "create_do/$person_id",
@@ -182,6 +201,12 @@ sub access_denied : Private {
 sub note : Local {
     my ($self, $c, $id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         resident => model($c, 'Resident')->find($id),
         template => 'resident/note.tt2',

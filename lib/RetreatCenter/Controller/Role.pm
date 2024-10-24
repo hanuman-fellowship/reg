@@ -7,6 +7,7 @@ use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     model
     stash
+    read_only
 /;
 
 sub index : Private {
@@ -36,6 +37,12 @@ sub view : Local {
 sub update : Local {
     my ($self, $c, $role_id) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $role = model($c, 'Role')->find($role_id);
     stash($c,
         role     => $role,

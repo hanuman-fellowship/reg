@@ -18,6 +18,7 @@ use Util qw/
     set_cache_timestamp
     get_string
     put_string
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -63,6 +64,12 @@ use URI::Escape;
 sub update : Local {
     my ($self, $c, $the_key) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my $s = model($c, 'String')->find($the_key);
 
     $c->stash->{the_key} = $the_key;
@@ -122,6 +129,12 @@ sub access_denied : Private {
 sub time_travel : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my ($str) = model($c, 'String')->search({
         the_key => 'tt_today',
     });
@@ -165,6 +178,12 @@ sub time_travel_do : Local {
 sub while_here : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         while_here => get_string($c, 'while_here'),
         template => 'string/while_here.tt2',
@@ -180,6 +199,13 @@ sub while_here_do : Local {
 
 sub badge_settings : Local {
     my ($self, $c) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     my @badge_strs = model($c, 'String')->search({
                          the_key => { 'like' => 'badge_%' },
                      });
@@ -219,6 +245,12 @@ sub meal_requests : Local {
 sub meal_requests_update : Local {
     my ($self, $c) = @_;
 
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         S        => \%string,
         template => 'configuration/meal_requests_update.tt2',

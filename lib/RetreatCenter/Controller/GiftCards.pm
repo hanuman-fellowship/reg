@@ -17,6 +17,7 @@ use Util qw/
     trim
     error
     get_string
+    read_only
 /;
 
 sub index : Private {
@@ -108,6 +109,13 @@ sub list : Local {
 
 sub add : Local {
     my ($self, $c, $code) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
     stash($c,
         code     => $code,
         template => 'gift_cards/add.tt2',
