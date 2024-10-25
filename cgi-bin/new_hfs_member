@@ -8,7 +8,7 @@ use Util qw/
     styled
     check_read_only
 /;
-check_read_only();
+# check_read_only();  # not yet
 
 my $c = db_init();
 
