@@ -143,6 +143,9 @@ for my $b ($rental->rental_bookings()) {
 # not Reg.   If the user has changed
 # the maximum # of beds they will appear in the grid table.
 # So look there (if it exists) for the max and append to @houses.
+# BUT... the expanded number of Own Van and Commuting is
+# _not_ in the grid table yet... :)
+# so look in the %P data!
 #
 my %max = ();
 $max{1001} = 5;

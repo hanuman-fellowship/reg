@@ -77,7 +77,7 @@ Dinner (5:15-6:15 pm)</label><br>
 Which of these activities would you like?
 <ul>
 <label><input type=checkbox id=yoga_class name=yoga_class value='1'>
-Yoga Class (4:00-5:00 pm)</label><br>
+Yoga Class (3:30-4:45 pm)</label><br>
 <label><input type=checkbox id=guided_hike name=guided_hike value='1'>
 Guided Walk (11:30 am-12:30 pm)</label><br>
 </ul>
