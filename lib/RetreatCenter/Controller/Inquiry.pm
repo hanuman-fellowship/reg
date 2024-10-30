@@ -8,6 +8,7 @@ use Util qw/
     model
     stash
     housing_types
+    read_only
 /;
 use Date::Simple qw/
     date
@@ -235,6 +236,13 @@ services
 #
 sub mkrental : Local {
     my ($self, $c, $id) = @_;
+
+    if (read_only()) {
+        stash($c,
+            template => 'read_only.tt2',
+        );
+        return;
+    } 
 
     my $inquiry = model($c, 'Inquiry')->find($id);
 
