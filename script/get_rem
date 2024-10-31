@@ -1,0 +1,45 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+/;
+my $c = db_init();
+my @emails;
+for my $r (model($c, 'Rental')->search(
+    {
+        sdate      => { '>=' => '20241114' },
+        program_id => 0,
+    },
+    {
+        order_by => 'sdate',
+    }
+)) {
+    my ($em1, $em2);
+    if ($r->coordinator_id) {
+        $em1 = $r->coordinator->email;
+    }
+    if ($r->cs_person_id) {
+        $em2 = $r->contract_signer->email;
+    }
+    if ($em2 && $em1 && $em2 eq $em1) {
+        $em2 = undef;
+    }
+    print $r->sdate_obj->format("%D"), ' ', $r->name_trimmed;
+    if ($em1) {
+        push @emails, $em1;
+        print " $em1";
+    }
+    if ($em2) {
+        push @emails, $em2;
+        print " $em2";
+    }
+    print "\n";
+}
+use List::Util qw/uniq/;
+print join ',', uniq sort @emails;
+print "\n";
