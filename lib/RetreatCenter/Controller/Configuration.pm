@@ -451,11 +451,11 @@ last_name
 email
 phone
 gender
-address-line-1-2
-address-line-2-2
-city-or-region
-state-or-province-2
-zip-or-postal-code
+address
+address-2
+city
+state
+zip
 what-is-your-desired-pronouns
 newsletter
 hfs-affiliate
