@@ -1489,7 +1489,7 @@ sub _gen_csv {
                 $last,              # last_name
                 $email,             # email
                 $phone,             # phone
-                $sex,               # gender
+                _gender($sex),      # gender
                 $addr1,             # address 1
                 $addr2,             # address 2
                 $city,              # city
