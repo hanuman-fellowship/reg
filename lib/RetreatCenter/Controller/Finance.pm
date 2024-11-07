@@ -258,7 +258,7 @@ sub reconcile_deposit : Local {
 sub file_deposit : Local {
     my ($self, $c, $sponsor, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

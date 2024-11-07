@@ -36,7 +36,7 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $name) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -88,7 +88,7 @@ sub update_do : Local {
 sub del_image :Local {
     my ($self, $c, $name, $i) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

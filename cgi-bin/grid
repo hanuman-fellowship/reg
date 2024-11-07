@@ -14,13 +14,11 @@ use Util qw/
     styled
     check_read_only
 /;
-check_read_only();
 
 my $new_way = 1;        # to be removed when the time is right
 
 use CGI;
 my $q = CGI->new;
-print $q->header;
 
 my $c = db_init();
 use Template;
@@ -54,6 +52,11 @@ if (! $rental) {
     exit;
 }
 my $rental_id = $rental->id;
+if ($rental_id != 2031) {       # the Art of Living id (2031)
+    check_read_only();          # can disable this on Dec 1
+}                               # when they leave
+print $q->header;
+
 sub dump_grid {
     my ($fname) = @_;
     open my $out, '>', $fname;

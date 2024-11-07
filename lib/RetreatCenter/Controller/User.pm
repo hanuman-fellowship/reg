@@ -55,7 +55,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -71,7 +71,7 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -235,7 +235,7 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $user_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -386,7 +386,7 @@ sub profile_view : Local {
 sub profile_edit : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -455,7 +455,7 @@ sub profile_color_do : Local {
 sub profile_password : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -527,7 +527,7 @@ sub access_denied : Private {
 sub lock : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -552,7 +552,7 @@ sub lock : Local {
 sub password_reset :Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

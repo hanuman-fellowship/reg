@@ -42,7 +42,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -66,7 +66,7 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -111,7 +111,7 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

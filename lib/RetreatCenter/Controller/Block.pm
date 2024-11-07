@@ -94,7 +94,7 @@ sub view : Local {
 sub delete : Local {
     my ($self, $c, $block_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -258,7 +258,7 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -271,7 +271,7 @@ sub create : Local {
 sub bound_create : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -298,7 +298,7 @@ sub bound_create : Local {
 sub create_many : Local {
     my ($self, $c, $type, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -454,7 +454,7 @@ sub create_many_do : Local {
 sub delete_many : Local {
     my ($self, $c, $type, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

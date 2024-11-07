@@ -64,7 +64,7 @@ use URI::Escape;
 sub update : Local {
     my ($self, $c, $the_key) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -129,7 +129,7 @@ sub access_denied : Private {
 sub time_travel : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -178,7 +178,7 @@ sub time_travel_do : Local {
 sub while_here : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -200,7 +200,7 @@ sub while_here_do : Local {
 sub badge_settings : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -245,7 +245,7 @@ sub meal_requests : Local {
 sub meal_requests_update : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

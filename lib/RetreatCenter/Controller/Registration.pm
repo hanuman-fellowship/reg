@@ -3988,7 +3988,7 @@ sub early_late : Local {
 sub arrived : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

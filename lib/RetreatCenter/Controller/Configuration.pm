@@ -44,7 +44,7 @@ sub index : Local {
 sub mark_inactive : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -158,7 +158,7 @@ sub spellings_do : Local {
 sub documents : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -230,7 +230,7 @@ my $dr_file = "$words/date_ranges.txt";
 sub date_ranges : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1163,7 +1163,7 @@ sub _gen_csv {
                 chomp $comment;
             }
 
-            my $country = $N;
+            my $country = 'US';
             my $s = _trans_country($per->country);
             if ($s) {
                 if (exists $country_code_for{$s}) {

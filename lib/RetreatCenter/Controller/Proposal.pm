@@ -162,7 +162,7 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -215,7 +215,7 @@ sub view : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
  
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -274,7 +274,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -306,7 +306,7 @@ sub listpat : Local {
 sub approve : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -359,7 +359,7 @@ sub approve : Local {
 sub transmit : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -376,7 +376,7 @@ sub transmit : Local {
 sub cs_transmit : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -548,7 +548,7 @@ sub _cs_transmit {
 sub duplicate : Local {
     my ($self, $c, $prop_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

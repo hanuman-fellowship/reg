@@ -37,7 +37,7 @@ sub view : Local {
 sub update : Local {
     my ($self, $c, $role_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

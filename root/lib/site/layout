@@ -30,7 +30,7 @@
 <td align=left><a target=help href=/static/help/index.html>Help</a></td>
 <td align=left><a href=/activity/view>Activity</a></td>
 <td><a href=/logout>Logout</a></td>
-<td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
+<td>[% Catalyst.user.first _ " " _ Catalyst.user.last %] [% read_only %]
 </tr>
 
 <tr>

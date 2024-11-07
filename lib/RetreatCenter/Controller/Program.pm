@@ -89,7 +89,7 @@ sub create : Local {
     my ($self, $c, $rental) = @_;
         # $rental is optional - see sub parallel().
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -708,6 +708,7 @@ sub view : Local {
     my $pre_craft = $p->sdate <= $string{pre_craft};
 
     stash($c,
+        time_travel_class($c),
         pre_craft => $pre_craft,
         program   => $p,
         editable  => $is_editable,
@@ -1006,7 +1007,7 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1156,7 +1157,7 @@ sub update_do : Local {
 sub del_alt_packet : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1312,7 +1313,7 @@ sub affil_update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1437,7 +1438,7 @@ sub update_lunch_do : Local {
 sub duplicate : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1613,7 +1614,7 @@ sub duplicate_do : Local {
 sub reserve_cluster : Local {
     my ($self, $c, $program_id, $cluster_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         return;
     } 
     model($c, 'ProgramCluster')->create({
@@ -1627,7 +1628,7 @@ sub reserve_cluster : Local {
 sub UNreserve_cluster : Local {
     my ($self, $c, $program_id, $cluster_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         return;
     } 
     model($c, 'ProgramCluster')->search({
@@ -1874,7 +1875,7 @@ sub color_do : Local {
 sub update_refresh : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1919,7 +1920,7 @@ sub update_refresh_do : Local {
 sub cancel : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

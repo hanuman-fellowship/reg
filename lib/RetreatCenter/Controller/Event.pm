@@ -67,7 +67,7 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -188,6 +188,7 @@ sub view : Local {
     my $sdate = $ev->sdate();
     my $nmonths = months_calc(date($sdate), date($ev->edate()));
     stash($c,
+        time_travel_class($c),
         event          => $ev,
         pg_title       => $ev->name(),
         daily_pic_date => "indoors/" . $ev->sdate(),
@@ -285,7 +286,7 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -356,7 +357,7 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1553,7 +1554,7 @@ EOF
 sub del_meeting_place : Local {
     my ($self, $c, $hap_type, $booking_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1641,7 +1642,7 @@ sub del_meeting_place : Local {
 sub add_meeting_place : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1664,7 +1665,7 @@ sub add_meeting_place : Local {
 sub which_mp : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

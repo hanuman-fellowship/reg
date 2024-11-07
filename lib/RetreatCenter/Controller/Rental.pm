@@ -239,7 +239,7 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -441,7 +441,7 @@ sub show_file : Local Args(1) {
 sub del_image : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -458,7 +458,7 @@ sub del_image : Local {
 sub create_from_proposal : Local {
     my ($self, $c, $proposal_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -553,7 +553,7 @@ sub create_from_proposal : Local {
 sub create_from_inquiry : Local {
     my ($self, $c, $inquiry_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -729,6 +729,7 @@ sub view : Local {
                    ;
 
     stash($c,
+        time_travel_class($c),
         editable       => $is_editable,
         nnights        => $nnights,
         rental         => $rental,
@@ -882,7 +883,7 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1054,7 +1055,7 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1152,7 +1153,7 @@ sub access_denied : Private {
 sub pay_balance : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1214,7 +1215,7 @@ sub pay_balance_do : Local {
 sub coordinator_update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1261,7 +1262,7 @@ sub coordinator_update_do : Local {
 sub contract_signer_update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1308,7 +1309,7 @@ sub contract_signer_update_do : Local {
 sub new_charge : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1360,7 +1361,7 @@ sub new_charge_do : Local {
 sub update_lunch : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1405,7 +1406,7 @@ sub update_lunch_do : Local {
 sub booking : Local {
     my ($self, $c, $id, $h_type) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1580,7 +1581,7 @@ sub booking_do : Local {
 sub del_booking : Local {
     my ($self, $c, $rental_id, $house_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1817,7 +1818,7 @@ sub arrangements : Local {
 sub received : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2087,7 +2088,7 @@ EOH
 sub reserve_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2162,7 +2163,7 @@ sub reserve_cluster : Local {
 sub cancel_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2313,7 +2314,7 @@ sub invoice : Local {
 sub link_proposal : Local {
     my ($self, $c, $rental_id, $proposal_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2344,7 +2345,7 @@ sub link_proposal : Local {
 sub duplicate : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2568,7 +2569,7 @@ sub _house_opts {
 sub del_charge : Local {
     my ($self, $c, $charge_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2599,7 +2600,7 @@ sub del_charge_do : Local {
 sub del_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2630,7 +2631,7 @@ sub del_payment_do : Local {
 sub update_charge : Local {
     my ($self, $c, $charge_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -2678,7 +2679,7 @@ sub update_charge_do : Local {
 sub update_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -3012,7 +3013,7 @@ sub badges : Local {
 sub color : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -3049,7 +3050,7 @@ sub color_do : Local {
 sub update_refresh : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -3103,7 +3104,7 @@ sub grab_new : Local {
 sub mass_delete : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -3266,7 +3267,7 @@ sub grid_emails : Local {
 sub del_alt_packet : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

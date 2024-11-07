@@ -38,7 +38,7 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -157,7 +157,7 @@ sub export : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -190,7 +190,7 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -220,7 +220,7 @@ sub access_denied : Private {
 sub prep_pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -235,7 +235,7 @@ sub prep_pay_balance : Local {
 sub pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -329,7 +329,7 @@ sub pay_balance_do : Local {
 sub del_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -371,7 +371,7 @@ sub del_payment_do : Local {
 sub update_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

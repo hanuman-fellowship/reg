@@ -625,7 +625,7 @@ sub delete : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

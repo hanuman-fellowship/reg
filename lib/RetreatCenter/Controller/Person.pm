@@ -228,7 +228,7 @@ sub search_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -328,7 +328,7 @@ sub view : Local {
 sub touch : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -343,7 +343,7 @@ sub touch : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -545,7 +545,7 @@ sub create_do : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -724,7 +724,7 @@ sub separate : Local {
 sub partner : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -857,7 +857,7 @@ sub mkpartner : Local {
 sub register1 : Local {
     my ($self, $c, $id, $resident) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -936,7 +936,7 @@ sub register1 : Local {
 sub undup : Local {
     my ($self, $c, $ids) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1781,7 +1781,7 @@ sub get_addr : Local {
 sub no_mailings : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1820,7 +1820,7 @@ sub get_gender : Local {
 sub del_covid_vax : Local {
     my ($self, $c, $per_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -1894,7 +1894,7 @@ sub rotate_vax : Local {
 sub request_covid_vax : Local {
     my ($self, $c, $per_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

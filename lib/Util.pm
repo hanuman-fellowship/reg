@@ -1007,7 +1007,13 @@ sub tt_today {
 
 sub time_travel_class {
     my ($c) = @_;
-    return time_travel_class => ((today() != tt_today($c))? 'red': '');
+    my $ro = read_only($c);
+    sub red { "<span style='color: red; font-weight: bold'>$_[0]</span>" };
+    return (time_travel_class => ((today() != tt_today($c))? 'red': ''),
+            read_only         => $ro == 1? red('READ ONLY!')
+                               : $ro == 2? red('Reg !=> RG')
+                               : '',
+           );
 }
 
 sub ceu_license {
@@ -2815,8 +2821,23 @@ sub check_read_only {
     }
 }
 
+my @super_users = qw/
+    sahadev
+    quincy
+    savita
+/;
+my $super_users = join('|', @super_users);
+
 sub read_only {
-    return -f $read_only;
+    my ($c) = @_;
+    my $ro = -f $read_only;
+    if (! $ro) {
+        return 0;       # not read only
+    }
+    if ($c->user->username =~ m{ \A ($super_users) \z }xms) {
+        return 2;       # read only but this person is special
+    }
+    return 1;           # read only
 }
 
 1;

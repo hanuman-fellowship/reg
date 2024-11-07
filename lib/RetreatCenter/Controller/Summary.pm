@@ -149,7 +149,7 @@ sub copy : Local {
 sub update : Local {
     my ($self, $c, $type, $sum_id) = @_;
  
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -202,7 +202,7 @@ sub update_do : Local {
 sub update_sect : Local {
     my ($self, $c, $section, $type, $sum_id) = @_;
  
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -254,7 +254,7 @@ sub update_section_do : Local {
 sub update_top : Local {
     my ($self, $c, $type, $sum_id) = @_;
  
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -302,7 +302,7 @@ sub update_top_do : Local {
 sub use_template : Local {
     my ($self, $c, $type, $happening_id, $sum_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
@@ -538,7 +538,7 @@ sub email_do : Local {
 sub touch_sent : Local {
     my ($self, $c, $type, $sum_id) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );

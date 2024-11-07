@@ -110,7 +110,7 @@ sub list : Local {
 sub add : Local {
     my ($self, $c, $code) = @_;
 
-    if (read_only()) {
+    if (read_only($c) == 1) {
         stash($c,
             template => 'read_only.tt2',
         );
