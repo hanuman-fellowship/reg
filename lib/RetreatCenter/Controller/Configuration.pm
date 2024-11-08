@@ -1107,6 +1107,11 @@ sub _gen_csv {
                 # skip cancelled registrations
                 next REG;
             }
+            # 11/8/24 - Updated Export Plan
+            # no registrations between 11/14 and 11/30 inclusive
+            if (20241101 <= $reg->date_start and $reg->date_start <= 20241130) {
+                next REG;
+            }
             my $per = $reg->person;
             if (!$per) {
                 next REG;
@@ -1327,6 +1332,12 @@ sub _gen_csv {
                 next REG;
             }
 
+            # 11/8/24 - Updated Export Plan
+            # no transactions for registrations happening before 12/1/24
+            if ($reg->date_start < 20241201) {
+                next REG;
+            }
+
             # JON - what about slugs for transactions?
             # TRANSACTIONS
             #
@@ -1459,6 +1470,13 @@ sub _gen_csv {
             cat_names(@prog_cats),          # categories
             'lodging',                      # price_structure
         ]);
+
+        # 11/8/24 - Updated Export Plan
+        # no registrations for rentals starting
+        # between 11/14 and 11/30 inclusive.
+        if (20241114 <= $ren->sdate and $ren->sdate <= 20241130) {
+            next RENTAL;
+        }
 
         # COORDINATOR REGISTRATION as a parent for others
         # (no housing assignment)
