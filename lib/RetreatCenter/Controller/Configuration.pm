@@ -842,6 +842,11 @@ sub _gen_csv {
     my $nprog = 0;
     my $nreg = 0;
     my $npr = 0;
+
+    my $nrent = 0;
+    my $nrent_reg = 0;
+    my $nrent_trans = 0;
+
     my $nme = 0;
 
     # Get affil ids
@@ -1012,6 +1017,8 @@ sub _gen_csv {
             # PROGRAM
             my $webdesc = $prog->webdesc || '';
             $webdesc =~ s{[<][^>]*[>]}{}xmsg;
+
+            # we get these things but they are not used ...
             my ($email, $phone, $name) = ($N, $N, $N);
             my @leaders = $prog->leaders;
             if (@leaders) {
@@ -1096,6 +1103,141 @@ sub _gen_csv {
         }
         # Okay, we have a Reg program id
         # to put on the registrations
+
+        # if it is a FUTURE hybrid program/rental
+        # we get the coordinator from the rental side
+        # and create a registration for them
+        # so we can create transactions for the
+        # rental deposit payment(s) and charges.
+        #
+        if ($prog->rental_id && $prog->sdate >= $today_d8) {
+            # a lot of code copied from below - in the Rental area
+            my $rental = model($c, 'Rental')->find($prog->rental_id);
+            my $contact = $rental->coordinator() || $rental->contract_signer();
+                # this is a Person record
+            #
+            # make the 'registration' for the contact person.
+            # there will be no housing.
+            # their housing registration (if any) will come
+            # with all the others.
+            #
+
+            my ($first, $last, $sanskrit, $email, $phone, $sex,
+                $addr1, $addr2, $city, $st_prov, $zip_post, $country, $pronouns)
+                = ($N) x 13;
+            if ($contact && $contact->first =~ /\S/) {
+                $first = $contact->first;
+                $last = $contact->last;
+                $sanskrit = $contact->sanskrit || $N;
+                $email = $contact->email; 
+                $phone = $contact->tel_cell
+                         || $contact->tel_home
+                         || $contact->tel_work;
+                $sex = $contact->sex;
+                $addr1 = $contact->addr1;
+                $addr2 = $contact->addr2;
+                $city = $contact->city;
+                $st_prov = $contact->st_prov;
+                $zip_post = $contact->zip_post;
+                $pronouns = $contact->pronouns;
+                my $country = 'US';
+                my $s = _trans_country($contact->country);
+                if ($s) {
+                    if (exists $country_code_for{$s}) {
+                        $country = $country_code_for{$s};
+                    }
+                    else {
+                        print {$report} "No country code for '$s'\n";
+                    }
+                }
+            }
+            else {
+                print {$report} "WARNING! No contact person for "
+                                . $rental->name . " "
+                                . $rental->sdate_obj->format("%F")
+                                . "\n";
+                # just skip this hybrid program - it is not complete
+                next PROGRAM;
+            }
+            ++$reg_id,
+            $csv->say($reg_fh, [
+                $reg_id,            # registration_id_original - concocted
+                $prog->id,          # program_id_original
+
+                                    # JON no 'program_id' from RG
+                                    # it is from Reg - or 9998 or 9999
+                                    #                  for PR/SG and ME
+                'reserved',         # status
+                $N,                 # time_submitted - include hh:mm
+                                    # the timestamp of the deposit
+                                    # not just for future
+                $prog->sdate_obj->format("%F"), # arrive
+                $prog->edate_obj->format("%F"), # leave
+                $Z,                 # room id (RG mapped - verify!)
+                $Z,                 # parent_registration_id_original
+                $country,           # country
+                $first,             # first_name
+                $sanskrit,          # alternative-name
+                $last,              # last_name
+                $email,             # email
+                $phone,             # phone
+                _gender($sex),      # gender
+                $addr1,             # address 1
+                $addr2,             # address 2
+                $city,              # city
+                $st_prov,           # state
+                $zip_post,          # zip
+                $pronouns,          # what-is-your-desired-pronouns
+                                        # JON all $N below okay?
+                'no',                   # newsletter (Website Subscriber affil?)
+                $N,                     # hfs-affiliate
+                'renter',               # guest_type
+                $N,                     # person-notes
+                $N,                     # flag-person
+                $veg_no_restrict,       # diet
+                $N,                     # diet-restrictions
+            ]);
+            ++$nrent_reg;       # not really a rental registration
+                                # but not really a program registration either
+
+            # Charges
+            # attribute them all to the registration for the coordinator
+            for my $cha ($rental->charges()) {
+                $csv->say($trans_fh, [
+                    'registration',     # object-type
+                    $reg_id,        # coordinator id
+                    $cha->the_date_obj->format("%F"),
+                    $cha->what,     # description
+                    'program',      # category??
+                    $cha->amount,   # charge
+                    $N,             # credit - 0 or blank??
+                    'complete',     # status
+                    $N,             # no transaction id
+                    $N,             # funding method - none as a charge
+                    $Z,             # is test
+                    $N,             # notes
+                ]);
+                ++$nrent_trans;
+            }
+            # Payments
+            for my $pay ($rental->payments()) {
+                $csv->say($trans_fh, [
+                    'registration',     # object-type
+                    $reg_id,        # coordinator id
+                    $pay->the_date_obj->format("%F"),
+                    $N,             # description - none??
+                    'other-payment',# category
+                    $N,             # charge - 0 or blank??
+                    $pay->amount,   # credit
+                    'complete',     # status
+                    $N,             # no transaction id
+                    'reg-payment',  # fund_method
+                    $Z,             # is test
+                    $N,             # notes
+                ]);
+                ++$nrent_trans;
+            }
+        }
 
         REG:
         for my $reg (sort {
@@ -1380,10 +1522,6 @@ sub _gen_csv {
         }
     }
 
-    my $nrent = 0;
-    my $nrent_reg = 0;
-    my $nrent_trans = 0;
-
     print "\nRentals:\n";
 
     print {$vr_list} "Venues and Rooms for Future Rentals\n";
@@ -1400,6 +1538,7 @@ sub _gen_csv {
             next RENTAL;
         }
         if ($ren->program_id) {
+            # a hybrid rental/program
             next RENTAL;
         }
         print $ren->sdate_obj->format("%D"), "\n";
