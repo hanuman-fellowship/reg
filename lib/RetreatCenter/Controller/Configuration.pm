@@ -1457,9 +1457,11 @@ sub _gen_csv {
         if ($title !~ /\S/) {
             $title = $ren->name_trimmed;
         }
+        my $ren_id = $ren->id + 7000;
         $csv->say($prog_fh, [
-            $ren->id,                       # program_id_original
+            $ren_id,                       # program_id_original
                                                 # dup with Program? it's ok
+                                                # NO - add 7000 to undup
             $title,                         # title
             $webdesc,                       # description
             "fixed",                        # date type
@@ -1489,7 +1491,7 @@ sub _gen_csv {
         if (! $no_contact) {
             $csv->say($reg_fh, [
                 $reg_id,            # registration_id_original - concocted
-                $ren->id,           # program_id_original
+                $ren_id,            # program_id_original
                                     # JON no 'program_id' from RG
                                     # it is from Reg - or 9998 or 9999
                                     #                  for PR/SG and ME
@@ -1656,7 +1658,7 @@ sub _gen_csv {
             ++$reg_id;
             $csv->say($reg_fh, [
                 $reg_id,            # registration_id_original - concocted
-                $ren->id,           # program_id_original
+                $ren_id,            # program_id_original
                                     # no 'program_id' from RG
                                     # it is from Reg - or 9998 or 9999
                                     #                  for PR/SG and ME
