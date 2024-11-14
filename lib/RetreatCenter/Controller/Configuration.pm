@@ -785,7 +785,10 @@ and a limited number of people in the concocted program
 sub _gen_csv {
     my ($c, $start) = @_;
 
-    my $reg_id = 0;     # for concocted registrations (rentals)
+    my $reg_id = 200000;     # for concocted registrations (rentals)
+                             # start at 200,000 so there is no
+                             # collision with Reg registration ids
+                             # whose max is 110,000 or so.
 
     my $today_d8 = today()->as_d8();
     #my $start_d8 = date('1989-01-01')->as_d8();
