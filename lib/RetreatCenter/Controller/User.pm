@@ -71,12 +71,6 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
     my $u = model($c, 'User')->find($id);
     stash($c,
         user           => $u,
@@ -235,12 +229,6 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $user_id) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
     stash($c,
         check_hide_mmi => '',
         role_table     => role_table($c),
@@ -386,12 +374,6 @@ sub profile_view : Local {
 sub profile_edit : Local {
     my ($self, $c) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
     my $u = $c->user();
     stash($c,
         user           => $u,
@@ -455,12 +437,6 @@ sub profile_color_do : Local {
 sub profile_password : Local {
     my ($self, $c) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
     stash($c,
         security => $string{password_security},
         template => 'user/profile_password.tt2',
@@ -527,12 +503,6 @@ sub access_denied : Private {
 sub lock : Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
     my $u = model($c, 'User')->find($id);
     $u->update({
         locked => 'yes',
@@ -552,12 +522,6 @@ sub lock : Local {
 sub password_reset :Local {
     my ($self, $c, $id) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
     my $u = model($c, 'User')->find($id);
     my $username = $u->username();
     my $pass = randpass();
