@@ -258,12 +258,12 @@ sub reconcile_deposit : Local {
 sub file_deposit : Local {
     my ($self, $c, $sponsor, $id) = @_;
 
-    if (read_only($c) == 1) {
-        stash($c,
-            template => 'read_only.tt2',
-        );
-        return;
-    } 
+    #if (read_only($c) == 1) {
+    #    stash($c,
+    #        template => 'read_only.tt2',
+    #    );
+    #    return;
+    #} 
     my $host = ($sponsor eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
     my $dep;
