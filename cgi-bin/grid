@@ -52,9 +52,9 @@ if (! $rental) {
     exit;
 }
 my $rental_id = $rental->id;
-if ($rental_id != 2031) {       # the Art of Living id (2031)
-    check_read_only();          # can disable this on Dec 1
-}                               # when they leave
+#if ($rental_id != 2031) {       # the Art of Living id (2031)
+#    check_read_only();          # can disable this on Dec 1
+#}                               # when they leave
 print $q->header;
 
 sub dump_grid {

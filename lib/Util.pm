@@ -2821,24 +2821,24 @@ sub check_read_only {
     }
 }
 
-my @super_users = qw/
-    sahadev
-    quincy
-    savita
-    Marisa
-    sandrab
-/;
-my $super_users = join('|', @super_users);
-
+#my @super_users = qw/
+#    sahadev
+#    quincy
+#    savita
+#    Marisa
+#    sandrab
+#/;
+#my $super_users = join('|', @super_users);
+#
 sub read_only {
     my ($c) = @_;
     my $ro = -f $read_only;
     if (! $ro) {
         return 0;       # not read only
     }
-    if ($c->user->username =~ m{ \A ($super_users) \z }xmsi) {
-        return 2;       # read only but this person is special
-    }
+#    if ($c->user->username =~ m{ \A ($super_users) \z }xmsi) {
+#        return 2;       # read only but this person is special
+#    }
     return 1;           # read only
 }
 
