@@ -17,9 +17,10 @@ li {
 </style>
 </head>
 <body>
-<img style="margin-left: 6in"
-     height=150
+<center>
+<img height=150
      src="http://www.hanumanfellowship.org/files/hanuman.png">
+</center>
 <p>
 Dear $sanskrit,
 <p>
