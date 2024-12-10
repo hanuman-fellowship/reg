@@ -59,8 +59,8 @@ enter your email address below and press the appropriate button.
 <td></td>
 <td>
 <button type=submit name=search class=sub-button>Search</button>
-&nbsp; &nbsp; &nbsp;Pattern can be part of a word 
-<input type=checkbox name=substring>
+&nbsp; &nbsp; &nbsp;<label style="font-weight: normal">Pattern can be part of a word 
+<input type=checkbox name=substring></label>
 </td>
 </tr>
 </form>
