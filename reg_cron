@@ -20,10 +20,10 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 0 1 11 7 * $REG/lapsed_mem alt
 
 # at noon, 3:00, and 7:00 pm back up all the data in mysql and send it offsite.
-0 12,15,19 * * * $REG/db_backup
+#0 12,15,19 * * * $REG/db_backup
 
 # at 1:00 am each day clear old backup files
-0 1 * * * $REG/clear_old
+#0 1 * * * $REG/clear_old
 
 # at 4:00 am each day send a sutra from Babaji
 0 4 * * * $REG/sutra_send
@@ -32,29 +32,29 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 # 0,15,30,45 * * * * $REG/grid_monitor
 
 # at 1:00 am get the rooms/campsites to be made up
-0 1 * * * $REG/makeup
+#0 1 * * * $REG/makeup
 
 # at 1:30 am send off the carpool lists - 7 and 14 days out
-30 1 * * * $REG/carpool
-40 1 * * * $REG/carpool - 14
+#30 1 * * * $REG/carpool
+#40 1 * * * $REG/carpool - 14
 
 # at 2:00 am ensure the only_temple boolean of the people table is correct
-0 2 * * * $REG/only_temple
+#0 2 * * * $REG/only_temple
 
 # at 11:40 pm back up all the rental images
 # and send it offsite
-40 23 * * * $REG/grid_backup
+#40 23 * * * $REG/grid_backup
 
 # at noon and 6:00 pm republish the public version of the calendar
-0 12,18 * * * $REG/pubcal
+#0 12,18 * * * $REG/pubcal
 
 # at 2:00 am on the 1st of every month add a month of config records
 # and clear unused ones in the past.
-0 2 1 * * $REG/add_config
+#0 2 1 * * $REG/add_config
 
 # at 2:30 am on the 1st of every month add new PR and Special Guest
 # programs so we are always a year ahead.
-30 2 1 * * $REG/add_PR_SG
+#30 2 1 * * $REG/add_PR_SG
 
 # at 1:00 am every Tuesday morning send an email about gate codes.
 #0 1 * * 2 $REG/gate
@@ -63,7 +63,7 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 #5 1 * * * $REG/packet48
 
 # at 2:00 am every morning send json files to reservations machine
-0 2 * * * $REG/reserve_today
+#0 2 * * * $REG/reserve_today
 
 # at noon every day see if any events ended the day before
 # and send a request to comment on Facebook and Yelp
