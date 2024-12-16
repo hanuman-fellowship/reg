@@ -1,17 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use CGI;
-my $q = CGI->new();
-print $q->header();
 use lib '.', '../lib';
-use Stripe qw/
-    metadata
-/;
-use Template;
-my $tt = Template->new(
-             INTERPOLATE => 1
-         );
 use Util qw/
     add_activity
     email_letter
@@ -20,7 +10,20 @@ use Util qw/
     model
     JON
     styled
+    check_read_only
 /;
+check_read_only();
+
+use CGI;
+my $q = CGI->new();
+print $q->header();
+use Stripe qw/
+    metadata
+/;
+use Template;
+my $tt = Template->new(
+             INTERPOLATE => 1
+         );
 my $c = db_init();
 
 use Date::Simple qw/
@@ -57,9 +60,9 @@ mkdir "/var/Reg/online_backup" if ! -d "/var/Reg/online_backup";
 open my $out, '>', "/var/Reg/online/$f";
 print {$out} $d;
 close $out;
-open my $out, '>', "/var/Reg/online_backup/$f";
-print {$out} $d;
-close $out;
+open my $out2, '>', "/var/Reg/online_backup/$f";
+print {$out2} $d;
+close $out2;
 
 my $first = $P{first};
 my $last  = $P{last};
