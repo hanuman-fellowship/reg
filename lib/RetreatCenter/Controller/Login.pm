@@ -317,14 +317,14 @@ sub _user_admins {
                       );
     my $msg = <<'EOH';
 <p class=p2>
-These people can help reset your account:
-<p class=p2>
+Click here: <a href='mailto:jon.bjornstad@gmail.com?subject=Unlock My Account'>jon.bjornstad@gmail.com</a> to email Sahadev to unlock your account.
 EOH
-    my @names;
-    for my $ua (@user_admins) {
-        push @names, $ua->user->first;
-    }
-    return $msg . join ', ', @names;
+#    my @names;
+#    for my $ua (@user_admins) {
+#        push @names, $ua->user->first;
+#    }
+#    return $msg . join ', ', @names;
+    return $msg;
 }
 
 sub _td {
