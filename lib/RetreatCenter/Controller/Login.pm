@@ -108,7 +108,8 @@ sub index :Path :Args(0) {
             });
             _clear_files();    # move this somewhere else??
                                # it's just for tidying up
-            if ($user->expiry_date < $today_d8) {
+            # no more checking of expiry date
+            if (0 && $user->expiry_date < $today_d8) {
                 my $ndays = $string{days_pass_grace}
                           - (today() - $user->expiry_date_obj()) + 1;
                 if ($ndays <= 0) {
@@ -142,11 +143,12 @@ sub index :Path :Args(0) {
                     $c->response->redirect($c->uri_for("/person/search/__expired__/$ndays"));
                 }
             }
-            elsif (my $post_login_target
-                         = delete $c->session->{post_login_target}
-            ) {
-                $c->response->redirect($post_login_target);
-            }
+            # don't know what this is ...
+            #elsif (my $post_login_target
+            #             = delete $c->session->{post_login_target}
+            #) {
+            #    $c->response->redirect($post_login_target);
+            #}
             elsif ($c->check_user_roles('super_admin')) {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
@@ -183,40 +185,40 @@ sub index :Path :Args(0) {
             login_log($username, 'success');
             return;
         }
-        else {
-            my $n = $user->nfails;
-            $user->update({
-                nfails => $n+1,
-            });
-            if ($user->nfails >= $string{num_pass_fails}) {
-                $user->update({
-                    locked => 'yes',
-                });
-                $c->stash->{error_msg}
-                    = "$string{num_pass_fails} consecutive password failures"
-                    . " - The account for '$username' is locked."
-                    . _user_admins($c)
-                    ;
-            }
-            else {
-                my $msg = "Bad username or password.";
-                if ($user->nfails + 2 == $string{num_pass_fails}) {
-                    $msg .= "<br><span style='color: red'>"
-                         .  "Danger</span>... TWO more failed attempts"
-                         .  " and you will be locked out!"
-                         .  _user_admins($c)
-                         ;
-                }
-                elsif ($user->nfails + 1 == $string{num_pass_fails}) {
-                    $msg .= "<br><span style='color: red'>"
-                         .  "Danger</span>... ONE more failed attempt"
-                         .  " and you will be locked out!"
-                         .  _user_admins($c)
-                         ;
-                }
-                $c->stash->{error_msg} = $msg
-            }
-        }
+        #else {
+        #    my $n = $user->nfails;
+        #    $user->update({
+        #        nfails => $n+1,
+        #    });
+        #    if ($user->nfails >= $string{num_pass_fails}) {
+        #        $user->update({
+        #            locked => 'yes',
+        #        });
+        #        $c->stash->{error_msg}
+        #            = "$string{num_pass_fails} consecutive password failures"
+        #            . " - The account for '$username' is locked."
+        #            . _user_admins($c)
+        #            ;
+        #    }
+        #    else {
+        #        my $msg = "Bad username or password.";
+        #        if ($user->nfails + 2 == $string{num_pass_fails}) {
+        #            $msg .= "<br><span style='color: red'>"
+        #                 .  "Danger</span>... TWO more failed attempts"
+        #                 .  " and you will be locked out!"
+        #                 .  _user_admins($c)
+        #                 ;
+        #        }
+        #        elsif ($user->nfails + 1 == $string{num_pass_fails}) {
+        #            $msg .= "<br><span style='color: red'>"
+        #                 .  "Danger</span>... ONE more failed attempt"
+        #                 .  " and you will be locked out!"
+        #                 .  _user_admins($c)
+        #                 ;
+        #        }
+        #        $c->stash->{error_msg} = $msg
+        #    }
+        #}
     }
     elsif (! $username xor ! $password) {
         $c->stash->{error_msg} = "Bad username or password.";
@@ -243,18 +245,18 @@ sub index :Path :Args(0) {
             );
             return;
         }
-        elsif ($user->locked()) {
-            login_log($user->username, 'forgot password but account is locked');
-            stash($c,
-                message  => 'Sorry, the account associated with'
-                         .  ' this email is locked.'
-                         .  _user_admins($c)
-                         ,
-                email    => $email,
-                template => 'forgot_password.tt2',
-            );
-            return;
-        }
+        #elsif ($user->locked()) {
+        #    login_log($user->username, 'forgot password but account is locked');
+        #    stash($c,
+        #        message  => 'Sorry, the account associated with'
+        #                 .  ' this email is locked.'
+        #                 .  _user_admins($c)
+        #                 ,
+        #        email    => $email,
+        #        template => 'forgot_password.tt2',
+        #    );
+        #    return;
+        #}
         my $username = $user->username;
         my $new_pass = randpass();
         $user->update({
