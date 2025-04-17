@@ -261,7 +261,7 @@ sub index :Path :Args(0) {
         my $new_pass = randpass();
         $user->update({
             password    => sha256_hex($new_pass),
-            expiry_date => (today()-1)->as_d8(),
+            expiry_date => 21991231,    # (today()-1)->as_d8(),
         });
         my $url = $c->uri_for('/login');
         email_letter($c,

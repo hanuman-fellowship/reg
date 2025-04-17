@@ -295,7 +295,7 @@ sub create_do : Local {
 
     my $pass = randpass();
     $P{password} = sha256_hex($pass);
-    $P{expiry_date} = (today()-1)->as_d8();
+    $P{expiry_date} = 21991231, # (today()-1)->as_d8();
     $P{locked} = '';
     $P{last_login_date} = today()->as_d8();
     $P{nfails} = 0;
@@ -488,7 +488,7 @@ sub profile_password_do : Local {
     login_log($u->username, 'password changed');
     $u->update({
         password    => sha256_hex($new_pass),
-        expiry_date => (today() + $string{days_pass_expire})->as_d8(),
+        expiry_date => 21991231, # (today() + $string{days_pass_expire})->as_d8(),
     });
     $c->response->redirect($c->uri_for('/user/profile_view/1'));
 }
@@ -529,7 +529,7 @@ sub password_reset :Local {
         locked => '',
         nfails => 0,
         password => sha256_hex($pass),
-        expiry_date => (today()-1)->as_d8(),
+        expiry_date => 21991231, # (today()-1)->as_d8(),
     });
     email_letter(
         $c,
@@ -563,7 +563,7 @@ sub unlock : Local {
         locked => '',
         nfails => 0,
         password => sha256_hex($pass),
-        expiry_date => (today()-1)->as_d8(),
+        expiry_date => 21991231, # (today()-1)->as_d8(),
     });
     email_letter(
         $c,
