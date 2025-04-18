@@ -1,3 +1,5 @@
 This is the code for Reg - the mailing list and registration program that served Mount Madonna Center
 from 1981 through 2024.  The code began in CBASIC, then dBase III+, then FoxPro for Unix, then, 
 beginning in 2007, it was rewritten in Perl (and some javascript) using the Catalyst framework.
+
+Reg was retired (replaced by Retreat Guru) in 2024.   The code is now open source.
