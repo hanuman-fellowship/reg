@@ -26,7 +26,6 @@ if (! %P) {
     );
     exit;
 }
-
 print <<"EOH";
 <html>
 <head>
@@ -211,4 +210,11 @@ $t
 </tr>
 </table>
 EOH
+}
+else {
+    $tt->process(
+        styled('sutra.tt2'),
+        {},
+    );
+    exit;
 }
