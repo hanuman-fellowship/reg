@@ -174,5 +174,11 @@ $payment
 [% ELSE %]
     $stripe_payment
 [% END %]
+<p style="margin-top: 20px;">
+    <form action=$cgi/cancel_registration method=POST style="display: inline;">
+    <input type=hidden name=transaction_id value="$transaction_id">
+    <button type=submit style="background-color: #ccc; color: #333;">Cancel Registration</button>
+    </form>
+</p>
 </body>
 </html>

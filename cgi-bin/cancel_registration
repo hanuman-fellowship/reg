@@ -1,0 +1,66 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib '.', '../lib';
+use Util qw/
+    db_init
+    model
+    JON
+    check_read_only
+/;
+check_read_only();
+
+use CGI;
+my $q = CGI->new();
+print $q->header();
+
+my $c = db_init();
+
+my $transaction_id = $q->param('transaction_id');
+
+# If no transaction_id, just show the cancellation message
+if (!$transaction_id) {
+    print_cancel_message();
+    exit;
+}
+
+my $f = "N$transaction_id";
+my $online_file = "/var/Reg/online/$f";
+
+# Check if the registration file exists and remove it
+if (-f $online_file) {
+    unlink $online_file;
+    
+    # Also log the cancellation
+    use Date::Simple qw/today/;
+    use Time::Simple qw/get_time/;
+    my $today = today()->format("%D");
+    my $time = get_time()->t24();
+    
+    # Optionally log to activity
+    # add_activity($c, "Online registration cancelled: $f");
+}
+
+print_cancel_message();
+
+sub print_cancel_message {
+    print <<'HTML';
+<html>
+<head>
+<meta charset='UTF-8'>
+<link rel="stylesheet" href="/static/cgi.css">
+</head>
+<body>
+<img src='/static/images/mmc-teal.png' width=200>
+<h2>Registration Cancelled</h2>
+<p>Your registration has been cancelled. No payment has been processed.</p>
+<p>You may now:</p>
+<ul>
+<li><a href="/">Return to the Mount Madonna Center homepage</a></li>
+<li><a href="/programs">Browse other programs</a></li>
+</ul>
+<p>If you have any questions, please contact us at <a href="mailto:programs@mountmadonna.org">programs@mountmadonna.org</a>.</p>
+</body>
+</html>
+HTML
+}
