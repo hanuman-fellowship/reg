@@ -94,6 +94,7 @@ EOH
                  . "<div class=a>$a</div>";
         ++$n;
     }
+    print "<div style='margin-top: .75in;'><a style='text-decoration: none; color: black;' target=_blank href=https://mountmadonna.org>Mount Madonna Center</a></div>\n";
     print {$out} $bottom;
     close $out;
 }
@@ -147,6 +148,7 @@ print {$index} <<'EOH';
 Search Pattern: <input type=text name=pattern size=20>
 &nbsp;&nbsp;<a href="javascript:popup('/static/talks/info.html', 350, 400);"><img src=/static/images/info.png width=20></a>
 </form>
+<a style='color:black;' target=_blank href=https://mountmadonna.org>Mount Madonna Center</a>
 </center>
 </body>
 </html>

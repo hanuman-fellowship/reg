@@ -104,6 +104,11 @@ refreshing the browser screen.
 <p>If you are having a problem with anything on this page,
 please send a message to Sahadev by clicking <A HREF="mailto:sahadev@mountmadonna.org?subject=Daily Sutra from Babaji">here</A>.
 
+<br>
+<br>
+<br>
+<a style='text-decoration: none; color: black' target=_blank href=https://mountmadonna.org>Mount Madonna Center</a>
+
 <!-- // PAGE CONTENT ENDS HERE -->
 [% INCLUDE new_tt2/footer.tt2 %]
 </body>
