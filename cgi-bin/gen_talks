@@ -94,7 +94,7 @@ EOH
                  . "<div class=a>$a</div>";
         ++$n;
     }
-    print {4out} "<div style='margin-top: .75in;'><a style='text-decoration: none; color: black;' target=_blank href=https://mountmadonna.org>Mount Madonna Center</a></div>\n";
+    print {$out} "<div style='margin-top: .75in;'><a style='text-decoration: none; color: black;' target=_blank href=https://mountmadonna.org>Mount Madonna Center</a></div>\n";
     print {$out} $bottom;
     close $out;
 }
