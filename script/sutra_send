@@ -6,6 +6,7 @@ use lib 'lib';
 use Util qw/
     email_letter
     db_init
+    JON
 /;
 
 my ($known_id, $one_email) = @ARGV;
@@ -158,6 +159,6 @@ while (my $href = $sth_all_addr->fetchrow_hashref()) {
         html => $html,
         activity_msg => 'none',
     );
-    print {$out} "sutra sent to $one_email\n";
+    print {$out} "sutra sent to $email\n";
 }
 close $out;
