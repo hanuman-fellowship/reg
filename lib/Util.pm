@@ -771,9 +771,12 @@ sub email_letter {
         $stuffer->send_or_die;
     } || do {
         $message .= "Failed to send email: $@\n";
+        $message = substr($message, 0, 256);        # in case it failed...
+        add_activity($c, $message);
+        return;
     };
-    $message = substr($message, 0, 256);        # in case it failed...
     if ($args{activity_msg} && $args{activity_msg} ne 'none') {
+        $message = substr($message, 0, 256);        # in case it failed...
         add_activity($c, $args{activity_msg} || $message);
     }
 }
